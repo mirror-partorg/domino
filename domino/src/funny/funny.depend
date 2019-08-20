@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1388973414 source:/home/mirror/work/domino/src/src/funny/main.c
+	<stdio.h>
+	<stdlib.h>
+

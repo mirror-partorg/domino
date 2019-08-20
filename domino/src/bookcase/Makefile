@@ -1,0 +1,29 @@
+include ../../common.mak
+
+lib_dox  = ../domino/
+
+LDFLAGS = $(LIBGTK) $(WINAPP_) $(LIBDO) $(LIBWEBKIT) $(LIBEXPAT)
+
+CFLAGS = -DUSE_GTK -DUSE_UTF8 $(GTKCFLAGS) -DNODOMINO -DEXPAT $(WEBKITCFLAG)
+
+
+SRCS = main.c \
+	   do_config.c \
+	   do_context.c \
+		do_entry.c \
+		do_html_view.c \
+		do_marshal.c \
+		do_message.c \
+		do_notebook.c \
+		do_utilx.c \
+		do_validate.c \
+		do_view.c \
+		do_view_actions.c \
+		domino.c \
+		hig.c
+
+APP = bookcase
+OBJ = bookcase.o
+RES = bookcase.rc
+
+include ../../program.mak

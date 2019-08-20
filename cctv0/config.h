@@ -1,0 +1,40 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define ORGANIZATION_NAME "GLekar"
+#define ORGANIZATION_DOMAIN "glekar.ru"
+#define APPLICATION_NAME   "CCTV"
+#define APPLICATION_ICON ":/images/icon32.png"
+#define APPLICATION_VERSION "0.1.0"
+#define APPLICATION_TITLE "Просмотр видео наблюдения"
+#define COPYRIGHT "Ришес Юрий"
+#define EMAIL "mir@glekar.ru"
+
+#define DEFAULT_AUDIO_VOLUME 100
+#define DEFAULT_VIDEO_WIDTH 640
+#define DEFAULT_VIDEO_HEIGHT 480
+#define DEFAULT_VIDEO_ROTATE 0
+#define DEFAULT_VIDEO_PIECE_MAX_LENTH_SEC 60*10
+#define DEFAULT_VIDEO_EXACTLY_MSEC 300
+#define DEFAULT_VIDEO_EXACTLY_START_SEC1 10
+#define DEFAULT_VIDEO_EXACTLY_SEC 1
+#define DEFAULT_VIDEO_SLEEP_SEC 10
+
+#define PLAYER_TOOLBAR_COLOR "#1f1f1f"
+#define PLAYER_BORDER_ACTIVE_COLOR "#bebebe"
+#define PLAYER_BORDER_COLOR "black"
+//#define PLAYER_BORDER_COLOR "#cec9c7"
+#define PLAYER_BORDER_LINE_WIDTH 1
+
+#define VIDEO_GRID_MIN_WIDTH 500
+#define VIDEO_GRID_MIN_HEIGHT 500
+#define VIDEO_GRID_RESIZE_MSEC 100
+#define VIDEO_GRID_HANDLE_WIDTH 0
+
+#define SEEK_SLIDER_LENTH 3600
+
+QString APPLICATION_NAME1();
+void SetApplicationName(const char *program);
+
+
+#endif // CONFIG_H

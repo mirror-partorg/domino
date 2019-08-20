@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+
+for i in `ls /usr/local/domino/bin/sync-client*` 
+do
+number=${i:33}
+if [[ "X$number" != "X" ]] ; then
+/usr/local/domino/bin/sync-$1 $number "${@:2}"
+fi
+done
+
+#/usr/local/domino/bin/sync-lekar $@
+#/usr/local/domino/bin/sync-net $@
+

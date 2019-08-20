@@ -1,0 +1,141 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+#include <domino.h>
+#include <../config/config.h>
+
+const char *alias[]={"main.tta","main.chel","main.net"};
+
+
+
+int mk_real(const char *name, const char *barcode, double *total, double *sum, char **product_name, struct tm date1, struct tm date2);
+int main(int argc, char *argv[])
+{
+    setlocale(LC_ALL,"");
+    do_log_set_stdout();
+    int i;
+    double total, sum;
+    //const char *barcode="4607027762513";
+    char *product_name;
+    struct tm date1;
+    struct tm date2;
+    do_atodate("01/04/2011", &date1);
+    do_atodate("31/03/2012", &date2);
+
+    if ( !domino_init(NULL, FALSE, DO_PARAM_END) )
+        exit(1);
+    total = 0;sum=0;
+    do_ftoa
+
+
+    for ( i = 0; i < 3; i++ )
+        if ( !mk_real(alias[i], argv[1], &total, &sum, &product_name, date1, date2) )
+            exit(1);
+    fprintf(stderr, "%s;%f;%f\n", product_name, total, sum);
+    return 0;
+}
+int get_real(do_alias_t *alias, do_string_list_t *bars, product_key0_t *product_key0, double coef, double *total, double *sum, struct tm date1, struct tm date2);
+int mk_real(const char *name, const char *bar, double *total, double *sum, char **product_name, struct tm date1, struct tm date2)
+{
+    do_alias_t *alias;
+    do_string_list_t *bars;
+    if ( (alias = domino_alias_new(name)) == NULL )
+        return FALSE;
+
+
+    if ( !do_alias_open(alias, TRUE) )
+        return FALSE;
+
+    barcode_key0_t barcode_key0;
+    barcode_key1_t barcode_key1;
+    barcode_rec_t barcode;
+    product_key0_t product_key0, key;
+    product_rec_t product;
+    int status;
+    double coef;
+
+    do_text_set(alias, barcode_key0.barcode, bar);
+
+    status = do_barcode_get0(alias, &barcode, &barcode_key0, DO_GET_EQUAL);
+
+    if ( status != DO_OK ) {
+        do_log(LOG_ERR, "barcode \"%s\" not found", bar);
+        return FALSE;
+    }
+    do_cpy(product_key0.code, barcode.data.code);
+    product_key0.base_parcel = 0;
+
+    status = do_product_get0(alias, &product, &product_key0, DO_GET_EQUAL);
+    if ( status != DO_OK ) {
+        do_log(LOG_ERR, "product \"%s\" not found", do_text(alias, product_key0.code));
+        return FALSE;
+    }
+
+    coef = do_product_coef(alias, &product);
+    *product_name = do_text(alias, product.data.name);
+    bars = do_string_list_new();
+    do_string_list_add_alloc(bars, bar);
+
+
+    do_cpy(key.code, product_key0.code);
+    key.base_parcel = 1;
+
+    status = do_product_get0(alias,&product, &key, DO_GET_GE);
+    while ( status == DO_OK ) {
+        if ( strncmp(key.code, product_key0.code, do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH)) )
+            break;
+        if ( !strcmp(bar, do_product_param(alias, &product, "BARCODE")) ) {
+            do_cpy(barcode_key1.code, key.code);
+            if ( do_barcode_get1(alias, &barcode, &barcode_key1, DO_GET_EQUAL) == DO_OK ) {
+                do_string_list_add(bars, do_text(alias, barcode.data.barcode));
+            }
+        }
+        status = do_product_get0(alias, &product, &key, DO_GET_NEXT);
+    }
+
+    if ( status == DO_ERROR )
+        return FALSE;
+
+    if ( !get_real(alias, bars, &product_key0, coef, total, sum, date1, date2) )
+        return FALSE;
+
+    do_string_list_free(bars);
+
+    do_alias_free(alias);
+    return TRUE;
+
+}
+int get_real(do_alias_t *alias, do_string_list_t *bars, product_key0_t *product_key0, double coef, double *total, double *sum, struct tm date1, struct tm date2)
+{
+    check_key2_t check_key2, key;
+    check_rec_t check;
+    int status, i;
+
+    do_set_empty(check_key2);
+    do_cpy(check_key2.product_code, product_key0->code);
+    check_key2.date = do_datetosql(date1);
+    key.date = do_datetosql(date2);
+
+    status = do_check_get2(alias, &check, &check_key2, DO_GET_GE);
+    while ( status == DO_OK ) {
+        if ( do_cmp(check_key2.product_code, product_key0->code) ||
+              check_key2.date > key.date ) break;
+
+        for ( i = 0; i < bars->count; i++ ) {
+            if ( !strcmp(do_text(alias, check.data.bar_code), bars->list[i]) ) {
+
+                *total = *total + check.data.quantity/coef;
+                *sum = *sum + check.data.quantity*check.data.price;
+                break;
+
+            }
+        }
+
+        status = do_check_get2(alias, &check, &check_key2, DO_GET_NEXT);
+    }
+
+    if ( status == DO_ERROR )
+        return FALSE;
+    return TRUE;
+}

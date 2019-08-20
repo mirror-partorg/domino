@@ -1,0 +1,130 @@
+
+#ifndef DOMINO_CONFIG_H_
+#define DOMINO_CONFIG_H_
+#include <do-macros.h>
+#if !defined(_WIN32) && !defined(_LINUX)
+#error You must define one of the following: _WIN32, _LINUX
+#endif
+
+#ifdef _WIN32
+#define DOMINO_PATH do_get_libdir()
+#else
+#define DOMINO_PATH "/usr/local/domino/bin"
+#define DOMINO_LOCAL_PATH "~./usr/local/domino/bin"
+#endif
+
+#ifdef _WIN32
+#define DOMINO_CONFIG_RELATIVE_PATH "../etc/domino"
+#else
+#define DOMINO_CONFIG_RELATIVE_PATH "../etc"
+#endif
+#define DOMINO_LOG_RELATIVE_PATH "../log"
+
+#define DOMINO_PYTHON_RELATIVE_PATH  "../lib/python"
+#define DOMINO_PASSWD_FILE DOMINO_CONFIG_RELATIVE_PATH "/doshadow"
+#define DOMINO_PASSWD_LOCAL_FILE "domino/doshadow"
+#define DOMINO_ALIAS_RELATIVE_PATH  DOMINO_CONFIG_RELATIVE_PATH "/alias"
+#define DOMINO_ALIAS_LOCAL_PATH  "domino/alias"
+#define DOMINO_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/domino.conf"
+#define DOMINO_CONFIG_LOCAL_FILE "domino/domino.conf"
+#define DOMINO_PARAM_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/domino.cfg"
+#define DOMINO_PARAM_LOCAL_CONFIG_FILE "domino/domino.cfg"
+
+#define DOMINO_META_ALIAS_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/alias.xml"
+
+#define DOMINO_USERNAME "domino"
+#define DOMINO_LOCAL_ALIAS "local"
+
+#define ARTIX_DEFAULT_USER "SYSDBA"
+#define ARTIX_DEFAULT_PASSWORD "SSAFirebird"
+
+#define ARTIX_DEFAULT_CONNECTION_STRING "/linuxcash/cash/data/db/cash.gdb"
+#define ARTIX_DEFAULT_INFO_SERVICE_PORT 7777
+#define ARTIX_DEFAULT_HOST "localhost"
+
+#define SEND_ERROR_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/send-error.conf"
+#define XMPP_PORT 5222
+
+#define MAIN_ALIAS_NAME "main"
+
+#define CRNTSALE_TEXT_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/crntsale.conf"
+#define CRNTSALE_TEXT_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/crntsale.log"
+#define DEFAULT_DEBUG_LEVEL 0
+#define DEFAULT_LOG_TYPE DO_LOG_TYPE_SYSLOG
+
+
+#define DCLUB_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/dclubd.conf"
+#define DCLUB_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/dclubd.log"
+#define DCLUB_DEFAULT_TCP_PORT 15015
+#define DCLUB_DEFAULT_TELNET_TCP_PORT 15115
+#define DEFAULT_DEBUG_LEVEL 0
+
+#define EXCHANGE_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/exchanged.conf"
+#define EXCHANGE_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/exchanged.log"
+#define EXCHANGE_DEFAULT_TCP_PORT 15016
+#define EXCHANGE_DEFAULT_TELNET_TCP_PORT 15116
+#define DEFAULT_DEBUG_LEVEL 0
+
+
+#define HANDBOOK_TEXT_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/handbook-text.conf"
+#define HANDBOOK_TEXT_LOG_FILE DOMINO_CONFIG_RELATIVE_PATH "/handbook-text.log"
+#define DEFAULT_DEBUG_LEVEL 0
+
+#define DEFAULT_DEBUG_LEVEL 0
+
+#define USER "domino"
+#define PASSWORD "domino"
+
+
+#define SYNC_CONFIG_FILE  DOMINO_CONFIG_RELATIVE_PATH  "/syncd.conf"
+#define SYNC_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/syncd.log"
+#define SYNC_CLIENT_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/sync_client.log"
+#define SYNC_DEFAULT_TCP_PORT 15017
+#define SYNC_DEFAULT_TELNET_TCP_PORT 15117
+#define SYNC_USERNAME "domino"
+#define SYNC_PASSWORD "domino"
+#define SYNC_DOCUMENT_REPLIC_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/syncd-document.conf"
+#define SYNC_DOCUMENT_REPLIC_AGING_DAYS 7
+
+#ifdef PSEUDO_TELNET
+#define SYNC_DEFAULT_TELNET_TCP_PORT 15117
+#endif
+#define DEFAULT_DEBUG_LEVEL 0
+#ifdef PYTHIN
+#endif
+
+#define FFMPEG_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/get-video.log"
+#define FFMPEG_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/get-video.conf"
+
+#define STREAM_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/get-stream.log"
+#define STREAM_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/get-stream.conf"
+
+#define FFMPEG_VIDEO_FORMAT "video4linux2"
+#define FFMPEG_VIDEO_DEVICE "/dev/video0"
+#define FFMPEG_VIDEO_RATE "10"
+#define FFMPEG_VIDEO_BITRATE "600k"
+#define FFMPEG_VIDEO_SIZE "640x480"
+#define FFMPEG_VIDEO_PIXEL_FORMAT "yuv420p"
+#define FFMPEG_VIDEO_RATION "4:3"
+#define FFMPEG_VIDEO_CODEC "msmpeg4"
+
+#define FFMPEG_AUDIO_FORMAT "alsa"
+#define FFMPEG_AUDIO_DEVICE "plughw:1,0"
+#define FFMPEG_AUDIO_BITRATE "320k"
+#define FFMPEG_AUDIO_CODEC "wmav2"
+
+#define FFMPEG_FILESIZE 1024*1024*10;
+
+#define FFMPEG_DEFAULT_TCP_PORT 15777
+#define VIDEO_SERVER_TCP_PORT 15700
+#define VIDEO_SERVER_TELNET_TCP_PORT 15800
+#define VIDEO_USERNAME "domino"
+#define VIDEO_PASSWORD "domino"
+
+
+#define VIDEO_CONFIG_FILE DOMINO_CONFIG_RELATIVE_PATH "/videod.conf"
+#define VIDEO_LOG_FILE DOMINO_LOG_RELATIVE_PATH "/videod.log"
+
+#define DCLUB_SCRIPT "dclub.py"
+
+#endif // _DCONFIG_H_

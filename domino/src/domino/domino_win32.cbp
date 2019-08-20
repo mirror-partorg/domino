@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="domino" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="domino_win32.exe" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-a local.tta" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/domino" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-mms-bitfields" />
+			<Add option="-DUSE_GTK" />
+			<Add option="-DUSE_UTF8" />
+			<Add option="-DWIN_RELOAD_ACCEL" />
+			<Add option="-DUSE_DEPRECATE_PRINT" />
+			<Add option="-DBINARY_UPDATE" />
+			<Add option="-DUSE_GTK_DEPRECATE_LOG" />
+			<Add option="-DEXPAT" />
+			<Add option="-DUSE_BTI" />
+			<Add option="-DSHOW_CERT" />
+			<Add directory="c:/MinGw/include" />
+			<Add directory="c:/MinGw/include/gtk-2.0" />
+			<Add directory="c:/MinGw/include/cairo" />
+			<Add directory="c:/MinGw/include/gdk" />
+			<Add directory="c:/MinGw/include/glib-2.0" />
+			<Add directory="c:/MinGw/lib/glib-2.0/include" />
+			<Add directory="c:/MinGw/include/pango-1.0" />
+			<Add directory="c:/MinGw/lib/gtk-2.0/include" />
+			<Add directory="c:/MinGw/include/atk-1.0" />
+			<Add directory="C:/MinGW/include/gdk-pixbuf-2.0" />
+			<Add directory="C:/MinGW/include/webkitgtk-1.0" />
+			<Add directory="C:/MinGW/include/libsoup-2.4" />
+		</Compiler>
+		<Linker>
+			<Add library="gtk-win32-2.0" />
+			<Add library="gobject-2.0" />
+			<Add library="glib-2.0" />
+			<Add library="iconv" />
+			<Add library="gdk_pixbuf-2.0" />
+			<Add library="gdk-win32-2.0" />
+			<Add library="pango-1.0" />
+			<Add library="webkitgtk-1.0" />
+			<Add library="gio-2.0" />
+			<Add library="ws2_32" />
+			<Add library="gthread-2.0" />
+			<Add library="dolib" />
+			<Add library="w3btrv7" />
+			<Add library="domino" />
+			<Add library="winmm" />
+			<Add library="soup-2.4" />
+			<Add directory="c:/MinGw/lib" />
+			<Add directory="../../lib/artix" />
+			<Add directory="../../lib/domino" />
+			<Add directory="../../lib/dolib" />
+			<Add directory="../../var/MINGW32_NT-6.2/i686/.libs" />
+		</Linker>
+		<Unit filename="../../misc/btrapi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/cash_key_command.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/csv_util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/iconv_.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/send_error.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/simple_expr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/utf8util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_about_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_barcode_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_check_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_common_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_context.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_discount_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_discount_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_entry.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_entry_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_entry_calc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_entry_date.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_entry_date_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_entry_partner.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_entry_partner_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_enum_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_enum_types.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_enum_value.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_html_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_icons.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_input_csv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_keyboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_keyboard_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_keyboard_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_keyboard_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_limit_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_marshal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_message.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_notebook.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_order_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_password.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_password_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_pko_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_product_edit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_product_embed_edit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_product_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_product_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_purchase_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_purchase_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_report_unit_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_report_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_rest_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_rz_ch.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_rz_edit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_rz_edit_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_rz_select.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_rz_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_sale_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_sale_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_schedule_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_schedule_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_search.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_seller_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_setting_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_tabs_menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_tree_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_unit_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_unit_period_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_utilx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_validate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_view_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="do_window.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="domino.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="hig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

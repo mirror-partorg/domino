@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="domino" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/domino" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-u mirror -p 8811525 /MainMenu/Report/Schedule" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/domino" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`pkg-config gtk+-2.0 glib-2.0 poppler-glib  webkit-1.0 --cflags`" />
+			<Add option="-DUSE_GTK" />
+			<Add option="-DUSE_UTF8" />
+			<Add option="-DCUPS" />
+			<Add option="-D_REENTRANT" />
+			<Add option="-DUSE_DEPRECATE_PRINT" />
+			<Add option="-DPSQL_D" />
+			<Add option="-DPYTHON" />
+			<Add option="-DUSE_EVINCE_" />
+			<Add option="-DGLOG_OFF" />
+			<Add option="-DADS_RECOMMEND" />
+			<Add option="-DMIN_SCREEN" />
+			<Add option="-DFULL_SCREEN_" />
+			<Add option="-DSHOW_ADS_" />
+			<Add option="-DCASH_VIEW" />
+			<Add option="-DSHOW_CERT" />
+			<Add option="-DUSE_IM" />
+			<Add option="-DUSE_LOUDMOUTH" />
+			<Add option="-DCASH1" />
+			<Add option="-DEXPAT" />
+			<Add option="-DBINARY_UPDATE_" />
+			<Add option="-DBINARY_UPDATE_CASH" />
+			<Add option="-DMINIMAL_WIN" />
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config gtk+-2.0 webkit-1.0 glib-2.0 poppler-glib loudmouth-1.0 expat  --libs`" />
+			<Add library="domino" />
+			<Add library="dolib" />
+			<Add library="cups" />
+			<Add library="artix" />
+			<Add library="X11" />
+		</Linker>
+		<Unit filename="../../include/dolib.h" />
+		<Unit filename="../../include/domino.h" />
+		<Unit filename="../../include/domino_db.h" />
+		<Unit filename="../../lib/artix/artix_info.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/dolib/list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/do_action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/do_alias.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/do_config.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/do_doctype.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/do_misc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/do_protocol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/do_rz_info.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/domino.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/domino_action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/meta_alias.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/domino/report.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/cash_key_command.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/forms.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/iconv_.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/simple_expr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/utf8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/utf8util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_about_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_barcode_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_cash_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_check_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_common_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_context.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_discount_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_discount_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_entry.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_entry_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_entry_calc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_entry_date.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_entry_date_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_entry_partner.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_entry_partner_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_enum_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_enum_types.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_enum_value.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_ev_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_html_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_icons.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_input_csv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_inventory_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_inventory_menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_inventory_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_keyboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_keyboard_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_keyboard_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_keyboard_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_limit_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_marshal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_message.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_notebook.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_order_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_password.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_password_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_pko_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_product_edit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_product_embed_edit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_product_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_product_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_purchase_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_purchase_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_report_unit_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_report_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_rest_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_rz_edit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_rz_edit_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_rz_select.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_rz_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_sale_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_sale_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_schedule_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_schedule_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_search.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_seller_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_setting_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_tabs_menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_tree_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_unit_box.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_unit_period_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_utilx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_validate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_view_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/do_window.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/domino.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/hig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/domino/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

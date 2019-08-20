@@ -1,0 +1,522 @@
+# depslib dependency file v1.0
+1524630170 source:/home/mirror/work/src/domino/lib/pydomino/codeblocks/test/main.c
+	<stdio.h>
+	<stdlib.h>
+
+1527752958 source:/home/mirror/work/src/domino/lib/pydomino/src/traffic.c
+	"traffic.h"
+	<datetime.h>
+	"../var/db.h"
+	"../var/util.h"
+	"misc.h"
+	<domino.h>
+	<domino_action.h>
+
+1418407200 /home/mirror/work/src/domino/lib/pydomino/src/traffic.h
+	<Python.h>
+	<domino.h>
+	"../var/alias.h"
+
+1484835064 /usr/include/python3.5/Python.h
+	"patchlevel.h"
+	"pyconfig.h"
+	"pymacconfig.h"
+	<limits.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<unistd.h>
+	<stddef.h>
+	<assert.h>
+	"pyport.h"
+	"pymacro.h"
+	"pyatomic.h"
+	"pymath.h"
+	"pytime.h"
+	"pymem.h"
+	"object.h"
+	"objimpl.h"
+	"typeslots.h"
+	"pyhash.h"
+	"pydebug.h"
+	"bytearrayobject.h"
+	"bytesobject.h"
+	"unicodeobject.h"
+	"longobject.h"
+	"longintrepr.h"
+	"boolobject.h"
+	"floatobject.h"
+	"complexobject.h"
+	"rangeobject.h"
+	"memoryobject.h"
+	"tupleobject.h"
+	"listobject.h"
+	"dictobject.h"
+	"odictobject.h"
+	"enumobject.h"
+	"setobject.h"
+	"methodobject.h"
+	"moduleobject.h"
+	"funcobject.h"
+	"classobject.h"
+	"fileobject.h"
+	"pycapsule.h"
+	"traceback.h"
+	"sliceobject.h"
+	"cellobject.h"
+	"iterobject.h"
+	"genobject.h"
+	"descrobject.h"
+	"warnings.h"
+	"weakrefobject.h"
+	"structseq.h"
+	"namespaceobject.h"
+	"codecs.h"
+	"pyerrors.h"
+	"pystate.h"
+	"pyarena.h"
+	"modsupport.h"
+	"pythonrun.h"
+	"pylifecycle.h"
+	"ceval.h"
+	"sysmodule.h"
+	"intrcheck.h"
+	"import.h"
+	"abstract.h"
+	"bltinmodule.h"
+	"compile.h"
+	"eval.h"
+	"pyctype.h"
+	"pystrtod.h"
+	"pystrcmp.h"
+	"dtoa.h"
+	"fileutils.h"
+	"pyfpe.h"
+
+1484835064 /usr/include/python3.5/patchlevel.h
+
+1484835064 /usr/include/python3.5/pyconfig.h
+	<x86_64-linux-gnu/python3.5m/pyconfig.h>
+	<x86_64-linux-gnux32/python3.5m/pyconfig.h>
+	<i386-linux-gnu/python3.5m/pyconfig.h>
+	<aarch64-linux-gnu/python3.5m/pyconfig.h>
+	<alpha-linux-gnu/python3.5m/pyconfig.h>
+	<arm-linux-gnueabihf/python3.5m/pyconfig.h>
+	<arm-linux-gnueabi/python3.5m/pyconfig.h>
+	<hppa-linux-gnu/python3.5m/pyconfig.h>
+	<ia64-linux-gnu/python3.5m/pyconfig.h>
+	<m68k-linux-gnu/python3.5m/pyconfig.h>
+	<mipsel-linux-gnu/python3.5m/pyconfig.h>
+	<mips64el-linux-gnuabin32/python3.5m/pyconfig.h>
+	<mips64el-linux-gnuabi64/python3.5m/pyconfig.h>
+	<mips-linux-gnu/python3.5m/pyconfig.h>
+	<mips64-linux-gnuabin32/python3.5m/pyconfig.h>
+	<mips64-linux-gnuabi64/python3.5m/pyconfig.h>
+	<or1k-linux-gnu/python3.5m/pyconfig.h>
+	<powerpc-linux-gnuspe/python3.5m/pyconfig.h>
+	<powerpc64le-linux-gnu/python3.5m/pyconfig.h>
+	<powerpc64-linux-gnu/python3.5m/pyconfig.h>
+	<powerpc-linux-gnu/python3.5m/pyconfig.h>
+	<s390x-linux-gnu/python3.5m/pyconfig.h>
+	<s390-linux-gnu/python3.5m/pyconfig.h>
+	<sh4-linux-gnu/python3.5m/pyconfig.h>
+	<sparc64-linux-gnu/python3.5m/pyconfig.h>
+	<sparc-linux-gnu/python3.5m/pyconfig.h>
+	<x86_64-kfreebsd-gnu/python3.5m/pyconfig.h>
+	<i386-kfreebsd-gnu/python3.5m/pyconfig.h>
+	<i386-gnu/python3.5m/pyconfig.h>
+
+1484835064 /usr/include/python3.5/pymacconfig.h
+
+1484835064 /usr/include/python3.5/pyport.h
+	"pyconfig.h"
+	<inttypes.h>
+	<stdint.h>
+	<stdlib.h>
+	<ieeefp.h>
+	<math.h>
+	<sys/time.h>
+	<time.h>
+	<sys/time.h>
+	<time.h>
+	<sys/select.h>
+	<sys/stat.h>
+	<stat.h>
+	<sys/types.h>
+	<sys/termio.h>
+	<termios.h>
+	<osreldate.h>
+	<ctype.h>
+	<wctype.h>
+
+1484835064 /usr/include/python3.5/pymacro.h
+
+1484835064 /usr/include/python3.5/pyatomic.h
+	"dynamic_annotations.h"
+	"pyconfig.h"
+	<stdatomic.h>
+
+1484835064 /usr/include/python3.5/dynamic_annotations.h
+
+1484835064 /usr/include/python3.5/pymath.h
+	"pyconfig.h"
+
+1484835064 /usr/include/python3.5/pytime.h
+	"pyconfig.h"
+	"object.h"
+
+1484835064 /usr/include/python3.5/object.h
+
+1484835064 /usr/include/python3.5/pymem.h
+	"pyport.h"
+
+1484835064 /usr/include/python3.5/objimpl.h
+	"pymem.h"
+
+1484835064 /usr/include/python3.5/typeslots.h
+
+1484835064 /usr/include/python3.5/pyhash.h
+
+1484835064 /usr/include/python3.5/pydebug.h
+
+1484835064 /usr/include/python3.5/bytearrayobject.h
+	<stdarg.h>
+
+1484835064 /usr/include/python3.5/bytesobject.h
+	<stdarg.h>
+
+1484835064 /usr/include/python3.5/unicodeobject.h
+	<stdarg.h>
+	<ctype.h>
+	<time.h>
+	<wchar.h>
+
+1484835064 /usr/include/python3.5/longobject.h
+
+1484835064 /usr/include/python3.5/longintrepr.h
+
+1484835064 /usr/include/python3.5/boolobject.h
+
+1484835064 /usr/include/python3.5/floatobject.h
+
+1484835064 /usr/include/python3.5/complexobject.h
+
+1484835064 /usr/include/python3.5/rangeobject.h
+
+1484835064 /usr/include/python3.5/memoryobject.h
+
+1484835064 /usr/include/python3.5/tupleobject.h
+
+1484835064 /usr/include/python3.5/listobject.h
+
+1484835064 /usr/include/python3.5/dictobject.h
+
+1484835064 /usr/include/python3.5/odictobject.h
+
+1484835064 /usr/include/python3.5/enumobject.h
+
+1484835064 /usr/include/python3.5/setobject.h
+
+1484835064 /usr/include/python3.5/methodobject.h
+
+1484835064 /usr/include/python3.5/moduleobject.h
+
+1484835064 /usr/include/python3.5/funcobject.h
+
+1484835064 /usr/include/python3.5/classobject.h
+
+1484835064 /usr/include/python3.5/fileobject.h
+
+1484835064 /usr/include/python3.5/pycapsule.h
+
+1484835064 /usr/include/python3.5/traceback.h
+	"pystate.h"
+
+1484835064 /usr/include/python3.5/pystate.h
+
+1484835064 /usr/include/python3.5/sliceobject.h
+
+1484835064 /usr/include/python3.5/cellobject.h
+
+1484835064 /usr/include/python3.5/iterobject.h
+
+1484835064 /usr/include/python3.5/genobject.h
+
+1484835064 /usr/include/python3.5/descrobject.h
+
+1484835064 /usr/include/python3.5/warnings.h
+
+1484835064 /usr/include/python3.5/weakrefobject.h
+
+1484835064 /usr/include/python3.5/structseq.h
+
+1484835064 /usr/include/python3.5/namespaceobject.h
+
+1484835064 /usr/include/python3.5/codecs.h
+
+1484835064 /usr/include/python3.5/pyerrors.h
+	<stdarg.h>
+
+1484835064 /usr/include/python3.5/pyarena.h
+
+1484835064 /usr/include/python3.5/modsupport.h
+	<stdarg.h>
+
+1484835064 /usr/include/python3.5/pythonrun.h
+
+1484835064 /usr/include/python3.5/pylifecycle.h
+
+1484835064 /usr/include/python3.5/ceval.h
+
+1484835064 /usr/include/python3.5/sysmodule.h
+
+1484835064 /usr/include/python3.5/intrcheck.h
+
+1484835064 /usr/include/python3.5/import.h
+
+1484835064 /usr/include/python3.5/abstract.h
+
+1484835064 /usr/include/python3.5/bltinmodule.h
+
+1484835064 /usr/include/python3.5/compile.h
+	"code.h"
+
+1484835064 /usr/include/python3.5/code.h
+
+1484835064 /usr/include/python3.5/eval.h
+
+1484835064 /usr/include/python3.5/pyctype.h
+
+1484835064 /usr/include/python3.5/pystrtod.h
+
+1484835064 /usr/include/python3.5/pystrcmp.h
+
+1484835064 /usr/include/python3.5/dtoa.h
+
+1484835064 /usr/include/python3.5/fileutils.h
+
+1484835064 /usr/include/python3.5/pyfpe.h
+	<signal.h>
+	<setjmp.h>
+	<math.h>
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/alias.h
+	<Python.h>
+	<domino.h>
+
+1484835064 /usr/include/python3.5/datetime.h
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/db.h
+	"stock.h"
+	"account.h"
+	"saldo.h"
+	"group.h"
+	"subaccount.h"
+	"check.h"
+	"class.h"
+	"sklad.h"
+	"realization.h"
+	"document_type.h"
+	"checksum.h"
+	"product_view.h"
+	"product_link.h"
+	"subgroup.h"
+	"document.h"
+	"document_data.h"
+	"product_data.h"
+	"otdel.h"
+	"prowod.h"
+	"partner_data.h"
+	"partner.h"
+	"user.h"
+	"prowod2.h"
+	"product.h"
+	"region.h"
+	"enum.h"
+	"document_order.h"
+	"document_link.h"
+	"protocol.h"
+	"document_view.h"
+	"barcode.h"
+	"document_prow.h"
+	"shift.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/product_view.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/product.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/group.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/protocol.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/document_order.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/check.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/region.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/barcode.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/document.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/document_type.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/prowod.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/account.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/document_view.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/product_data.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/class.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/saldo.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/document_prow.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/otdel.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/subgroup.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/sklad.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/shift.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/document_data.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/checksum.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/partner.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/prowod2.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/product_link.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/document_link.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/user.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/partner_data.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/realization.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/subaccount.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/enum.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/stock.h
+	<Python.h>
+	<domino.h>
+	"alias.h"
+
+1526633869 /home/mirror/work/src/domino/lib/pydomino/var/util.h
+
+1418407200 /home/mirror/work/src/domino/lib/pydomino/src/misc.h
+	<Python.h>
+	<dolib.h>
+
+1527749711 source:/home/mirror/work/src/domino/lib/domino/domino_action.c
+	<domino_action.h>
+	<windows.h>
+	"../../misc/define.h"
+
+1382374800 /home/mirror/work/src/domino/misc/define.h
+

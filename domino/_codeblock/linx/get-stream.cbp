@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="get-stream" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/get-stream" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-F -d 10 -f /usr/local/domino/etc/get-stream-video-5-2.conf" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/get-stream" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`pkg-config  libvlc glib-2.0 loudmouth-1.0 --cflags`" />
+			<Add option="-DUSE_LOUDMOUTH" />
+			<Add option="-D_REENTRANT" />
+			<Add option="-DUSE_POSTGRESQL" />
+			<Add option="-DGLOG_OFF" />
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config  libvlc loudmouth-1.0 glib-2.0 --libs`" />
+			<Add library="dolib" />
+			<Add library="smbclient" />
+			<Add library="pq" />
+		</Linker>
+		<Unit filename="../../misc/mproc_state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/mythread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/send_error.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../misc/storage.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/get-stream/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/get-stream/option.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/get-stream/vlc_stream.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

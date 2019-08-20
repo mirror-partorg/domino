@@ -1,0 +1,85 @@
+# depslib dependency file v1.0
+1285960080 source:e:\work\app-domino\misc\send_error.c
+	"send_error.h"
+	<loudmouth/loudmouth.h>
+	<errno.h>
+	<dolib.h>
+	"send_error.h"
+	"../config/config.h"
+	<windows.h>
+	<unistd.h>
+
+1285960080 e:\work\app-domino\misc\send_error.h
+
+1285960080 e:\work\app-domino\config\config.h
+
+1291884619 source:e:\work\app-domino\src\sync\option_client.c
+	"option_client.h"
+	"../config/config.h"
+	<dolib.h>
+	<getopt.h>
+	<time.h>
+
+1291875840 e:\work\app-domino\src\sync\option_client.h
+	<domino.h>
+
+1291877453 source:e:\work\app-domino\src\sync\replic.c
+	"replic.h"
+	"util.h"
+	<domino.h>
+	<stddef.h>
+	<limits.h>
+
+1291884562 e:\work\app-domino\src\sync\replic.h
+	<domino.h>
+	"../misc/mproc_state.h"
+
+1291884796 source:e:\work\app-domino\src\sync\sync_client.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<domino.h>
+	"../misc/send_error.h"
+	"version.h"
+	"option_client.h"
+	"replic.h"
+
+1291883447 e:\work\app-domino\src\sync\version.h
+
+1291885788 source:e:\work\app-domino\src\sync\util.c
+	"util.h"
+
+1291877081 e:\work\app-domino\src\sync\util.h
+	<domino.h>
+
+1291889219 source:e:\work\app-domino\lib\domino\do_alias.c
+	<string.h>
+	<stdarg.h>
+	<errno.h>
+	<domino.h>
+	<dolib.h>
+	<iconv.h>
+	<locale.h>
+	<btrieve.h>
+	"btr_struct.h"
+	"../../config/config.h"
+	"../../misc/iconv_.h"
+	"../../misc/define.h"
+
+1285960080 e:\work\app-domino\lib\domino\btr_struct.h
+	<btrieve.h>
+
+1285960080 e:\work\app-domino\misc\iconv_.h
+	<iconv.h>
+
+1285960080 e:\work\app-domino\misc\define.h
+
+1285960080 source:e:\work\app-domino\misc\btrapi.c
+	<btrieve.h>
+	<string.h>
+	<dos.h>
+	<windows.h>
+	<i86.h>
+	<pharlap.h>
+	<blobhdr.h>
+

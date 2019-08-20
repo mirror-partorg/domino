@@ -1,0 +1,275 @@
+#!/bin/env python3.4
+#-*- coding: UTF-8 -*-
+
+from gi.repository import Gtk, Gio, Gdk, GObject
+
+from pydomino import Alias,local_store
+from log import Log
+import platform
+import os
+import sys
+import locale
+import tempfile
+import re
+from datetime import date,datetime,time
+from invoice import Invoice,InvoiceOrder
+import gtktreeviewcelldatafunc as datafunc
+_pix=300
+
+suppliers={
+"protek":[2,"CP1251","%d.%m.%Y"],
+#"katren":[6,"CP1251","%d.%m.%Y"]
+}
+
+
+if platform.system() == "Windows":
+	share="z:"
+else:
+	share="/mnt/domino"
+
+invoice_path=os.path.join(share, "domino","mail","invoice")
+mask=re.compile("(?P<filename>(?P<number>[0-9-]+)\.txt)")
+re_geometry=re.compile("(?P<width>[0-9]+)x(?P<height>[0-9]+)\+(?P<left>[0-9]+)\+(?P<top>[0-9]+)")
+log=Log()
+
+def list_files(path,firmname,filemask):
+	res=[]
+	for filename in os.listdir(os.path.join(path,firmname)):
+		if mask.match(filename):
+			res.append(os.path.join(path,firmname,filename))
+	return res
+def read_file_protek(filename,codepage,firm_code,date_format):
+	log.log("Разбор заголовка \"%s\""%(filename))
+	lines=open(filename,encoding=codepage).readlines()
+	head=lines[1].split(";")
+	invoice=Invoice()
+	invoice.firm=firm_code
+	invoice.number=head[0]
+	invoice.date=datetime.strptime(head[1],date_format)
+	invoice.doc_datetime=datetime.now()
+	invoice.payment_days=int(head[16])
+	invoice.sum_2=float(head[3])
+	invoice.sum_vat=float(head[5])
+	indx=4
+	for line in lines[3:]:
+		log.log("Строка:%s"%(indx))
+		l=line.split(";")
+		order=InvoiceOrder()
+		order.product_code=l[0]
+		order.product_barcode=l[9]
+		order.product_name=l[1]
+		order.product_manufactor=l[2]
+		order.product_coutry=l[3]
+		order.quant=float(l[4])
+		order.vat=float(l[6])
+		order.price_40=float(l[7])
+		order.sum_2=float(l[14])
+		certificate=l[12].split("^")[0].split("|")
+		order.series=certificate[0]
+		log.log(certificate[4])
+		order.lifetime=datetime.strptime(certificate[4],date_format)
+		order.certificate=certificate[1]
+		order.certificate_date=datetime.strptime(certificate[2],date_format)
+		order.certificate_owner=certificate[3]
+		invoice.orders.append(order)
+		indx+=1
+	return invoice
+def sad():
+	firm="protek"
+	l=list_files(invoice_path, firm, mask)
+	for f in l:
+		try:
+			read_file_protek(f,suppliers[firm][1],suppliers[firm][0],suppliers[firm][2])
+		except Exception as inst:
+			log.log(inst.__str__())
+			break
+	log.print()
+class ImportWindow(Gtk.Window):
+	def __init__(self):
+		Gtk.Window.__init__(self, title="Импорт накладных")
+		self.settings =  Gio.Settings.new("org.glekar.import-window-state")
+		self.connect("delete-event", self.real_close)
+		self.connect("key-press-event", self.key_press)
+		self.set_icon_name("bookcase")
+		vbox = Gtk.Box(spacing=0,orientation=Gtk.Orientation.VERTICAL)
+		self.add(vbox)
+		tool = self.make_tool()
+#		self.set_hide_titlebar_when_maximized(True)
+		self.set_titlebar(tool)
+#		vbox.pack_start(tool,True,True,0)
+		hbox = Gtk.Box(spacing=16,orientation=Gtk.Orientation.HORIZONTAL)
+		vbox.pack_start(hbox,True,True,0)
+		hbox.set_border_width(16)
+		supplier_view,widget = self.make_supplier_view()
+		hbox.pack_start(widget,True,True,0)
+		self.note=note=Gtk.Notebook()
+		note.set_show_tabs(False)
+		invoice_view,widget = self.make_invoice_view()
+		note.insert_page(widget, None, 0)
+		widget,self.log_view = self.make_log_view()
+		note.insert_page(widget, None, 1)
+		widget = Gtk.Label()
+		widget.set_markup("<b>Накладных не обнаружено</b>") 
+		note.insert_page(widget, None, 2)
+		hbox.pack_start(note,True,True,0)
+		supplier_view.get_selection().connect("changed", self.supplier_changed, invoice_view.get_model())
+		self.fill_supplier(supplier_view.get_model())
+		self.set_geometry()
+		self.supplier_view=supplier_view
+		self.invoice_view=invoice_view
+		GObject.idle_add(self.grab_supplier_view)
+	def key_press(self,widget,event):
+		keyname = Gdk.keyval_name(event.keyval)
+		if keyname == "F5":
+			self.refresh(None)
+			return True
+		if event.state & Gdk.ModifierType.CONTROL_MASK:
+			if keyname == "q":
+				Gtk.main_quit()
+				return True
+		return False
+	def grab_supplier_view(self):
+		self.supplier_view.grab_focus()
+	def make_tool(self):
+		tool = Gtk.HeaderBar()
+		button = Gtk.ToolButton()
+		#i=Gtk.Image()
+		#i.set_from_icon_name("view-refresh-symbolic", Gtk.IconSize.MENU)
+		#button.set_image(i)
+		button.set_icon_name("view-refresh-symbolic")
+		button.connect("clicked", self.refresh)
+		tool.pack_end(button)
+		tool.set_show_close_button(True)
+		tool.set_title("Импорт накладных")
+		return tool
+	def refresh(self,action):
+		self.supplier_changed(self.supplier_view.get_selection(), self.invoice_view.get_model())
+	def make_supplier_view(self):
+		view = Gtk.TreeView()
+		view.set_headers_visible(False)
+		view.set_model(Gtk.ListStore(str,int,str,str,str))
+		selection = view.get_selection()
+		renderer = Gtk.CellRendererText()
+		column = Gtk.TreeViewColumn("Поставщик", renderer, text=0)
+		view.append_column(column)
+		renderer = Gtk.CellRendererPixbuf()
+		column = Gtk.TreeViewColumn("", renderer)
+		view.append_column(column)
+		scroll=Gtk.ScrolledWindow()
+		scroll.set_size_request(_pix,_pix*2)
+		scroll.set_shadow_type(Gtk.ShadowType.IN)
+		scroll.add(view)
+		return (view,scroll)
+	def make_invoice_view(self):
+		scroll=Gtk.ScrolledWindow()
+		scroll.set_size_request(_pix*2,_pix*2)
+		scroll.set_shadow_type(Gtk.ShadowType.IN)
+		view=Gtk.TreeView()
+		model=Gtk.ListStore(str,int,float,str)
+		view.set_model(model)
+		scroll.add(view)
+		renderer = Gtk.CellRendererText()
+		column = Gtk.TreeViewColumn("Накладная", renderer, text=0)
+		column.set_sort_column_id(0)
+		view.append_column(column)
+		renderer = Gtk.CellRendererText()
+		column = Gtk.TreeViewColumn("Дата", renderer, text=1)
+		column.set_cell_data_func(renderer,datafunc.timestamp_date,1)
+		column.set_sort_column_id(1)
+		view.append_column(column)
+		renderer = Gtk.CellRendererText()
+		renderer.set_property("xalign", 1)
+		column = Gtk.TreeViewColumn("Сумма", renderer, text=2)
+		column.set_cell_data_func(renderer,datafunc.money,2)
+		column.set_sort_column_id(2)
+		view.append_column(column)
+		renderer = Gtk.CellRendererText()
+		column = Gtk.TreeViewColumn("Товар", renderer, text=3)
+		column.set_sort_column_id(3)
+		view.append_column(column)
+		return (view,scroll)
+	def make_log_view(self):
+		vbox = Gtk.Box(spacing=6,orientation=Gtk.Orientation.VERTICAL)
+		scroll = Gtk.ScrolledWindow()
+		scroll.set_size_request(_pix*2,-1)
+		scroll.set_shadow_type(Gtk.ShadowType.IN)
+		view = Gtk.TextView()
+		scroll.add(view)
+		label = Gtk.Label()
+		label.set_property("xalign",0)
+		label.set_markup("<b>Ошибки:</b>")
+		vbox.pack_start(label, False, False, 0)
+		vbox.pack_start(scroll, True, True, 0)
+		return vbox, view
+	def set_geometry(self):
+		maximized = self.settings.get_boolean("maximized")
+		if maximized:
+			self.maximize()
+		else:
+			self.unmaximize()
+		geometry_string = self.settings.get_string("geometry")
+		m=re_geometry.match(geometry_string)
+		if m:
+			self.move(int(m.group("left")),int(m.group("top")))
+			self.set_default_size(int(m.group("width")),int(m.group("height")))
+	def real_close(self,e,d):
+		self.save_geometry()
+	def save_geometry(self):
+		if self.get_window():
+			geometry="%dx%d+%d+%d"%(self.get_size()[0],self.get_size()[1],self.get_position()[0],self.get_position()[1])
+			is_maximized = self.get_window().get_state() & Gdk.WindowState.MAXIMIZED
+			if not is_maximized:
+				self.settings.set_string("geometry", geometry)
+			self.settings.set_boolean("maximized",is_maximized)
+	def fill_supplier(self,model):
+		a=Alias()
+		k=a.PartnerKey0()
+		p=a.Partner()
+		model.clear()
+		self.supplier_view={}
+		list_=[]
+		for name in suppliers:
+			k.set(["03",suppliers[name][0]])
+			p.get_equal(k)
+			list_.append([p.name,suppliers[name][0],name,suppliers[name][1],suppliers[name][2]])  
+		model.clear()
+		list_.sort(key=lambda x:x[2])
+		for i in list_:
+			model.append(i)
+	def fill_invoices(self,firm,invoice_model):
+		invoice_model.clear()
+		invoices=[]
+		log.clear()
+		try:
+			l=list_files(invoice_path, firm, mask)
+			invoide=None
+			for f in l:
+				invoice=eval("read_file_%s(f,suppliers[firm][1],suppliers[firm][0],suppliers[firm][2])"%firm)
+				invoices.append(invoice)
+			if not invoices:
+				self.note.set_current_page(2)
+				return
+		except Exception as inst:
+			log.log(inst.__str__())
+			self.log_view.get_buffer().set_text(log.messages)
+			self.note.set_current_page(1)
+			return
+		self.note.set_current_page(0)
+		invoices.sort(key=lambda x: x.number)
+		#invoices.sort(key=lambda x: x.date)
+		for invoice in invoices:
+			product=not invoice.orders and "" or invoice.orders[0].product_name
+			invoice_model.append([invoice.number,invoice.date.timestamp(),invoice.sum_2,product])
+	def supplier_changed(self,sel, invoice_model):
+		model, tree_paths = sel.get_selected_rows()
+		if not tree_paths:
+			return
+		iter=model.get_iter(tree_paths[0])
+		firm=model.get_value(iter,2)
+		self.fill_invoices(firm,invoice_model)
+if __name__ == "__main__":
+	win = ImportWindow()
+	win.connect("delete-event", Gtk.main_quit)
+	win.show_all()
+	Gtk.main()
+	

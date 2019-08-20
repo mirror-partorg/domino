@@ -1,0 +1,85 @@
+# depslib dependency file v1.0
+1290086787 source:e:\work\app-domino\src\period\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<dolib.h>
+	<domino.h>
+	<sys/types.h>
+	<dirent.h>
+	<errno.h>
+	<limits.h>
+	<time.h>
+	<locale.h>
+	<stddef.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+
+1285967280 source:e:\work\app-domino\misc\csv_util.c
+	"csv_util.h"
+	<string.h>
+
+1285967280 e:\work\app-domino\misc\csv_util.h
+
+1289897306 source:e:\work\app-domino\lib\domino\do_accept.c
+	<domino.h>
+	<dolib.h>
+	<limits.h>
+	"../misc/define.h"
+
+1288230060 source:e:\work\app-domino\lib\domino\do_balance.c
+	<domino.h>
+	<stddef.h>
+	"../../misc/define.h"
+
+1285970880 e:\work\app-domino\misc\define.h
+
+1289909777 source:e:\work\app-domino\lib\domino\do_alias.c
+	<string.h>
+	<stdarg.h>
+	<errno.h>
+	<domino.h>
+	<dolib.h>
+	<iconv.h>
+	<locale.h>
+	<btrieve.h>
+	"btr_struct.h"
+	"../../config/config.h"
+	"../../misc/iconv_.h"
+	"../../misc/define.h"
+
+1285970880 e:\work\app-domino\lib\domino\btr_struct.h
+	<btrieve.h>
+
+1285970880 e:\work\app-domino\config\config.h
+
+1285967280 e:\work\app-domino\misc\iconv_.h
+	<iconv.h>
+
+1285967280 source:e:\work\app-domino\misc\btrapi.c
+	<btrieve.h>
+	<string.h>
+	<dos.h>
+	<windows.h>
+	<i86.h>
+	<pharlap.h>
+	<blobhdr.h>
+
+1285967280 source:e:\work\app-domino\misc\iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1289906189 source:e:\work\app-domino\lib\domino\do_misc.c
+	<domino.h>
+	<dolib.h>
+	<locale.h>
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	"../misc/define.h"
+	<math.h>
+

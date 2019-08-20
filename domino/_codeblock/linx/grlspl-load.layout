@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../../lib/dolib/xls.c" open="1" top="0" tabpos="4">
+		<Cursor position="28855" topLine="963" />
+	</File>
+	<File name="../../misc/iconv_.c" open="1" top="0" tabpos="5">
+		<Cursor position="1736" topLine="61" />
+	</File>
+	<File name="../../misc/send_error.c" open="0" top="0" tabpos="0">
+		<Cursor position="0" topLine="189" />
+	</File>
+	<File name="../../src/grlspl-load/grlspl.c" open="1" top="1" tabpos="1">
+		<Cursor position="7303" topLine="179" />
+	</File>
+	<File name="../../src/grlspl-load/main.c" open="1" top="0" tabpos="2">
+		<Cursor position="3136" topLine="77" />
+	</File>
+</CodeBlocks_layout_file>

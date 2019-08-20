@@ -1,0 +1,14 @@
+OBJS=""
+mkdir -p ../..//var/Linux/Ubuntu/i686/exchanged
+for f in exchanged.c exchangeinfo.c option.c ../../misc/send_error.c ../../misc/iconv_.c ../../misc/mproc_state.c  ; do \
+		n=../..//var/Linux/Ubuntu/i686/exchanged/$(basename $f).o ; \
+		if [[ $f -nt $n ]] ; \
+		then \
+			echo $f ; \
+			gcc -L../../var/Linux/Ubuntu/i686/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/psql/lib -L/usr/local/psql/lib64 -DBTI_LINUX -I../../var/Linux/Ubuntu/i686 -DEXPAT -DZLIB -DUSE_NCURSES -DUSE_LOUDMOUTH  -s -O2 -D_REENTRANT -I../loudmouth-1.0.1 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -c $f -o $n; \
+		fi ;\
+	done
+../../misc/send_error.c
+for f in exchanged.c exchangeinfo.c option.c ../../misc/send_error.c ../../misc/iconv_.c ../../misc/mproc_state.c  ; do OBJS="$OBJS ../..//var/Linux/Ubuntu/i686/exchanged/$(basename $f).o"; done ;\
+	export LD_LIBRARY_PATH=/usr/local/psql/lib:/usr/local/psql/lib64:/usr/local/domino/lib && \
+	g++ -L../../var/Linux/Ubuntu/i686/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/psql/lib -L/usr/local/psql/lib64 -DBTI_LINUX -I../../var/Linux/Ubuntu/i686 -DEXPAT -DZLIB -DUSE_NCURSES -DUSE_LOUDMOUTH  -s -O2 -D_REENTRANT -I../loudmouth-1.0.1 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include $OBJS -o ../..//var/Linux/Ubuntu/i686/.progs/exchanged -ldomino -ldolib  -lloudmouth-1 -L../loudmouth-1.0.1/loudmouth/.libs

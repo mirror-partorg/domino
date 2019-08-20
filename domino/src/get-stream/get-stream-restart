@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+for i in /etc/init.d/get-stream.* ; do
+$i stop
+done
+rm -f /tmp/*.avi
+for i in /etc/init.d/get-stream.* ; do
+$i start
+done
+

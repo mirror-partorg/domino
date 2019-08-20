@@ -1,0 +1,1707 @@
+
+static PyMethodDef Document_methods[] = {
+	{"get_dtype", (PyCFunction)Document_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)Document_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_dtype1", (PyCFunction)Document_get_dtype1, METH_NOARGS,"do_alias_get_dtype1"},
+	{"set_dtype1", (PyCFunction)Document_set_dtype1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype1"},
+	{"get_name", (PyCFunction)Document_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Document_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_sklad", (PyCFunction)Document_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)Document_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)Document_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)Document_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_date", (PyCFunction)Document_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Document_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)Document_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Document_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_p_g_code", (PyCFunction)Document_get_p_g_code, METH_NOARGS,"do_alias_get_p_g_code"},
+	{"set_p_g_code", (PyCFunction)Document_set_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_g_code"},
+	{"get_p_code", (PyCFunction)Document_get_p_code, METH_NOARGS,"do_alias_get_p_code"},
+	{"set_p_code", (PyCFunction)Document_set_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_code"},
+	{"get_p_doc", (PyCFunction)Document_get_p_doc, METH_NOARGS,"do_alias_get_p_doc"},
+	{"set_p_doc", (PyCFunction)Document_set_p_doc, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_doc"},
+	{"get_p_date", (PyCFunction)Document_get_p_date, METH_NOARGS,"do_alias_get_p_date"},
+	{"set_p_date", (PyCFunction)Document_set_p_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_date"},
+	{"get_p_time", (PyCFunction)Document_get_p_time, METH_NOARGS,"do_alias_get_p_time"},
+	{"set_p_time", (PyCFunction)Document_set_p_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_time"},
+	{"get_party", (PyCFunction)Document_get_party, METH_NOARGS,"do_alias_get_party"},
+	{"set_party", (PyCFunction)Document_set_party, METH_VARARGS|METH_KEYWORDS,"do_alias_get_party"},
+	{"get_accepted", (PyCFunction)Document_get_accepted, METH_NOARGS,"do_alias_get_accepted"},
+	{"set_accepted", (PyCFunction)Document_set_accepted, METH_VARARGS|METH_KEYWORDS,"do_alias_get_accepted"},
+	{"get_params", (PyCFunction)Document_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Document_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentKey0_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentKey0_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentKey0_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentKey0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentKey0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentKey0_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentKey0_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentKey1_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentKey1_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentKey1_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_date", (PyCFunction)DocumentKey1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DocumentKey1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)DocumentKey1_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DocumentKey1_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentKey2_methods[] = {
+	{"get_p_g_code", (PyCFunction)DocumentKey2_get_p_g_code, METH_NOARGS,"do_alias_get_p_g_code"},
+	{"set_p_g_code", (PyCFunction)DocumentKey2_set_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_g_code"},
+	{"get_p_code", (PyCFunction)DocumentKey2_get_p_code, METH_NOARGS,"do_alias_get_p_code"},
+	{"set_p_code", (PyCFunction)DocumentKey2_set_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_code"},
+	{"get_party", (PyCFunction)DocumentKey2_get_party, METH_NOARGS,"do_alias_get_party"},
+	{"set_party", (PyCFunction)DocumentKey2_set_party, METH_VARARGS|METH_KEYWORDS,"do_alias_get_party"},
+	{"get_date", (PyCFunction)DocumentKey2_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DocumentKey2_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)DocumentKey2_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DocumentKey2_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentKey3_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentKey3_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentKey3_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentKey3_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentKey3_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_date", (PyCFunction)DocumentKey3_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DocumentKey3_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)DocumentKey3_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DocumentKey3_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentOrder_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentOrder_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentOrder_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_dtype1", (PyCFunction)DocumentOrder_get_dtype1, METH_NOARGS,"do_alias_get_dtype1"},
+	{"set_dtype1", (PyCFunction)DocumentOrder_set_dtype1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype1"},
+	{"get_sklad", (PyCFunction)DocumentOrder_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentOrder_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentOrder_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentOrder_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_line", (PyCFunction)DocumentOrder_get_line, METH_NOARGS,"do_alias_get_line"},
+	{"set_line", (PyCFunction)DocumentOrder_set_line, METH_VARARGS|METH_KEYWORDS,"do_alias_get_line"},
+	{"get_sort", (PyCFunction)DocumentOrder_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)DocumentOrder_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	{"get_code", (PyCFunction)DocumentOrder_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)DocumentOrder_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_date", (PyCFunction)DocumentOrder_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DocumentOrder_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)DocumentOrder_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DocumentOrder_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_quant", (PyCFunction)DocumentOrder_get_quant, METH_NOARGS,"do_alias_get_quant"},
+	{"set_quant", (PyCFunction)DocumentOrder_set_quant, METH_VARARGS|METH_KEYWORDS,"do_alias_get_quant"},
+	{"get_nquant", (PyCFunction)DocumentOrder_get_nquant, METH_NOARGS,"do_alias_get_nquant"},
+	{"set_nquant", (PyCFunction)DocumentOrder_set_nquant, METH_VARARGS|METH_KEYWORDS,"do_alias_get_nquant"},
+	{"get_price", (PyCFunction)DocumentOrder_get_price, METH_NOARGS,"do_alias_get_price"},
+	{"set_price", (PyCFunction)DocumentOrder_set_price, METH_VARARGS|METH_KEYWORDS,"do_alias_get_price"},
+	{"get_nprice", (PyCFunction)DocumentOrder_get_nprice, METH_NOARGS,"do_alias_get_nprice"},
+	{"set_nprice", (PyCFunction)DocumentOrder_set_nprice, METH_VARARGS|METH_KEYWORDS,"do_alias_get_nprice"},
+	{"get_accepted", (PyCFunction)DocumentOrder_get_accepted, METH_NOARGS,"do_alias_get_accepted"},
+	{"set_accepted", (PyCFunction)DocumentOrder_set_accepted, METH_VARARGS|METH_KEYWORDS,"do_alias_get_accepted"},
+	{"get_params", (PyCFunction)DocumentOrder_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)DocumentOrder_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentOrderKey0_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentOrderKey0_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentOrderKey0_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentOrderKey0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentOrderKey0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentOrderKey0_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentOrderKey0_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_line", (PyCFunction)DocumentOrderKey0_get_line, METH_NOARGS,"do_alias_get_line"},
+	{"set_line", (PyCFunction)DocumentOrderKey0_set_line, METH_VARARGS|METH_KEYWORDS,"do_alias_get_line"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentOrderKey1_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentOrderKey1_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentOrderKey1_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentOrderKey1_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentOrderKey1_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentOrderKey1_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentOrderKey1_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_sort", (PyCFunction)DocumentOrderKey1_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)DocumentOrderKey1_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentOrderKey2_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentOrderKey2_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentOrderKey2_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentOrderKey2_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentOrderKey2_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentOrderKey2_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentOrderKey2_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_code", (PyCFunction)DocumentOrderKey2_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)DocumentOrderKey2_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentOrderKey3_methods[] = {
+	{"get_code", (PyCFunction)DocumentOrderKey3_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)DocumentOrderKey3_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_date", (PyCFunction)DocumentOrderKey3_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DocumentOrderKey3_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)DocumentOrderKey3_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DocumentOrderKey3_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentOrderKey4_methods[] = {
+	{"get_sklad", (PyCFunction)DocumentOrderKey4_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentOrderKey4_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_date", (PyCFunction)DocumentOrderKey4_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DocumentOrderKey4_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)DocumentOrderKey4_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DocumentOrderKey4_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentLink_methods[] = {
+	{"get_type", (PyCFunction)DocumentLink_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentLink_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_m_dtype", (PyCFunction)DocumentLink_get_m_dtype, METH_NOARGS,"do_alias_get_m_dtype"},
+	{"set_m_dtype", (PyCFunction)DocumentLink_set_m_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_dtype"},
+	{"get_m_sklad", (PyCFunction)DocumentLink_get_m_sklad, METH_NOARGS,"do_alias_get_m_sklad"},
+	{"set_m_sklad", (PyCFunction)DocumentLink_set_m_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_sklad"},
+	{"get_m_document", (PyCFunction)DocumentLink_get_m_document, METH_NOARGS,"do_alias_get_m_document"},
+	{"set_m_document", (PyCFunction)DocumentLink_set_m_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_document"},
+	{"get_s_dtype", (PyCFunction)DocumentLink_get_s_dtype, METH_NOARGS,"do_alias_get_s_dtype"},
+	{"set_s_dtype", (PyCFunction)DocumentLink_set_s_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_dtype"},
+	{"get_s_sklad", (PyCFunction)DocumentLink_get_s_sklad, METH_NOARGS,"do_alias_get_s_sklad"},
+	{"set_s_sklad", (PyCFunction)DocumentLink_set_s_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_sklad"},
+	{"get_s_document", (PyCFunction)DocumentLink_get_s_document, METH_NOARGS,"do_alias_get_s_document"},
+	{"set_s_document", (PyCFunction)DocumentLink_set_s_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_document"},
+	{"get_sort", (PyCFunction)DocumentLink_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)DocumentLink_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentLinkKey0_methods[] = {
+	{"get_m_dtype", (PyCFunction)DocumentLinkKey0_get_m_dtype, METH_NOARGS,"do_alias_get_m_dtype"},
+	{"set_m_dtype", (PyCFunction)DocumentLinkKey0_set_m_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_dtype"},
+	{"get_m_sklad", (PyCFunction)DocumentLinkKey0_get_m_sklad, METH_NOARGS,"do_alias_get_m_sklad"},
+	{"set_m_sklad", (PyCFunction)DocumentLinkKey0_set_m_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_sklad"},
+	{"get_m_document", (PyCFunction)DocumentLinkKey0_get_m_document, METH_NOARGS,"do_alias_get_m_document"},
+	{"set_m_document", (PyCFunction)DocumentLinkKey0_set_m_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_document"},
+	{"get_type", (PyCFunction)DocumentLinkKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentLinkKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_sort", (PyCFunction)DocumentLinkKey0_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)DocumentLinkKey0_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentLinkKey1_methods[] = {
+	{"get_s_dtype", (PyCFunction)DocumentLinkKey1_get_s_dtype, METH_NOARGS,"do_alias_get_s_dtype"},
+	{"set_s_dtype", (PyCFunction)DocumentLinkKey1_set_s_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_dtype"},
+	{"get_s_sklad", (PyCFunction)DocumentLinkKey1_get_s_sklad, METH_NOARGS,"do_alias_get_s_sklad"},
+	{"set_s_sklad", (PyCFunction)DocumentLinkKey1_set_s_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_sklad"},
+	{"get_s_document", (PyCFunction)DocumentLinkKey1_get_s_document, METH_NOARGS,"do_alias_get_s_document"},
+	{"set_s_document", (PyCFunction)DocumentLinkKey1_set_s_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_document"},
+	{"get_type", (PyCFunction)DocumentLinkKey1_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentLinkKey1_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_sort", (PyCFunction)DocumentLinkKey1_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)DocumentLinkKey1_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Enum_methods[] = {
+	{"get_name", (PyCFunction)Enum_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Enum_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_lastvalue", (PyCFunction)Enum_get_lastvalue, METH_NOARGS,"do_alias_get_lastvalue"},
+	{"set_lastvalue", (PyCFunction)Enum_set_lastvalue, METH_VARARGS|METH_KEYWORDS,"do_alias_get_lastvalue"},
+	{"get_step", (PyCFunction)Enum_get_step, METH_NOARGS,"do_alias_get_step"},
+	{"set_step", (PyCFunction)Enum_set_step, METH_VARARGS|METH_KEYWORDS,"do_alias_get_step"},
+	{"get_LowBound", (PyCFunction)Enum_get_LowBound, METH_NOARGS,"do_alias_get_LowBound"},
+	{"set_LowBound", (PyCFunction)Enum_set_LowBound, METH_VARARGS|METH_KEYWORDS,"do_alias_get_LowBound"},
+	{"get_hiBound", (PyCFunction)Enum_get_hiBound, METH_NOARGS,"do_alias_get_hiBound"},
+	{"set_hiBound", (PyCFunction)Enum_set_hiBound, METH_VARARGS|METH_KEYWORDS,"do_alias_get_hiBound"},
+	{"get_cycleFl", (PyCFunction)Enum_get_cycleFl, METH_NOARGS,"do_alias_get_cycleFl"},
+	{"set_cycleFl", (PyCFunction)Enum_set_cycleFl, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cycleFl"},
+	{"get_format", (PyCFunction)Enum_get_format, METH_NOARGS,"do_alias_get_format"},
+	{"set_format", (PyCFunction)Enum_set_format, METH_VARARGS|METH_KEYWORDS,"do_alias_get_format"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef EnumKey0_methods[] = {
+	{"get_name", (PyCFunction)EnumKey0_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)EnumKey0_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentView_methods[] = {
+	{"get_type", (PyCFunction)DocumentView_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentView_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_sort", (PyCFunction)DocumentView_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)DocumentView_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	{"get_dtype", (PyCFunction)DocumentView_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentView_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentView_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentView_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentView_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentView_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_dtype1", (PyCFunction)DocumentView_get_dtype1, METH_NOARGS,"do_alias_get_dtype1"},
+	{"set_dtype1", (PyCFunction)DocumentView_set_dtype1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype1"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentViewKey0_methods[] = {
+	{"get_type", (PyCFunction)DocumentViewKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentViewKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_sort", (PyCFunction)DocumentViewKey0_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)DocumentViewKey0_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	{"get_dtype", (PyCFunction)DocumentViewKey0_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentViewKey0_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentViewKey0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentViewKey0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentViewKey0_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentViewKey0_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentViewKey1_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentViewKey1_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentViewKey1_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentViewKey1_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentViewKey1_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentViewKey1_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentViewKey1_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_type", (PyCFunction)DocumentViewKey1_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentViewKey1_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentData_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentData_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentData_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentData_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentData_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentData_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentData_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_type", (PyCFunction)DocumentData_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentData_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_number", (PyCFunction)DocumentData_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)DocumentData_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	{"get_params", (PyCFunction)DocumentData_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)DocumentData_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentDataKey0_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentDataKey0_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentDataKey0_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)DocumentDataKey0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)DocumentDataKey0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)DocumentDataKey0_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)DocumentDataKey0_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_type", (PyCFunction)DocumentDataKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)DocumentDataKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_number", (PyCFunction)DocumentDataKey0_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)DocumentDataKey0_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductLink_methods[] = {
+	{"get_type", (PyCFunction)ProductLink_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)ProductLink_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_m_code", (PyCFunction)ProductLink_get_m_code, METH_NOARGS,"do_alias_get_m_code"},
+	{"set_m_code", (PyCFunction)ProductLink_set_m_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_code"},
+	{"get_s_code", (PyCFunction)ProductLink_get_s_code, METH_NOARGS,"do_alias_get_s_code"},
+	{"set_s_code", (PyCFunction)ProductLink_set_s_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_code"},
+	{"get_number", (PyCFunction)ProductLink_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)ProductLink_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	{"get_qty", (PyCFunction)ProductLink_get_qty, METH_NOARGS,"do_alias_get_qty"},
+	{"set_qty", (PyCFunction)ProductLink_set_qty, METH_VARARGS|METH_KEYWORDS,"do_alias_get_qty"},
+	{"get_params", (PyCFunction)ProductLink_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)ProductLink_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductLinkKey0_methods[] = {
+	{"get_m_code", (PyCFunction)ProductLinkKey0_get_m_code, METH_NOARGS,"do_alias_get_m_code"},
+	{"set_m_code", (PyCFunction)ProductLinkKey0_set_m_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_m_code"},
+	{"get_type", (PyCFunction)ProductLinkKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)ProductLinkKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_number", (PyCFunction)ProductLinkKey0_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)ProductLinkKey0_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductLinkKey1_methods[] = {
+	{"get_s_code", (PyCFunction)ProductLinkKey1_get_s_code, METH_NOARGS,"do_alias_get_s_code"},
+	{"set_s_code", (PyCFunction)ProductLinkKey1_set_s_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_s_code"},
+	{"get_type", (PyCFunction)ProductLinkKey1_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)ProductLinkKey1_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductView_methods[] = {
+	{"get_type", (PyCFunction)ProductView_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)ProductView_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_code", (PyCFunction)ProductView_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)ProductView_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_barcode", (PyCFunction)ProductView_get_barcode, METH_NOARGS,"do_alias_get_barcode"},
+	{"set_barcode", (PyCFunction)ProductView_set_barcode, METH_VARARGS|METH_KEYWORDS,"do_alias_get_barcode"},
+	{"get_sklad", (PyCFunction)ProductView_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)ProductView_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_sort", (PyCFunction)ProductView_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)ProductView_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductViewKey0_methods[] = {
+	{"get_type", (PyCFunction)ProductViewKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)ProductViewKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_sklad", (PyCFunction)ProductViewKey0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)ProductViewKey0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_sort", (PyCFunction)ProductViewKey0_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)ProductViewKey0_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	{"get_code", (PyCFunction)ProductViewKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)ProductViewKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductViewKey1_methods[] = {
+	{"get_code", (PyCFunction)ProductViewKey1_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)ProductViewKey1_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_sklad", (PyCFunction)ProductViewKey1_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)ProductViewKey1_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductData_methods[] = {
+	{"get_code", (PyCFunction)ProductData_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)ProductData_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_type", (PyCFunction)ProductData_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)ProductData_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_number", (PyCFunction)ProductData_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)ProductData_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	{"get_params", (PyCFunction)ProductData_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)ProductData_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProductDataKey0_methods[] = {
+	{"get_code", (PyCFunction)ProductDataKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)ProductDataKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_type", (PyCFunction)ProductDataKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)ProductDataKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_number", (PyCFunction)ProductDataKey0_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)ProductDataKey0_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Barcode_methods[] = {
+	{"get_barcode", (PyCFunction)Barcode_get_barcode, METH_NOARGS,"do_alias_get_barcode"},
+	{"set_barcode", (PyCFunction)Barcode_set_barcode, METH_VARARGS|METH_KEYWORDS,"do_alias_get_barcode"},
+	{"get_code", (PyCFunction)Barcode_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)Barcode_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_total", (PyCFunction)Barcode_get_total, METH_NOARGS,"do_alias_get_total"},
+	{"set_total", (PyCFunction)Barcode_set_total, METH_VARARGS|METH_KEYWORDS,"do_alias_get_total"},
+	{"get_sk", (PyCFunction)Barcode_get_sk, METH_NOARGS,"do_alias_get_sk"},
+	{"set_sk", (PyCFunction)Barcode_set_sk, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sk"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef BarcodeKey0_methods[] = {
+	{"get_barcode", (PyCFunction)BarcodeKey0_get_barcode, METH_NOARGS,"do_alias_get_barcode"},
+	{"set_barcode", (PyCFunction)BarcodeKey0_set_barcode, METH_VARARGS|METH_KEYWORDS,"do_alias_get_barcode"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef BarcodeKey1_methods[] = {
+	{"get_code", (PyCFunction)BarcodeKey1_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)BarcodeKey1_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Account_methods[] = {
+	{"get_account", (PyCFunction)Account_get_account, METH_NOARGS,"do_alias_get_account"},
+	{"set_account", (PyCFunction)Account_set_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account"},
+	{"get_ticacc", (PyCFunction)Account_get_ticacc, METH_NOARGS,"do_alias_get_ticacc"},
+	{"set_ticacc", (PyCFunction)Account_set_ticacc, METH_VARARGS|METH_KEYWORDS,"do_alias_get_ticacc"},
+	{"get_name", (PyCFunction)Account_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Account_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_debit", (PyCFunction)Account_get_debit, METH_NOARGS,"do_alias_get_debit"},
+	{"set_debit", (PyCFunction)Account_set_debit, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit"},
+	{"get_credit", (PyCFunction)Account_get_credit, METH_NOARGS,"do_alias_get_credit"},
+	{"set_credit", (PyCFunction)Account_set_credit, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit"},
+	{"get_positivesaldo", (PyCFunction)Account_get_positivesaldo, METH_NOARGS,"do_alias_get_positivesaldo"},
+	{"set_positivesaldo", (PyCFunction)Account_set_positivesaldo, METH_VARARGS|METH_KEYWORDS,"do_alias_get_positivesaldo"},
+	{"get_itog", (PyCFunction)Account_get_itog, METH_NOARGS,"do_alias_get_itog"},
+	{"set_itog", (PyCFunction)Account_set_itog, METH_VARARGS|METH_KEYWORDS,"do_alias_get_itog"},
+	{"get_analitsub", (PyCFunction)Account_get_analitsub, METH_NOARGS,"do_alias_get_analitsub"},
+	{"set_analitsub", (PyCFunction)Account_set_analitsub, METH_VARARGS|METH_KEYWORDS,"do_alias_get_analitsub"},
+	{"get_analitpartner", (PyCFunction)Account_get_analitpartner, METH_NOARGS,"do_alias_get_analitpartner"},
+	{"set_analitpartner", (PyCFunction)Account_set_analitpartner, METH_VARARGS|METH_KEYWORDS,"do_alias_get_analitpartner"},
+	{"get_analitother", (PyCFunction)Account_get_analitother, METH_NOARGS,"do_alias_get_analitother"},
+	{"set_analitother", (PyCFunction)Account_set_analitother, METH_VARARGS|METH_KEYWORDS,"do_alias_get_analitother"},
+	{"get_othername", (PyCFunction)Account_get_othername, METH_NOARGS,"do_alias_get_othername"},
+	{"set_othername", (PyCFunction)Account_set_othername, METH_VARARGS|METH_KEYWORDS,"do_alias_get_othername"},
+	{"get_sumincl", (PyCFunction)Account_get_sumincl, METH_NOARGS,"do_alias_get_sumincl"},
+	{"set_sumincl", (PyCFunction)Account_set_sumincl, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sumincl"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef AccountKey0_methods[] = {
+	{"get_account", (PyCFunction)AccountKey0_get_account, METH_NOARGS,"do_alias_get_account"},
+	{"set_account", (PyCFunction)AccountKey0_set_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account"},
+	{"get_itog", (PyCFunction)AccountKey0_get_itog, METH_NOARGS,"do_alias_get_itog"},
+	{"set_itog", (PyCFunction)AccountKey0_set_itog, METH_VARARGS|METH_KEYWORDS,"do_alias_get_itog"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Subaccount_methods[] = {
+	{"get_account", (PyCFunction)Subaccount_get_account, METH_NOARGS,"do_alias_get_account"},
+	{"set_account", (PyCFunction)Subaccount_set_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account"},
+	{"get_subaccount", (PyCFunction)Subaccount_get_subaccount, METH_NOARGS,"do_alias_get_subaccount"},
+	{"set_subaccount", (PyCFunction)Subaccount_set_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subaccount"},
+	{"get_ticacc", (PyCFunction)Subaccount_get_ticacc, METH_NOARGS,"do_alias_get_ticacc"},
+	{"set_ticacc", (PyCFunction)Subaccount_set_ticacc, METH_VARARGS|METH_KEYWORDS,"do_alias_get_ticacc"},
+	{"get_name", (PyCFunction)Subaccount_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Subaccount_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_debit", (PyCFunction)Subaccount_get_debit, METH_NOARGS,"do_alias_get_debit"},
+	{"set_debit", (PyCFunction)Subaccount_set_debit, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit"},
+	{"get_credit", (PyCFunction)Subaccount_get_credit, METH_NOARGS,"do_alias_get_credit"},
+	{"set_credit", (PyCFunction)Subaccount_set_credit, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit"},
+	{"get_positivesaldo", (PyCFunction)Subaccount_get_positivesaldo, METH_NOARGS,"do_alias_get_positivesaldo"},
+	{"set_positivesaldo", (PyCFunction)Subaccount_set_positivesaldo, METH_VARARGS|METH_KEYWORDS,"do_alias_get_positivesaldo"},
+	{"get_itog", (PyCFunction)Subaccount_get_itog, METH_NOARGS,"do_alias_get_itog"},
+	{"set_itog", (PyCFunction)Subaccount_set_itog, METH_VARARGS|METH_KEYWORDS,"do_alias_get_itog"},
+	{"get_sumincl", (PyCFunction)Subaccount_get_sumincl, METH_NOARGS,"do_alias_get_sumincl"},
+	{"set_sumincl", (PyCFunction)Subaccount_set_sumincl, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sumincl"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef SubaccountKey0_methods[] = {
+	{"get_account", (PyCFunction)SubaccountKey0_get_account, METH_NOARGS,"do_alias_get_account"},
+	{"set_account", (PyCFunction)SubaccountKey0_set_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account"},
+	{"get_subaccount", (PyCFunction)SubaccountKey0_get_subaccount, METH_NOARGS,"do_alias_get_subaccount"},
+	{"set_subaccount", (PyCFunction)SubaccountKey0_set_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subaccount"},
+	{"get_itog", (PyCFunction)SubaccountKey0_get_itog, METH_NOARGS,"do_alias_get_itog"},
+	{"set_itog", (PyCFunction)SubaccountKey0_set_itog, METH_VARARGS|METH_KEYWORDS,"do_alias_get_itog"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Group_methods[] = {
+	{"get_group_id", (PyCFunction)Group_get_group_id, METH_NOARGS,"do_alias_get_group_id"},
+	{"set_group_id", (PyCFunction)Group_set_group_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_group_id"},
+	{"get_name", (PyCFunction)Group_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Group_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_class_id", (PyCFunction)Group_get_class_id, METH_NOARGS,"do_alias_get_class_id"},
+	{"set_class_id", (PyCFunction)Group_set_class_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_class_id"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef GroupKey0_methods[] = {
+	{"get_class_id", (PyCFunction)GroupKey0_get_class_id, METH_NOARGS,"do_alias_get_class_id"},
+	{"set_class_id", (PyCFunction)GroupKey0_set_class_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_class_id"},
+	{"get_group_id", (PyCFunction)GroupKey0_get_group_id, METH_NOARGS,"do_alias_get_group_id"},
+	{"set_group_id", (PyCFunction)GroupKey0_set_group_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_group_id"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef GroupKey1_methods[] = {
+	{"get_class_id", (PyCFunction)GroupKey1_get_class_id, METH_NOARGS,"do_alias_get_class_id"},
+	{"set_class_id", (PyCFunction)GroupKey1_set_class_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_class_id"},
+	{"get_name", (PyCFunction)GroupKey1_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)GroupKey1_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Subgroup_methods[] = {
+	{"get_group_id", (PyCFunction)Subgroup_get_group_id, METH_NOARGS,"do_alias_get_group_id"},
+	{"set_group_id", (PyCFunction)Subgroup_set_group_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_group_id"},
+	{"get_subgroup_id", (PyCFunction)Subgroup_get_subgroup_id, METH_NOARGS,"do_alias_get_subgroup_id"},
+	{"set_subgroup_id", (PyCFunction)Subgroup_set_subgroup_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subgroup_id"},
+	{"get_name", (PyCFunction)Subgroup_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Subgroup_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_class_id", (PyCFunction)Subgroup_get_class_id, METH_NOARGS,"do_alias_get_class_id"},
+	{"set_class_id", (PyCFunction)Subgroup_set_class_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_class_id"},
+	{"get_stat", (PyCFunction)Subgroup_get_stat, METH_NOARGS,"do_alias_get_stat"},
+	{"set_stat", (PyCFunction)Subgroup_set_stat, METH_VARARGS|METH_KEYWORDS,"do_alias_get_stat"},
+	{"get_params", (PyCFunction)Subgroup_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Subgroup_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef SubgroupKey0_methods[] = {
+	{"get_class_id", (PyCFunction)SubgroupKey0_get_class_id, METH_NOARGS,"do_alias_get_class_id"},
+	{"set_class_id", (PyCFunction)SubgroupKey0_set_class_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_class_id"},
+	{"get_group_id", (PyCFunction)SubgroupKey0_get_group_id, METH_NOARGS,"do_alias_get_group_id"},
+	{"set_group_id", (PyCFunction)SubgroupKey0_set_group_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_group_id"},
+	{"get_subgroup_id", (PyCFunction)SubgroupKey0_get_subgroup_id, METH_NOARGS,"do_alias_get_subgroup_id"},
+	{"set_subgroup_id", (PyCFunction)SubgroupKey0_set_subgroup_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subgroup_id"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef SubgroupKey1_methods[] = {
+	{"get_class_id", (PyCFunction)SubgroupKey1_get_class_id, METH_NOARGS,"do_alias_get_class_id"},
+	{"set_class_id", (PyCFunction)SubgroupKey1_set_class_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_class_id"},
+	{"get_group_id", (PyCFunction)SubgroupKey1_get_group_id, METH_NOARGS,"do_alias_get_group_id"},
+	{"set_group_id", (PyCFunction)SubgroupKey1_set_group_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_group_id"},
+	{"get_name", (PyCFunction)SubgroupKey1_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)SubgroupKey1_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Region_methods[] = {
+	{"get_code", (PyCFunction)Region_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)Region_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_name", (PyCFunction)Region_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Region_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_stat", (PyCFunction)Region_get_stat, METH_NOARGS,"do_alias_get_stat"},
+	{"set_stat", (PyCFunction)Region_set_stat, METH_VARARGS|METH_KEYWORDS,"do_alias_get_stat"},
+	{"get_params", (PyCFunction)Region_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Region_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef RegionKey0_methods[] = {
+	{"get_code", (PyCFunction)RegionKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)RegionKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef RegionKey1_methods[] = {
+	{"get_name", (PyCFunction)RegionKey1_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)RegionKey1_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Otdel_methods[] = {
+	{"get_code", (PyCFunction)Otdel_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)Otdel_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_name", (PyCFunction)Otdel_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Otdel_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_params", (PyCFunction)Otdel_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Otdel_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef OtdelKey0_methods[] = {
+	{"get_code", (PyCFunction)OtdelKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)OtdelKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Partner_methods[] = {
+	{"get_g_code", (PyCFunction)Partner_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)Partner_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)Partner_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)Partner_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_otdel", (PyCFunction)Partner_get_otdel, METH_NOARGS,"do_alias_get_otdel"},
+	{"set_otdel", (PyCFunction)Partner_set_otdel, METH_VARARGS|METH_KEYWORDS,"do_alias_get_otdel"},
+	{"get_sklad", (PyCFunction)Partner_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)Partner_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_name", (PyCFunction)Partner_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Partner_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_bank", (PyCFunction)Partner_get_bank, METH_NOARGS,"do_alias_get_bank"},
+	{"set_bank", (PyCFunction)Partner_set_bank, METH_VARARGS|METH_KEYWORDS,"do_alias_get_bank"},
+	{"get_MFO", (PyCFunction)Partner_get_MFO, METH_NOARGS,"do_alias_get_MFO"},
+	{"set_MFO", (PyCFunction)Partner_set_MFO, METH_VARARGS|METH_KEYWORDS,"do_alias_get_MFO"},
+	{"get_SHET", (PyCFunction)Partner_get_SHET, METH_NOARGS,"do_alias_get_SHET"},
+	{"set_SHET", (PyCFunction)Partner_set_SHET, METH_VARARGS|METH_KEYWORDS,"do_alias_get_SHET"},
+	{"get_ADRES", (PyCFunction)Partner_get_ADRES, METH_NOARGS,"do_alias_get_ADRES"},
+	{"set_ADRES", (PyCFunction)Partner_set_ADRES, METH_VARARGS|METH_KEYWORDS,"do_alias_get_ADRES"},
+	{"get_PLAT_PGR", (PyCFunction)Partner_get_PLAT_PGR, METH_NOARGS,"do_alias_get_PLAT_PGR"},
+	{"set_PLAT_PGR", (PyCFunction)Partner_set_PLAT_PGR, METH_VARARGS|METH_KEYWORDS,"do_alias_get_PLAT_PGR"},
+	{"get_PLAT_PAR", (PyCFunction)Partner_get_PLAT_PAR, METH_NOARGS,"do_alias_get_PLAT_PAR"},
+	{"set_PLAT_PAR", (PyCFunction)Partner_set_PLAT_PAR, METH_VARARGS|METH_KEYWORDS,"do_alias_get_PLAT_PAR"},
+	{"get_KSHET", (PyCFunction)Partner_get_KSHET, METH_NOARGS,"do_alias_get_KSHET"},
+	{"set_KSHET", (PyCFunction)Partner_set_KSHET, METH_VARARGS|METH_KEYWORDS,"do_alias_get_KSHET"},
+	{"get_fio", (PyCFunction)Partner_get_fio, METH_NOARGS,"do_alias_get_fio"},
+	{"set_fio", (PyCFunction)Partner_set_fio, METH_VARARGS|METH_KEYWORDS,"do_alias_get_fio"},
+	{"get_SUM", (PyCFunction)Partner_get_SUM, METH_NOARGS,"do_alias_get_SUM"},
+	{"set_SUM", (PyCFunction)Partner_set_SUM, METH_VARARGS|METH_KEYWORDS,"do_alias_get_SUM"},
+	{"get_codestr", (PyCFunction)Partner_get_codestr, METH_NOARGS,"do_alias_get_codestr"},
+	{"set_codestr", (PyCFunction)Partner_set_codestr, METH_VARARGS|METH_KEYWORDS,"do_alias_get_codestr"},
+	{"get_state", (PyCFunction)Partner_get_state, METH_NOARGS,"do_alias_get_state"},
+	{"set_state", (PyCFunction)Partner_set_state, METH_VARARGS|METH_KEYWORDS,"do_alias_get_state"},
+	{"get_type", (PyCFunction)Partner_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)Partner_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_Klass", (PyCFunction)Partner_get_Klass, METH_NOARGS,"do_alias_get_Klass"},
+	{"set_Klass", (PyCFunction)Partner_set_Klass, METH_VARARGS|METH_KEYWORDS,"do_alias_get_Klass"},
+	{"get_Param", (PyCFunction)Partner_get_Param, METH_NOARGS,"do_alias_get_Param"},
+	{"set_Param", (PyCFunction)Partner_set_Param, METH_VARARGS|METH_KEYWORDS,"do_alias_get_Param"},
+	{"get_Sum_N", (PyCFunction)Partner_get_Sum_N, METH_NOARGS,"do_alias_get_Sum_N"},
+	{"set_Sum_N", (PyCFunction)Partner_set_Sum_N, METH_VARARGS|METH_KEYWORDS,"do_alias_get_Sum_N"},
+	{"get_params", (PyCFunction)Partner_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Partner_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerKey0_methods[] = {
+	{"get_g_code", (PyCFunction)PartnerKey0_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerKey0_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)PartnerKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerKey1_methods[] = {
+	{"get_g_code", (PyCFunction)PartnerKey1_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerKey1_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_name", (PyCFunction)PartnerKey1_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)PartnerKey1_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerKey2_methods[] = {
+	{"get_name", (PyCFunction)PartnerKey2_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)PartnerKey2_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerKey3_methods[] = {
+	{"get_code", (PyCFunction)PartnerKey3_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerKey3_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerData_methods[] = {
+	{"get_g_code", (PyCFunction)PartnerData_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerData_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)PartnerData_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerData_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_type", (PyCFunction)PartnerData_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)PartnerData_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_number", (PyCFunction)PartnerData_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)PartnerData_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	{"get_date", (PyCFunction)PartnerData_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)PartnerData_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)PartnerData_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)PartnerData_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_params", (PyCFunction)PartnerData_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)PartnerData_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerDataKey0_methods[] = {
+	{"get_g_code", (PyCFunction)PartnerDataKey0_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerDataKey0_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)PartnerDataKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerDataKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_type", (PyCFunction)PartnerDataKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)PartnerDataKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_number", (PyCFunction)PartnerDataKey0_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)PartnerDataKey0_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerDataKey1_methods[] = {
+	{"get_type", (PyCFunction)PartnerDataKey1_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)PartnerDataKey1_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_g_code", (PyCFunction)PartnerDataKey1_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerDataKey1_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)PartnerDataKey1_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerDataKey1_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerView_methods[] = {
+	{"get_type", (PyCFunction)PartnerView_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)PartnerView_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_sort", (PyCFunction)PartnerView_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)PartnerView_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	{"get_g_code", (PyCFunction)PartnerView_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerView_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)PartnerView_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerView_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_type_par", (PyCFunction)PartnerView_get_type_par, METH_NOARGS,"do_alias_get_type_par"},
+	{"set_type_par", (PyCFunction)PartnerView_set_type_par, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type_par"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerViewKey0_methods[] = {
+	{"get_type", (PyCFunction)PartnerViewKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)PartnerViewKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_sort", (PyCFunction)PartnerViewKey0_get_sort, METH_NOARGS,"do_alias_get_sort"},
+	{"set_sort", (PyCFunction)PartnerViewKey0_set_sort, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sort"},
+	{"get_g_code", (PyCFunction)PartnerViewKey0_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerViewKey0_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)PartnerViewKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerViewKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef PartnerViewKey1_methods[] = {
+	{"get_g_code", (PyCFunction)PartnerViewKey1_get_g_code, METH_NOARGS,"do_alias_get_g_code"},
+	{"set_g_code", (PyCFunction)PartnerViewKey1_set_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_g_code"},
+	{"get_code", (PyCFunction)PartnerViewKey1_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)PartnerViewKey1_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_type", (PyCFunction)PartnerViewKey1_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)PartnerViewKey1_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Sklad_methods[] = {
+	{"get_code", (PyCFunction)Sklad_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)Sklad_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_name", (PyCFunction)Sklad_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)Sklad_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_type_", (PyCFunction)Sklad_get_type_, METH_NOARGS,"do_alias_get_type_"},
+	{"set_type_", (PyCFunction)Sklad_set_type_, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type_"},
+	{"get_p_g_code", (PyCFunction)Sklad_get_p_g_code, METH_NOARGS,"do_alias_get_p_g_code"},
+	{"set_p_g_code", (PyCFunction)Sklad_set_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_g_code"},
+	{"get_p_code", (PyCFunction)Sklad_get_p_code, METH_NOARGS,"do_alias_get_p_code"},
+	{"set_p_code", (PyCFunction)Sklad_set_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_code"},
+	{"get_otdel", (PyCFunction)Sklad_get_otdel, METH_NOARGS,"do_alias_get_otdel"},
+	{"set_otdel", (PyCFunction)Sklad_set_otdel, METH_VARARGS|METH_KEYWORDS,"do_alias_get_otdel"},
+	{"get_mol", (PyCFunction)Sklad_get_mol, METH_NOARGS,"do_alias_get_mol"},
+	{"set_mol", (PyCFunction)Sklad_set_mol, METH_VARARGS|METH_KEYWORDS,"do_alias_get_mol"},
+	{"get_mol1", (PyCFunction)Sklad_get_mol1, METH_NOARGS,"do_alias_get_mol1"},
+	{"set_mol1", (PyCFunction)Sklad_set_mol1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_mol1"},
+	{"get_PASSWD", (PyCFunction)Sklad_get_PASSWD, METH_NOARGS,"do_alias_get_PASSWD"},
+	{"set_PASSWD", (PyCFunction)Sklad_set_PASSWD, METH_VARARGS|METH_KEYWORDS,"do_alias_get_PASSWD"},
+	{"get_TOWAR", (PyCFunction)Sklad_get_TOWAR, METH_NOARGS,"do_alias_get_TOWAR"},
+	{"set_TOWAR", (PyCFunction)Sklad_set_TOWAR, METH_VARARGS|METH_KEYWORDS,"do_alias_get_TOWAR"},
+	{"get_TOW_PREFIX", (PyCFunction)Sklad_get_TOW_PREFIX, METH_NOARGS,"do_alias_get_TOW_PREFIX"},
+	{"set_TOW_PREFIX", (PyCFunction)Sklad_set_TOW_PREFIX, METH_VARARGS|METH_KEYWORDS,"do_alias_get_TOW_PREFIX"},
+	{"get_P_ORDER", (PyCFunction)Sklad_get_P_ORDER, METH_NOARGS,"do_alias_get_P_ORDER"},
+	{"set_P_ORDER", (PyCFunction)Sklad_set_P_ORDER, METH_VARARGS|METH_KEYWORDS,"do_alias_get_P_ORDER"},
+	{"get_P_OPER", (PyCFunction)Sklad_get_P_OPER, METH_NOARGS,"do_alias_get_P_OPER"},
+	{"set_P_OPER", (PyCFunction)Sklad_set_P_OPER, METH_VARARGS|METH_KEYWORDS,"do_alias_get_P_OPER"},
+	{"get_P_DATA", (PyCFunction)Sklad_get_P_DATA, METH_NOARGS,"do_alias_get_P_DATA"},
+	{"set_P_DATA", (PyCFunction)Sklad_set_P_DATA, METH_VARARGS|METH_KEYWORDS,"do_alias_get_P_DATA"},
+	{"get_P_REGION", (PyCFunction)Sklad_get_P_REGION, METH_NOARGS,"do_alias_get_P_REGION"},
+	{"set_P_REGION", (PyCFunction)Sklad_set_P_REGION, METH_VARARGS|METH_KEYWORDS,"do_alias_get_P_REGION"},
+	{"get_P_PARTNER", (PyCFunction)Sklad_get_P_PARTNER, METH_NOARGS,"do_alias_get_P_PARTNER"},
+	{"set_P_PARTNER", (PyCFunction)Sklad_set_P_PARTNER, METH_VARARGS|METH_KEYWORDS,"do_alias_get_P_PARTNER"},
+	{"get_R_ORDER", (PyCFunction)Sklad_get_R_ORDER, METH_NOARGS,"do_alias_get_R_ORDER"},
+	{"set_R_ORDER", (PyCFunction)Sklad_set_R_ORDER, METH_VARARGS|METH_KEYWORDS,"do_alias_get_R_ORDER"},
+	{"get_R_OPER", (PyCFunction)Sklad_get_R_OPER, METH_NOARGS,"do_alias_get_R_OPER"},
+	{"set_R_OPER", (PyCFunction)Sklad_set_R_OPER, METH_VARARGS|METH_KEYWORDS,"do_alias_get_R_OPER"},
+	{"get_R_DATA", (PyCFunction)Sklad_get_R_DATA, METH_NOARGS,"do_alias_get_R_DATA"},
+	{"set_R_DATA", (PyCFunction)Sklad_set_R_DATA, METH_VARARGS|METH_KEYWORDS,"do_alias_get_R_DATA"},
+	{"get_R_REGION", (PyCFunction)Sklad_get_R_REGION, METH_NOARGS,"do_alias_get_R_REGION"},
+	{"set_R_REGION", (PyCFunction)Sklad_set_R_REGION, METH_VARARGS|METH_KEYWORDS,"do_alias_get_R_REGION"},
+	{"get_R_PARTNER", (PyCFunction)Sklad_get_R_PARTNER, METH_NOARGS,"do_alias_get_R_PARTNER"},
+	{"set_R_PARTNER", (PyCFunction)Sklad_set_R_PARTNER, METH_VARARGS|METH_KEYWORDS,"do_alias_get_R_PARTNER"},
+	{"get_SUM", (PyCFunction)Sklad_get_SUM, METH_NOARGS,"do_alias_get_SUM"},
+	{"set_SUM", (PyCFunction)Sklad_set_SUM, METH_VARARGS|METH_KEYWORDS,"do_alias_get_SUM"},
+	{"get_KOL", (PyCFunction)Sklad_get_KOL, METH_NOARGS,"do_alias_get_KOL"},
+	{"set_KOL", (PyCFunction)Sklad_set_KOL, METH_VARARGS|METH_KEYWORDS,"do_alias_get_KOL"},
+	{"get_CEK", (PyCFunction)Sklad_get_CEK, METH_NOARGS,"do_alias_get_CEK"},
+	{"set_CEK", (PyCFunction)Sklad_set_CEK, METH_VARARGS|METH_KEYWORDS,"do_alias_get_CEK"},
+	{"get_CONFIG_PR", (PyCFunction)Sklad_get_CONFIG_PR, METH_NOARGS,"do_alias_get_CONFIG_PR"},
+	{"set_CONFIG_PR", (PyCFunction)Sklad_set_CONFIG_PR, METH_VARARGS|METH_KEYWORDS,"do_alias_get_CONFIG_PR"},
+	{"get_CONFIG_NUM", (PyCFunction)Sklad_get_CONFIG_NUM, METH_NOARGS,"do_alias_get_CONFIG_NUM"},
+	{"set_CONFIG_NUM", (PyCFunction)Sklad_set_CONFIG_NUM, METH_VARARGS|METH_KEYWORDS,"do_alias_get_CONFIG_NUM"},
+	{"get_stat", (PyCFunction)Sklad_get_stat, METH_NOARGS,"do_alias_get_stat"},
+	{"set_stat", (PyCFunction)Sklad_set_stat, METH_VARARGS|METH_KEYWORDS,"do_alias_get_stat"},
+	{"get_params", (PyCFunction)Sklad_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Sklad_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef SkladKey0_methods[] = {
+	{"get_code", (PyCFunction)SkladKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)SkladKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentProw_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentProw_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentProw_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_dtype1", (PyCFunction)DocumentProw_get_dtype1, METH_NOARGS,"do_alias_get_dtype1"},
+	{"set_dtype1", (PyCFunction)DocumentProw_set_dtype1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype1"},
+	{"get_number", (PyCFunction)DocumentProw_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)DocumentProw_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	{"get_params", (PyCFunction)DocumentProw_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)DocumentProw_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentProwKey0_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentProwKey0_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentProwKey0_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_dtype1", (PyCFunction)DocumentProwKey0_get_dtype1, METH_NOARGS,"do_alias_get_dtype1"},
+	{"set_dtype1", (PyCFunction)DocumentProwKey0_set_dtype1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype1"},
+	{"get_number", (PyCFunction)DocumentProwKey0_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)DocumentProwKey0_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentType_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentType_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentType_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_dtype1", (PyCFunction)DocumentType_get_dtype1, METH_NOARGS,"do_alias_get_dtype1"},
+	{"set_dtype1", (PyCFunction)DocumentType_set_dtype1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype1"},
+	{"get_name", (PyCFunction)DocumentType_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)DocumentType_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_sname", (PyCFunction)DocumentType_get_sname, METH_NOARGS,"do_alias_get_sname"},
+	{"set_sname", (PyCFunction)DocumentType_set_sname, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sname"},
+	{"get_prices", (PyCFunction)DocumentType_get_prices, METH_NOARGS,"do_alias_get_prices"},
+	{"set_prices", (PyCFunction)DocumentType_set_prices, METH_VARARGS|METH_KEYWORDS,"do_alias_get_prices"},
+	{"get_print", (PyCFunction)DocumentType_get_print, METH_NOARGS,"do_alias_get_print"},
+	{"set_print", (PyCFunction)DocumentType_set_print, METH_VARARGS|METH_KEYWORDS,"do_alias_get_print"},
+	{"get_form", (PyCFunction)DocumentType_get_form, METH_NOARGS,"do_alias_get_form"},
+	{"set_form", (PyCFunction)DocumentType_set_form, METH_VARARGS|METH_KEYWORDS,"do_alias_get_form"},
+	{"get_accept_cmd", (PyCFunction)DocumentType_get_accept_cmd, METH_NOARGS,"do_alias_get_accept_cmd"},
+	{"set_accept_cmd", (PyCFunction)DocumentType_set_accept_cmd, METH_VARARGS|METH_KEYWORDS,"do_alias_get_accept_cmd"},
+	{"get_deaccept_cmd", (PyCFunction)DocumentType_get_deaccept_cmd, METH_NOARGS,"do_alias_get_deaccept_cmd"},
+	{"set_deaccept_cmd", (PyCFunction)DocumentType_set_deaccept_cmd, METH_VARARGS|METH_KEYWORDS,"do_alias_get_deaccept_cmd"},
+	{"get_c_dtypes", (PyCFunction)DocumentType_get_c_dtypes, METH_NOARGS,"do_alias_get_c_dtypes"},
+	{"set_c_dtypes", (PyCFunction)DocumentType_set_c_dtypes, METH_VARARGS|METH_KEYWORDS,"do_alias_get_c_dtypes"},
+	{"get_d_param", (PyCFunction)DocumentType_get_d_param, METH_NOARGS,"do_alias_get_d_param"},
+	{"set_d_param", (PyCFunction)DocumentType_set_d_param, METH_VARARGS|METH_KEYWORDS,"do_alias_get_d_param"},
+	{"get_params", (PyCFunction)DocumentType_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)DocumentType_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DocumentTypeKey0_methods[] = {
+	{"get_dtype", (PyCFunction)DocumentTypeKey0_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)DocumentTypeKey0_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_dtype1", (PyCFunction)DocumentTypeKey0_get_dtype1, METH_NOARGS,"do_alias_get_dtype1"},
+	{"set_dtype1", (PyCFunction)DocumentTypeKey0_set_dtype1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype1"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Stock_methods[] = {
+	{"get_sklad", (PyCFunction)Stock_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)Stock_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_code", (PyCFunction)Stock_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)Stock_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_quant", (PyCFunction)Stock_get_quant, METH_NOARGS,"do_alias_get_quant"},
+	{"set_quant", (PyCFunction)Stock_set_quant, METH_VARARGS|METH_KEYWORDS,"do_alias_get_quant"},
+	{"get_nquant", (PyCFunction)Stock_get_nquant, METH_NOARGS,"do_alias_get_nquant"},
+	{"set_nquant", (PyCFunction)Stock_set_nquant, METH_VARARGS|METH_KEYWORDS,"do_alias_get_nquant"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef StockKey0_methods[] = {
+	{"get_sklad", (PyCFunction)StockKey0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)StockKey0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_code", (PyCFunction)StockKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)StockKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef StockKey1_methods[] = {
+	{"get_code", (PyCFunction)StockKey1_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)StockKey1_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Prowod_methods[] = {
+	{"get_division", (PyCFunction)Prowod_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)Prowod_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_date", (PyCFunction)Prowod_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Prowod_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_debit_account", (PyCFunction)Prowod_get_debit_account, METH_NOARGS,"do_alias_get_debit_account"},
+	{"set_debit_account", (PyCFunction)Prowod_set_debit_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_account"},
+	{"get_debit_subaccount", (PyCFunction)Prowod_get_debit_subaccount, METH_NOARGS,"do_alias_get_debit_subaccount"},
+	{"set_debit_subaccount", (PyCFunction)Prowod_set_debit_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_subaccount"},
+	{"get_debit_other", (PyCFunction)Prowod_get_debit_other, METH_NOARGS,"do_alias_get_debit_other"},
+	{"set_debit_other", (PyCFunction)Prowod_set_debit_other, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_other"},
+	{"get_debit_p_g_code", (PyCFunction)Prowod_get_debit_p_g_code, METH_NOARGS,"do_alias_get_debit_p_g_code"},
+	{"set_debit_p_g_code", (PyCFunction)Prowod_set_debit_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_p_g_code"},
+	{"get_debit_p_code", (PyCFunction)Prowod_get_debit_p_code, METH_NOARGS,"do_alias_get_debit_p_code"},
+	{"set_debit_p_code", (PyCFunction)Prowod_set_debit_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_p_code"},
+	{"get_credit_account", (PyCFunction)Prowod_get_credit_account, METH_NOARGS,"do_alias_get_credit_account"},
+	{"set_credit_account", (PyCFunction)Prowod_set_credit_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_account"},
+	{"get_credit_subaccount", (PyCFunction)Prowod_get_credit_subaccount, METH_NOARGS,"do_alias_get_credit_subaccount"},
+	{"set_credit_subaccount", (PyCFunction)Prowod_set_credit_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_subaccount"},
+	{"get_credit_other", (PyCFunction)Prowod_get_credit_other, METH_NOARGS,"do_alias_get_credit_other"},
+	{"set_credit_other", (PyCFunction)Prowod_set_credit_other, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_other"},
+	{"get_credit_p_g_code", (PyCFunction)Prowod_get_credit_p_g_code, METH_NOARGS,"do_alias_get_credit_p_g_code"},
+	{"set_credit_p_g_code", (PyCFunction)Prowod_set_credit_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_p_g_code"},
+	{"get_credit_p_code", (PyCFunction)Prowod_get_credit_p_code, METH_NOARGS,"do_alias_get_credit_p_code"},
+	{"set_credit_p_code", (PyCFunction)Prowod_set_credit_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_p_code"},
+	{"get_valuta", (PyCFunction)Prowod_get_valuta, METH_NOARGS,"do_alias_get_valuta"},
+	{"set_valuta", (PyCFunction)Prowod_set_valuta, METH_VARARGS|METH_KEYWORDS,"do_alias_get_valuta"},
+	{"get_sum", (PyCFunction)Prowod_get_sum, METH_NOARGS,"do_alias_get_sum"},
+	{"set_sum", (PyCFunction)Prowod_set_sum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sum"},
+	{"get_sums", (PyCFunction)Prowod_get_sums, METH_NOARGS,"do_alias_get_sums"},
+	{"set_sums", (PyCFunction)Prowod_set_sums, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sums"},
+	{"get_type_doc", (PyCFunction)Prowod_get_type_doc, METH_NOARGS,"do_alias_get_type_doc"},
+	{"set_type_doc", (PyCFunction)Prowod_set_type_doc, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type_doc"},
+	{"get_type_oper", (PyCFunction)Prowod_get_type_oper, METH_NOARGS,"do_alias_get_type_oper"},
+	{"set_type_oper", (PyCFunction)Prowod_set_type_oper, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type_oper"},
+	{"get_oper", (PyCFunction)Prowod_get_oper, METH_NOARGS,"do_alias_get_oper"},
+	{"set_oper", (PyCFunction)Prowod_set_oper, METH_VARARGS|METH_KEYWORDS,"do_alias_get_oper"},
+	{"get_document", (PyCFunction)Prowod_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)Prowod_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_pach", (PyCFunction)Prowod_get_pach, METH_NOARGS,"do_alias_get_pach"},
+	{"set_pach", (PyCFunction)Prowod_set_pach, METH_VARARGS|METH_KEYWORDS,"do_alias_get_pach"},
+	{"get_params", (PyCFunction)Prowod_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Prowod_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProwodKey0_methods[] = {
+	{"get_division", (PyCFunction)ProwodKey0_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)ProwodKey0_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_date", (PyCFunction)ProwodKey0_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProwodKey0_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_type_doc", (PyCFunction)ProwodKey0_get_type_doc, METH_NOARGS,"do_alias_get_type_doc"},
+	{"set_type_doc", (PyCFunction)ProwodKey0_set_type_doc, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type_doc"},
+	{"get_document", (PyCFunction)ProwodKey0_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)ProwodKey0_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProwodKey1_methods[] = {
+	{"get_division", (PyCFunction)ProwodKey1_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)ProwodKey1_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_type_doc", (PyCFunction)ProwodKey1_get_type_doc, METH_NOARGS,"do_alias_get_type_doc"},
+	{"set_type_doc", (PyCFunction)ProwodKey1_set_type_doc, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type_doc"},
+	{"get_date", (PyCFunction)ProwodKey1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProwodKey1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_document", (PyCFunction)ProwodKey1_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)ProwodKey1_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProwodKey2_methods[] = {
+	{"get_division", (PyCFunction)ProwodKey2_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)ProwodKey2_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_debit_account", (PyCFunction)ProwodKey2_get_debit_account, METH_NOARGS,"do_alias_get_debit_account"},
+	{"set_debit_account", (PyCFunction)ProwodKey2_set_debit_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_account"},
+	{"get_debit_subaccount", (PyCFunction)ProwodKey2_get_debit_subaccount, METH_NOARGS,"do_alias_get_debit_subaccount"},
+	{"set_debit_subaccount", (PyCFunction)ProwodKey2_set_debit_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_subaccount"},
+	{"get_debit_p_g_code", (PyCFunction)ProwodKey2_get_debit_p_g_code, METH_NOARGS,"do_alias_get_debit_p_g_code"},
+	{"set_debit_p_g_code", (PyCFunction)ProwodKey2_set_debit_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_p_g_code"},
+	{"get_debit_p_code", (PyCFunction)ProwodKey2_get_debit_p_code, METH_NOARGS,"do_alias_get_debit_p_code"},
+	{"set_debit_p_code", (PyCFunction)ProwodKey2_set_debit_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_p_code"},
+	{"get_debit_other", (PyCFunction)ProwodKey2_get_debit_other, METH_NOARGS,"do_alias_get_debit_other"},
+	{"set_debit_other", (PyCFunction)ProwodKey2_set_debit_other, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_other"},
+	{"get_date", (PyCFunction)ProwodKey2_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProwodKey2_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProwodKey3_methods[] = {
+	{"get_division", (PyCFunction)ProwodKey3_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)ProwodKey3_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_credit_account", (PyCFunction)ProwodKey3_get_credit_account, METH_NOARGS,"do_alias_get_credit_account"},
+	{"set_credit_account", (PyCFunction)ProwodKey3_set_credit_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_account"},
+	{"get_credit_subaccount", (PyCFunction)ProwodKey3_get_credit_subaccount, METH_NOARGS,"do_alias_get_credit_subaccount"},
+	{"set_credit_subaccount", (PyCFunction)ProwodKey3_set_credit_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_subaccount"},
+	{"get_credit_p_g_code", (PyCFunction)ProwodKey3_get_credit_p_g_code, METH_NOARGS,"do_alias_get_credit_p_g_code"},
+	{"set_credit_p_g_code", (PyCFunction)ProwodKey3_set_credit_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_p_g_code"},
+	{"get_credit_p_code", (PyCFunction)ProwodKey3_get_credit_p_code, METH_NOARGS,"do_alias_get_credit_p_code"},
+	{"set_credit_p_code", (PyCFunction)ProwodKey3_set_credit_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_p_code"},
+	{"get_credit_other", (PyCFunction)ProwodKey3_get_credit_other, METH_NOARGS,"do_alias_get_credit_other"},
+	{"set_credit_other", (PyCFunction)ProwodKey3_set_credit_other, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_other"},
+	{"get_date", (PyCFunction)ProwodKey3_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProwodKey3_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProwodKey4_methods[] = {
+	{"get_division", (PyCFunction)ProwodKey4_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)ProwodKey4_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_document", (PyCFunction)ProwodKey4_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)ProwodKey4_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_date", (PyCFunction)ProwodKey4_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProwodKey4_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Prowod2_methods[] = {
+	{"get_dtype", (PyCFunction)Prowod2_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)Prowod2_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)Prowod2_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)Prowod2_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)Prowod2_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)Prowod2_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_number", (PyCFunction)Prowod2_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)Prowod2_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	{"get_otdel", (PyCFunction)Prowod2_get_otdel, METH_NOARGS,"do_alias_get_otdel"},
+	{"set_otdel", (PyCFunction)Prowod2_set_otdel, METH_VARARGS|METH_KEYWORDS,"do_alias_get_otdel"},
+	{"get_date", (PyCFunction)Prowod2_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Prowod2_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)Prowod2_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Prowod2_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_saldo_d", (PyCFunction)Prowod2_get_saldo_d, METH_NOARGS,"do_alias_get_saldo_d"},
+	{"set_saldo_d", (PyCFunction)Prowod2_set_saldo_d, METH_VARARGS|METH_KEYWORDS,"do_alias_get_saldo_d"},
+	{"get_saldo_k", (PyCFunction)Prowod2_get_saldo_k, METH_NOARGS,"do_alias_get_saldo_k"},
+	{"set_saldo_k", (PyCFunction)Prowod2_set_saldo_k, METH_VARARGS|METH_KEYWORDS,"do_alias_get_saldo_k"},
+	{"get_nsum", (PyCFunction)Prowod2_get_nsum, METH_NOARGS,"do_alias_get_nsum"},
+	{"set_nsum", (PyCFunction)Prowod2_set_nsum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_nsum"},
+	{"get_sum", (PyCFunction)Prowod2_get_sum, METH_NOARGS,"do_alias_get_sum"},
+	{"set_sum", (PyCFunction)Prowod2_set_sum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sum"},
+	{"get_params", (PyCFunction)Prowod2_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)Prowod2_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Prowod2Key0_methods[] = {
+	{"get_dtype", (PyCFunction)Prowod2Key0_get_dtype, METH_NOARGS,"do_alias_get_dtype"},
+	{"set_dtype", (PyCFunction)Prowod2Key0_set_dtype, METH_VARARGS|METH_KEYWORDS,"do_alias_get_dtype"},
+	{"get_sklad", (PyCFunction)Prowod2Key0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)Prowod2Key0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_document", (PyCFunction)Prowod2Key0_get_document, METH_NOARGS,"do_alias_get_document"},
+	{"set_document", (PyCFunction)Prowod2Key0_set_document, METH_VARARGS|METH_KEYWORDS,"do_alias_get_document"},
+	{"get_number", (PyCFunction)Prowod2Key0_get_number, METH_NOARGS,"do_alias_get_number"},
+	{"set_number", (PyCFunction)Prowod2Key0_set_number, METH_VARARGS|METH_KEYWORDS,"do_alias_get_number"},
+	{"get_otdel", (PyCFunction)Prowod2Key0_get_otdel, METH_NOARGS,"do_alias_get_otdel"},
+	{"set_otdel", (PyCFunction)Prowod2Key0_set_otdel, METH_VARARGS|METH_KEYWORDS,"do_alias_get_otdel"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Prowod2Key1_methods[] = {
+	{"get_otdel", (PyCFunction)Prowod2Key1_get_otdel, METH_NOARGS,"do_alias_get_otdel"},
+	{"set_otdel", (PyCFunction)Prowod2Key1_set_otdel, METH_VARARGS|METH_KEYWORDS,"do_alias_get_otdel"},
+	{"get_date", (PyCFunction)Prowod2Key1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Prowod2Key1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)Prowod2Key1_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Prowod2Key1_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Prowod2Key2_methods[] = {
+	{"get_otdel", (PyCFunction)Prowod2Key2_get_otdel, METH_NOARGS,"do_alias_get_otdel"},
+	{"set_otdel", (PyCFunction)Prowod2Key2_set_otdel, METH_VARARGS|METH_KEYWORDS,"do_alias_get_otdel"},
+	{"get_saldo_d", (PyCFunction)Prowod2Key2_get_saldo_d, METH_NOARGS,"do_alias_get_saldo_d"},
+	{"set_saldo_d", (PyCFunction)Prowod2Key2_set_saldo_d, METH_VARARGS|METH_KEYWORDS,"do_alias_get_saldo_d"},
+	{"get_date", (PyCFunction)Prowod2Key2_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Prowod2Key2_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)Prowod2Key2_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Prowod2Key2_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Prowod2Key3_methods[] = {
+	{"get_otdel", (PyCFunction)Prowod2Key3_get_otdel, METH_NOARGS,"do_alias_get_otdel"},
+	{"set_otdel", (PyCFunction)Prowod2Key3_set_otdel, METH_VARARGS|METH_KEYWORDS,"do_alias_get_otdel"},
+	{"get_saldo_k", (PyCFunction)Prowod2Key3_get_saldo_k, METH_NOARGS,"do_alias_get_saldo_k"},
+	{"set_saldo_k", (PyCFunction)Prowod2Key3_set_saldo_k, METH_VARARGS|METH_KEYWORDS,"do_alias_get_saldo_k"},
+	{"get_date", (PyCFunction)Prowod2Key3_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Prowod2Key3_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)Prowod2Key3_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Prowod2Key3_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Saldo_methods[] = {
+	{"get_division", (PyCFunction)Saldo_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)Saldo_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_layer", (PyCFunction)Saldo_get_layer, METH_NOARGS,"do_alias_get_layer"},
+	{"set_layer", (PyCFunction)Saldo_set_layer, METH_VARARGS|METH_KEYWORDS,"do_alias_get_layer"},
+	{"get_account", (PyCFunction)Saldo_get_account, METH_NOARGS,"do_alias_get_account"},
+	{"set_account", (PyCFunction)Saldo_set_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account"},
+	{"get_account_total", (PyCFunction)Saldo_get_account_total, METH_NOARGS,"do_alias_get_account_total"},
+	{"set_account_total", (PyCFunction)Saldo_set_account_total, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account_total"},
+	{"get_subaccount", (PyCFunction)Saldo_get_subaccount, METH_NOARGS,"do_alias_get_subaccount"},
+	{"set_subaccount", (PyCFunction)Saldo_set_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subaccount"},
+	{"get_subaccount_total", (PyCFunction)Saldo_get_subaccount_total, METH_NOARGS,"do_alias_get_subaccount_total"},
+	{"set_subaccount_total", (PyCFunction)Saldo_set_subaccount_total, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subaccount_total"},
+	{"get_p_g_code", (PyCFunction)Saldo_get_p_g_code, METH_NOARGS,"do_alias_get_p_g_code"},
+	{"set_p_g_code", (PyCFunction)Saldo_set_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_g_code"},
+	{"get_p_code", (PyCFunction)Saldo_get_p_code, METH_NOARGS,"do_alias_get_p_code"},
+	{"set_p_code", (PyCFunction)Saldo_set_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_code"},
+	{"get_other", (PyCFunction)Saldo_get_other, METH_NOARGS,"do_alias_get_other"},
+	{"set_other", (PyCFunction)Saldo_set_other, METH_VARARGS|METH_KEYWORDS,"do_alias_get_other"},
+	{"get_date_n", (PyCFunction)Saldo_get_date_n, METH_NOARGS,"do_alias_get_date_n"},
+	{"set_date_n", (PyCFunction)Saldo_set_date_n, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date_n"},
+	{"get_date", (PyCFunction)Saldo_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Saldo_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_date_modify", (PyCFunction)Saldo_get_date_modify, METH_NOARGS,"do_alias_get_date_modify"},
+	{"set_date_modify", (PyCFunction)Saldo_set_date_modify, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date_modify"},
+	{"get_time_modify", (PyCFunction)Saldo_get_time_modify, METH_NOARGS,"do_alias_get_time_modify"},
+	{"set_time_modify", (PyCFunction)Saldo_set_time_modify, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time_modify"},
+	{"get_debit_sum", (PyCFunction)Saldo_get_debit_sum, METH_NOARGS,"do_alias_get_debit_sum"},
+	{"set_debit_sum", (PyCFunction)Saldo_set_debit_sum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_debit_sum"},
+	{"get_credit_sum", (PyCFunction)Saldo_get_credit_sum, METH_NOARGS,"do_alias_get_credit_sum"},
+	{"set_credit_sum", (PyCFunction)Saldo_set_credit_sum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_credit_sum"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef SaldoKey0_methods[] = {
+	{"get_division", (PyCFunction)SaldoKey0_get_division, METH_NOARGS,"do_alias_get_division"},
+	{"set_division", (PyCFunction)SaldoKey0_set_division, METH_VARARGS|METH_KEYWORDS,"do_alias_get_division"},
+	{"get_layer", (PyCFunction)SaldoKey0_get_layer, METH_NOARGS,"do_alias_get_layer"},
+	{"set_layer", (PyCFunction)SaldoKey0_set_layer, METH_VARARGS|METH_KEYWORDS,"do_alias_get_layer"},
+	{"get_account", (PyCFunction)SaldoKey0_get_account, METH_NOARGS,"do_alias_get_account"},
+	{"set_account", (PyCFunction)SaldoKey0_set_account, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account"},
+	{"get_account_total", (PyCFunction)SaldoKey0_get_account_total, METH_NOARGS,"do_alias_get_account_total"},
+	{"set_account_total", (PyCFunction)SaldoKey0_set_account_total, METH_VARARGS|METH_KEYWORDS,"do_alias_get_account_total"},
+	{"get_subaccount", (PyCFunction)SaldoKey0_get_subaccount, METH_NOARGS,"do_alias_get_subaccount"},
+	{"set_subaccount", (PyCFunction)SaldoKey0_set_subaccount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subaccount"},
+	{"get_subaccount_total", (PyCFunction)SaldoKey0_get_subaccount_total, METH_NOARGS,"do_alias_get_subaccount_total"},
+	{"set_subaccount_total", (PyCFunction)SaldoKey0_set_subaccount_total, METH_VARARGS|METH_KEYWORDS,"do_alias_get_subaccount_total"},
+	{"get_p_g_code", (PyCFunction)SaldoKey0_get_p_g_code, METH_NOARGS,"do_alias_get_p_g_code"},
+	{"set_p_g_code", (PyCFunction)SaldoKey0_set_p_g_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_g_code"},
+	{"get_p_code", (PyCFunction)SaldoKey0_get_p_code, METH_NOARGS,"do_alias_get_p_code"},
+	{"set_p_code", (PyCFunction)SaldoKey0_set_p_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_p_code"},
+	{"get_other", (PyCFunction)SaldoKey0_get_other, METH_NOARGS,"do_alias_get_other"},
+	{"set_other", (PyCFunction)SaldoKey0_set_other, METH_VARARGS|METH_KEYWORDS,"do_alias_get_other"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Protocol_methods[] = {
+	{"get_objectName", (PyCFunction)Protocol_get_objectName, METH_NOARGS,"do_alias_get_objectName"},
+	{"set_objectName", (PyCFunction)Protocol_set_objectName, METH_VARARGS|METH_KEYWORDS,"do_alias_get_objectName"},
+	{"get_userName", (PyCFunction)Protocol_get_userName, METH_NOARGS,"do_alias_get_userName"},
+	{"set_userName", (PyCFunction)Protocol_set_userName, METH_VARARGS|METH_KEYWORDS,"do_alias_get_userName"},
+	{"get_date", (PyCFunction)Protocol_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Protocol_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)Protocol_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Protocol_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_action", (PyCFunction)Protocol_get_action, METH_NOARGS,"do_alias_get_action"},
+	{"set_action", (PyCFunction)Protocol_set_action, METH_VARARGS|METH_KEYWORDS,"do_alias_get_action"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProtocolKey0_methods[] = {
+	{"get_objectName", (PyCFunction)ProtocolKey0_get_objectName, METH_NOARGS,"do_alias_get_objectName"},
+	{"set_objectName", (PyCFunction)ProtocolKey0_set_objectName, METH_VARARGS|METH_KEYWORDS,"do_alias_get_objectName"},
+	{"get_date", (PyCFunction)ProtocolKey0_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProtocolKey0_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)ProtocolKey0_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)ProtocolKey0_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProtocolKey1_methods[] = {
+	{"get_date", (PyCFunction)ProtocolKey1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProtocolKey1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)ProtocolKey1_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)ProtocolKey1_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ProtocolKey2_methods[] = {
+	{"get_userName", (PyCFunction)ProtocolKey2_get_userName, METH_NOARGS,"do_alias_get_userName"},
+	{"set_userName", (PyCFunction)ProtocolKey2_set_userName, METH_VARARGS|METH_KEYWORDS,"do_alias_get_userName"},
+	{"get_date", (PyCFunction)ProtocolKey2_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ProtocolKey2_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)ProtocolKey2_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)ProtocolKey2_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef User_methods[] = {
+	{"get_type", (PyCFunction)User_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)User_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_name", (PyCFunction)User_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)User_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_pwd", (PyCFunction)User_get_pwd, METH_NOARGS,"do_alias_get_pwd"},
+	{"set_pwd", (PyCFunction)User_set_pwd, METH_VARARGS|METH_KEYWORDS,"do_alias_get_pwd"},
+	{"get_supervisore", (PyCFunction)User_get_supervisore, METH_NOARGS,"do_alias_get_supervisore"},
+	{"set_supervisore", (PyCFunction)User_set_supervisore, METH_VARARGS|METH_KEYWORDS,"do_alias_get_supervisore"},
+	{"get_userini", (PyCFunction)User_get_userini, METH_NOARGS,"do_alias_get_userini"},
+	{"set_userini", (PyCFunction)User_set_userini, METH_VARARGS|METH_KEYWORDS,"do_alias_get_userini"},
+	{"get_groups", (PyCFunction)User_get_groups, METH_NOARGS,"do_alias_get_groups"},
+	{"set_groups", (PyCFunction)User_set_groups, METH_VARARGS|METH_KEYWORDS,"do_alias_get_groups"},
+	{"get_params", (PyCFunction)User_get_params, METH_NOARGS,"do_alias_get_params"},
+	{"set_params", (PyCFunction)User_set_params, METH_VARARGS|METH_KEYWORDS,"do_alias_get_params"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef UserKey0_methods[] = {
+	{"get_type", (PyCFunction)UserKey0_get_type, METH_NOARGS,"do_alias_get_type"},
+	{"set_type", (PyCFunction)UserKey0_set_type, METH_VARARGS|METH_KEYWORDS,"do_alias_get_type"},
+	{"get_name", (PyCFunction)UserKey0_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)UserKey0_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ShiftKey0_methods[] = {
+	{"get_cash", (PyCFunction)ShiftKey0_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)ShiftKey0_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_shift", (PyCFunction)ShiftKey0_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)ShiftKey0_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ShiftKey1_methods[] = {
+	{"get_null1", (PyCFunction)ShiftKey1_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)ShiftKey1_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_date", (PyCFunction)ShiftKey1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ShiftKey1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null2", (PyCFunction)ShiftKey1_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)ShiftKey1_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_time", (PyCFunction)ShiftKey1_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)ShiftKey1_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ShiftKey2_methods[] = {
+	{"get_null1", (PyCFunction)ShiftKey2_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)ShiftKey2_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_date_b", (PyCFunction)ShiftKey2_get_date_b, METH_NOARGS,"do_alias_get_date_b"},
+	{"set_date_b", (PyCFunction)ShiftKey2_set_date_b, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date_b"},
+	{"get_null2", (PyCFunction)ShiftKey2_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)ShiftKey2_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_time_b", (PyCFunction)ShiftKey2_get_time_b, METH_NOARGS,"do_alias_get_time_b"},
+	{"set_time_b", (PyCFunction)ShiftKey2_set_time_b, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time_b"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ShiftKey3_methods[] = {
+	{"get_null1", (PyCFunction)ShiftKey3_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)ShiftKey3_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_sklad", (PyCFunction)ShiftKey3_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)ShiftKey3_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_null2", (PyCFunction)ShiftKey3_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)ShiftKey3_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_date", (PyCFunction)ShiftKey3_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ShiftKey3_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null3", (PyCFunction)ShiftKey3_get_null3, METH_NOARGS,"do_alias_get_null3"},
+	{"set_null3", (PyCFunction)ShiftKey3_set_null3, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null3"},
+	{"get_time", (PyCFunction)ShiftKey3_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)ShiftKey3_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Checksum_methods[] = {
+	{"get_null1", (PyCFunction)Checksum_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)Checksum_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_cash", (PyCFunction)Checksum_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)Checksum_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_null2", (PyCFunction)Checksum_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)Checksum_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_shift", (PyCFunction)Checksum_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)Checksum_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	{"get_null3", (PyCFunction)Checksum_get_null3, METH_NOARGS,"do_alias_get_null3"},
+	{"set_null3", (PyCFunction)Checksum_set_null3, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null3"},
+	{"get_check", (PyCFunction)Checksum_get_check, METH_NOARGS,"do_alias_get_check"},
+	{"set_check", (PyCFunction)Checksum_set_check, METH_VARARGS|METH_KEYWORDS,"do_alias_get_check"},
+	{"get_null4", (PyCFunction)Checksum_get_null4, METH_NOARGS,"do_alias_get_null4"},
+	{"set_null4", (PyCFunction)Checksum_set_null4, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null4"},
+	{"get_date", (PyCFunction)Checksum_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Checksum_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null5", (PyCFunction)Checksum_get_null5, METH_NOARGS,"do_alias_get_null5"},
+	{"set_null5", (PyCFunction)Checksum_set_null5, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null5"},
+	{"get_time", (PyCFunction)Checksum_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Checksum_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_null6", (PyCFunction)Checksum_get_null6, METH_NOARGS,"do_alias_get_null6"},
+	{"set_null6", (PyCFunction)Checksum_set_null6, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null6"},
+	{"get_cashier", (PyCFunction)Checksum_get_cashier, METH_NOARGS,"do_alias_get_cashier"},
+	{"set_cashier", (PyCFunction)Checksum_set_cashier, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cashier"},
+	{"get_null7", (PyCFunction)Checksum_get_null7, METH_NOARGS,"do_alias_get_null7"},
+	{"set_null7", (PyCFunction)Checksum_set_null7, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null7"},
+	{"get_valuta", (PyCFunction)Checksum_get_valuta, METH_NOARGS,"do_alias_get_valuta"},
+	{"set_valuta", (PyCFunction)Checksum_set_valuta, METH_VARARGS|METH_KEYWORDS,"do_alias_get_valuta"},
+	{"get_null8", (PyCFunction)Checksum_get_null8, METH_NOARGS,"do_alias_get_null8"},
+	{"set_null8", (PyCFunction)Checksum_set_null8, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null8"},
+	{"get_operation", (PyCFunction)Checksum_get_operation, METH_NOARGS,"do_alias_get_operation"},
+	{"set_operation", (PyCFunction)Checksum_set_operation, METH_VARARGS|METH_KEYWORDS,"do_alias_get_operation"},
+	{"get_null9", (PyCFunction)Checksum_get_null9, METH_NOARGS,"do_alias_get_null9"},
+	{"set_null9", (PyCFunction)Checksum_set_null9, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null9"},
+	{"get_sum", (PyCFunction)Checksum_get_sum, METH_NOARGS,"do_alias_get_sum"},
+	{"set_sum", (PyCFunction)Checksum_set_sum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sum"},
+	{"get_null10", (PyCFunction)Checksum_get_null10, METH_NOARGS,"do_alias_get_null10"},
+	{"set_null10", (PyCFunction)Checksum_set_null10, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null10"},
+	{"get_total", (PyCFunction)Checksum_get_total, METH_NOARGS,"do_alias_get_total"},
+	{"set_total", (PyCFunction)Checksum_set_total, METH_VARARGS|METH_KEYWORDS,"do_alias_get_total"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ChecksumKey0_methods[] = {
+	{"get_null1", (PyCFunction)ChecksumKey0_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)ChecksumKey0_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_cash", (PyCFunction)ChecksumKey0_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)ChecksumKey0_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_null2", (PyCFunction)ChecksumKey0_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)ChecksumKey0_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_shift", (PyCFunction)ChecksumKey0_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)ChecksumKey0_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	{"get_null4", (PyCFunction)ChecksumKey0_get_null4, METH_NOARGS,"do_alias_get_null4"},
+	{"set_null4", (PyCFunction)ChecksumKey0_set_null4, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null4"},
+	{"get_date", (PyCFunction)ChecksumKey0_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ChecksumKey0_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null5", (PyCFunction)ChecksumKey0_get_null5, METH_NOARGS,"do_alias_get_null5"},
+	{"set_null5", (PyCFunction)ChecksumKey0_set_null5, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null5"},
+	{"get_time", (PyCFunction)ChecksumKey0_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)ChecksumKey0_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_null3", (PyCFunction)ChecksumKey0_get_null3, METH_NOARGS,"do_alias_get_null3"},
+	{"set_null3", (PyCFunction)ChecksumKey0_set_null3, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null3"},
+	{"get_check", (PyCFunction)ChecksumKey0_get_check, METH_NOARGS,"do_alias_get_check"},
+	{"set_check", (PyCFunction)ChecksumKey0_set_check, METH_VARARGS|METH_KEYWORDS,"do_alias_get_check"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef ChecksumKey1_methods[] = {
+	{"get_null4", (PyCFunction)ChecksumKey1_get_null4, METH_NOARGS,"do_alias_get_null4"},
+	{"set_null4", (PyCFunction)ChecksumKey1_set_null4, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null4"},
+	{"get_date", (PyCFunction)ChecksumKey1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)ChecksumKey1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null5", (PyCFunction)ChecksumKey1_get_null5, METH_NOARGS,"do_alias_get_null5"},
+	{"set_null5", (PyCFunction)ChecksumKey1_set_null5, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null5"},
+	{"get_time", (PyCFunction)ChecksumKey1_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)ChecksumKey1_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_null1", (PyCFunction)ChecksumKey1_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)ChecksumKey1_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_cash", (PyCFunction)ChecksumKey1_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)ChecksumKey1_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Check_methods[] = {
+	{"get_cash", (PyCFunction)Check_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)Check_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_null1", (PyCFunction)Check_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)Check_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_shift", (PyCFunction)Check_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)Check_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	{"get_null2", (PyCFunction)Check_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)Check_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_check", (PyCFunction)Check_get_check, METH_NOARGS,"do_alias_get_check"},
+	{"set_check", (PyCFunction)Check_set_check, METH_VARARGS|METH_KEYWORDS,"do_alias_get_check"},
+	{"get_null3", (PyCFunction)Check_get_null3, METH_NOARGS,"do_alias_get_null3"},
+	{"set_null3", (PyCFunction)Check_set_null3, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null3"},
+	{"get_position", (PyCFunction)Check_get_position, METH_NOARGS,"do_alias_get_position"},
+	{"set_position", (PyCFunction)Check_set_position, METH_VARARGS|METH_KEYWORDS,"do_alias_get_position"},
+	{"get_null4", (PyCFunction)Check_get_null4, METH_NOARGS,"do_alias_get_null4"},
+	{"set_null4", (PyCFunction)Check_set_null4, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null4"},
+	{"get_date", (PyCFunction)Check_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Check_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null5", (PyCFunction)Check_get_null5, METH_NOARGS,"do_alias_get_null5"},
+	{"set_null5", (PyCFunction)Check_set_null5, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null5"},
+	{"get_time", (PyCFunction)Check_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Check_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_null6", (PyCFunction)Check_get_null6, METH_NOARGS,"do_alias_get_null6"},
+	{"set_null6", (PyCFunction)Check_set_null6, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null6"},
+	{"get_price", (PyCFunction)Check_get_price, METH_NOARGS,"do_alias_get_price"},
+	{"set_price", (PyCFunction)Check_set_price, METH_VARARGS|METH_KEYWORDS,"do_alias_get_price"},
+	{"get_null7", (PyCFunction)Check_get_null7, METH_NOARGS,"do_alias_get_null7"},
+	{"set_null7", (PyCFunction)Check_set_null7, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null7"},
+	{"get_quantity", (PyCFunction)Check_get_quantity, METH_NOARGS,"do_alias_get_quantity"},
+	{"set_quantity", (PyCFunction)Check_set_quantity, METH_VARARGS|METH_KEYWORDS,"do_alias_get_quantity"},
+	{"get_null8", (PyCFunction)Check_get_null8, METH_NOARGS,"do_alias_get_null8"},
+	{"set_null8", (PyCFunction)Check_set_null8, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null8"},
+	{"get_product_code", (PyCFunction)Check_get_product_code, METH_NOARGS,"do_alias_get_product_code"},
+	{"set_product_code", (PyCFunction)Check_set_product_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_product_code"},
+	{"get_null9", (PyCFunction)Check_get_null9, METH_NOARGS,"do_alias_get_null9"},
+	{"set_null9", (PyCFunction)Check_set_null9, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null9"},
+	{"get_bar_code", (PyCFunction)Check_get_bar_code, METH_NOARGS,"do_alias_get_bar_code"},
+	{"set_bar_code", (PyCFunction)Check_set_bar_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_bar_code"},
+	{"get_null10", (PyCFunction)Check_get_null10, METH_NOARGS,"do_alias_get_null10"},
+	{"set_null10", (PyCFunction)Check_set_null10, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null10"},
+	{"get_cashier", (PyCFunction)Check_get_cashier, METH_NOARGS,"do_alias_get_cashier"},
+	{"set_cashier", (PyCFunction)Check_set_cashier, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cashier"},
+	{"get_null11", (PyCFunction)Check_get_null11, METH_NOARGS,"do_alias_get_null11"},
+	{"set_null11", (PyCFunction)Check_set_null11, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null11"},
+	{"get_valuta", (PyCFunction)Check_get_valuta, METH_NOARGS,"do_alias_get_valuta"},
+	{"set_valuta", (PyCFunction)Check_set_valuta, METH_VARARGS|METH_KEYWORDS,"do_alias_get_valuta"},
+	{"get_null12", (PyCFunction)Check_get_null12, METH_NOARGS,"do_alias_get_null12"},
+	{"set_null12", (PyCFunction)Check_set_null12, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null12"},
+	{"get_operation", (PyCFunction)Check_get_operation, METH_NOARGS,"do_alias_get_operation"},
+	{"set_operation", (PyCFunction)Check_set_operation, METH_VARARGS|METH_KEYWORDS,"do_alias_get_operation"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef CheckKey0_methods[] = {
+	{"get_cash", (PyCFunction)CheckKey0_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)CheckKey0_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_null1", (PyCFunction)CheckKey0_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)CheckKey0_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_shift", (PyCFunction)CheckKey0_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)CheckKey0_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	{"get_null2", (PyCFunction)CheckKey0_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)CheckKey0_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_check", (PyCFunction)CheckKey0_get_check, METH_NOARGS,"do_alias_get_check"},
+	{"set_check", (PyCFunction)CheckKey0_set_check, METH_VARARGS|METH_KEYWORDS,"do_alias_get_check"},
+	{"get_null3", (PyCFunction)CheckKey0_get_null3, METH_NOARGS,"do_alias_get_null3"},
+	{"set_null3", (PyCFunction)CheckKey0_set_null3, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null3"},
+	{"get_position", (PyCFunction)CheckKey0_get_position, METH_NOARGS,"do_alias_get_position"},
+	{"set_position", (PyCFunction)CheckKey0_set_position, METH_VARARGS|METH_KEYWORDS,"do_alias_get_position"},
+	{"get_null4", (PyCFunction)CheckKey0_get_null4, METH_NOARGS,"do_alias_get_null4"},
+	{"set_null4", (PyCFunction)CheckKey0_set_null4, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null4"},
+	{"get_date", (PyCFunction)CheckKey0_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)CheckKey0_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null5", (PyCFunction)CheckKey0_get_null5, METH_NOARGS,"do_alias_get_null5"},
+	{"set_null5", (PyCFunction)CheckKey0_set_null5, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null5"},
+	{"get_time", (PyCFunction)CheckKey0_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)CheckKey0_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef CheckKey1_methods[] = {
+	{"get_null1", (PyCFunction)CheckKey1_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)CheckKey1_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_date", (PyCFunction)CheckKey1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)CheckKey1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null2", (PyCFunction)CheckKey1_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)CheckKey1_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_time", (PyCFunction)CheckKey1_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)CheckKey1_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef CheckKey2_methods[] = {
+	{"get_null1", (PyCFunction)CheckKey2_get_null1, METH_NOARGS,"do_alias_get_null1"},
+	{"set_null1", (PyCFunction)CheckKey2_set_null1, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null1"},
+	{"get_product_code", (PyCFunction)CheckKey2_get_product_code, METH_NOARGS,"do_alias_get_product_code"},
+	{"set_product_code", (PyCFunction)CheckKey2_set_product_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_product_code"},
+	{"get_null2", (PyCFunction)CheckKey2_get_null2, METH_NOARGS,"do_alias_get_null2"},
+	{"set_null2", (PyCFunction)CheckKey2_set_null2, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null2"},
+	{"get_date", (PyCFunction)CheckKey2_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)CheckKey2_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_null3", (PyCFunction)CheckKey2_get_null3, METH_NOARGS,"do_alias_get_null3"},
+	{"set_null3", (PyCFunction)CheckKey2_set_null3, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null3"},
+	{"get_time", (PyCFunction)CheckKey2_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)CheckKey2_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_cash", (PyCFunction)CheckKey2_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)CheckKey2_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_null4", (PyCFunction)CheckKey2_get_null4, METH_NOARGS,"do_alias_get_null4"},
+	{"set_null4", (PyCFunction)CheckKey2_set_null4, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null4"},
+	{"get_shift", (PyCFunction)CheckKey2_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)CheckKey2_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	{"get_null5", (PyCFunction)CheckKey2_get_null5, METH_NOARGS,"do_alias_get_null5"},
+	{"set_null5", (PyCFunction)CheckKey2_set_null5, METH_VARARGS|METH_KEYWORDS,"do_alias_get_null5"},
+	{"get_check", (PyCFunction)CheckKey2_get_check, METH_NOARGS,"do_alias_get_check"},
+	{"set_check", (PyCFunction)CheckKey2_set_check, METH_VARARGS|METH_KEYWORDS,"do_alias_get_check"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Realization_methods[] = {
+	{"get_sklad", (PyCFunction)Realization_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)Realization_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_code", (PyCFunction)Realization_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)Realization_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_month", (PyCFunction)Realization_get_month, METH_NOARGS,"do_alias_get_month"},
+	{"set_month", (PyCFunction)Realization_set_month, METH_VARARGS|METH_KEYWORDS,"do_alias_get_month"},
+	{"get_total", (PyCFunction)Realization_get_total, METH_NOARGS,"do_alias_get_total"},
+	{"set_total", (PyCFunction)Realization_set_total, METH_VARARGS|METH_KEYWORDS,"do_alias_get_total"},
+	{"get_sum", (PyCFunction)Realization_get_sum, METH_NOARGS,"do_alias_get_sum"},
+	{"set_sum", (PyCFunction)Realization_set_sum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sum"},
+	{"get_profit", (PyCFunction)Realization_get_profit, METH_NOARGS,"do_alias_get_profit"},
+	{"set_profit", (PyCFunction)Realization_set_profit, METH_VARARGS|METH_KEYWORDS,"do_alias_get_profit"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef RealizationKey0_methods[] = {
+	{"get_code", (PyCFunction)RealizationKey0_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)RealizationKey0_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_month", (PyCFunction)RealizationKey0_get_month, METH_NOARGS,"do_alias_get_month"},
+	{"set_month", (PyCFunction)RealizationKey0_set_month, METH_VARARGS|METH_KEYWORDS,"do_alias_get_month"},
+	{"get_sklad", (PyCFunction)RealizationKey0_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)RealizationKey0_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef RealizationKey1_methods[] = {
+	{"get_sklad", (PyCFunction)RealizationKey1_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)RealizationKey1_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_month", (PyCFunction)RealizationKey1_get_month, METH_NOARGS,"do_alias_get_month"},
+	{"set_month", (PyCFunction)RealizationKey1_set_month, METH_VARARGS|METH_KEYWORDS,"do_alias_get_month"},
+	{"get_code", (PyCFunction)RealizationKey1_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)RealizationKey1_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef RealizationKey2_methods[] = {
+	{"get_month", (PyCFunction)RealizationKey2_get_month, METH_NOARGS,"do_alias_get_month"},
+	{"set_month", (PyCFunction)RealizationKey2_set_month, METH_VARARGS|METH_KEYWORDS,"do_alias_get_month"},
+	{"get_code", (PyCFunction)RealizationKey2_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)RealizationKey2_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_sklad", (PyCFunction)RealizationKey2_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)RealizationKey2_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef RealizationKey3_methods[] = {
+	{"get_month", (PyCFunction)RealizationKey3_get_month, METH_NOARGS,"do_alias_get_month"},
+	{"set_month", (PyCFunction)RealizationKey3_set_month, METH_VARARGS|METH_KEYWORDS,"do_alias_get_month"},
+	{"get_sklad", (PyCFunction)RealizationKey3_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)RealizationKey3_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_code", (PyCFunction)RealizationKey3_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)RealizationKey3_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef RealizationKey4_methods[] = {
+	{"get_code", (PyCFunction)RealizationKey4_get_code, METH_NOARGS,"do_alias_get_code"},
+	{"set_code", (PyCFunction)RealizationKey4_set_code, METH_VARARGS|METH_KEYWORDS,"do_alias_get_code"},
+	{"get_sklad", (PyCFunction)RealizationKey4_get_sklad, METH_NOARGS,"do_alias_get_sklad"},
+	{"set_sklad", (PyCFunction)RealizationKey4_set_sklad, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sklad"},
+	{"get_month", (PyCFunction)RealizationKey4_get_month, METH_NOARGS,"do_alias_get_month"},
+	{"set_month", (PyCFunction)RealizationKey4_set_month, METH_VARARGS|METH_KEYWORDS,"do_alias_get_month"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef Discount_methods[] = {
+	{"get_card", (PyCFunction)Discount_get_card, METH_NOARGS,"do_alias_get_card"},
+	{"set_card", (PyCFunction)Discount_set_card, METH_VARARGS|METH_KEYWORDS,"do_alias_get_card"},
+	{"get_cash", (PyCFunction)Discount_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)Discount_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_shift", (PyCFunction)Discount_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)Discount_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	{"get_check", (PyCFunction)Discount_get_check, METH_NOARGS,"do_alias_get_check"},
+	{"set_check", (PyCFunction)Discount_set_check, METH_VARARGS|METH_KEYWORDS,"do_alias_get_check"},
+	{"get_date", (PyCFunction)Discount_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)Discount_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)Discount_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)Discount_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	{"get_sum", (PyCFunction)Discount_get_sum, METH_NOARGS,"do_alias_get_sum"},
+	{"set_sum", (PyCFunction)Discount_set_sum, METH_VARARGS|METH_KEYWORDS,"do_alias_get_sum"},
+	{"get_discount", (PyCFunction)Discount_get_discount, METH_NOARGS,"do_alias_get_discount"},
+	{"set_discount", (PyCFunction)Discount_set_discount, METH_VARARGS|METH_KEYWORDS,"do_alias_get_discount"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DiscountKey0_methods[] = {
+	{"get_cash", (PyCFunction)DiscountKey0_get_cash, METH_NOARGS,"do_alias_get_cash"},
+	{"set_cash", (PyCFunction)DiscountKey0_set_cash, METH_VARARGS|METH_KEYWORDS,"do_alias_get_cash"},
+	{"get_shift", (PyCFunction)DiscountKey0_get_shift, METH_NOARGS,"do_alias_get_shift"},
+	{"set_shift", (PyCFunction)DiscountKey0_set_shift, METH_VARARGS|METH_KEYWORDS,"do_alias_get_shift"},
+	{"get_date", (PyCFunction)DiscountKey0_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DiscountKey0_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_check", (PyCFunction)DiscountKey0_get_check, METH_NOARGS,"do_alias_get_check"},
+	{"set_check", (PyCFunction)DiscountKey0_set_check, METH_VARARGS|METH_KEYWORDS,"do_alias_get_check"},
+	{"get_time", (PyCFunction)DiscountKey0_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DiscountKey0_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef DiscountKey1_methods[] = {
+	{"get_card", (PyCFunction)DiscountKey1_get_card, METH_NOARGS,"do_alias_get_card"},
+	{"set_card", (PyCFunction)DiscountKey1_set_card, METH_VARARGS|METH_KEYWORDS,"do_alias_get_card"},
+	{"get_date", (PyCFunction)DiscountKey1_get_date, METH_NOARGS,"do_alias_get_date"},
+	{"set_date", (PyCFunction)DiscountKey1_set_date, METH_VARARGS|METH_KEYWORDS,"do_alias_get_date"},
+	{"get_time", (PyCFunction)DiscountKey1_get_time, METH_NOARGS,"do_alias_get_time"},
+	{"set_time", (PyCFunction)DiscountKey1_set_time, METH_VARARGS|METH_KEYWORDS,"do_alias_get_time"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef StructFile_methods[] = {
+	{"get_id", (PyCFunction)StructFile_get_id, METH_NOARGS,"do_alias_get_id"},
+	{"set_id", (PyCFunction)StructFile_set_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_id"},
+	{"get_name", (PyCFunction)StructFile_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)StructFile_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	{"get_location", (PyCFunction)StructFile_get_location, METH_NOARGS,"do_alias_get_location"},
+	{"set_location", (PyCFunction)StructFile_set_location, METH_VARARGS|METH_KEYWORDS,"do_alias_get_location"},
+	{"get_other", (PyCFunction)StructFile_get_other, METH_NOARGS,"do_alias_get_other"},
+	{"set_other", (PyCFunction)StructFile_set_other, METH_VARARGS|METH_KEYWORDS,"do_alias_get_other"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef StructFileKey0_methods[] = {
+	{"get_id", (PyCFunction)StructFileKey0_get_id, METH_NOARGS,"do_alias_get_id"},
+	{"set_id", (PyCFunction)StructFileKey0_set_id, METH_VARARGS|METH_KEYWORDS,"do_alias_get_id"},
+	
+ {NULL}  /* Sentinel */
+};
+
+static PyMethodDef StructFileKey1_methods[] = {
+	{"get_name", (PyCFunction)StructFileKey1_get_name, METH_NOARGS,"do_alias_get_name"},
+	{"set_name", (PyCFunction)StructFileKey1_set_name, METH_VARARGS|METH_KEYWORDS,"do_alias_get_name"},
+	
+ {NULL}  /* Sentinel */
+};

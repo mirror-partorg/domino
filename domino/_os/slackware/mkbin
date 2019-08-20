@@ -1,0 +1,43 @@
+#!/bin/bash
+
+if [ -d ./tmp ] ; then
+rm -R ./tmp/*
+else
+mkdir ./tmp
+fi
+mkdir ./tmp/bin
+mkdir ./tmp/lib
+mkdir ./tmp/etc
+mkdir ./tmp/rc.d
+
+cp ../../src/crntsale/crntsale ./tmp/bin
+cp ../../src/crntsale/crntsale.sh ./tmp/bin
+chmod +x ./tmp/bin/crntsale.sh
+cp ../../src/ctrlpasswd/dopasswd ./tmp/bin
+cp ../../src/dclubd/dclubd ./tmp/bin
+cp ../../src/exchanged/exchanged ./tmp/bin
+cp ../../src/handbook-text/handbook ./tmp/bin
+cp ../../src/handbook-text/handbook.sh ./tmp/bin
+chmod +x ./tmp/bin/handbook.sh
+cp ../../src/handbook-text/autologin ./tmp/bin
+cp ../../src/tmcck/tmcck ./tmp/bin
+
+cp -R ../../etc/* ./tmp/etc
+
+cp ../../src/dclubd/rc.dclubd ./tmp/rc.d
+chmod +x ./tmp/rc.d/rc.dclubd
+cp ../../src/exchanged/rc.exchanged ./tmp/rc.d
+chmod +x ./tmp/rc.d/rc.exchanged
+
+cp -l ../../lib/artix/libartix.so* ./tmp/lib
+cp -l ../../lib/dolib/libdolib.so* ./tmp/lib
+cp -l ../../lib/domino/libdomino.so* ./tmp/lib
+
+cp install ./tmp
+chmod +x ./tmp/install
+
+cd ./tmp
+
+tar cjf ../"`date +%Y%m%d`-cash-binary.tar.bz2" *
+cd ..
+rm -R ./tmp

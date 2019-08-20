@@ -1,0 +1,561 @@
+<html>
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8"> 
+<title></title>
+<style type="text/css">body{font-family: Arial,"Times New Roman",arial,verdana,tahoma;margin-top:4mm;}
+table{font-size:8;border-collapse:collapse;}
+</style>
+</head>
+<style type="text/css"><!--
+.b-lrtb {border-top:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;border-left:solid windowtext 1.0pt;}
+.b-lrt {border-top:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;border-left:solid windowtext 1.0pt;}
+.b-lrB {border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;border-left:solid windowtext 1.0pt;}
+.b-rt {border-top:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;}
+.b-lt {border-top:solid windowtext 1.0pt;border-left:solid windowtext 1.0pt;}
+.b-lb {border-bottom:solid windowtext 1.0pt;border-left:solid windowtext 1.0pt;}
+.b-rtb {border-top:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;}
+.b-ltb {border-top:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;border-left:solid windowtext 1.0pt;}
+.b-b {border-bottom:solid windowtext 1.0pt;}
+.b-l {border-left:solid windowtext 1.0pt;}
+.b-t {border-top:solid windowtext 1.0pt;}
+.b-llrr {border-left:solid windowtext 2.0pt;border-right:solid windowtext 2.0pt;}
+.b-llrrb {border-bottom:solid windowtext 1.0pt;border-left:solid windowtext 2.0pt;border-right:solid windowtext 2.0pt;}
+.b-llrrbb {border-bottom:solid windowtext 2.0pt;border-left:solid windowtext 2.0pt;border-right:solid windowtext 2.0pt;}
+.b-llrtbb {border-top:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;border-bottom:solid windowtext 2.0pt;border-left:solid windowtext 2.0pt;}
+.b-llrrttb {border-top:solid windowtext 2.0pt;border-right:solid windowtext 2.0pt;border-bottom:solid windowtext 1.0pt;border-left:solid windowtext 2.0pt;}
+.b-lrrtbb {border-top:solid windowtext 1.0pt;border-right:solid windowtext 2.0pt;border-bottom:solid windowtext 2.0pt;border-left:solid windowtext 1.0pt;}
+.b-l {border-left:solid windowtext 1.0pt;}
+.up-text {font-size:6;vertical-align:top;}
+.down-text {vertical-align:bottom;}
+.t {border:1px solid black;border-collapse:collapse;}
+--></style>
+<body>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td style="width: 7mm;"><div>&nbsp;</div></td>
+<td style="width: 17mm;"><div>&nbsp;</div></td>
+<td style="width: 17mm;"><div>&nbsp;</div></td>
+<td style="width: 8mm;"><div>&nbsp;</div></td>
+<td style="width: 10mm;"><div>&nbsp;</div></td>
+<td style="width: 10mm;"><div>&nbsp;</div></td>
+<td style="width: 10mm;"><div>&nbsp;</div></td>
+<td style="width: 8mm;"><div>&nbsp;</div></td>
+<td style="width: 6mm;"><div>&nbsp;</div></td>
+<td style="width: 10mm;"><div>&nbsp;</div></td>
+<td style="width: 10mm;"><div>&nbsp;</div></td>
+<td style="width: 17mm;"><div>&nbsp;</div></td>
+<td style="width: 17mm;"><div>&nbsp;</div></td>
+<td style="width: 9mm;"><div>&nbsp;</div></td>
+<td style="width: 17mm;"><div>&nbsp;</div></td>
+<td style="width: 18mm;"><div>&nbsp;</div></td>
+</tr>
+<tr>
+<td colspan="16" align="right">Унифицированная форма № ТОРГ-12</td>
+</tr>
+<tr>
+<td colspan="16" align="right">Утверждена постановлением Госкомстата России от 25.12.98 № 132</td>
+</tr>
+<tr>
+<td colspan="15"></td>
+<td class="b-lrtb" align="center">Код</td>
+</tr>
+<tr>
+<td></td>
+<td class="b-b" colspan="13" rowspan="2">
+<b>
+<!-ПоставщикПолноеИмя-->ООО "Губернский лекарь", ИНН 2221052554, г.Барнаул, пр.Ленина, 157, тел. : 8 3852 62-83-13, р/с 40702810902000001622 в Алтайский банк Сбербанка РФ, БИК 040173604, корр/с 30101810200000000604
+&nbsp;
+</b></td>
+<td align="right">Форма по ОКУД&nbsp;</td>
+<td class="b-llrrb" align="center"><b>0330212</b></td>
+</tr>
+<tr>
+<td></td>
+<td align="right">по ОКПО&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ПоставщикОКПО-->32226020
+&nbsp;
+</td>
+</tr>
+<tr class="up-text">
+<td></td>
+<td colspan="13" align="center" valign="top">организация – грузоотправитель, адрес, номер телефона, факса, банковские реквизиты</td>
+<td></td>
+<td class="b-llrr" align="center">&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class="b-b" colspan="13" align="center"><b>
+<!-ПодразделениеИмя-->
+&nbsp;
+<b></td>
+<td></td>
+<td class="b-llrrb" align="center">&nbsp;</td>
+</tr>
+<tr class="up-text">
+<td></td>
+<td colspan="13" align="center">структурное подразделение</td>
+<td></td>
+<td class="b-llrr" align="center">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="15" align="right">Вид деятельности по ОКДП&nbsp;</td>
+<td class="b-llrrb" align="center">&nbsp;</td>
+</tr>
+<tr class="down-text">
+<td></td>
+<td align="right">Грузополучатель&nbsp;</td>
+<td class="b-b" colspan="12">
+<!-ГрузополучательИмя-->ИП Черемухина Евгения Леонидовна, ИНН 222401521877, , тел: , р/с 40802810902000000536 в Алтайский банк Сбербанка РФ, БИК 040173604, корр/с 30101810200000000604, адресс пр. Ленина, 157
+&nbsp;
+</td>
+<td align="right">по ОКПО&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ГрузополучательОКПО-->
+&nbsp;
+</td>
+</tr>
+<tr class="up-text">
+<td></td>
+<td></td>
+<td colspan="12" align="center" valign="top">организация, адрес, телефон, факс, банковские реквизиты</td>
+<td></td>
+<td class="b-llrr" align="center">&nbsp;</td>
+</tr>
+<tr class="down-text">
+<td></td>
+<td align="right">Поставщик&nbsp;</td>
+<td class="b-b" colspan="12">
+<!-ПоставщикИмя-->ООО "Губернский лекарь", ИНН 2221052554, 656037, Алтайский край, Барнаул г, Ленина пр-кт, д. 157, тел. : 8 3852 62-83-13, р/с 40702810902000001622 в Алтайский банк Сбербанка РФ, БИК 040173604, корр/с 30101810200000000604
+&nbsp;
+</td>
+<td align="right">по ОКПО&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ПоставщикОКПО-->32226020
+&nbsp;
+</td>
+</tr>
+<tr class="up-text">
+<td></td>
+<td></td>
+<td colspan="12" align="center" valign="top">организация, адрес, телефон, факс, банковские реквизиты</td>
+<td></td>
+<td class="b-llrr" align="center">&nbsp;</td>
+</tr>
+<tr class="down-text">
+<td></td>
+<td align="right">Плательщик&nbsp;</td>
+<td class="b-b" colspan="12">
+<!-ПлательщикИмя-->ИП Черемухина Евгения Леонидовна, ИНН 222401521877, 656002, г.Барнаул, пр.Калинина,14-7, тел: , р/с 40802810902000000536 в Алтайский банк Сбербанка РФ, БИК 040173604, корр/с 30101810200000000604
+&nbsp;
+</td>
+<td class="b-b" align="right">по ОКПО&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ПлательщикОКПО-->
+&nbsp;
+</td>
+</tr>
+<tr class="up-text">
+<td></td>
+<td></td>
+<td colspan="12" align="center" valign="top">организация, адрес, телефон, факс, банковские реквизиты</td>
+<td class="b-l">&nbsp;</td>
+<td class="b-llrr" align="center">&nbsp;</td>
+</tr>
+<tr class="down-text">
+<td></td>
+<td align="right">Основание&nbsp;</td>
+<td class="b-b" colspan="12">
+<!-ОснованиеИмя-->Основной договор
+&nbsp;
+</td>
+<td class="b-lb" align="right">номер&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ОснованиеНомер-->
+&nbsp;
+</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td class="up-text" colspan="12" align="center" valign="top">наименование документа (договор, контракт, заказ-наряд)</td>
+<td class="b-lb" align="right">дата&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ОснованиеДата-->&nbsp;
+</td>
+</tr>
+<tr>
+<td colspan="6"></td>
+<td class="b-lrtb" align="center" colspan="2">Номер документа</td>
+<td class="b-rtb" align="center" colspan="2">Дата составления</td>
+<td colspan="2"></td>
+<td colspan="2" align="right">Транспортная накладная&nbsp;</td>
+<td class="b-lb" align="right">номер&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ТранспортнаяНакладнаяНомер-->&nbsp;
+</td>
+</tr>
+<tr>
+<td colspan="6" align="right">ТОВАРНАЯ НАКЛАДНАЯ&nbsp;</td>
+<td class="b-llrtbb" align="center" colspan="2">
+<!-ДокументНомер-->2215
+&nbsp;
+</td>
+<td class="b-lrrtbb" align="center" colspan="2">
+<!-ДокументДата-->12.10.10
+</td>
+<td colspan="2"></td>
+<td colspan="2">&nbsp;</td>
+<td class="b-lb" align="right">дата&nbsp;</td>
+<td class="b-llrrb" align="center">
+<!-ТранспортнаяНакладнаяДата-->&nbsp;
+</td>
+</tr>
+<tr>
+<td></td>
+<td colspan="14" align="right">Вид операции&nbsp;</td>
+<td class="b-llrrbb" align="center">
+<!-ОперацияВид-->
+&nbsp;
+</td>
+</tr>
+<tr>
+<td colspan="16">&nbsp;</td>
+</tr>
+<tr align="center">
+<td class="t" rowspan="3">Но- мер по по- рядку</td>
+<td class="t" colspan="3">Товар</td>
+<td class="t" colspan="2">Единица измерения</td>
+<td class="t" rowspan="3">Вид упаковки</td>
+<td class="t" colspan="2">Количество</td>
+<td class="t" rowspan="3">Масса брутто</td>
+<td class="t" rowspan="3">Количе-ство (масса нетто)</td>
+<td class="t" rowspan="3">Цена,руб. коп.</td>
+<td class="t" rowspan="3">Сумма без учета НДС,руб. коп.</td>
+<td class="t" colspan="2">НДС</td>
+<td class="t" rowspan="3">Сумма с учетом НДС, руб. коп.</td>
+</tr>
+<tr align="center">
+<td class="t" rowspan="2" colspan="2">наименование, характеристика, сорт, артикул товара</td>
+<td class="t" rowspan="2">код</td>
+<td class="t" rowspan="2">наиме- нование</td>
+<td class="t" rowspan="2">код по ОКЕИ</td>
+<td class="t" rowspan="2">в одном месте</td>
+<td class="t" rowspan="2">мест,штук</td>
+<td class="t" rowspan="2">ставка, %</td>
+<td class="t" rowspan="2">сумма, руб. коп.</td>
+</tr>
+<tr></tr>
+<!-#Header-->
+<tr align="center">
+<td class="t">1</td>
+<td class="t"colspan="2" >2</td>
+<td class="t">3</td>
+<td class="t">4</td>
+<td class="t">5</td>
+<td class="t">6</td>
+<td class="t">7</td>
+<td class="t">8</td>
+<td class="t">9</td>
+<td class="t">10</td>
+<td class="t">11</td>
+<td class="t">12</td>
+<td class="t">13</td>
+<td class="t">14</td>
+<td class="t">15</td>
+</tr>
+<!-#HeaderEnd-->
+<!-#Line-->
+<tr align="center">
+<td class="t" align="right">
+<!-Number-->1
+</td>
+<td class="t"colspan="2" align="left">
+<div style="height: 4mm;">
+<!-ProductName-->ТОПИКРЕМ Д/ТЕЛА ГЕЛЬ-ПЕНКА Д/МЫТЬЯ 200МЛ Д/КОЖИ СКЛОННОЙ К МИКОЗАМ
+</div>
+</td>
+<td class="t" valign="center">
+<!-ProductCode-->13480
+</td>
+<td class="t">
+<!-ЕИИмя-->шт
+</td>
+<td class="t">
+<!-ЕИКод-->796
+</td>
+<td class="t">
+<!-УпаковкаВид-->&nbsp;
+</td>
+<td class="t">
+<!-КоличествоМесто-->&nbsp;
+</td>
+<td class="t">
+<!-Мест-->&nbsp;
+</td>
+<td class="t">
+<!-МассаБруто-->&nbsp;
+</td>
+<td class="t" align="right">
+<!-Количество-->16,000
+</td>
+<td class="t" align="right">
+<!-Цена-->194,95
+</td>
+<td class="t" align="right">
+<!-Сумма-->3119,20
+</td>
+<td class="t">
+<!-НДССтавка-->18
+</td>
+<td class="t" align="right">
+<!-НДССумма-->561,46
+</td>
+<td class="t" align="right">
+<!-Итог-->3680,66
+</td>
+</tr>
+<!-#LineEnd-->
+<!-#Footer-->
+<tr align="center">
+<td class="b-t" colspan="8"  align="right"><b>Итого&nbsp;</b></td>
+<td class="t">
+<!-Мест-->&nbsp;
+</td>
+<td class="t">
+<!-МассаБруто-->&nbsp;
+</td>
+<td class="t" align="right">
+<!-Количество-->16,000
+</td>
+<td class="t" align="right">
+X
+</td>
+<td class="t" align="right">
+<!-Сумма-->3119,20
+</td>
+<td class="t">
+X</td>
+<td class="t" align="right">
+<!-НДССумма-->561,46
+</td>
+<td class="t" align="right">
+<!-Итог-->3680,66
+</td>
+</tr>
+<!-#FooterEnd-->
+<tr align="center">
+<td colspan="8"  align="right"><b>Всего по накладной&nbsp;</b></td>
+<td class="t">
+<!-Мест-->&nbsp;
+</td>
+<td class="t">
+<!-МассаБруто-->&nbsp;
+</td>
+<td class="t" align="right">
+<!-Количество-->16,000
+</td>
+<td class="t" align="right">
+X</td>
+<td class="t" align="right">
+<!-Сумма-->3119,20
+</td>
+<td class="t">
+X&nbsp;</td>
+<td class="t" align="right">
+<!-НДССумма-->561,46
+</td>
+<td class="t" align="right">
+<!-Итог-->3680,66
+</td>
+</tr>
+<tr>
+<td colspan="2"></td>
+<td colspan="4">Товарная накладная имеет приложение на &nbsp;</td>
+<td class="b-b" colspan="6">&nbsp;</td>
+<td colspan="4">листах</td>
+</tr>
+<tr class="up-text">
+<td colspan="6"></td>
+<td colspan="6" align="center">прописью&nbsp;</td>
+<td colspan="4"></td>
+</tr>
+<tr>
+<td colspan="2"></td>
+<td colspan="2">и содержит&nbsp;</td>
+<td class="b-b" colspan="8" align="center">
+<!-НомерППИтогоПротисью-->Один
+&nbsp;</td>
+<td colspan="4">порядковых номеров записей</td>
+</tr>
+<tr class="up-text">
+<td colspan="4"></td>
+<td colspan="8" align="center">прописью&nbsp;</td>
+<td colspan="4"></td>
+</tr>
+
+<tr>
+<td colspan="6"></td>
+<td colspan="3">Масса груза (нетто)&nbsp;</td>
+<td class="b-b" colspan="6">&nbsp;</td>
+<td class="b-llrrttb">&nbsp;</td>
+</tr>
+<tr class="up-text">
+<td colspan="9"></td>
+<td colspan="6" align="center">прописью&nbsp;</td>
+<td class="b-llrr">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="2"></td>
+<td>Всего мест</td>
+<td class="b-b" colspan="2">&nbsp;</td>
+<td></td>
+<td colspan="3">Масса груза (брутто)</td>
+<td class="b-b" colspan="6">&nbsp;</td>
+<td class="b-llrrbb">&nbsp;</td>
+</tr>
+<tr class="up-text">
+<td colspan="3"></td>
+<td colspan="2" align="center">прописью&nbsp;</td>
+<td colspan="4"></td>
+<td colspan="6" align="center">прописью&nbsp;</td>
+<td></td>
+</tr>
+
+<tr>
+<td colspan="3">Приложение (паспорта, сертификаты и т.п.) на</td>
+<td class="b-b" colspan="2">&nbsp;</td>
+<td>
+<td>листах</td>
+</tr>
+<tr class="up-text">
+<td colspan="3"></td>
+<td colspan="2" align="center">прописью&nbsp;</td>
+</tr>
+<tr>
+<td colspan="9" rowspan="2">
+Всего отпущено на сумму:&nbsp;
+<!-ВсегоПрописью-->Три тысячи шестьсот восемьдесят рублей 66 копеек
+</td>
+<td class="b-l" colspan="2">&nbsp;По доверенности №</td>
+<td class="b-b">&nbsp;</td>
+<td>от&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"</td>
+<td class="b-b" colspan="2">&nbsp;</td>
+<td>20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;года</td>
+</tr>
+<tr>
+<td class="b-l">&nbsp;выданной</td>
+<td class="b-b" colspan="6">&nbsp;</td>
+</tr>
+<tr class="up-text">
+<td colspan="9"></td>
+<td class="b-l">&nbsp;</td>
+<td colspan="6" align="center">кем, кому (организация, место работы, должность, фамилия, и. о.)</td>
+
+</tr>
+<tr>
+<td colspan="2">Отпуск груза разрешил</td>
+<td class="b-b">
+<!-РазрешилДолжность-->директор
+</td>
+<td></td>
+<td class="b-b">&nbsp;</td>
+<td></td>
+<td class="b-b" colspan="2">
+<!-РазрешилФИО-->Комяков А.Г.
+</td>
+<td></td>
+<td class="b-l">&nbsp;</td>
+<td class="b-b" colspan="6">&nbsp;</td>
+</tr>
+</tr>
+<tr class="up-text">
+<td colspan="2"></td>
+<td align="center">должность</td>
+<td></td>
+<td align="center">подпись</td>
+<td></td>
+<td align="center" colspan="2">расшифровка подписи</td>
+<td></td>
+<td class="b-l">&nbsp;</td>
+</tr>
+</tr>
+<tr>
+<td>
+<td colspan="3"><b>Главный (старший) бухгалтер</b></td>
+<td class="b-b">&nbsp;</td>
+<td></td>
+<td class="b-b" colspan="2" valign="bottom">
+<!-ГлавныйБухгалтер-->Мещерякова Е.В.
+</td>
+<td></td>
+<td class="b-l">&nbsp;Принял</td>
+<td class="b-b">&nbsp;</td>
+<td></td>
+<td class="b-b">&nbsp;</td>
+<td></td>
+<td class="b-b" colspan="2">&nbsp;</td>
+</tr>
+<tr class="up-text">
+<td colspan="4"></td>
+<td align="center">подпись</td>
+<td></td>
+<td align="center" colspan="2">расшифровка подписи</td>
+<td></td>
+<td class="b-l">&nbsp;</td>
+<td align="center">должность</td>
+<td></td>
+<td align="center">подпись</td>
+<td></td>
+<td align="center" colspan="2">расшифровка</td>
+</tr>
+<tr>
+
+<td colspan="2">Отпуск груза произвел</td>
+<td class="b-b">&nbsp;</td>
+<td></td>
+<td class="b-b">&nbsp;</td>
+<td></td>
+<td class="b-b" colspan="2">&nbsp;</td>
+<td></td>
+<td class="b-l">&nbsp;Получил</td>
+<td class="b-b">
+<!-ПолучилДолжность-->зав.аптекой
+&nbsp;</td>
+<td></td>
+<td class="b-b">&nbsp;</td>
+<td></td>
+<td class="b-b" colspan="2">
+<!-ПолучилФИО-->Гребенщикова Е.Ю.
+&nbsp;</td>
+<tr class="up-text">
+<td colspan="2"></td>
+<td align="center">должность</td>
+<td></td>
+<td align="center">подпись</td>
+<td></td>
+<td align="center" colspan="2">расшифровка подписи</td>
+<td></td>
+<td class="b-l">&nbsp;</td>
+<td align="center">должность</td>
+<td></td>
+<td align="center">подпись</td>
+<td></td>
+<td align="center" colspan="2">расшифровка</td>
+</tr>
+
+<tr>
+<td colspan="9" align="center">
+М.П.&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;&nbsp;&nbsp;
+<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+&nbsp;20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;года
+</td>
+<td class="b-l" colspan="7" align="center">
+М.П.&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;&nbsp;&nbsp;
+<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+&nbsp;20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;года
+</td>
+</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,48 @@
+#!/sbin/runscript
+
+
+SVC_BINARY=/usr/local/domino/bin/get-stream
+SVC_PIDFILE=/var/run/domino/${SVCNAME}.pid
+
+if [ ! -d /var/run/domino ] ; then
+mkdir /var/run/domino
+fi
+chown -R domino /var/run/domino
+
+depend() {
+	after net
+}
+
+start() {
+	ebegin "Starting ${SVCNAME}"
+	start-stop-daemon --start --user domino --exec "${SVC_BINARY}" \
+	    --pidfile "${SVC_PIDFILE}" -- --writepid "${SVC_PIDFILE}"
+	retval=$?
+
+	eend ${retval} "Error starting ${SVCNAME}"
+	return ${retval}
+}
+
+stop() {
+	ebegin "Stopping ${SVCNAME}"
+	if [ -f ${SVC_PIDFILE} ] ; then
+	PID=`cat ${SVC_PIDFILE}`
+	
+	if [ "X`ps ho pid -p $PID`" == "X" ] ; then
+		ewarn ${SVCNAME} not running
+	else
+		kill -15 $PID
+	fi
+	while [ "X`ps ho pid -p $PID`" != "X" ] ; do
+	    sleep 1
+	done
+	fi
+	eend $?
+}
+
+reload() {
+	ebegin "Reloading ${SVCNAME}"
+	start-stop-daemon --stop --signal HUP --oknodo \
+	    --exec "${SVC_BINARY}" --pidfile "${SVC_PIDFILE}"
+	eend $?
+}

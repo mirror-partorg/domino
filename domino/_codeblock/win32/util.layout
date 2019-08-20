@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="..\..\lib\dolib\mem.c" open="1" top="0" tabpos="2">
+		<Cursor position="9768" topLine="337" />
+	</File>
+	<File name="..\..\src\utils\main.c" open="1" top="1" tabpos="1">
+		<Cursor position="4513" topLine="111" />
+	</File>
+</CodeBlocks_layout_file>

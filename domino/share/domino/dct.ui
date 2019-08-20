@@ -1,0 +1,31 @@
+<ui>
+      <menubar name='MainMenu'>
+        <menu name='File' action='File'> 
+          <menuitem name='Close' action='CloseAction'/> 
+          <menuitem name='Quit' action='QuitAction'/> 
+        </menu> 
+        <menu name='Action' action='Action'> 
+          <menuitem name='Inventory' action='Inventory'/> 
+        </menu> 
+        <menu name='Tools' action='Tools'> 
+          <menuitem name='CommonEdit' action='CommonEdit'/> 
+        </menu> 
+        <menu name='Tabs' action='Tabs'> 
+          <menuitem name='TabsPrevious' action='TabsPrevious'/> 
+          <menuitem name='TabsNext' action='TabsNext'/> 
+          <separator/> 
+          <menuitem name='TabsMoveLeft' action='TabsMoveLeft'/> 
+          <menuitem name='TabsMoveRight' action='TabsMoveRight'/> 
+    	   <placeholder name='TabsOpen'> 
+            <separator name='TabsSep2'/> 
+          </placeholder> 
+        </menu> 
+        <menu name='View' action='View'> 
+          <menuitem name='FullScreen' action='FullScreen'/> 
+          <menuitem name='MainMenu' action='MainMenu'/> 
+        </menu> 
+        <menu name='Help' action='HelpAction'> 
+          <menuitem name='About' action='AboutAction'/> 
+        </menu> 
+      </menubar> 
+</ui>

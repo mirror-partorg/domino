@@ -1,0 +1,383 @@
+# depslib dependency file v1.0
+1285949280 source:/home/mirror/work/app-domino/lib/dolib/auth.c
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	<stdlib.h>
+	<sys/types.h>
+	"../../config/config.h"
+	"../../misc/define.h"
+	<dolib.h>
+
+1294295520 /home/mirror/work/app-domino/config/config.h
+
+1285949280 /home/mirror/work/app-domino/misc/define.h
+
+1285949280 source:/home/mirror/work/app-domino/lib/dolib/data.c
+	<dolib.h>
+	<string.h>
+	<stdarg.h>
+	<errno.h>
+	<stdlib.h>
+	"../../misc/define.h"
+
+1308634533 source:/home/mirror/work/app-domino/lib/dolib/dolib_wrap.c
+	<dolib.h>
+	<Python.h>
+	<string.h>
+	<float.h>
+	<math.h>
+	<limits.h>
+
+1301022828 /usr/include/python2.7/Python.h
+	"patchlevel.h"
+	"pyconfig.h"
+	"pymacconfig.h"
+	<limits.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<unistd.h>
+	<stddef.h>
+	<assert.h>
+	"pyport.h"
+	"pymath.h"
+	"pymem.h"
+	"object.h"
+	"objimpl.h"
+	"pydebug.h"
+	"unicodeobject.h"
+	"intobject.h"
+	"boolobject.h"
+	"longobject.h"
+	"floatobject.h"
+	"complexobject.h"
+	"rangeobject.h"
+	"stringobject.h"
+	"memoryobject.h"
+	"bufferobject.h"
+	"bytesobject.h"
+	"bytearrayobject.h"
+	"tupleobject.h"
+	"listobject.h"
+	"dictobject.h"
+	"enumobject.h"
+	"setobject.h"
+	"methodobject.h"
+	"moduleobject.h"
+	"funcobject.h"
+	"classobject.h"
+	"fileobject.h"
+	"cobject.h"
+	"pycapsule.h"
+	"traceback.h"
+	"sliceobject.h"
+	"cellobject.h"
+	"iterobject.h"
+	"genobject.h"
+	"descrobject.h"
+	"warnings.h"
+	"weakrefobject.h"
+	"codecs.h"
+	"pyerrors.h"
+	"pystate.h"
+	"pyarena.h"
+	"modsupport.h"
+	"pythonrun.h"
+	"ceval.h"
+	"sysmodule.h"
+	"intrcheck.h"
+	"import.h"
+	"abstract.h"
+	"compile.h"
+	"eval.h"
+	"pyctype.h"
+	"pystrtod.h"
+	"pystrcmp.h"
+	"dtoa.h"
+	"pyfpe.h"
+	<pth.h>
+
+1301022827 /usr/include/python2.7/patchlevel.h
+
+1301022828 /usr/include/python2.7/pyconfig.h
+
+1301022828 /usr/include/python2.7/pymacconfig.h
+
+1301022828 /usr/include/python2.7/pyport.h
+	"pyconfig.h"
+	<inttypes.h>
+	<stdint.h>
+	<stdlib.h>
+	<ieeefp.h>
+	<math.h>
+	<sys/time.h>
+	<time.h>
+	<sys/time.h>
+	<time.h>
+	<sys/select.h>
+	<sys/types.h>
+	"unixstuff.h"
+	<sys/types.h>
+	<sys/stat.h>
+	<stat.h>
+	<sys/types.h>
+	<sys/termio.h>
+	<termios.h>
+	<osreldate.h>
+	<ctype.h>
+	<wctype.h>
+
+1301022828 /usr/include/python2.7/pymath.h
+	"pyconfig.h"
+
+1301022828 /usr/include/python2.7/pymem.h
+	"pyport.h"
+
+1301022827 /usr/include/python2.7/object.h
+
+1301022827 /usr/include/python2.7/objimpl.h
+	"pymem.h"
+
+1301022827 /usr/include/python2.7/pydebug.h
+
+1301022828 /usr/include/python2.7/unicodeobject.h
+	<stdarg.h>
+	<ctype.h>
+	<time.h>
+	<wchar.h>
+	<wctype.h>
+
+1301022827 /usr/include/python2.7/intobject.h
+
+1301022827 /usr/include/python2.7/boolobject.h
+
+1301022827 /usr/include/python2.7/longobject.h
+
+1301022827 /usr/include/python2.7/floatobject.h
+
+1301022827 /usr/include/python2.7/complexobject.h
+
+1301022828 /usr/include/python2.7/rangeobject.h
+
+1301022828 /usr/include/python2.7/stringobject.h
+	<stdarg.h>
+
+1301022827 /usr/include/python2.7/memoryobject.h
+
+1301022827 /usr/include/python2.7/bufferobject.h
+
+1301022827 /usr/include/python2.7/bytesobject.h
+
+1301022827 /usr/include/python2.7/bytearrayobject.h
+	<stdarg.h>
+
+1301022828 /usr/include/python2.7/tupleobject.h
+
+1301022827 /usr/include/python2.7/listobject.h
+
+1301022827 /usr/include/python2.7/dictobject.h
+
+1301022827 /usr/include/python2.7/enumobject.h
+
+1301022828 /usr/include/python2.7/setobject.h
+
+1301022827 /usr/include/python2.7/methodobject.h
+
+1301022827 /usr/include/python2.7/moduleobject.h
+
+1301022827 /usr/include/python2.7/funcobject.h
+
+1301022827 /usr/include/python2.7/classobject.h
+
+1301022827 /usr/include/python2.7/fileobject.h
+
+1301022827 /usr/include/python2.7/cobject.h
+
+1301022827 /usr/include/python2.7/pycapsule.h
+
+1301022828 /usr/include/python2.7/traceback.h
+
+1301022828 /usr/include/python2.7/sliceobject.h
+
+1301022827 /usr/include/python2.7/cellobject.h
+
+1301022827 /usr/include/python2.7/iterobject.h
+
+1301022827 /usr/include/python2.7/genobject.h
+
+1301022827 /usr/include/python2.7/descrobject.h
+
+1301022828 /usr/include/python2.7/warnings.h
+
+1301022828 /usr/include/python2.7/weakrefobject.h
+
+1301022827 /usr/include/python2.7/codecs.h
+
+1301022827 /usr/include/python2.7/pyerrors.h
+	<stdarg.h>
+
+1301022828 /usr/include/python2.7/pystate.h
+
+1301022827 /usr/include/python2.7/pyarena.h
+
+1301022827 /usr/include/python2.7/modsupport.h
+	<stdarg.h>
+
+1301022828 /usr/include/python2.7/pythonrun.h
+
+1301022827 /usr/include/python2.7/ceval.h
+
+1301022828 /usr/include/python2.7/sysmodule.h
+
+1301022827 /usr/include/python2.7/intrcheck.h
+
+1301022827 /usr/include/python2.7/import.h
+
+1301022827 /usr/include/python2.7/abstract.h
+
+1301022827 /usr/include/python2.7/compile.h
+	"code.h"
+
+1301022827 /usr/include/python2.7/code.h
+
+1301022827 /usr/include/python2.7/eval.h
+
+1301022827 /usr/include/python2.7/pyctype.h
+
+1301022828 /usr/include/python2.7/pystrtod.h
+
+1301022828 /usr/include/python2.7/pystrcmp.h
+
+1301022827 /usr/include/python2.7/dtoa.h
+
+1301022827 /usr/include/python2.7/pyfpe.h
+	<signal.h>
+	<setjmp.h>
+	<math.h>
+
+1293104460 source:/home/mirror/work/app-domino/lib/dolib/list.c
+	<dolib.h>
+	"../../misc/define.h"
+	<stdarg.h>
+	<string.h>
+	<stdio.h>
+
+1285949280 source:/home/mirror/work/app-domino/lib/dolib/log.c
+	<dolib.h>
+	"../../misc/define.h"
+	"win32/syslog.c"
+	<windows.h>
+	<sys/syslog.h>
+	<errno.h>
+	<string.h>
+	<stdarg.h>
+	<time.h>
+
+1285949280 /home/mirror/work/app-domino/lib/dolib/win32/syslog.c
+	<stdio.h>
+	<windows.h>
+	<string.h>
+	<stdlib.h>
+	"win32/syslog.h"
+	"syslogmes.h"
+
+1285949280 /home/mirror/work/app-domino/lib/dolib/win32/syslogmes.h
+
+1295852520 source:/home/mirror/work/app-domino/lib/dolib/mem.c
+	<stdlib.h>
+	<string.h>
+	<dolib.h>
+	"../../misc/define.h"
+	<errno.h>
+	<windows.h>
+	<pthread.h>
+
+1285949280 source:/home/mirror/work/app-domino/lib/dolib/proc_state.c
+	<stdio.h>
+	<dolib.h>
+	"../misc/define.h"
+
+1291868100 source:/home/mirror/work/app-domino/lib/dolib/rpc.c
+	<string.h>
+	<errno.h>
+	<stdio.h>
+	<locale.h>
+	<stdarg.h>
+	<zlib.h>
+	<gcrypt.h>
+	<dolib.h>
+	"../../misc/define.h"
+	"thread.h"
+	"socket_io.h"
+	<windows.h>
+	"../../misc/iconv_.h"
+	"telnet.h"
+
+1286289360 /home/mirror/work/app-domino/lib/dolib/thread.h
+	<windows.h>
+	<process.h>
+	<pthread.h>
+
+1285949280 /home/mirror/work/app-domino/lib/dolib/socket_io.h
+	"../../misc/socket.h"
+	<dolib.h>
+
+1285949280 /home/mirror/work/app-domino/misc/socket.h
+	<winsock2.h>
+	<sys/socket.h>
+	<arpa/inet.h>
+	<netdb.h>
+	<unistd.h>
+
+1293016020 /home/mirror/work/app-domino/misc/iconv_.h
+	<iconv.h>
+
+1285949280 /home/mirror/work/app-domino/lib/dolib/telnet.h
+
+1285949280 source:/home/mirror/work/app-domino/lib/dolib/rpc_client.c
+	<dolib.h>
+	"socket_io.h"
+	"../../misc/define.h"
+	"../../misc/iconv_.h"
+	<errno.h>
+	<string.h>
+	<stdio.h>
+	<gcrypt.h>
+	<zlib.h>
+
+1285949280 source:/home/mirror/work/app-domino/lib/dolib/scanner.c
+	<string.h>
+	<dolib.h>
+	"../misc/iconv_.h"
+	"../misc/define.h"
+	<ctype.h>
+
+1299129960 source:/home/mirror/work/app-domino/lib/dolib/service.c
+	<stdio.h>
+	<dolib.h>
+	<errno.h>
+	<string.h>
+	"../misc/define.h"
+	<fcntl.h>
+	<unistd.h>
+	<sys/syslog.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<pwd.h>
+	<dolib.h>
+	<windows.h>
+
+1285949280 source:/home/mirror/work/app-domino/lib/dolib/util.c
+	<dolib.h>
+	"../misc/define.h"
+	<errno.h>
+
+1293508740 source:/home/mirror/work/app-domino/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+

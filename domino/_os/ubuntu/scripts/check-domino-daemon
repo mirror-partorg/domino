@@ -1,0 +1,19 @@
+#!/bin/bash
+
+DOMINO_DAEMON="dclubd exchanged get-video"
+export LD_LIBRARY_PATH=/usr/local/domino/lib:/usr/local/psql/lib
+
+
+for i in $DOMINO_DAEMON ; do
+    if [ -f /etc/init.d/$i ] ; then 
+	if [ ! -f /var/run/domino/$i.pid ] ; then
+	    INFO=""
+	else 
+	    INFO=$(ps ho pid -p `cat /var/run/domino/$i.pid`)
+	fi
+        if [ "X$INFO" == "X" ] ; then
+	    /usr/local/domino/bin/send-error-message "Error from `uname -n`: $i not work!!!!!"
+        fi
+    fi
+done
+

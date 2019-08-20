@@ -1,0 +1,13 @@
+
+include ../../common.mak
+
+LDFLAGS =  $(LIBDOMINO) $(LIBDO) $(LIBEXPAT) -DNO_CLEAR
+
+SRCS =load.c date_util.c read_files.c
+
+APP = astra-load-no-clear
+
+
+include ../../program.mak
+
+

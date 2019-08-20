@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../../src/get-video-1/cmdutils.c" open="1" top="0" tabpos="4">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="../../src/get-video-1/ffmpeg.c" open="1" top="1" tabpos="1">
+		<Cursor position="106917" topLine="2982" />
+	</File>
+	<File name="../../src/get-video-1/ffmpeg_filter.c" open="1" top="0" tabpos="3">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="../../src/get-video-1/ffmpeg_opt.c" open="1" top="0" tabpos="2">
+		<Cursor position="88134" topLine="2321" />
+	</File>
+</CodeBlocks_layout_file>

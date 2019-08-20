@@ -1,0 +1,77 @@
+#!/sbin/runscript
+
+
+SVC_BINARY=/usr/local/domino/bin/get-video
+SVC_PIDFILE=/var/run/domino/${SVCNAME}.pid
+
+SVC_SUF=${SVCNAME#*.}
+
+if [[ "X$SVC_SUF" == "X$SVCNAME" || "X$SVC_SUF" == "X" ]] ; then
+SVC_CONFIG="/usr/local/domino/etc/get-video.conf"
+MASK="cam*.avi"
+else
+SVC_CONFIG="/usr/local/domino/etc/get-video-$SVC_SUF.conf"
+MASK="$SVC_SUF*.avi"
+fi
+
+if [ ! -d /var/run/domino ] ; then
+mkdir /var/run/domino
+fi
+chown -R domino /var/run/domino
+
+depend() {
+	after net
+}
+
+config() {
+cams=`ls /dev/video*`
+if [ -f /usr/bin/v4l2-ctl ] ; then
+for i in $cams; do
+/usr/bin/v4l2-ctl -d $i --set-ctrl=power_line_frequency=1
+done
+fi
+if [ -f /usr/bin/v4l2ctrl ] ; then
+for i in $cams; do
+/usr/bin/v4l2ctrl -d $i -s /tmp/video-tm
+cat /tmp/video-tm | grep Power | sed -e 's/:2/:1/g' >/tmp/video-set
+/usr/bin/v4l2ctrl -d $i -l /tmp/video-set
+done
+fi
+}
+
+start() {
+	ebegin "Starting ${SVCNAME}"
+	config
+	
+	start-stop-daemon --start --user domino --exec "${SVC_BINARY}" \
+	    --pidfile "${SVC_PIDFILE}" -- --writepid "${SVC_PIDFILE}" -f ${SVC_CONFIG}
+
+#	start-stop-daemon --start --exec "${SVC_BINARY}" \
+#	    --pidfile "${SVC_PIDFILE}" -- --writepid "${SVC_PIDFILE}"
+
+	retval=$?
+
+	eend ${retval} "Error starting ${SVCNAME}"
+	return ${retval}
+}
+
+stop() {
+	ebegin "Stopping ${SVCNAME}"
+	if [ -f ${SVC_PIDFILE} ] ; then
+	PID=`cat ${SVC_PIDFILE}`
+	
+	kill -9 $PID
+	while [ "X`ps ho pid -p $PID`" != "X" ] ; do
+	    sleep 1
+	done
+	rm -f /tmp/$MASK
+	fi
+	eend $?
+}
+
+reload() {
+	ebegin "Reloading ${SVCNAME}"
+	start-stop-daemon --stop --signal HUP --oknodo \
+	    --exec "${SVC_BINARY}" --pidfile "${SVC_PIDFILE}"
+	eend $?
+}

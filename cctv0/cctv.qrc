@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/icon32.png</file>
+        <file>images/shutdown.png</file>
+        <file>images/view-fullscreen.png</file>
+        <file>images/no_videos.png</file>
+        <file>images/theme.svg</file>
+        <file>images/media-start.png</file>
+        <file>images/media-left-page.png</file>
+        <file>images/media-left.png</file>
+        <file>images/media-right-page.png</file>
+        <file>images/media-right.png</file>
+    </qresource>
+</RCC>

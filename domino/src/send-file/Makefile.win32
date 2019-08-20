@@ -1,0 +1,20 @@
+CC = gcc
+
+LDFLAGS =  -L../../lib/dolib -ldolib  -s -O2 -lgcrypt -mms-bitfields -Wl,-subsystem,windows
+
+CFLAGS = -D_WIN32 -DZLIB -I../../include
+       
+
+OBJS = main.o
+SRCS = main.c 
+
+APP = send-file
+
+all: $(APP)
+
+$(APP):  
+	$(CC) $(AM_FLAGS) $(OPT_FLAGS) $(CFLAGS) $(SRCS) -o $(APP) $(LDFLAGS)
+ 
+    
+
+

@@ -1,0 +1,34 @@
+#!/sbin/runscript
+
+
+SVC_BINARY=/usr/local/domino/bin/dclubd
+SVC_PIDFILE=/var/run/${SVCNAME}.pid
+
+
+depend() {
+	after net
+}
+
+start() {
+	ebegin "Starting ${SVCNAME}"
+	start-stop-daemon --start --exec "${SVC_BINARY}" \
+	    --pidfile "${SVC_PIDFILE}" 
+	retval=$?
+
+	eend ${retval} "Error starting ${SVCNAME}"
+	return ${retval}
+}
+
+stop() {
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop --exec "${SVC_BINARY}" \
+	    --pidfile "${SVC_PIDFILE}" --quiet
+	eend $?
+}
+
+reload() {
+	ebegin "Reloading ${SVCNAME}"
+	start-stop-daemon --stop --signal HUP --oknodo \
+	    --exec "${SVC_BINARY}" --pidfile "${SVC_PIDFILE}"
+	eend $?
+}

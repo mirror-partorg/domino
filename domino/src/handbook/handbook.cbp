@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="handbook" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/handbook" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/handbook" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`pkg-config gtk+-3.0 --cflags`" />
+			<Add option="-DUSE_GREY_PLUS" />
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config gtk+-3.0 --libs`" />
+			<Add library="domino" />
+			<Add library="gtkdomino" />
+		</Linker>
+		<Unit filename="../../lib/gtkdomino/docontext.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/gtkdomino/doedit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/gtkdomino/doentry.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/gtkdomino/doentrybutton.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/gtkdomino/doentryhandbook.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/gtkdomino/doentryproduct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/gtkdomino/domarshal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../lib/gtkdomino/doutils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="messages.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="utils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

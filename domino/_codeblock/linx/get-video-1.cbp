@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="get-video-1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/get-video-1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-y  -i rtsp://192.168.6.91:554/live2.sdp -codec:v h263p -r 15 -b:v 1000k -an -fs 1048576" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/get-video-1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-w" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="`pkg-config glib-2.0 loudmouth-1.0 --cflags`" />
+			<Add option="-DHAVE_SYS_RESOURCE_H" />
+			<Add option="-DCONFIG_AVDEVICE" />
+			<Add option="-DCONFIG_NETWORK" />
+			<Add option="-DCONFIG_AVFILTER" />
+			<Add option="-DHAVE_PTHREADS" />
+			<Add directory="/usr/include/postgresql" />
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config loudmouth-1.0 glib-2.0 libavcodec libavdevice libavfilter libavformat libavutil  libswscale --libs`" />
+			<Add library="smbclient" />
+			<Add library="dolib" />
+			<Add library="pq" />
+		</Linker>
+		<Unit filename="../../src/get-video-1/cmdutils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/get-video-1/ffmpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/get-video-1/ffmpeg_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/get-video-1/ffmpeg_opt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

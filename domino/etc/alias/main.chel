@@ -1,0 +1,144 @@
+;------------------------------------------------------------------------------
+; (ODBC)
+
+DB_SQL domino
+
+;------------------------------------------------------------------------------
+; (SERVER)
+
+DB_HOST database
+
+;------------------------------------------------------------------------------
+; (AGENT)
+ 
+CODES /domino/domino/database/apteka/agent/codes.dat
+OTDEL /domino/domino/database/apteka.chel/agent/otdel.dat
+PARTNER /domino/domino/database/apteka/agent/partner.dat
+PAR_DATA /domino/domino/database/apteka/agent/par_data.dat
+PLINK /domino/domino/database/apteka/agent/plink.dat
+P_VIEW /domino/domino/database/apteka/agent/p_view.dat
+PARTNER_BUX /domino/domino/database/apteka/agent/part_bux.dat
+PGRUPPA_BUX /domino/domino/database/apteka/agent/pgru_bux.dat
+CITY /domino/domino/database/apteka/agent/city.dat
+STREET /domino/domino/database/apteka/agent/street.dat
+SKLAD /domino/domino/database/apteka.chel/agent/sklad.dat
+ 
+;------------------------------------------------------------------------------
+; (ANALIT)
+ 
+REALIZATION /domino/domino/database/apteka/analit/realiz.dat
+;------------------------------------------------------------------------------
+; (CLASSIF)
+ 
+ACCOUNT /domino/domino/database/apteka/classif/account.dat
+ACCOUNT2 /domino/domino/database/apteka/classif/account2.dat
+AMOR /domino/domino/database/apteka/classif/amor.dat
+GRUPPA /domino/domino/database/apteka/classif/gruppa.dat
+KLASS /domino/domino/database/apteka/classif/klass.dat
+KURS /domino/domino/database/apteka/classif/kurs.dat
+PGRUPPA /domino/domino/database/apteka/classif/pgruppa.dat
+PODGRU /domino/domino/database/apteka/classif/podgru.dat
+SUBACCOUNT /domino/domino/database/apteka/classif/subacc.dat
+ 
+;------------------------------------------------------------------------------
+; (DOCUMENT)
+ 
+CPOINTS /domino/domino/database/apteka.chel/document/cpoints.dat
+CPOINT2 /domino/domino/database/apteka.chel/document/cpoint2.dat
+D_ORDER /domino/domino/database/apteka.chel/document/d_order.dat
+D_VIEW /domino/domino/database/apteka.chel/document/d_view.dat
+DLINK /domino/domino/database/apteka.chel/document/dlink.dat
+DOCUMENT /domino/domino/database/apteka.chel/document/document.dat
+ENUM /domino/domino/database/apteka.chel/document/enum.dat
+PACH /domino/domino/database/apteka.chel/document/pach.dat
+ENUMPLUS /domino/domino/database/apteka.chel/document/enumplus.dat
+DOC_DATA /domino/domino/database/apteka.chel/document/doc_data.dat
+
+
+ 
+;------------------------------------------------------------------------------
+; (PRODUCT)
+ 
+BARCODES /domino/domino/database/apteka/product/barcodes.dat
+T_LINK /domino/domino/database/apteka/product/t_link.dat
+T_VIEW /domino/domino/database/apteka/product/t_view.dat
+TOWAR /domino/domino/database/apteka/product/towar.dat
+MEDBAR /domino/domino/database/apteka/product/medbar.dat
+TOW_DATA /domino/domino/database/apteka/product/tow_data.dat
+ 
+;------------------------------------------------------------------------------
+; (PROJECT)
+ 
+BGLOBAL /domino/domino/database/apteka/project/bglobal.dat
+BOTCH /domino/domino/database/apteka/project/botch.dat
+BOTCHNASTR /domino/domino/database/apteka/project/bonastr.dat
+BOPER /domino/domino/database/apteka/project/boper.dat
+BOPERPROW /domino/domino/database/apteka/project/boprow.dat
+DICTIONARY /domino/domino/database/apteka/project/diction.dat
+DPROW /domino/domino/database/apteka/project/dprow.dat
+DTYPE /domino/domino/database/apteka/project/dtype.dat
+IMPORTACC /domino/domino/database/apteka/project/impacc.dat
+PRAZD /domino/domino/database/apteka/project/prazd.dat
+TIPDOC /domino/domino/database/apteka/project/tipdoc.dat
+TIPOPER /domino/domino/database/apteka/project/tipoper.dat
+
+ 
+;------------------------------------------------------------------------------
+; (PROTOCOL)
+PROTOCOL /domino/domino/database/apteka/protocol/protocol.dat
+ 
+;------------------------------------------------------------------------------
+; (PROWOD)
+ 
+PROWOD /domino/domino/database/apteka.chel/prowod/prowod.dat
+PROWOD2 /domino/domino/database/apteka.chel/prowod/prowod2.dat
+ 
+;------------------------------------------------------------------------------
+; (SALARY)
+ 
+SAL_HIST /domino/domino/database/apteka/salary/sal_hist.dat
+SALARYINCOME /domino/domino/database/apteka/salary/sal_inc.dat
+ 
+;------------------------------------------------------------------------------
+; (SALDO)
+ 
+SALDO /domino/domino/database/apteka.chel/saldo/saldo.dat
+CPSALDO /domino/domino/database/apteka.chel/saldo/cpsaldo.dat
+ 
+;------------------------------------------------------------------------------
+; (STOCK)
+ 
+STOCK /domino/domino/database/apteka/stock/stock.dat
+REST_BCP /domino/domino/database/apteka/stock/rest_bcp.dat
+AMORTIZ /domino/domino/database/apteka/stock/amortiz.dat
+
+;------------------------------------------------------------------------------
+; (CTL)
+
+CTL_CHECK /domino/domino/database/apteka/ctl/ctlch.dat
+CTL_product /domino/domino/database/apteka/ctl/ctltw.dat
+CRNT_CTL_CHECK /domino/domino/database/apteka/ctl/crctlch.dat
+CRNT_CTL_product /domino/domino/database/apteka/ctl/crctltw.dat
+CTL_SK /domino/domino/database/apteka/ctl/sk.dat
+CTL_SKK /domino/domino/database/apteka/ctl/skk.dat
+
+CHECKS /domino/domino/database/apteka/ctl/checks.dat
+CHECKSSUM /domino/domino/database/apteka/ctl/checkssum.dat
+SHIFTS /domino/domino/database/apteka/ctl/shifts.dat
+USHIFTS /domino/domino/database/apteka/ctl/ushifts.dat
+DISCOUNT /domino/domino/database/apteka/ctl/discount.dat
+
+HOTKEY /domino/domino/database/apteka/product/hotkey.dat
+
+FILE /domino/domino/database/apteka/ddf/file.ddf
+FIELD /domino/domino/database/apteka/ddf/field.ddf
+VIEW /domino/domino/database/apteka/ddf/view.ddf
+INDEX /domino/domino/database/apteka/ddf/index.ddf
+
+;------------------------------------------------------------------------------
+; (USER)
+
+USER /domino/domino/login/apteka/user.dat
+
+
+

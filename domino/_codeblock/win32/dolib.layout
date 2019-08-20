@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="..\..\lib\dolib\data.c" open="1" top="0" tabpos="3">
+		<Cursor position="10775" topLine="397" />
+	</File>
+	<File name="..\..\lib\dolib\list.c" open="1" top="0" tabpos="4">
+		<Cursor position="3629" topLine="120" />
+	</File>
+	<File name="..\..\lib\dolib\rpc.c" open="1" top="0" tabpos="1">
+		<Cursor position="150" topLine="0" />
+	</File>
+	<File name="..\..\misc\iconv_.c" open="1" top="1" tabpos="5">
+		<Cursor position="2821" topLine="105" />
+	</File>
+</CodeBlocks_layout_file>

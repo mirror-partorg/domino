@@ -1,0 +1,463 @@
+#!/bin/bash
+
+
+DIR_TMP=$(if [ $(uname -s) == "Linux" ] ; then if [[ $(lsb_release -cs) == "n/a" ]] ; then release=$(hostname) ; else release=$(lsb_release -cs) ; fi ; suffix=$(lsb_release -is)/$release/ ; fi ; echo var/$(uname -s)/$suffix$(uname -m))
+
+echo $DIR_TMP
+
+USE_ZLIB=1
+USE_GCRYPT=0
+USE_PSEUDO_TELNET=0
+USE_DEBUG=1
+USE_MEMORY_DEBUG=0
+USE_BINARY_UPDATE=0
+USE_LOUDMOUTH=0
+USE_LOUDMOUTH_LOCAL=0
+USE_LIBAV=0
+USE_LIBAV_LOCAL=1
+USE_GTK=1
+USE_GTK3=1
+USE_GLIB=1
+USE_PYTHON=0
+USE_OLD_ARTIX_INFO=0
+USE_NCURSES=1
+USE_ARTIX=0
+USE_LIBXML2=1
+USE_LIBVLC=0
+USE_POPPLER=1
+USE_EV=0
+USE_EXPAT=1
+
+LOCAL_CASH=0
+GROUPNAME=domino
+USERNAME=domino
+DOMINO_ROOT=/usr/local/domino
+PSQL_ROOT=/usr/local/psql
+
+PYTHON_VERSIONS="2 3"
+
+DOMINO_ETC=$DOMINO_ROOT/etc
+DOMINO_BIN=$DOMINO_ROOT/bin
+DOMINO_LOG=$DOMINO_ROOT/log
+DOMINO_LIB=$DOMINO_ROOT/lib
+DOMINO_TEMPLATE=$DOMINO_ROOT/template
+DOMINO_SHARE=$DOMINO_ROOT/share
+PSQL_BIN=$PSQL_ROOT/bin
+PSQL_LIB=$PSQL_ROOT/lib
+PSQL_LIB64=$PSQL_ROOT/lib64
+USE_PSQL=1
+USE_CASH=0
+
+if [[ "`whereis cups`" == "cups:" ]] ; then 
+USE_CUPS=0
+else
+USE_CUPS=1
+fi
+
+
+SUBDIRS="etc  \
+	lib/dolib lib/domino lib/python lib/pydomino \
+	src/ctrlpasswd src/domino src/exchanged src/send-file src/sync src/tmcck src/handbook-text src/genkey  \
+	src/period src/ddfutil src/grlspl-load template share src/get-stock"
+
+for arg in $@ ; do 
+    case $arg in
+    debug)
+	USE_DEBUG=1
+	echo debug
+	;;
+    -X)
+	SUBDIRS=${SUBDIRS/src\/domino/}
+	USE_GTK=0
+        ;;
+    -artix)
+	SUBDIRS=${SUBDIRS/lib\/artix/}
+	SUBDIRS=${SUBDIRS/src\/tmcck/}
+	SUBDIRS=${SUBDIRS/src\/exchanged/}
+	SUBDIRS=${SUBDIRS/src\/handbook-text/}
+	USE_ARTIX=0
+	;;
+    gtk3)
+	USE_GTK3=1
+	;;
+    cash)
+	SUBDIRS="etc  \
+	lib/dolib lib/artix lib/loudmouth lib/ffmpeg lib/domino lib/pydomino \
+	src/crntsale src/ctrlpasswd src/dclubd src/exchanged src/exchanged.info src/tmcck src/handbook-text src/genkey \
+	src/send-message src/domino template src/get-video share"
+	USE_GTK=0
+	USE_GLIB=1
+	USE_ZLIB=0
+	USE_EXPAT=1
+	USE_PYTHON=1
+	USE_NCURSES=1
+	LOCAL_CASH=1
+	USE_LIBXML2=0
+	USE_LOUDMOUTH_LOCAL=1
+	USE_LIBAV=1
+	USE_LIBAV_LOCAL=1
+	USE_CASH=1
+	;;
+    handbook-only)
+	SUBDIRS="lib/dolib lib/domino src/domino etc template share"
+	USE_ARTIX=0
+	;;
+    utilonly)
+	SUBDIRS="lib/dolib lib/artix lib/domino src/utils"
+	;;
+    libonly)
+	SUBDIRS="lib/dolib"
+	USE_PSQL=0
+	USE_GTK=0
+	;;
+    cups)
+	USE_CUPS=1
+	;;
+    sendmessageonly)
+	SUBDIRS="etc lib/dolib src/send-message"
+	USE_PSQL=0
+	USE_ZLIB=0
+	USE_GCRYPT=0
+	USE_PSEUDO_TELNET=0
+	USE_DEBUG=0
+	USE_MEMORY_DEBUG=0
+	USE_BINARY_UPDATE=0
+	USE_LOUDMOUTH=1
+	USE_GTK=0
+	USE_GLIB=1
+	USE_EXPAT=0
+	;;
+    clean)
+	make clean
+	rm -f Makefile
+	rm -f common.mak
+	rm -f library.mak
+	rm -f pylibrary.mak
+	rm -f program.mak
+	rm -f -R ./_codeblock/linx/bin
+	rm -f -R ./_codeblock/linx/obj
+	rm -f -R ./_codeblock/win32/bin
+	rm -f -R ./_codeblock/win32/obj
+	rm -f ./_os/ubuntu/*.deb
+	rm -f ./_os/ubuntu.45/*.deb
+	rm -fR $DIR_TMP
+	exit 0
+	;;
+    *)
+	echo "Unsupport parameter \"$arg\""
+	exit 1
+	;;
+    esac
+done
+
+
+mkdir -p $DIR_TMP
+cat template/Makefile.tmpl  >Makefile
+for f in "common" "program" "library" "pylibrary" 
+do
+cp -f template/$f.mak $f.mak
+done
+
+cd $DIR_TMP
+mkdir -p .libs
+mkdir -p .progs
+
+if [ $USE_GCRYPT != 1 ] ; then
+	SUBDIRS=${SUBDIRS/src\/genkey/} 
+fi
+if [ $USE_PYTHON != 1 ] ; then
+	SUBDIRS=${SUBDIRS/lib\/python/} 
+fi
+
+if [ $USE_CASH == 1 ] ; then
+cp -f ./src/domino/Makefile.cash ./src/domino/Makefile
+else
+cp -f ./src/domino/Makefile.norm ./src/domino/Makefile
+fi
+echo "+++++ Checking machine hardware..."
+
+echo "#ifndef DOMINO_MACROS_H_">do-macros.h
+echo "#define DOMINO_MACROS_H_">>do-macros.h
+
+OS_VERSION=`uname -m`
+ if [ "X$OS_VERSION" = "Xi686" ] ; then
+    echo Passed...
+    echo "#define DOINT_TO_POINTER(a) ((void*)(int)(a))">>do-macros.h
+    echo "#define DOPOINTER_TO_INT(p)((int)  (int) (p))">>do-macros.h
+ else
+    if [ "X$OS_VERSION" = "Xx86_64" ] ; then
+	echo Passed...
+    echo "#define DOINT_TO_POINTER(a) ((void*)(long)(a))">>do-macros.h
+    echo "#define DOPOINTER_TO_INT(p)((int)  (long) (p))">>do-macros.h
+    else
+	echo "ERROR: Unsupported machine hardware version detected ($VERSION)."
+	exit 1    
+    fi
+ fi
+echo "#endif // DOMINO_MACROS_H_">>do-macros.h
+
+echo "+++++ Checking current user rights..."
+UID__=`id | grep "uid=0(root)" | wc -l | tr -d " "`
+if [ "X$UID__" = "X1" ] ; then
+ 	echo Passed...
+echo
+echo
+echo "+++++ Setting up group..."
+
+GROUPEXISTS=`grep "^$GROUPNAME:" /etc/group`
+ if [ "X$GROUPEXISTS" == "X" ] ; then
+    /usr/sbin/groupadd $GROUPNAME
+ fi    
+
+ if [ ! -d $DOMINO_ROOT ] ; then
+	mkdir $DOMINO_ROOT
+	chmod +x $DOMINO_ROOT 
+ fi
+
+ if [ ! -d $DOMINO_BIN ] ; then
+	mkdir $DOMINO_BIN
+ fi
+
+ if [ ! -d $DOMINO_LOG ] ; then
+	mkdir $DOMINO_LOG
+	chmod  751 $DOMINO_LOG
+	chown $USERNAME:$GROUPNAME $DOMINO_LOG
+ fi
+find $DOMINO_LOG -type f -exec chmod 640 {} \;
+chown -R $USERNAME:$GROUPNAME $DOMINO_LOG
+
+if [ ! -d $DOMINO_LIB ] ; then
+	mkdir $DOMINO_LIB
+fi
+if [ ! -d $DOMINO_ETC ] ; then
+	mkdir $DOMINO_ETC
+fi
+
+echo +++++ Setting up user $USERNAME...
+UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERNAME`
+if [ "X$UPVSWEXISTS" = "X" ] ; then
+	echo Creating user $USERNAME, this may take a while...
+	/usr/sbin/useradd -c "Domino daemon" -d $DOMINO_BIN -g $GROUPNAME $USERNAME -s /bin/bash 2>&1
+	UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERNAME`
+	if [ "X$UPVSWEXISTS" = "X" ] ; then
+		echo "ERROR: Can not create user $USERNAME"
+    		exit 1
+	fi
+fi
+echo +++++ Setting up environment...
+
+if [ -d /etc/env.d ] ; then
+ if [[ $USE_PSQL == 1 ]] ; then
+  if [ -f /etc/env.d/05psql ] ; then
+    rm -f /etc/env.d/05psql
+    env-update && source /etc/profile
+  fi
+ if [ -f /etc/env.d/05psql64 ] ; then
+    rm -f /etc/env.d/05psql64
+    env-update && source /etc/profile
+ fi
+ if [ ! -f /etc/env.d/99psql ]; then
+	echo PATH=$PSQL_BIN>/etc/env.d/99psql
+	echo ROOTPATH=$PSQL_BIN>>/etc/env.d/99psql
+	echo LDPATH=$PSQL_LIB:$PSQL_LIB64>>/etc/env.d/99psql
+	env-update && source /etc/profile
+ fi
+fi
+
+if [ -f /etc/env.d/15domino ] ; then
+    rm -f /etc/env.d/05domino
+    env-update && source /etc/profile
+fi
+if [ ! -f /etc/env.d/99domino ]; then
+	echo PATH=$DOMINO_BIN>/etc/env.d/99domino
+	echo ROOTPATH=$DOMINO_BIN>>/etc/env.d/99domino
+	echo LDPATH=$DOMINO_LIB>>/etc/env.d/99domino
+	env-update && source /etc/profile
+fi
+fi
+else
+	echo "No root"
+fi
+
+echo "+++++ Get python's info"
+
+PYTHON_VERSION=""
+for i in 2 3
+do
+ver=`python$i -c "import sys;print('%d.%d'%sys.version_info[:2])"`
+if [[ "X$ver" != "X" ]] 
+then
+PYTHON_VERSION[$i]=$ver
+PYTHON_DIR[$i]=`python$ver -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib())"`
+fi
+done
+
+PATH=$PSQL_ROOT/bin:$PATH
+export LD_LIBRARY_PATH=$PSQL_ROOT/lib:$PSQL_ROOT/lib64
+export LD_BIND_NOW=1
+
+
+M32=""
+BTI_FLAG="BTI_LINUX"
+
+if [[ $USE_PSQL == 1 ]] ; then 
+echo "+++++ Checking psql version..."
+#PSQL_VERSION=`butil -ver | grep version | awk {'day = strtonum($(NF)); if (day >0) if (day >=10 ) print "10"; else print "9";'}`
+PSQL_VERSION=10
+if [ "X$PSQL_VERSION" = "X" ] ; then
+	echo "ERROR: Undefined psql version"
+	exit 1
+else
+    echo Passed...
+    if [ "X$OS_VERSION" = "Xx86_64" ] ; then
+	if [ "X$PSQL_VERSION" != "X10" ] ; then
+		M32="-m32"
+		echo 32-bit psql version is depricated !!!!!! 
+	else
+		BTI_FLAG="BTI_LINUX_64"
+	fi
+    fi
+fi
+fi
+if [ $USE_LOUDMOUTH_LOCAL -eq 1 ] 
+then 
+LOUDMOUTH_FLAGS="-I../../lib/loudmouth"
+else
+LOUDMOUTH_FLAGS="-I/usr/include/loudmouth-1.0"
+fi
+if [ $USE_LIBAV_LOCAL -eq 1 ]
+then
+LIBAV_CFLAGS="-I../../lib/ffmpeg"
+fi
+echo ok
+
+echo CC = gcc>common.mak
+echo TMP_DIR=$DIR_TMP>>common.mak
+echo DOMINO_ETC=$DOMINO_ETC>>common.mak
+echo DOMINO_BIN=$DOMINO_BIN>>common.mak
+echo DOMINO_LOG=$DOMINO_LOG>>common.mak
+echo DOMINO_LIB=$DOMINO_LIB>>common.mak
+echo DOMINO_TEMPLATE=$DOMINO_TEMPLATE>>common.mak
+echo DOMINO_SHARE=$DOMINO_SHARE>>common.mak
+echo MAKE=make>>common.mak
+echo AM_MAKEFLAGS=CC=gcc >>common.mak
+echo AM_FLAGS=-L../../$DIR_TMP/.libs \
+	 $LOUDMOUTH_FLAGS $LIBAV_CFLAGS -I../../include \
+        -D_LINUX -DHAVE_SYSLOG -L$PSQL_LIB -L$PSQL_LIB64 -D$BTI_FLAG $M32 -I../../$DIR_TMP\\>>common.mak
+
+if [ $USE_OLD_ARTIX_INFO -eq  1 ] ; then echo -DOLD_ARTIX_INFO \\>>common.mak ; fi
+if [ $LOCAL_CASH -eq  1 ] ; then echo -DLOCAL_CASH \\>>common.mak ; fi
+if [ $USE_EXPAT -eq  1 ] ; then echo -DEXPAT \\>>common.mak ; fi
+if [ $USE_ARTIX -eq  1 ] ; then echo -DARTIX \\>>common.mak ; fi
+if [ $USE_ZLIB -eq  1 ] ; then echo -DZLIB \\>>common.mak ; fi
+if [ $USE_CUPS -eq  1 ] ; then echo -DCUPS \\>>common.mak ; fi
+if [ $USE_PYTHON -eq  1 ] ; then echo -DPYTHON \\>>common.mak ; fi
+if [ $USE_GCRYPT -eq 1 ] ; then echo -DGCRIPT \\>>common.mak ; fi
+if [ $USE_PSEUDO_TELNET -eq 1 ] ; then echo -DPSEUDO_TELNET \\>>common.mak ; fi
+#if [ $USE_DEBUG -eq 1 ] ; then echo -DDEBUG \\>>common.mak ; fi
+if [ $USE_NCURSES -eq 1 ] ; then echo -DUSE_NCURSES \\>>common.mak ; fi
+if [ $USE_MEMORY_DEBUG -eq 1 ] ; then echo -DMEMORY_DEBUG \\>>common.mak ; fi
+if [ $USE_BINARY_UPDATE -eq 1 ] ; then echo -DBINARY_UPDATE \\>>common.mak ; fi
+if [ $USE_LOUDMOUTH -eq 1 ] ; then echo -DUSE_IM \\>>common.mak ; fi
+echo >>common.mak 
+if [ $USE_DEBUG -eq 1 ] ; then echo OPT_FLAGS=-ggdb >>common.mak ; else echo OPT_FLAGS=-s -O2>>common.mak ; fi
+
+if [ $USE_GCRYPT -eq 1 ] ; then echo LIBGCRYPT="-lgrypt">>common.mak ; fi
+if [ $USE_CUPS -eq 1 ] ; then echo LIBCUPS="-lcups">>common.mak ; fi
+if [ $USE_ZLIB -eq 1 ] ; then echo LIBZ="-lz">>common.mak ; fi
+if [ $USE_NCURSES -eq 1 ] ; then echo LIBNCURSES="-lncurses">>common.mak ; fi
+echo LIBFBCLIENT="-lfbclient">>common.mak
+echo LIBDO="-ldolib">>common.mak
+echo LIBDOMINO="-ldomino">>common.mak
+if [ $USE_ARTIX -eq 1 ] ; then echo LIBARTIX="-lartix">>common.mak; fi
+if [ $USE_ARTIX -eq 1 ] ; then echo ARTIXCFLAG="-DARTIX">>common.mak; fi
+echo LIBPSQL="-lpsqlmif">>common.mak
+echo LIBPTHREAD="-lpthread">>common.mak
+if [ $USE_GTK3 -eq 1 ] 
+then 
+echo WEBKITCFLAG="`pkg-config webkitgtk-3.0 --cflags`">>common.mak 
+echo LIBWEBKIT="`pkg-config webkitgtk-3.0 --libs`">>common.mak 
+else 
+echo WEBKITCFLAG="`pkg-config webkit-1.0 --cflags`">>common.mak 
+echo LIBWEBKIT="`pkg-config webkit-1.0 --libs`">>common.mak 
+fi
+if [ $USE_LIBXML2 -eq 1 ] ; then echo LIBXML2="`pkg-config libxml-2.0 --libs`">>common.mak ; fi
+if [ $USE_LIBAV_LOCAL -eq 1 ] 
+then
+echo LIBAV="-lavcodec -lavformat -lavdevice -lswscale -lavfilter -lavutil -lswresample -L../../lib/ffmpeg/libavcodec -L../../lib/ffmpeg/libavutil  -L../../lib/ffmpeg/libavdevice -L../../lib/ffmpeg/libswscale  -L../../lib/ffmpeg/libswresample  -L../../lib/ffmpeg/libavformat -L../../lib/ffmpeg/libavfilter  -Wl,-rpath,../../lib/ffmpeg/libavutil:../../lib/ffmpeg/libavformat:../../lib/ffmpeg/libswresample">>common.mak
+fi
+if [ $USE_LIBAV -eq 1 ] 
+then 
+echo LIBAV="`pkg-config libavcodec libavdevice libswscale libavfilter --libs`">>common.mak
+fi
+echo SMBCLIENTCFLAGS="`pkg-config --cflags smbclient`">>common.mak 
+
+if [ $USE_GTK -eq 1 ] 
+then 
+if [ $USE_GTK3 -eq 1 ]
+then
+echo LIBGTK="`pkg-config gtk+-3.0 --libs`">>common.mak 
+if [ $USE_EV -eq 1 ] ; then echo LIBEV="`pkg-config evince-view-3.0 --libs`">>common.mak ; fi
+if [ $USE_EV -eq 1 ] ; then echo EVCFLAGS="`pkg-config evince-view-3.0 --cflags`">>common.mak ; fi
+else
+echo LIBGTK="`pkg-config gtk+-2.0 --libs`">>common.mak 
+if [ $USE_EV -eq 1 ] ; then echo LIBEV="`pkg-config evince-view-2.32 --libs`">>common.mak ; fi
+if [ $USE_EV -eq 1 ] ; then echo EVCFLAGS="`pkg-config evince-view-2.32 --cflags`">>common.mak ; fi
+fi
+fi
+if [ $USE_GLIB -eq 1 ] ; then echo LIBGLIB="`pkg-config glib-2.0 --libs`">>common.mak ; fi
+if [ $USE_POPPLER -eq 1 ] ; then echo LIBPOPPLER="`pkg-config poppler-glib --libs`">>common.mak ; fi
+if [ $USE_POPPLER -eq 1 ] ; then echo POPPLERCFLAGS="`pkg-config poppler-glib --cflags`">>common.mak ; fi
+if [ $USE_LIBAV_LOCAL -eq 0 ] ; then
+if [ $USE_LIBVLC -eq 1 ] ; then echo LIBVLC="`pkg-config libvlc --libs`">>common.mak ; fi
+fi
+if [ $USE_LIBXML2 -eq 1 ] ; then echo XML2CFLAGS="`pkg-config libxml-2.0 --cflags`">>common.mak ; fi
+if [ $USE_GTK -eq 1 ] 
+then 
+if [ $USE_GTK3 -eq 1 ]
+then
+echo GTKCFLAGS="`pkg-config gtk+-3.0 --cflags`">>common.mak 
+else
+echo GTKCFLAGS="`pkg-config gtk+-2.0 --cflags`">>common.mak 
+fi
+fi
+echo LIBPQ="`pkg-config --libs libpq`">>common.mak 
+echo PQCFLAGS="`pkg-config --cflags libpq`">>common.mak 
+
+if [ $USE_LIBAV_LOCAL -eq 0 ] ; then
+if [ $USE_LIBVLC -eq 1 ] ; then echo LIBVLCCFLAGS="`pkg-config libvlc --cflags`">>common.mak ; fi
+fi
+if [ $USE_GLIB -eq 1 ] ; then echo GLIBCFLAGS="`pkg-config glib-2.0 --cflags`">>common.mak ; fi
+if [ $USE_LOUDMOUTH -eq 1 ] 
+then 
+if [ $USE_LOUDMOUTH_LOCAL -eq 1 ] ; then echo LIBLOUDMOUTH="-lloudmouth-1 -L../../lib/loudmouth/loudmouth/.libs" >>common.mak 
+else
+echo LIBLOUDMOUTH="-lloudmouth-1" >>common.mak 
+fi
+fi
+if [ $USE_EXPAT -eq 1 ] ; then echo LIBEXPAT="-lexpat" >>common.mak ; fi
+
+echo "GET_VERSION = \`cat version.h | grep -I VERSION | cut -d' ' -f3 | egrep '^\"[0-9]+.[0-9]+.[0-9]+\"' | cut -d'\"' -f2\`" >>common.mak
+echo "misc = ../../misc">>common.mak
+echo "SUBDIRS=$SUBDIRS">>common.mak
+
+for i in $PYTHON_VERSIONS
+do
+if [[ "X${PYTHON_VERSION[$i]}" != "X" ]] 
+then
+echo PYTHON_VERSION_$i=${PYTHON_VERSION[$i]}
+echo PYTHON_VERSION_$i=${PYTHON_VERSION[$i]}>>common.mak
+if [[ "X${PYTHON_VERSION[$i]}" == "X2.6" ]] 
+then
+echo PYTHON_CFLAGS_$i=-I/usr/include/python2.6>>common.mak
+echo PYTHON_LIBS_$i=-lpython2.6>>common.mak
+else
+echo PYTHON_CFLAGS_$i=`pkg-config python-${PYTHON_VERSION[$i]} --cflags`>>common.mak
+echo PYTHON_LIBS_$i=`pkg-config python-${PYTHON_VERSION[$i]} --libs`>>common.mak
+fi
+echo PYTHON_VERSION_$i=${PYTHON_VERSION[$i]}>>common.mak
+echo PYTHON_DIR_$i=${PYTHON_DIR[$i]}>>common.mak
+fi
+done
+#echo CFLAGS=${PYTHON_DIR[$i]}>>common.mak
+

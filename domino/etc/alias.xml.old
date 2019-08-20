@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <object id="Aliases">
+    <property name="Alias1-current"/>
+    <property name="Alias1-2010"/>
+    <property name="Alias1-2009"/>
+    <property name="Alias2-current"/>
+    <property name="Alias2-2010"/>
+    <property name="Alias2-2009"/>
+    <property name="Alias3-current"/>
+    <property name="Alias3-2010"/>
+    <property name="Alias3-2009"/>
+    <property name="Alias4-current"/>
+    <property name="Alias4-2010"/>
+    <property name="Alias4-2009"/>
+    <property name="Alias5-current"/>
+    <property name="Alias5-2010"/>
+    <property name="Alias5-2009"/>
+    <property name="Alias6-current"/>
+    <property name="Alias6-2010"/>
+    <property name="Alias6-2009"/>
+    <property name="Alias7-current"/>
+    <property name="Alias7-2010"/>
+    <property name="Alias7-2009"/>
+    <property name="Alias8-current"/>
+    <property name="Alias8-2010"/>
+    <property name="Alias8-2009"/>
+    <property name="Alias9-current"/>
+    <property name="Alias9-2010"/>
+    <property name="Alias9-2009"/>
+    <property name="Alias10-current"/>
+    <property name="Alias10-2010"/>
+    <property name="Alias10-2009"/>
+    <property name="Alias11-current"/>
+    <property name="Alias11-2010"/>
+    <property name="Alias11-2009"/>
+    <property name="Alias12-current"/>
+    <property name="Alias12-2010"/>
+    <property name="Alias12-2009"/>
+    <property name="Alias13-current"/>
+    <property name="Alias14-current"/>
+    <property name="Alias15-current"/>
+  </object> 
+  <object id="Alias1-current" >
+    <property name="sklad">1</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.chel</property>
+  </object>
+  <object id="Alias1-2010" >
+    <property name="sklad">1</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias1-2009" >
+    <property name="sklad">1</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias2-current" >
+    <property name="sklad">2</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.tta</property>
+  </object>
+  <object id="Alias2-2010" >
+    <property name="sklad">2</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias2-2009" >
+    <property name="sklad">2</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias3-current" >
+    <property name="sklad">3</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.chel</property>
+  </object>
+  <object id="Alias3-2010" >
+    <property name="sklad">3</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias3-2009" >
+    <property name="sklad">3</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias4-current" >
+    <property name="sklad">4</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.chel</property>
+  </object>
+  <object id="Alias4-2010" >
+    <property name="sklad">4</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias4-2009" >
+    <property name="sklad">4</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias5-current" >
+    <property name="sklad">5</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.tta</property>
+  </object>
+  <object id="Alias5-2010" >
+    <property name="sklad">5</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias5-2009" >
+    <property name="sklad">5</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias6-current" >
+    <property name="sklad">6</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.chel</property>
+  </object>
+  <object id="Alias6-2010" >
+    <property name="sklad">6</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias6-2009" >
+    <property name="sklad">6</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias7-current" >
+    <property name="sklad">7</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.tta</property>
+  </object>
+  <object id="Alias7-2010" >
+    <property name="sklad">7</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias7-2009" >
+    <property name="sklad">7</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias8-current" >
+    <property name="sklad">8</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.chel</property>
+  </object>
+  <object id="Alias8-2010" >
+    <property name="sklad">8</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias8-2009" >
+    <property name="sklad">8</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias9-current" >
+    <property name="sklad">9</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.tta</property>
+  </object>
+  <object id="Alias9-2010" >
+    <property name="sklad">9</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias9-2009" >
+    <property name="sklad">9</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias10-current" >
+    <property name="sklad">10</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.tta</property>
+  </object>
+  <object id="Alias10-2010" >
+    <property name="sklad">10</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias10-2009" >
+    <property name="sklad">10</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias11-current" >
+    <property name="sklad">11</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.tta</property>
+  </object>
+  <object id="Alias11-2010" >
+    <property name="sklad">11</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias11-2009" >
+    <property name="sklad">11</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias12-current" >
+    <property name="sklad">12</property>
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.chel</property>
+  </object>
+  <object id="Alias12-2010" >
+    <property name="sklad">12</property>
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias12-2009" >
+    <property name="sklad">12</property>
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+  <object id="Alias13-current" >
+    <property name="sklad">13</property>
+    <property name="date_b"></property>
+    <property name="date_e"></property>
+    <property name="alias">main.net</property>
+  </object>
+  <object id="Alias14-current" >
+    <property name="sklad">14</property>
+    <property name="date_b"></property>
+    <property name="date_e"></property>
+    <property name="alias">main.net</property>
+  </object>
+  <object id="Alias15-current" >
+    <property name="sklad">15</property>
+    <property name="date_b"></property>
+    <property name="date_e"></property>
+    <property name="alias">main.net</property>
+  </object>
+</config>

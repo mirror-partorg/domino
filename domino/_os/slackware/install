@@ -1,0 +1,185 @@
+#!/bin/sh
+
+GROUPNAME=pvsw
+USERNAME=domino
+USERHANDBOOK=handbook
+
+DOMINO_ROOT=/usr/local/domino
+PVSW_ROOT=/usr/local/psql
+DOMINO_ETC=$DOMINO_ROOT/etc
+DOMINO_BIN=$DOMINO_ROOT/bin
+DOMINO_LOG=$DOMINO_ROOT/log
+DOMINO_LIB=$DOMINO_ROOT/lib
+DOMINO_MAIL=$DOMINO_ROOT/mail
+GREEN_COLOR="\033[${1:-0;32}m"
+RED_COLOR="\033[${1:-0;31}m"
+YELLOW_COLOR="\033[${1:-0;33}m"
+DEFAULT_COLOR="\033[0m"
+ERROR_PREF="-e $RED_COLOR!!!$DEFAULT_COLOR"
+
+
+echo "+++++ Checking current user rights..."
+UID__=`id | grep "uid=0(root)" | wc -l | tr -d " "`
+if [ "X$UID__" = "X1" ] ; then
+	echo Passed...
+else
+	echo "ERROR: The current user id is not root (`id|awk '{print $1}'`)."
+	exit 1
+fi
+echo
+echo "+++++ Setting up group..."
+
+/usr/sbin/groupadd $GROUPNAME
+
+if [ ! -d $DOMINO_ROOT ] ; then
+	mkdir $DOMINO_ROOT
+	chmod +x $DOMINO_ROOT 
+fi
+
+if [ ! -d $DOMINO_BIN ] ; then
+	mkdir $DOMINO_BIN
+fi
+
+if [ ! -d $DOMINO_LOG ] ; then
+	mkdir $DOMINO_LOG
+	chmod  751 $DOMINO_LOG
+	chown $USERNAME:$GROUPNAME $DOMINO_LOG
+fi
+
+if [ ! -d $DOMINO_MAIL ] ; then
+	mkdir $DOMINO_MAIL
+	mkdir $DOMINO_MAIL/in
+	mkdir $DOMINO_MAIL/out
+	mkdir $DOMINO_MAIL/err
+fi
+chmod -R 751 $DOMINO_LOG
+
+if [ ! -d $DOMINO_LIB ] ; then
+	mkdir $DOMINO_LIB
+fi
+if [ ! -d $DOMINO_ETC ] ; then
+	mkdir $DOMINO_ETC
+fi
+
+echo +++++ Setting up user $USERNAME...
+UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERNAME`
+if [ "X$UPVSWEXISTS" = "X" ] ; then
+	echo Creating user $USERNAME, this may take a while...
+	/usr/sbin/useradd -c "Domino daemon" -d $DOMINO_BIN -g $GROUPNAME $USERNAME -s /bin/bash 2>&1
+	UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERNAME`
+	if [ "X$UPVSWEXISTS" = "X" ] ; then
+		echo "ERROR: Can not create user $USERNAME"
+    		exit 1
+	fi
+fi
+echo +++++ Setting up user $USERHANDBOOK...
+UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERHANDBOOK`
+if [ "X$UPVSWEXISTS" = "X" ] ; then
+	echo Creating user $USERHANDBOOK, this may take a while...
+	/usr/sbin/useradd -c "Console handbook" -d /home/$USERHANDBOOK -g $GROUPNAME $USERHANDBOOK -p $USERHANDBOOK -s /bin/bash 2>&1
+	UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERHANDBOOK`
+	if [ "X$UPVSWEXISTS" = "X" ] ; then
+		echo "ERROR: Can not create user $USERHANDBOOK"
+    		exit 1
+	fi
+fi
+
+echo +++++ Setting up environment...
+
+sed -i 's/c2:1235:respawn:\/sbin\/agetty 38400 tty2 ssa/c2:1235:respawn:\/sbin\/agetty -n -l \/usr\/local\/domino\/bin\/autologin 38400 tty2 ssa/' /etc/inittab
+sed -i 's/NO_PASSWORD_CONSOLE tty1/NO_PASSWORD_CONSOLE  tty1:tty2/' /etc/login.defs
+/opt/firebird/bin/isql -u sysdba -P SSAFirebird /linuxcash/cash/data/db/cash.gdb << EOF
+CREATE VIEW TMC_BY_NAME ( CODE,  NAME, PRICE  ) AS 
+   select substring(code from 1 for 5) code, name, max(price) price from tmc where code<>bcode group by substring(code from 1 for 5),name;
+   ;
+CREATE ASC INDEX I_WORK_TMC_BNAME ON WORK_TMC (NAME);   
+EXIT;
+EOF
+
+echo umask 022 >$DOMINO_BIN/.bashrc
+echo export PVSW_ROOT=$PVSW_ROOT >>$DOMINO_BIN/.bashrc
+echo export DOMINO_ROOT=$DOMINO_ROOT >>$DOMINO_BIN/.bashrc
+echo export PATH=$PVSW_ROOT/bin:$DOMINO_ROOT/bin:$PATH >>$DOMINO_BIN/.bashrc
+echo export LD_LIBRARY_PATH=$PVSW_ROOT/lib:$DOMINO_ROOT/lib:/usr/lib >>$DOMINO_BIN/.bashrc
+echo export LD_BIND_NOW=1 >>$DOMINO_BIN/.bashrc
+
+if [ ! -d /home/$USERHANDBOOK ] ; then
+    mkdir /home/$USERHANDBOOK
+fi
+echo umask 022 >/home/$USERHANDBOOK/.bash_profile
+echo export PVSW_ROOT=$PVSW_ROOT >>/home/$USERHANDBOOK/.bash_profile
+echo export DOMINO_ROOT=$DOMINO_ROOT >>/home/$USERHANDBOOK/.bash_profile
+echo export PATH=$PVSW_ROOT/bin:$DOMINO_ROOT/bin:$PATH >>/home/$USERHANDBOOK/.bash_profile
+echo export LD_LIBRARY_PATH=$PVSW_ROOT/lib:$DOMINO_ROOT/lib:/usr/lib >>/home/$USERHANDBOOK/.bash_profile
+echo export LD_BIND_NOW=1 >>/home/$USERHANDBOOK/.bash_profile
+echo $DOMINO_BIN/handbook.sh >>/home/$USERHANDBOOK/.bash_profile
+
+echo "+++++ Checking psql version..."
+VER=`source $DOMINO_BIN/.bashrc ; butil -ver | grep version | awk {'day = strtonum($(NF)); if (day >0) if (day >=10 ) print "10"; else print "9";'} || exit 1`
+if [ "X$VER" = "X" ] ; then
+	echo "ERROR: Undefined psql version"
+	exit 1
+else
+	echo Passed...
+fi
+
+if [ ! -d $DOMINO_ETC/alias ] ; then 
+    mkdir -p $DOMINO_ETC/alias
+fi 
+
+if [ ! -f $DOMINO_ETC/alias/local ] ; then 
+    cp ./etc/alias/local $DOMINO_ETC/alias/local
+fi 
+cp ./etc/domino.cfg $DOMINO_ETC/domino.cfg
+if [ ! -f $DOMINO_ETC/dclubd.conf ] ; then 
+    cp ./etc/dclubd.conf $DOMINO_ETC/dclubd.conf 
+fi 
+if [ ! -f $DOMINO_ETC/crntsale.conf ] ; then 
+    cp ./etc/crntsale.conf $DOMINO_ETC/crntsale.conf 
+fi 
+if [ ! -f $DOMINO_ETC/exchanged.conf ] ; then 
+    cp ./etc/exchanged.conf $DOMINO_ETC/exchanged.conf 
+fi 
+if [ ! -f $DOMINO_ETC/handbook-text.conf ] ; then 
+    cp ./etc/handbook-text.conf $DOMINO_ETC/handbook-text.conf 
+fi 
+if [ ! -f $DOMINO_ETC/domino.conf ] ; then 
+    cp ./etc/domino.conf $DOMINO_ETC/domino.conf 
+fi 
+if [ ! -f $DOMINO_ETC/doshadow ] ; then 
+    cp ./etc/doshadow $DOMINO_ETC/doshadow 
+    chmod 644 $DOMINO_ETC/doshadow 
+    chown $USERNAME:$GROUPNAME $DOMINO_ETC/doshadow
+fi 
+
+cp ./rc.d/rc.dclubd /etc/rc.d/rc.dclubd 
+cp ./rc.d/rc.exchanged /etc/rc.d/rc.exchanged
+DD1=`grep -l rc.dclubd /etc/rc.d/rc.local`
+if [ "$DD1" = "" ] ; then
+    echo "# Dclub" >>/etc/rc.d/rc.local
+    echo "if [ -x /etc/rc.d/rc.dclubd ]; then" >>/etc/rc.d/rc.local
+    echo "/etc/rc.d/rc.dclubd start" >>/etc/rc.d/rc.local
+    echo "fi" >>/etc/rc.d/rc.local
+fi
+DD2=`grep -l rc.exchanged /etc/rc.d/rc.local`
+if [ "$DD2" = "" ] ; then
+    echo "# Exchange" >>/etc/rc.d/rc.local
+    echo "if [ -x /etc/rc.d/rc.exchanged ]; then" >>/etc/rc.d/rc.local
+    echo "/etc/rc.d/rc.exchanged start" >>/etc/rc.d/rc.local
+    echo "fi" >>/etc/rc.d/rc.local
+fi
+
+/etc/rc.d/rc.exchanged stop
+/etc/rc.d/rc.dclubd stop
+mv /usr/local/domino/bin/handbook /usr/local/domino/bin/handbook.old
+#killall -9 handbook
+rm -R $DOMINO_LIB/*
+cp -l ./lib/* $DOMINO_LIB
+cp ./bin/* $DOMINO_BIN
+
+chown -R $USERNAME:$GROUPNAME $DOMINO_ROOT
+
+echo -e $GREEN_COLOR!!!$DEFAULT_COLOR change config
+echo $DOMINO_ETC/alias/local localres
+echo $DOMINO_ETC/domino.conf local-unit
+echo -e $GREEN_COLOR!!!$DEFAULT_COLOR "run /etc/rc.d/rc.dclubd start && /etc/rc.d/rc.exchanged start && killall -9 handbook"

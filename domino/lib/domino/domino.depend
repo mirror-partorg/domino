@@ -1,0 +1,263 @@
+# depslib dependency file v1.0
+1295456400 source:e:\work\app-domino\lib\domino\do_accept.c
+	<domino.h>
+	<dolib.h>
+	<limits.h>
+	"../misc/define.h"
+
+1295456400 efine.h"
+
+1289840400 source:e:\work\app-domino\lib\domino\do_action.c
+	<domino.h>
+	<errno.h>
+	"../../misc/define.h"
+	"../../misc/csv_util.h"
+	"../../misc/iconv_.h"
+
+1289581200 c/iconv_.h"
+
+1285866000 e:\work\app-domino\misc\define.h
+
+1285866000 e:\work\app-domino\misc\csv_util.h
+
+1292950800 e:\work\app-domino\misc\iconv_.h
+	<iconv.h>
+
+1285866000 
+
+1310960040 source:e:\work\app-domino\lib\domino\do_alias.c
+	<string.h>
+	<stdarg.h>
+	<errno.h>
+	<domino.h>
+	<dolib.h>
+	<iconv.h>
+	<locale.h>
+	<btrieve.h>
+	"btr_struct.h"
+	"../../config/config.h"
+	"../../misc/iconv_.h"
+	"../../misc/define.h"
+
+1293469200 c/define.h"
+
+1285866000 e:\work\app-domino\lib\domino\btr_struct.h
+	<btrieve.h>
+
+1326947983 >
+
+1311545640 e:\work\app-domino\config\config.h
+
+1293728400 source:e:\work\app-domino\lib\domino\do_balance.c
+	<domino.h>
+	<stddef.h>
+	"../../misc/define.h"
+
+1310162280 source:e:\work\app-domino\lib\domino\do_config.c
+	<domino.h>
+	<dolib.h>
+	<expat.h>
+	<errno.h>
+	"../../misc/define.h"
+	<wchar.h>
+	<wctype.h>
+	<windows.h>
+
+1288026000 source:e:\work\app-domino\lib\domino\do_doctype.c
+	<domino.h>
+	<dolib.h>
+	"../../misc/define.h"
+
+1326968949 source:e:\work\app-domino\lib\domino\do_extended.c
+	<domino.h>
+	<dolib.h>
+	<stdarg.h>
+	"btr_struct.h"
+	"../../misc/define.h"
+
+1323826440 source:e:\work\app-domino\lib\domino\do_misc.c
+	<domino.h>
+	<dolib.h>
+	<locale.h>
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	"../misc/define.h"
+	<math.h>
+
+1285866000 source:e:\work\app-domino\lib\domino\do_protocol.c
+	<domino.h>
+	<dolib.h>
+	"../misc/define.h"
+	<time.h>
+
+1293469200 source:e:\work\app-domino\lib\domino\do_rz_info.c
+	<domino.h>
+	<stddef.h>
+	"../../misc/define.h"
+
+1289581200 source:e:\work\app-domino\lib\domino\domino.c
+	<domino.h>
+	<errno.h>
+	"../../config/config.h"
+	"../../misc/define.h"
+	"../../misc/iconv_.h"
+
+1326947983 source:e:\work\app-domino\misc\btrapi.c
+	<btrieve.h>
+	<string.h>
+	<dos.h>
+	<windows.h>
+	<i86.h>
+	<pharlap.h>
+	<blobhdr.h>
+
+1285866000 source:e:\work\app-domino\misc\csv_util.c
+	"csv_util.h"
+	<string.h>
+
+1316982780 source:e:\work\app-domino\misc\iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1382519994 source:/home/mirror/work/domino/src/misc/btrapi.c
+	<btrieve.h>
+	<string.h>
+	<dos.h>
+	<windows.h>
+	<i86.h>
+	<pharlap.h>
+	<blobhdr.h>
+
+1382519994 source:/home/mirror/work/domino/src/misc/csv_util.c
+	"csv_util.h"
+	<string.h>
+
+1382519994 /home/mirror/work/domino/src/misc/csv_util.h
+
+1382519994 source:/home/mirror/work/domino/src/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1382519994 /home/mirror/work/domino/src/misc/iconv_.h
+	<iconv.h>
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_accept.c
+	<domino.h>
+	<dolib.h>
+	<limits.h>
+	"../misc/define.h"
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_action.c
+	<domino.h>
+	<errno.h>
+	"../../misc/define.h"
+	"../../misc/csv_util.h"
+	"../../misc/iconv_.h"
+
+1382519994 /home/mirror/work/domino/src/misc/define.h
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_alias.c
+	<string.h>
+	<stdarg.h>
+	<errno.h>
+	<domino.h>
+	<dolib.h>
+	<iconv.h>
+	<locale.h>
+	<btrieve.h>
+	"btr_struct.h"
+	"../../config/config.h"
+	"../../misc/iconv_.h"
+	"../../misc/define.h"
+	"../../misc/utf8.h"
+
+1382519953 /home/mirror/work/domino/src/lib/domino/btr_struct.h
+	<btrieve.h>
+
+1382519952 /home/mirror/work/domino/src/config/config.h
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_balance.c
+	<domino.h>
+	<stddef.h>
+	"../../misc/define.h"
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_doctype.c
+	<domino.h>
+	<dolib.h>
+	"../../misc/define.h"
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_extended.c
+	<domino.h>
+	<dolib.h>
+	<stdarg.h>
+	"btr_struct.h"
+	"../../misc/define.h"
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_misc.c
+	<domino.h>
+	<dolib.h>
+	<locale.h>
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	"../misc/define.h"
+	<math.h>
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_protocol.c
+	<domino.h>
+	<dolib.h>
+	"../misc/define.h"
+	<time.h>
+
+1382531770 source:/home/mirror/work/domino/src/lib/domino/do_rz_info.c
+	<domino.h>
+	<stddef.h>
+	"../../misc/define.h"
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/domino.c
+	<domino.h>
+	<errno.h>
+	"../../config/config.h"
+	"../../misc/define.h"
+	"../../misc/iconv_.h"
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/do_config.c
+	<domino.h>
+	<dolib.h>
+	<expat.h>
+	<errno.h>
+	"../../misc/define.h"
+	<wchar.h>
+	<wctype.h>
+	<ctype.h>
+	<windows.h>
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/meta_alias.c
+	<domino.h>
+	"../misc/define.h"
+	"../config/config.h"
+
+1382519954 source:/home/mirror/work/domino/src/lib/domino/report.c
+	<domino.h>
+	"../misc/define.h"
+
+1382519953 source:/home/mirror/work/domino/src/lib/domino/markup.c
+	<domino.h>
+	<stdarg.h>
+	<math.h>
+	"../misc/define.h"
+
+1382519995 /home/mirror/work/domino/src/misc/utf8.h
+
+1382522088 source:/home/mirror/work/domino/src/lib/domino/domino_action.c
+	<domino_action.h>
+	<windows.h>
+	"../../misc/define.h"
+

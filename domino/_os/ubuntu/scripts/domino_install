@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ ! /linuxcash/net/domino/domino/mail/for_kas/update.ubuntu/deb/ domino_$1.deb ]] 
+then
+cd /tmp
+wget http://soft.glekar.com/domino/domino_$1.deb
+cd /linuxcash/net/domino/domino/mail/for_kas/update.ubuntu/deb/
+rm -f domino_*.deb
+cp /tmp/domino_$1.deb domino_$1.deb
+else
+cd /linuxcash/net/domino/domino/mail/for_kas/update.ubuntu/deb/
+fi
+dpkg -i domino_$1.deb
+

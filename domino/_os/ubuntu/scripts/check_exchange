@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+sys.path.append('/usr/local/domino/lib/python')
+
+from artixinfo import ArtixInfo,ALERT_DB_UNAVAILABLE,ALERT_EXCHANGE_NOT_RUN,ALERT_EXCHANGE_ERROR,ALERT_DCLUB_NOT_RUN,ALERT_SAMBA_UNAVAILABLE,ALERT_OTHER
+from dolib import DoExchangeInfo,DoDclubInfo
+import re
+import os
+from datetime import datetime,timedelta
+from socket import socket,AF_INET,SOCK_STREAM
+#from myutil import ConfigFile
+#,AlertMessage
+
+class ConfigFile:
+    def __init__(self,name):
+	f = open(os.path.join(os.path.dirname(sys.argv[0]),"..","etc",name))
+	l = f.readlines(-1)
+	f.close()
+	self.conf={}
+	p = re.compile("\s*(?P<name>[\w|-]+)\s+(?P<value>.*)[\r|\n|\r\n|\n\r]+",re.S)
+	for line in l:
+	    m=p.match(line)
+	    if m:
+		self.conf[m.group("name")]=m.group("value")
+    def value(self,name):
+	if not self.conf.has_key(name):
+	    return ""
+	return self.conf[name]
+    def values(self,name):
+	l=self.value(name)
+	return re.split(",+",l)
+
+info=ArtixInfo()
+HOST=ConfigFile("alias/local").value("DB_HOST")
+#HOST="localhost" if HOST[0:2]<>"//" else HOST[2:].split('/')[0]
+def send_message(mes):
+    message = u"%s/%s:%s"%(gethostname(),sys.argv[0],mes)
+    os.system("/usr/local/domino/bin/send-error-message \"%s\""%(message))
+    
+try:
+    socket(AF_INET, SOCK_STREAM).connect((HOST, 3351))
+except:
+    info.setAlert(ALERT_DB_UNAVAILABLE)
+    if not info.codeIsSet(ALERT_DB_UNAVAILABLE):
+	send_message(u"База данных недоступна")
+else:
+    info.clearAlert(ALERT_DB_UNAVAILABLE)
+client=DoExchangeInfo()
+if not client.connected:
+    info.setAlert(ALERT_EXCHANGE_NOT_RUN)
+    if not info.codeIsSet(ALERT_EXCHANGE_NOT_RUN):
+	send_message(u"Сервис обмена не работает")
+else:
+    info.clearAlert(ALERT_EXCHANGE_NOT_RUN)
+    date=client.fullUpdateInfo()
+    if not date:
+	info.setAlert(ALERT_EXCHANGE_ERROR)
+	if not info.codeIsSet(ALERT_EXCHANGE_ERROR):
+	    send_message(u"Ошибка сервиса обмена")
+    else:
+	info.clearAlert(ALERT_EXCHANGE_ERROR)
+client=DoDclubInfo()
+if not client.connected:
+    info.setAlert(ALERT_DCLUB_NOT_RUN)
+    if not info.codeIsSet(ALERT_DCLUB_NOT_RUN):
+	send_message(u"Сервис скидок не работает")
+else:
+    info.clearAlert(ALERT_DCLUB_NOT_RUN)
+if not os.path.exists("/linuxcash/net/domino/test_net"):
+    info.setAlert(ALERT_SAMBA_UNAVAILABLE)
+    if not info.codeIsSet(ALERT_SAMBA_UNAVAILABLE):
+	send_message(u"Сетевое соединение не работает")
+else:
+    info.clearAlert(ALERT_SAMBA_UNAVAILABLE)

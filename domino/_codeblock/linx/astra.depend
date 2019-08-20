@@ -1,0 +1,34 @@
+# depslib dependency file v1.0
+1382455200 source:/home/mirror/work/src/domino/src/astra/date_util.c
+	<time.h>
+	<dolib.h>
+	"date_util.h"
+
+1382455200 /home/mirror/work/src/domino/src/astra/date_util.h
+
+1493772428 source:/home/mirror/work/src/domino/src/astra/load.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<dolib.h>
+	<domino.h>
+	<errno.h>
+	<locale.h>
+	"read_files.h"
+	"pfizer-const.h"
+
+1473420283 /home/mirror/work/src/domino/src/astra/read_files.h
+	<dolib.h>
+
+1435721231 /home/mirror/work/src/domino/src/astra/pfizer-const.h
+
+1475830463 source:/home/mirror/work/src/domino/src/astra/read_files.c
+	<expat.h>
+	<errno.h>
+	<iconv.h>
+	<dolib.h>
+	<locale.h>
+	"read_files.h"
+	"date_util.h"
+	"pfizer-const.h"
+

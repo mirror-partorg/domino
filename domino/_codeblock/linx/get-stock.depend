@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1293508740 source:/home/mirror/work/app-domino/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1293016020 /home/mirror/work/app-domino/misc/iconv_.h
+	<iconv.h>
+
+1297058426 source:/home/mirror/work/app-domino/src/get-stock/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+	<domino.h>
+	"../misc/iconv_.h"
+

@@ -1,0 +1,144 @@
+;------------------------------------------------------------------------------
+; (ODBC)
+
+DB_SQL domino
+
+;------------------------------------------------------------------------------
+; (SERVER)
+
+DB_HOST database
+
+;------------------------------------------------------------------------------
+; (AGENT)
+ 
+CODES /domino/domino/database/apt10/agent/codes.dat
+OTDEL /domino/domino/database/apt10/agent/otdel.dat
+PARTNER /domino/domino/database/apt10/agent/partner.dat
+PAR_DATA /domino/domino/database/apt10/agent/par_data.dat
+PLINK /domino/domino/database/apt10/agent/plink.dat
+P_VIEW /domino/domino/database/apt10/agent/p_view.dat
+PARTNER_BUX /domino/domino/database/apt10/agent/part_bux.dat
+PGRUPPA_BUX /domino/domino/database/apt10/agent/pgru_bux.dat
+CITY /domino/domino/database/apt10/agent/city.dat
+STREET /domino/domino/database/apt10/agent/street.dat
+SKLAD /domino/domino/database/apt10/agent/sklad.dat
+ 
+;------------------------------------------------------------------------------
+; (ANALIT)
+ 
+REALIZATION /domino/domino/database/apt10/analit/realiz.dat
+;------------------------------------------------------------------------------
+; (CLASSIF)
+ 
+ACCOUNT /domino/domino/database/apt10/classif/account.dat
+ACCOUNT2 /domino/domino/database/apt10/classif/account2.dat
+AMOR /domino/domino/database/apt10/classif/amor.dat
+GRUPPA /domino/domino/database/apt10/classif/gruppa.dat
+KLASS /domino/domino/database/apt10/classif/klass.dat
+KURS /domino/domino/database/apt10/classif/kurs.dat
+PGRUPPA /domino/domino/database/apt10/classif/pgruppa.dat
+PODGRU /domino/domino/database/apt10/classif/podgru.dat
+SUBACCOUNT /domino/domino/database/apt10/classif/subacc.dat
+ 
+;------------------------------------------------------------------------------
+; (DOCUMENT)
+ 
+CPOINTS /domino/domino/database/apt10/document/cpoints.dat
+CPOINT2 /domino/domino/database/apt10/document/cpoint2.dat
+D_ORDER /domino/domino/database/apt10/document/d_order.dat
+D_VIEW /domino/domino/database/apt10/document/d_view.dat
+DLINK /domino/domino/database/apt10/document/dlink.dat
+DOCUMENT /domino/domino/database/apt10/document/document.dat
+ENUM /domino/domino/database/apt10/document/enum.dat
+PACH /domino/domino/database/apt10/document/pach.dat
+ENUMPLUS /domino/domino/database/apt10/document/enumplus.dat
+DOC_DATA /domino/domino/database/apt10/document/doc_data.dat
+
+
+ 
+;------------------------------------------------------------------------------
+; (PRODUCT)
+ 
+BARCODES /domino/domino/database/apt10/product/barcodes.dat
+T_LINK /domino/domino/database/apt10/product/t_link.dat
+T_VIEW /domino/domino/database/apt10/product/t_view.dat
+TOWAR /domino/domino/database/apt10/product/towar.dat
+MEDBAR /domino/domino/database/apt10/product/medbar.dat
+TOW_DATA /domino/domino/database/apt10/product/tow_data.dat
+ 
+;------------------------------------------------------------------------------
+; (PROJECT)
+ 
+BGLOBAL /domino/domino/database/apt10/project/bglobal.dat
+BOTCH /domino/domino/database/apt10/project/botch.dat
+BOTCHNASTR /domino/domino/database/apt10/project/bonastr.dat
+BOPER /domino/domino/database/apt10/project/boper.dat
+BOPERPROW /domino/domino/database/apt10/project/boprow.dat
+DICTIONARY /domino/domino/database/apt10/project/diction.dat
+DPROW /domino/domino/database/apt10/project/dprow.dat
+DTYPE /domino/domino/database/apt10/project/dtype.dat
+IMPORTACC /domino/domino/database/apt10/project/impacc.dat
+PRAZD /domino/domino/database/apt10/project/prazd.dat
+TIPDOC /domino/domino/database/apt10/project/tipdoc.dat
+TIPOPER /domino/domino/database/apt10/project/tipoper.dat
+
+ 
+;------------------------------------------------------------------------------
+; (PROTOCOL)
+PROTOCOL /domino/domino/database/apt10/protocol/protocol.dat
+ 
+;------------------------------------------------------------------------------
+; (PROWOD)
+ 
+PROWOD /domino/domino/database/apt10/prowod/prowod.dat
+PROWOD2 /domino/domino/database/apt10/prowod/prowod2.dat
+ 
+;------------------------------------------------------------------------------
+; (SALARY)
+ 
+SAL_HIST /domino/domino/database/apt10/salary/sal_hist.dat
+SALARYINCOME /domino/domino/database/apt10/salary/sal_inc.dat
+ 
+;------------------------------------------------------------------------------
+; (SALDO)
+ 
+SALDO /domino/domino/database/apt10/saldo/saldo.dat
+CPSALDO /domino/domino/database/apt10/saldo/cpsaldo.dat
+ 
+;------------------------------------------------------------------------------
+; (STOCK)
+ 
+STOCK /domino/domino/database/apt10/stock/stock.dat
+REST_BCP /domino/domino/database/apt10/stock/rest_bcp.dat
+AMORTIZ /domino/domino/database/apt10/stock/amortiz.dat
+
+;------------------------------------------------------------------------------
+; (CTL)
+
+CTL_CHECK /domino/domino/database/apt10/ctl/ctlch.dat
+CTL_product /domino/domino/database/apt10/ctl/ctltw.dat
+CRNT_CTL_CHECK /domino/domino/database/apt10/ctl/crctlch.dat
+CRNT_CTL_product /domino/domino/database/apt10/ctl/crctltw.dat
+CTL_SK /domino/domino/database/apt10/ctl/sk.dat
+CTL_SKK /domino/domino/database/apt10/ctl/skk.dat
+
+CHECKS /domino/domino/database/apt10/ctl/checks.dat
+CHECKSSUM /domino/domino/database/apt10/ctl/checkssum.dat
+SHIFTS /domino/domino/database/apt10/ctl/shifts.dat
+USHIFTS /domino/domino/database/apt10/ctl/ushifts.dat
+DISCOUNT /domino/domino/database/apt10/ctl/discount.dat
+
+HOTKEY /domino/domino/database/apt10/product/hotkey.dat
+
+FILE /domino/domino/database/apt10/ddf/file.ddf
+FIELD /domino/domino/database/apt10/ddf/field.ddf
+VIEW /domino/domino/database/apt10/ddf/view.ddf
+INDEX /domino/domino/database/apt10/ddf/index.ddf
+
+;------------------------------------------------------------------------------
+; (USER)
+
+USER /domino/domino/login/apteka/user.dat
+
+
+

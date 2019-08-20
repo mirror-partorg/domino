@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+
+export PVSW_ROOT=/usr/local/psql
+export DOMINO_ROOT=/usr/local/domino
+export PATH=$PVSW_ROOT/bin:/bin:/usr/bin:$DOMINO_ROOT/bin
+export LD_LIBRARY_PATH=$PVSW_ROOT/lib:$PVSW_ROOT/lib64:$PVSW_ROOT/bin:$DOMINO_ROOT/lib:/usr/lib
+export MANPATH=$PVSW_ROOT/man:$MANPATH
+export BREQ=$PVSW_ROOT/lib
+export LDPATH=/usr/local/psql/lib64:/usr/local/psql/lib
+export LD_BIND_NOW=1
+
+EXEC="/usr/local/domino/bin/domino --user domino --password domino"
+# /MainMenu/Handbook/ProductExtended"
+
+PID_OLD=`ps xa opid:10,args | grep -v "grep" | grep "$EXEC" | cut -b1-10`
+if [ "$PID_OLD" != "" ] ; then
+    kill -9 $PID_OLD
+fi
+
+$EXEC

@@ -1,0 +1,86 @@
+#!/bin/bash -e
+### BEGIN INIT INFO
+# Provides:          domino-daemon
+# Required-Start:    $network $named $remote_fs $syslog
+# Required-Stop:     $network $named $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO                                                                                                                                          
+
+# upstart-job
+#
+# Symlink target for initscripts that have been converted to Upstart.
+
+set -e
+
+SVCNAME="$(basename "$0")"
+USERNAME=domino
+
+if [ ! -f /etc/init.d/$SVCNAME ] ; then
+SVCNAME="${SVCNAME:3}"
+fi
+
+SVC_BINARY=/usr/local/domino/bin/${SVCNAME}
+
+SVC_PIDFILE=/var/run/domino/${SVCNAME}.pid
+if [ ! -d /var/run/domino ] ; then
+mkdir /var/run/domino
+fi
+chown -R $USERNAME /var/run/domino
+export LD_LIBRARY_PATH=/usr/local/psql/lib:/usr/local/domino/lib:/usr/lib
+
+start() {
+	echo "Starting ${SVCNAME}"
+	if start-stop-daemon --start --chuid domino --exec "${SVC_BINARY}" \
+	    --pidfile "${SVC_PIDFILE}" -- --writepid "${SVC_PIDFILE}"
+        then
+		echo "${SVCNAME} working"
+	else
+                echo "Error starting ${SVCNAME}"
+	fi
+}
+
+stop() {
+	echo "Stopping ${SVCNAME}"
+	if [ -f ${SVC_PIDFILE} ] ; then
+	PID=`cat ${SVC_PIDFILE}`
+	
+	if [ "X`ps ho pid -p $PID`" != "X" ] ; then
+	kill -15 $PID
+	while [ "X`ps ho pid -p $PID`" != "X" ] ; do
+	    sleep 1
+	done
+	else
+	    echo "${SVCNAME} no running"
+	fi
+	fi
+
+#	if start-stop-daemon --stop --signal 15 --exec "${SVC_BINARY}" \
+#	    --pidfile "${SVC_PIDFILE}" --quiet
+#	then
+#	    echo ${SVCNAME} "stop"
+#	else
+#	    echo "Error stoping " ${SVCNAME}
+#	fi
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  restart|reload|force-reload)
+	stop
+	PID=`cat ${SVC_PIDFILE}`
+	while [ "X`ps ho pid -p $PID`" != "X" ] ; do
+	    sleep 1
+	done
+	start
+	;;
+  stop)
+	stop
+	;;
+  *)
+	echo "Usage: $0 start|stop|restart" >&2
+	exit 3
+	;;
+esac

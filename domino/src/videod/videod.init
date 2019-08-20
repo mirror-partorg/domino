@@ -1,0 +1,50 @@
+#!/sbin/runscript
+
+extra_started_commands="reload"
+
+
+SVC_BINARY=/usr/local/domino/bin/videod
+SVC_PIDFILE=/var/run/domino/${SVCNAME}.pid
+
+if [ ! -d /var/run/domino ] ; then
+mkdir /var/run/domino
+fi
+chown -R domino /var/run/domino
+
+depend() {
+	after net
+}
+
+start() {
+	ebegin "Starting ${SVCNAME}"
+	config
+	
+	start-stop-daemon --start --user domino --exec "${SVC_BINARY}" \
+	    --pidfile "${SVC_PIDFILE}" -- --writepid "${SVC_PIDFILE}"
+	retval=$?
+
+	eend ${retval} "Error starting ${SVCNAME}"
+	return ${retval}
+}
+
+stop() {
+	ebegin "Stopping ${SVCNAME}"
+	if [ -f ${SVC_PIDFILE} ] ; then
+	PID=`cat ${SVC_PIDFILE}`
+	
+	kill -15 $PID
+	while [ "X`ps ho pid -p $PID`" != "X" ] ; do
+	    sleep 1
+	done
+	fi
+	eend $?
+}
+
+reload() {
+	ebegin "Reloading ${SVCNAME}"
+	if [ -f ${SVC_PIDFILE} ] ; then
+	    PID=`cat ${SVC_PIDFILE}`
+	    kill -HUP $PID
+	fi
+	eend $?
+}

@@ -1,0 +1,38 @@
+#!/bin/sh
+# Start/stop/restart exchnaged:
+
+DOMINO_BIN=/usr/local/domino/bin
+DOMINO_PID=/var/run/domino/exchanged.pid
+
+exchanged_start() {
+    echo "$DOMINO_BIN/exchanged --writepid $DOMINO_PID" | su - domino || exit 1
+}
+
+exchanged_stop() {
+    PID=`cat $DOMINO_PID`
+    kill -10 $PID
+}
+
+exchanged_restart() {
+    PID=`cat $DOMINO_PID`
+    exchanged_stop
+    while [ "X`ps xa -eo pid | grep $PID | grep -v grep | grep -v $0`" != "X" ] ; do
+	sleep 1
+    done
+    exchanged_start
+}
+
+case "$1" in
+'start')
+  exchanged_start
+  ;;
+'stop')
+  exchanged_stop
+  ;;
+'restart')
+  exchanged_restart
+  ;;
+*)
+  echo "usage $0 start|stop|restart"
+esac
+

@@ -1,0 +1,50 @@
+In file included from /usr/include/glib-2.0/glib/gasyncqueue.h:34,
+                 from /usr/include/glib-2.0/glib.h:34,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message-node.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-connection.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/loudmouth.h:26,
+                 from ../../misc/send_error.c:5:
+/usr/include/glib-2.0/glib/gthread.h:51: error: ‘_GMutex’ defined as wrong kind of tag
+In file included from /usr/include/glib-2.0/glib.h:108,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message-node.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-connection.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/loudmouth.h:26,
+                 from ../../misc/send_error.c:5:
+/usr/include/glib-2.0/glib/deprecated/gthread.h:126:1: warning: "g_static_mutex_get_mutex" redefined
+In file included from /usr/include/glib-2.0/glib/gtypes.h:34,
+                 from /usr/include/glib-2.0/glib/galloca.h:34,
+                 from /usr/include/glib-2.0/glib.h:32,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message-node.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-connection.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/loudmouth.h:26,
+                 from ../../misc/send_error.c:5:
+/usr/lib/glib-2.0/include/glibconfig.h:171:1: warning: this is the location of the previous definition
+In file included from /usr/include/glib-2.0/glib.h:108,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message-node.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-connection.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/loudmouth.h:26,
+                 from ../../misc/send_error.c:5:
+/usr/include/glib-2.0/glib/deprecated/gthread.h:127:1: warning: "G_STATIC_MUTEX_INIT" redefined
+In file included from /usr/include/glib-2.0/glib/gtypes.h:34,
+                 from /usr/include/glib-2.0/glib/galloca.h:34,
+                 from /usr/include/glib-2.0/glib.h:32,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message-node.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-connection.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/loudmouth.h:26,
+                 from ../../misc/send_error.c:5:
+/usr/lib/glib-2.0/include/glibconfig.h:170:1: warning: this is the location of the previous definition
+In file included from /usr/include/glib-2.0/glib.h:108,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message-node.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-message.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/lm-connection.h:28,
+                 from /usr/include/loudmouth-1.0/loudmouth/loudmouth.h:26,
+                 from ../../misc/send_error.c:5:
+/usr/include/glib-2.0/glib/deprecated/gthread.h:135: error: conflicting types for ‘GStaticMutex’
+/usr/lib/glib-2.0/include/glibconfig.h:159: note: previous declaration of ‘GStaticMutex’ was here
+g++: ../..//var/Linux/Ubuntu/i686/exchanged/send_error.c.o: Нет такого файла или каталога
+make: *** [exchanged] Ошибка 1

@@ -1,0 +1,261 @@
+#!/bin/bash
+
+USERNAME=domino
+USERHANDBOOK=handbook
+GROUPNAME=$USERNAME
+
+
+DOMINO_ROOT=/usr/local/domino
+DOMINO_ETC=$DOMINO_ROOT/etc
+DOMINO_BIN=$DOMINO_ROOT/bin
+DOMINO_LOG=$DOMINO_ROOT/log
+DOMINO_LIB=$DOMINO_ROOT/lib
+DOMINO_MAIL=$DOMINO_ROOT/mail
+
+
+echo "+++++ Checking current user rights..."
+UID__=`id | grep "uid=0(root)" | wc -l | tr -d " "`
+if [ "X$UID__" = "X1" ] ; then
+	echo Passed...
+else
+	echo "ERROR: The current user id is not root (`id|awk '{print $1}'`)."
+	exit 1
+fi
+echo
+
+
+
+echo "+++++ Setting up $GROUPNAME group and admgroup..."
+
+GPVSWEXISTS=`grep "^$GROUPNAME:" /etc/group`
+if [ "X$GPVSWEXISTS" != "X" ] ; then
+    echo "An existing group $GROUPNAME was found."
+else
+    echo "Creating group $GROUPNAME..."
+    /usr/sbin/groupadd $GROUPNAME
+fi
+
+echo +++++ Setting up user $USERNAME...
+
+UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERNAME`
+if [ "X$UPVSWEXISTS" = "X" ] ; then
+	echo Creating user $USERNAME, this may take a while...
+	/usr/sbin/useradd -c "Domino daemon" -g $GROUPNAME -d $DOMINO_BIN  $USERNAME -s /bin/bash 2>&1
+	UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERNAME`
+	if [ "X$UPVSWEXISTS" = "X" ] ; then
+		echo "ERROR: Can not create user $USERNAME"
+    		exit 1
+	fi
+fi
+SET=`ifconfig | grep 192.168. | head -1 | cut -d'.' -f3`
+if [ "X$SET" == "X6" ] ; then
+MAINHOST=192.168.6.7
+UNIT=5
+DBHOST=192.168.6.22
+else
+MAINHOST=90.188.20.88
+case $SET in
+    2)
+	UNIT=1
+	DBHOST=192.168.2.2
+	;;
+    4)
+	UNIT=2
+	DBHOST=192.168.4.2
+	;;
+    103)
+	UNIT=3
+	DBHOST=192.168.103.2
+	;;
+    3)
+	UNIT=4
+	DBHOST=192.168.3.2
+	;;
+    106)
+	UNIT=6
+	DBHOST=192.168.106.2
+	;;
+    5)
+	UNIT=7
+	DBHOST=192.168.5.2
+	;;
+    7)
+	UNIT=8
+	DBHOST=192.168.7.2
+	;;
+    9)
+	UNIT=9
+	DBHOST=192.168.9.2
+	;;
+    10)
+	UNIT=10
+	DBHOST=192.168.10.2
+	;;
+    11)
+	UNIT=11
+	DBHOST=192.168.11.2
+	;;
+    12)
+	UNIT=12
+	DBHOST=192.168.12.2
+	;;
+    13)
+	UNIT=13
+	DBHOST=192.168.13.2
+	;;
+    14)
+	UNIT=14
+	DBHOST=192.168.14.2
+	;;
+    15)
+	UNIT=15
+	DBHOST=192.168.15.2
+	;;
+    16)
+	UNIT=16
+	DBHOST=192.168.16.2
+	;;
+    17)
+	UNIT=17
+	DBHOST=192.168.17.2
+	;;
+    18)
+	UNIT=18
+	DBHOST=192.168.18.2
+	;;
+    19)
+	UNIT=19
+	DBHOST=192.168.19.2
+	;;
+    20)
+	UNIT=20
+	DBHOST=192.168.20.2
+	;;
+    21)
+	UNIT=21
+	DBHOST=192.168.21.2
+	;;
+    *)
+	echo "Unknown net 192.168.$SET.0/24"
+	exit 1
+	;;
+    esac
+
+fi
+
+
+echo +++++ Setting up user $USERHANDBOOK...
+UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERHANDBOOK`
+if [ "X$UPVSWEXISTS" = "X" ] ; then
+	echo Creating user $USERHANDBOOK, this may take a while...
+	/usr/sbin/useradd -c "Console handbook" -d /home/$USERHANDBOOK -g $GROUPNAME $USERHANDBOOK -p xybk5r4hTh3IU -s /bin/bash 2>&1
+	UPVSWEXISTS=`passwd -Sa | awk {'print $1'} | grep $USERHANDBOOK`
+	if [ "X$UPVSWEXISTS" = "X" ] ; then
+		echo "ERROR: Can not create user $USERHANDBOOK"
+    		exit 1
+	fi
+fi
+
+echo +++++ Setting up environment...
+
+if [ ! -d /cash ] ; then
+ln -s /linuxcash /cash
+fi
+
+if [ -d $DOMINO_LOG ] ; then
+chmod -R 751 $DOMINO_LOG
+chown $USERNAME $DOMINO_LOG
+fi
+
+gpasswd -a $USERNAME audio
+gpasswd -a $USERNAME video
+gpasswd -a $USERNAME pvsw
+
+if [ ! -d $DOMINO_MAIL ] ; then
+	mkdir $DOMINO_MAIL
+	mkdir $DOMINO_MAIL/in
+	mkdir $DOMINO_MAIL/out
+	mkdir $DOMINO_MAIL/err
+fi
+
+echo umask 022 >$DOMINO_BIN/.bashrc
+echo export DOMINO_ROOT=$DOMINO_ROOT >>$DOMINO_BIN/.bashrc
+echo export PATH=$DOMINO_ROOT/bin:$PATH >>$DOMINO_BIN/.bashrc
+echo export LD_LIBRARY_PATH=$DOMINO_ROOT/lib:/usr/local/psql/lib:/usr/lib >>$DOMINO_BIN/.bashrc
+echo export LD_BIND_NOW=1 >>$DOMINO_BIN/.bashrc
+cp $DOMINO_BIN/.bashrc $DOMINO_BIN/.profile
+cp $DOMINO_BIN/.bashrc $DOMINO_BIN/.bash_profile
+
+if [ ! -d /home/$USERHANDBOOK ] ; then
+    mkdir /home/$USERHANDBOOK
+fi
+echo umask 022 >/home/$USERHANDBOOK/.bash_profile
+echo export DOMINO_ROOT=$DOMINO_ROOT >>/home/$USERHANDBOOK/.bash_profile
+echo export PATH=$DOMINO_ROOT/bin:$PATH >>/home/$USERHANDBOOK/.bash_profile
+echo export LD_LIBRARY_PATH=$DOMINO_ROOT/lib:/usr/local/psql/lib:/usr/lib >>/home/$USERHANDBOOK/.bash_profile
+echo export LD_BIND_NOW=1 >>/home/$USERHANDBOOK/.bash_profile
+cp /home/$USERHANDBOOK/.bash_profile /home/$USERHANDBOOK/.profile
+cp /home/$USERHANDBOOK/.bash_profile /home/$USERHANDBOOK/.bashrc
+echo $DOMINO_BIN/handbook.sh >>/home/$USERHANDBOOK/.bash_profile
+
+if [ ! -f $DOMINO_ETC/alias/local ] ; then 
+    sed -e 's/DB_HOST {empty}/DB_HOST '$DBHOST'/g'  $DOMINO_ETC/alias/local.sample >$DOMINO_ETC/alias/local
+fi 
+if [ ! -f $DOMINO_ETC/dclubd.conf ] ; then 
+    cp $DOMINO_ETC/dclubd.conf.sample $DOMINO_ETC/dclubd.conf 
+fi 
+if [ ! -f $DOMINO_ETC/exchanged.conf ] ; then 
+    cp $DOMINO_ETC/exchanged.conf.sample $DOMINO_ETC/exchanged.conf 
+fi 
+if [ ! -f $DOMINO_ETC/domino.conf ] ; then 
+    sed -e 's/local-unit {empty}/local-unit '$UNIT'/g' $DOMINO_ETC/domino.conf.sample >$DOMINO_ETC/domino.conf
+fi 
+if [ ! -f $DOMINO_ETC/get-video.conf ] ; then 
+    cp $DOMINO_ETC/get-video.conf.sample $DOMINO_ETC/get-video.conf
+fi 
+if [ ! -f $DOMINO_ETC/doshadow ] ; then 
+    cp $DOMINO_ETC/doshadow.sample $DOMINO_ETC/doshadow 
+fi 
+chmod 644 $DOMINO_ETC/doshadow 
+chown $USERNAME:$GROUPNAME $DOMINO_ETC/doshadow
+
+if [ "X`cat /etc/hosts | grep soft.glekar.ru`" == "X" ] ; then
+echo $MAINHOST soft.glekar.ru >>/etc/hosts 
+fi
+if [ "X`cat /etc/hosts | grep jabber.glekar.ru`" == "X" ] ; then
+echo $MAINHOST jabber.glekar.ru >>/etc/hosts
+fi
+
+cd $DOMINO_ROOT/tmp
+  
+update-rc.d dclubd defaults
+update-rc.d exchanged defaults
+chown -R $USERNAME:$GROUPNAME $DOMINO_ROOT
+
+LINE=`/bin/grep check-domino-daemon /etc/crontab`
+if [[ $LINE == "" ]] ; then
+echo "*/1 * * * * root /usr/local/domino/bin/check-domino-daemon">>/etc/crontab
+fi
+LINE=`/bin/grep ntpdate /etc/crontab`
+if [[ $LINE == "" ]] ; then
+echo "0 */1 * * * root ntpdate -u $DBHOST">>/etc/crontab
+fi
+LINE=`/bin/grep load-handbook /etc/crontab`
+if [[ $LINE == "" ]] ; then
+echo "*/1 *	* * *	/usr/local/domino/bin/load-handbook.sh 2>/var/log/err.ss">>/etc/crontab
+echo "1 */10	* * *	/usr/local/domino/bin/load-handbook.sh products 2>/var/log/err.ss">>/etc/crontab
+fi
+export LD_LIBRARY_PATH=/usr/local/domino/lib:/usr/local/psql/lib
+
+if [ -f /etc/init.d/dclubd ] ; then
+/etc/init.d/dclubd start
+fi
+if [ -f /etc/init.d/exchanged ] ; then
+/etc/init.d/exchanged start
+fi
+if [ -f /etc/init.d/get-video ] ; then
+/etc/init.d/get-video start
+fi
+killall -1 domino
+exit 0
+

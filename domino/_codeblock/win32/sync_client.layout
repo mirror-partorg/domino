@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="..\..\src\sync\option_client.c" open="1" top="0" tabpos="3">
+		<Cursor position="19487" topLine="532" />
+	</File>
+	<File name="..\..\src\sync\replic.c" open="1" top="0" tabpos="2">
+		<Cursor position="262778" topLine="6736" />
+	</File>
+	<File name="..\..\src\sync\sync_client.c" open="1" top="1" tabpos="4">
+		<Cursor position="16748" topLine="277" />
+	</File>
+	<File name="..\..\src\sync\util.c" open="1" top="0" tabpos="5">
+		<Cursor position="9267" topLine="200" />
+	</File>
+</CodeBlocks_layout_file>

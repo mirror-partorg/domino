@@ -1,0 +1,108 @@
+#!/bin/bash
+
+
+GET_VERSION=`cat ../../version.h | grep -I VERSION | cut -d' ' -f3 | egrep '^"[0-9]+.[0-9]+.[0-9]+"' | cut -d'"' -f2`
+PARENT_DIR=./tmp/domino_$GET_VERSION
+DOMINO_DIR=$PARENT_DIR/usr/local/domino
+rm -fR ./tmp/*
+
+mkdir -p $PARENT_DIR/DEBIAN
+mkdir -p $PARENT_DIR/etc/init.d
+mkdir -p $PARENT_DIR/usr/local/bin
+mkdir -p $PARENT_DIR/home/handbook
+mkdir -p $DOMINO_DIR/bin
+mkdir -p $DOMINO_DIR/lib/python
+mkdir -p $DOMINO_DIR/etc/alias
+mkdir -p $DOMINO_DIR/tmp
+mkdir -p $DOMINO_DIR/mail/in
+mkdir -p $DOMINO_DIR/mail/err
+mkdir -p $DOMINO_DIR/mail/out
+
+echo >$DOMINO_DIR/mail/in/.keep_domino
+echo >$DOMINO_DIR/mail/err/.keep_domino
+echo >$DOMINO_DIR/mail/out/.keep_domino
+
+cp ../../src/send-message/send-error-message $DOMINO_DIR/bin
+cp ../../src/crntsale/crntsale $DOMINO_DIR/bin
+cp ../../src/get-video/get-video $DOMINO_DIR/bin
+cp ../../lib/py-thrift.tar.bz2 $DOMINO_DIR/tmp
+cp scripts/domino_install $PARENT_DIR/usr/local/bin
+chmod +x $PARENT_DIR/usr/local/bin/domino_install
+cp scripts/update-domino $PARENT_DIR/usr/local/bin
+chmod +x $PARENT_DIR/usr/local/bin/update-domino
+cp scripts/check_exchange $DOMINO_DIR/bin
+chmod +x $DOMINO_DIR/bin/check_exchange
+cp scripts/check-domino-daemon $DOMINO_DIR/bin
+chmod +x $DOMINO_DIR/bin/check-domino-daemon
+cp scripts/update-domino $DOMINO_DIR/bin
+chmod +x $DOMINO_DIR/bin/update-domino
+cp ../../src/crntsale/crntsale.sh $DOMINO_DIR/bin
+chmod +x $DOMINO_DIR/bin/crntsale.sh
+cp ../../src/ctrlpasswd/dopasswd $DOMINO_DIR/bin
+cp ../../src/dclubd/dclubd $DOMINO_DIR/bin
+cp ../../src/exchanged/exchanged $DOMINO_DIR/bin
+#cp ../../src/exchanged/send-message $DOMINO_DIR/bin
+cp ../../src/handbook-text/handbook $DOMINO_DIR/bin
+cp ../../src/handbook-text/handbook.sh $DOMINO_DIR/bin
+chmod +x $DOMINO_DIR/bin/handbook.sh
+cp ../../src/tmcck/tmcck $DOMINO_DIR/bin
+
+cp ../../etc/alias/local $DOMINO_DIR/etc/alias/local.sample
+cp ../../etc/dclubd.conf $DOMINO_DIR/etc/dclubd.conf.sample
+cp ../../etc/get-video.conf $DOMINO_DIR/etc/get-video.conf.sample
+cp ../../etc/crntsale.conf $DOMINO_DIR/etc/crntsale.conf.sample
+cp ../../etc/exchanged.conf $DOMINO_DIR/etc/exchanged.conf.sample
+cp ../../etc/handbook-text.conf $DOMINO_DIR/etc/handbook-text.conf.sample
+cp ../../etc/domino.conf $DOMINO_DIR/etc/domino.conf.sample
+cp ../../etc/doshadow $DOMINO_DIR/etc/doshadow.sample 
+cp ../../etc/domino.cfg $DOMINO_DIR/etc/domino.cfg
+cp ../../etc/send-error.conf $DOMINO_DIR/etc/send-error.conf
+
+cp scripts/domino-daemon $PARENT_DIR/etc/init.d/domino-daemon
+chmod +x $PARENT_DIR/etc/init.d/domino-daemon
+ln -s  domino-daemon $PARENT_DIR/etc/init.d/dclubd
+ln -s  domino-daemon $PARENT_DIR/etc/init.d/exchanged
+#ln -s  domino-daemon $PARENT_DIR/etc/init.d/get-video
+cp scripts/get-video $PARENT_DIR/etc/init.d/get-video-tmp
+chmod +x $PARENT_DIR/etc/init.d/get-video-tmp
+
+
+cp ../../src/handbook-text/tty2.conf $DOMINO_DIR/etc/tty2.conf
+cp -l ../../lib/artix/libartix.so* $DOMINO_DIR/lib
+cp -l ../../lib/dolib/libdolib.so* $DOMINO_DIR/lib
+cp -l ../../lib/domino/libdomino.so* $DOMINO_DIR/lib
+cp -l ../../lib/loudmouth/loudmouth/.libs/libloudmouth-1.so* $DOMINO_DIR/lib
+cp -l ../../lib/ffmpeg/libavdevice/libavdevice.so* $DOMINO_DIR/lib
+cp -l ../../lib/ffmpeg/libswscale/libswscale.so* $DOMINO_DIR/lib
+cp -l ../../lib/ffmpeg/libavfilter/libavfilter.so* $DOMINO_DIR/lib
+cp -l ../../lib/ffmpeg/libavutil/libavutil.so* $DOMINO_DIR/lib
+cp -l ../../lib/ffmpeg/libavformat/libavformat.so* $DOMINO_DIR/lib
+cp -l ../../lib/ffmpeg/libavcodec/libavcodec.so* $DOMINO_DIR/lib
+cp -l ../../lib/ffmpeg/libswresample/libswresample.so* $DOMINO_DIR/lib
+
+
+#cp ../../lib/dolib/_dolibc.so $DOMINO_DIR/lib/python
+#cp ../../lib/dolib/dolibc.py $DOMINO_DIR/lib/python
+#cp ../../lib/python/artixinfo.py $DOMINO_DIR/lib/python
+#cp ../../lib/dolib/dolib.py $DOMINO_DIR/lib/python
+#cp ../../lib/python/myutil.py $DOMINO_DIR/lib/python
+#cp ../../lib/python/artixexchange.py $DOMINO_DIR/lib/python
+
+cp ./postinst $PARENT_DIR/DEBIAN/postinst
+chmod +x $PARENT_DIR/DEBIAN/postinst
+cp ./preinst $PARENT_DIR/DEBIAN/preinst
+chmod +x $PARENT_DIR/DEBIAN/preinst
+
+echo "Package: domino">$PARENT_DIR/DEBIAN/control
+echo "Version: $GET_VERSION">>$PARENT_DIR/DEBIAN/control
+echo "Architecture: all">>$PARENT_DIR/DEBIAN/control
+echo "Depends: artix44-infoserver, python-dnspython, libsmbclient, libpq5, psql">>$PARENT_DIR/DEBIAN/control
+echo "Maintainer: Richesse Youra <mir@glekar.ru>">>$PARENT_DIR/DEBIAN/control
+echo "Description: Domino exchange">>$PARENT_DIR/DEBIAN/control
+
+dpkg -b $PARENT_DIR
+
+mv ./tmp/domino_$GET_VERSION.deb domino_$GET_VERSION.deb
+rm -R ./tmp
+
+

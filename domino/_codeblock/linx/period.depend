@@ -1,0 +1,124 @@
+# depslib dependency file v1.0
+1295496780 source:/home/mirror/work/app-domino/lib/domino/do_accept.c
+	<domino.h>
+	<dolib.h>
+	<limits.h>
+	"../misc/define.h"
+
+1288602480 source:/home/mirror/work/app-domino/lib/domino/do_action.c
+	<domino.h>
+	<errno.h>
+	"../../misc/define.h"
+	"../../misc/csv_util.h"
+	"../../misc/iconv_.h"
+
+1285949280 /home/mirror/work/app-domino/misc/define.h
+
+1285949280 /home/mirror/work/app-domino/misc/csv_util.h
+
+1293016020 /home/mirror/work/app-domino/misc/iconv_.h
+	<iconv.h>
+
+1288590720 source:/home/mirror/work/app-domino/lib/domino/r3_expr.c
+	<string.h>
+	<ctype.h>
+	<domino.h>
+	<locale.h>
+	"../misc/define.h"
+
+1285949280 source:/home/mirror/work/app-domino/misc/csv_util.c
+	"csv_util.h"
+	<string.h>
+
+1295496406 source:/home/mirror/work/app-domino/src/period/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<dolib.h>
+	<domino.h>
+	<sys/types.h>
+	<dirent.h>
+	<errno.h>
+	<limits.h>
+	<time.h>
+	<locale.h>
+	<stddef.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+
+1288690500 source:/home/mirror/work/app-domino/lib/domino/domino.c
+	<domino.h>
+	<errno.h>
+	"../../config/config.h"
+	"../../misc/define.h"
+	"../../misc/iconv_.h"
+
+1294295520 /home/mirror/work/app-domino/config/config.h
+
+1310985242 source:/home/mirror/work/app-domino/lib/domino/do_alias.c
+	<string.h>
+	<stdarg.h>
+	<errno.h>
+	<domino.h>
+	<dolib.h>
+	<iconv.h>
+	<locale.h>
+	<btrieve.h>
+	"btr_struct.h"
+	"../../config/config.h"
+	"../../misc/iconv_.h"
+	"../../misc/define.h"
+
+1285949280 /home/mirror/work/app-domino/lib/domino/btr_struct.h
+	<btrieve.h>
+
+1285988880 source:/home/mirror/work/misc/csv_util.c
+	"csv_util.h"
+	<string.h>
+
+1285988880 /home/mirror/work/misc/csv_util.h
+
+1296195317 source:/home/mirror/work/app-domino/src/period/post.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<domino.h>
+	"../misc/forms.h"
+	"../misc/print.h"
+	<time.h>
+	<locale.h>
+	<stddef.h>
+
+1296121740 source:/home/mirror/work/app-domino/misc/template.c
+	"template.h"
+	<dolib.h>
+	<errno.h>
+	<stdarg.h>
+	"../misc/iconv_.h"
+	"../config/config.h"
+
+1290037080 /home/mirror/work/app-domino/misc/template.h
+
+1285949280 source:/home/mirror/work/app-domino/misc/print.c
+	"print.h"
+	<dolib.h>
+	"socket.h"
+	<errno.h>
+	<stdint.h>
+
+1285949280 /home/mirror/work/app-domino/misc/print.h
+
+1285949280 /home/mirror/work/app-domino/misc/socket.h
+	<winsock2.h>
+	<sys/socket.h>
+	<arpa/inet.h>
+	<netdb.h>
+	<unistd.h>
+
+1311237262 source:/home/mirror/work/app-domino/src/period/main1.c
+	<domino.h>
+	<time.h>
+	<locale.h>
+	<math.h>
+

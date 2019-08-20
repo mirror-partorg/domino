@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="exchanged" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\Debug\exchanged" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-F" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\Release\exchanged" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-DDEBUG" />
+			<Add option="-DNO_USE_ICONV" />
+			<Add directory="..\..\lib\dolib" />
+			<Add directory="..\..\lib\domino" />
+			<Add directory="..\..\lib\artix" />
+		</Compiler>
+		<Linker>
+			<Add library="domino" />
+			<Add library="artix" />
+			<Add library="dolib" />
+			<Add library="iconv" />
+			<Add directory="\usr\local\psql\lib64" />
+			<Add directory="\usr\local\domino\lib" />
+			<Add directory="..\..\lib\control\auth" />
+			<Add directory="..\..\lib\domino" />
+			<Add directory="..\..\lib\dolib" />
+			<Add directory="..\..\lib\artix" />
+		</Linker>
+		<Unit filename="..\..\misc\iconv_.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\misc\mproc_state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\src\exchanged\exchange.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\src\exchanged\exchanged.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\src\exchanged\exchangeinfo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\src\exchanged\option.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1331441427 source:/home/mirror/work/domino/src/src/eias/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<dolib.h>
+	<domino.h>
+	<errno.h>
+	<locale.h>
+	"../misc/csv_util.h"
+

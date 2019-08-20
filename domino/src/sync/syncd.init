@@ -1,0 +1,42 @@
+#!/sbin/runscript
+#
+
+# Include source function library
+# Setting up environment
+CLIENT="${SVCNAME#*.}"
+DOMINO_ROOT=/usr/local/domino
+
+if [ -n "${CLIENT}" ] && [ "${SVCNAME}" != "syncd" ]; then
+	SYNCDPID="/var/run/syncd.${CLIENT}.pid"
+	SYNCDCONF="${DOMINO_ROOT}/etc/syncd-${CLIENT}.conf"
+else
+	SYNCDPID="/var/run/syncd.pid"
+	SYNCDCONF="${DOMINO_ROOT}/etc/syncd.conf"
+fi
+
+
+RETVAL=0
+TMPVAL=0
+
+start(){
+	ebegin "Starting ${SVCNAME}"
+	if [ ! -e "${SYNCDCONF}" ]; then
+		eend 1 "${SYNCDCONF} does not exist"
+		return 1
+	fi
+	start-stop-daemon --start --exec "${DOMINO_ROOT}/bin/syncd" \
+	    --pidfile "${SYNCDPID}" \
+	    -- -f "${SYNCDCONF}" --writepid "${SYNCDPID}" -d 10
+	retval=$?
+
+	eend ${retval} "Error starting ${SVCNAME}"
+	return ${retval}
+}
+
+stop(){
+	ebegin "Stopping ${SVCNAME}"
+	start-stop-daemon --stop --exec "${DOMINO_ROOT}/bin/syncd" --pidfile "${SYNCDPID}"
+	eend $?
+}
+
+

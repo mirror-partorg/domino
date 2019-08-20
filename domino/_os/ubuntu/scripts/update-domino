@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd /tmp
+rm -f latest-cash.deb
+wget http://soft.glekar.com/domino/latest-cash.deb
+if [ -f latest-cash.deb ] ; then
+dpkg -i latest-cash.deb
+fi

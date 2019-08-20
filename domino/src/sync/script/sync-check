@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+
+/usr/local/domino/bin/sync-client$1 checks $1 $2 $3

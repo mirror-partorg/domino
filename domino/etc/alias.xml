@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <object id="Aliases">
+    <property name="Alias-2009"/>
+    <property name="Alias-2010"/>
+    <property name="Alias-net"/>
+    <property name="Alias-chel"/>
+    <property name="Alias-tta"/>
+    <property name="Alias-shat"/>
+  </object>
+  <object id="Alias-chel" >
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.chel</property>
+  </object>
+  <object id="Alias-tta" >
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.tta</property>
+  </object>
+  <object id="Alias-shat" >
+    <property name="date_b">12/11/2010</property>
+    <property name="date_e"></property>
+    <property name="alias">main.shat</property>
+  </object>
+  <object id="Alias-net" >
+    <property name="sklad">15</property>
+    <property name="date_b"></property>
+    <property name="date_e"></property>
+    <property name="alias">main.net</property>
+  </object>
+  <object id="Alias-2010" >
+    <property name="date_b">01/01/2010</property>
+    <property name="date_e">11/11/2010</property>
+    <property name="alias">local.10</property>
+  </object>
+  <object id="Alias-2009" >
+    <property name="date_b">01/01/2009</property>
+    <property name="date_e">31/12/2009</property>
+    <property name="alias">local.09</property>
+  </object>
+</config>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<domainCollections>
+    <domainCollection xsi:type="cardgroupV46" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <idcardgroup>4</idcardgroup>
+        <name>Glekar3</name>
+        <cardmode>2</cardmode>
+        <lenbeg>0</lenbeg>
+        <lenend>0</lenend>
+        <regexpattern>;5432[0]*([1-9][0-9]{0,3})=[0-9]{1}\?</regexpattern>
+        <inputmask>7</inputmask>
+        <regexrule>\1</regexrule>
+    </domainCollection>
+    <domainCollection xsi:type="cardgroupV46" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <idcardgroup>5</idcardgroup>
+        <name>SabSimp</name>
+        <cardmode>2</cardmode>
+        <lenbeg>0</lenbeg>
+        <lenend>0</lenend>
+        <regexpattern>(7[0-9]{8})</regexpattern>
+        <inputmask>7</inputmask>
+        <regexrule>\1</regexrule>
+    </domainCollection>
+    <domainCollection xsi:type="cardgroupV46" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <idcardgroup>2</idcardgroup>
+        <name>Glekar2</name>
+        <cardmode>2</cardmode>
+        <lenbeg>0</lenbeg>
+        <lenend>0</lenend>
+        <regexpattern>;5432[0]*([1-9][0-9]{0,4})=[0-9]{1}\?</regexpattern>
+        <inputmask>7</inputmask>
+        <regexrule>\1</regexrule>
+    </domainCollection>
+    <domainCollection xsi:type="cardgroupV46" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <idcardgroup>3</idcardgroup>
+        <name>Pfizer</name>
+        <cardmode>2</cardmode>
+        <lenbeg>0</lenbeg>
+        <lenend>0</lenend>
+        <regexpattern>;610236643[0-9]{1}[0-6]{1}([0-9]{7})[0-9]=[0-9]{17}\?</regexpattern>
+        <inputmask>7</inputmask>
+        <regexrule>\1</regexrule>
+        <showinfo>false</showinfo>
+    </domainCollection>
+    <domainCollection xsi:type="cardgroupV46" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <idcardgroup>1</idcardgroup>
+        <name>Glekar1</name>
+        <cardmode>2</cardmode>
+        <lenbeg>0</lenbeg>
+        <lenend>0</lenend>
+        <regexpattern>;5432[0]*([1-9][0-9]{0,4})\?</regexpattern>
+        <inputmask>7</inputmask>
+        <regexrule>\1</regexrule>
+    </domainCollection>
+</domainCollections>

@@ -1,0 +1,34 @@
+
+include ../../common.mak
+
+LDFLAGS =  -ldomino -ldolib -lpython34  -lpython3
+CFLAGS = -D_REENTRANT -D_DEBUG1
+
+NAME = pydomino.pyd
+DLL = pydomino.dll
+APP = pydomino
+
+
+all: compile
+gen:
+	if [[ ! -d doc ]] ; then mkdir doc ; fi
+	if [[ ! -d src ]] ; then mkdir src ; fi
+	if [[ ! -f src/_info.txt ]] ; then /usr/bin/env python script/generate.py ; fi
+compile:
+	for ver in "3.4" ; do if [[ -f $(NAME)-$$ver ]] ; then continue ; fi ; echo compile for python-$$ver ; \
+	  for f in `cat var/files.lst` ; do if [[ $$f -nt ./tmp/$$f.o.$$ver ]] ; then echo $$f ; $(CC) \
+	     $(AM_FLAGS) $(CFLAGS) -c $$f -o ./tmp/$$f.o.$$ver; fi ; done ; \
+	  OBJS="" ; \
+	  for f in `cat var/files.lst` ; do OBJS="$$OBJS ./tmp/$$f.o.$$ver"; done ; \
+	      gcc  -mdll -O -Wall $(AM_FLAGS) $(CFLAGS) $$OBJS -o ./tmp/.libs/$(NAME) $(LDFLAGS)   ; done
+install:
+	for ver in `cat src/pyversions` ; do dir=`script/python_dir $$ver` ; install -T $(NAME)-$$ver $$dir/$(NAME) ; done 
+	if [[ ! -d /usr/share/doc/pydomino ]] ; then mkdir -p /usr/share/doc/pydomino ; fi
+	cp doc/* /usr/share/doc/pydomino/
+uninstall:
+	for ver in `cat src/pyversions` ; do dir=`script/python_dir $$ver` ; rm -f $$dir/$(NAME) ; done 
+clean:
+	rm -f *.so*
+	rm -f src/*
+	rm doc/index.html
+

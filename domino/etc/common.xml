@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <object id="MainAlias" >
+    <property name="main.tta">Тазеева</property>
+    <property name="main.chel">Черемухина</property>
+    <property name="main.net">Сеть</property>
+    <property name="main.shat">Шатохина</property>
+  </object>
+  <object id="Rznd" >
+    <property name="repository">http://price.glekar.ru/rzdn/src</property>
+  </object>
+  <object id="Update" >
+    <property name="repository">http://soft.glekar.ru/domino/update32</property>
+    <property name="config">config.xml</property>
+  </object>
+  <object id="Valuta" >
+    <property name="1">Руб</property>
+    <property name="2">USD</property>
+    <property name="3">EUR</property>
+  </object>
+  <object id="ValutaAlias" >
+    <property name="1">руб,rub,р.</property>
+    <property name="2">долл,usd,сша,$,doll</property>
+    <property name="3">евро,eur</property>
+  </object>
+  <object id="ValutaSign" >
+    <property name="1">р.</property>
+    <property name="2">$</property>
+    <property name="3">€</property>
+  </object>
+  <object id="Банкноты" >
+    <property name="Пять тысяч">5000</property>
+    <property name="Одна тысяча">1000</property>
+    <property name="Пятьсот">500</property>
+    <property name="Сто">100</property>
+    <property name="Пятьдесят">50</property>
+    <property name="Десять">10</property>
+  </object>
+  <object id="ЖВ" >
+    <property name="Неопределена">0</property>
+    <property name="ЖНВЛС">1</property>
+    <property name="Лекарство">2</property>
+    <property name="Средство мед. назначения">3</property>
+    <property name="БАДы">4</property>
+    <property name="Прочее">5</property>
+  </object>
+  <object id="Необходимый" >
+    <property name="Нет">0</property>
+    <property name="Да">1</property>
+  </object>
+  <object id="Логический" default="0">
+    <property name="Нет" icon="GTK_STOCK_NO">0</property>
+    <property name="Да" icon="GTK_STOCK_YES">1</property>
+  </object>
+  <object id="Монеты" >
+    <property name="Пять">5</property>
+    <property name="Два">2</property>
+    <property name="Один">1</property>
+    <property name="Пятьдесят копеек">0,5</property>
+    <property name="Десять копеек">0,1</property>
+    <property name="Пять копеек ">0,05</property>
+    <property name="Копейка">0,01</property>
+  </object>
+  <object id="НДС" >
+    <property name="Без НДС">0</property>
+    <property name="НДС 10%">10</property>
+    <property name="НДС 18%">18</property>
+  </object>
+  <object id="Режим" >
+    <property name="Нет">0</property>
+    <property name="4°С ±2 ">4</property>
+    <property name="10°С">10</property>
+    <property name="12-15°С">12</property>
+    <property name="18-20°С">18</property>
+  </object>
+  <object id="Список" >
+    <property name="нет">0</property>
+    <property name="Рецептурный">1</property>
+    <property name="Акция">2</property>
+    <property name="Рецептурный+Акция">3</property>
+  </object>
+  <object id="Цвет признака" >
+    <property name="2">green</property>
+  </object>
+  <object id="FirmList"  variable="TRUE">
+    <property name="Все">main.tta,main.chel,main.net,main.shat</property>
+    <property name="Сеть">main.net</property>
+    <property name="Тазеева">main.tta</property>
+    <property name="Черемухина">main.chel</property>
+    <property name="Тазеева,Черемухина">main.tta,main.chel</property>
+    <property name="Шатохина">main.shat</property>
+  </object>
+  <object id="PostponementKind"  variable="TRUE">
+    <property name="Все">0</property>
+    <property name="С отсрочкой от двух недель и более">14</property>
+  </object>
+  <object id="SellerKind" >
+    <property name="Приход-Расход">1</property>
+    <property name="Приход">2</property>
+    <property name="Расход">3</property>
+    <property name="Текущий Остаток">4</property>
+  </object>
+  <object id="SellerKindSum" >
+    <property name="Количество-Сумма">1</property>
+    <property name="Количество">2</property>
+    <property name="Сумма">3</property>
+  </object>
+  <object id="SellerKindPrice" >
+    <property name="Закуп-Продажа">1</property>
+    <property name="Все по закупу">2</property>
+    <property name="Все по продажной">3</property>
+  </object>
+  <object id="DiscountTypes" >
+    <property name="Все">-</property>
+    <property name="Губернский лекарь">1-99999</property>
+    <property name="Pfizer">1000000-9999999</property>
+  </object>
+  <object id="DiscountGroupKind" >
+    <property name="Без">0</property>
+    <property name="По аптекам">1</property>
+    <property name="По типам карт">2</property>
+    <property name="По видам скидок">3</property>
+    <property name="По имени">4</property>
+  </object>
+  
+</config>

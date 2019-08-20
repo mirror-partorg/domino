@@ -1,0 +1,269 @@
+# depslib dependency file v1.0
+1361430790 source:/home/mirror/work/domino/src/src/testp/main.c
+	<stdio.h>
+	<stdlib.h>
+	"testp.h"
+
+1361179015 source:/home/mirror/work/domino/src/src/testp/testp.c
+	"testp.h"
+	<math.h>
+	<stdlib.h>
+	"../misc/define.h"
+
+1361178628 /home/mirror/work/domino/src/src/testp/testp.h
+	<dolib.h>
+
+1361352283 source:/home/mirror/work/domino/src/src/testp/pytestp.c
+	<Python.h>
+	"testp.h"
+
+1358321111 /usr/include/python2.7/Python.h
+	"patchlevel.h"
+	"pyconfig.h"
+	"pymacconfig.h"
+	<limits.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<unistd.h>
+	<stddef.h>
+	<assert.h>
+	"pyport.h"
+	"pymath.h"
+	"pymem.h"
+	"object.h"
+	"objimpl.h"
+	"pydebug.h"
+	"unicodeobject.h"
+	"intobject.h"
+	"boolobject.h"
+	"longobject.h"
+	"floatobject.h"
+	"complexobject.h"
+	"rangeobject.h"
+	"stringobject.h"
+	"memoryobject.h"
+	"bufferobject.h"
+	"bytesobject.h"
+	"bytearrayobject.h"
+	"tupleobject.h"
+	"listobject.h"
+	"dictobject.h"
+	"enumobject.h"
+	"setobject.h"
+	"methodobject.h"
+	"moduleobject.h"
+	"funcobject.h"
+	"classobject.h"
+	"fileobject.h"
+	"cobject.h"
+	"pycapsule.h"
+	"traceback.h"
+	"sliceobject.h"
+	"cellobject.h"
+	"iterobject.h"
+	"genobject.h"
+	"descrobject.h"
+	"warnings.h"
+	"weakrefobject.h"
+	"codecs.h"
+	"pyerrors.h"
+	"pystate.h"
+	"pyarena.h"
+	"modsupport.h"
+	"pythonrun.h"
+	"ceval.h"
+	"sysmodule.h"
+	"intrcheck.h"
+	"import.h"
+	"abstract.h"
+	"compile.h"
+	"eval.h"
+	"pyctype.h"
+	"pystrtod.h"
+	"pystrcmp.h"
+	"dtoa.h"
+	"pyfpe.h"
+	<pth.h>
+
+1358321110 /usr/include/python2.7/patchlevel.h
+
+1358321111 /usr/include/python2.7/pyconfig.h
+
+1358321110 /usr/include/python2.7/pymacconfig.h
+
+1358321110 /usr/include/python2.7/pyport.h
+	"pyconfig.h"
+	<inttypes.h>
+	<stdint.h>
+	<stdlib.h>
+	<ieeefp.h>
+	<math.h>
+	<sys/time.h>
+	<time.h>
+	<sys/time.h>
+	<time.h>
+	<sys/select.h>
+	<sys/types.h>
+	"unixstuff.h"
+	<sys/types.h>
+	<sys/stat.h>
+	<stat.h>
+	<sys/types.h>
+	<sys/termio.h>
+	<termios.h>
+	<osreldate.h>
+	<ctype.h>
+	<wctype.h>
+
+1358321110 /usr/include/python2.7/pymath.h
+	"pyconfig.h"
+
+1358321110 /usr/include/python2.7/pymem.h
+	"pyport.h"
+
+1358321110 /usr/include/python2.7/object.h
+
+1358321110 /usr/include/python2.7/objimpl.h
+	"pymem.h"
+
+1358321110 /usr/include/python2.7/pydebug.h
+
+1358321111 /usr/include/python2.7/unicodeobject.h
+	<stdarg.h>
+	<ctype.h>
+	<time.h>
+	<wchar.h>
+	<wctype.h>
+
+1358321110 /usr/include/python2.7/intobject.h
+
+1358321110 /usr/include/python2.7/boolobject.h
+
+1358321110 /usr/include/python2.7/longobject.h
+
+1358321110 /usr/include/python2.7/floatobject.h
+
+1358321110 /usr/include/python2.7/complexobject.h
+
+1358321111 /usr/include/python2.7/rangeobject.h
+
+1358321111 /usr/include/python2.7/stringobject.h
+	<stdarg.h>
+
+1358321110 /usr/include/python2.7/memoryobject.h
+
+1358321110 /usr/include/python2.7/bufferobject.h
+
+1358321110 /usr/include/python2.7/bytesobject.h
+
+1358321110 /usr/include/python2.7/bytearrayobject.h
+	<stdarg.h>
+
+1358321111 /usr/include/python2.7/tupleobject.h
+
+1358321110 /usr/include/python2.7/listobject.h
+
+1358321110 /usr/include/python2.7/dictobject.h
+
+1358321110 /usr/include/python2.7/enumobject.h
+
+1358321111 /usr/include/python2.7/setobject.h
+
+1358321110 /usr/include/python2.7/methodobject.h
+
+1358321110 /usr/include/python2.7/moduleobject.h
+
+1358321110 /usr/include/python2.7/funcobject.h
+
+1358321110 /usr/include/python2.7/classobject.h
+
+1358321110 /usr/include/python2.7/fileobject.h
+
+1358321110 /usr/include/python2.7/cobject.h
+
+1358321110 /usr/include/python2.7/pycapsule.h
+
+1358321111 /usr/include/python2.7/traceback.h
+
+1358321111 /usr/include/python2.7/sliceobject.h
+
+1358321110 /usr/include/python2.7/cellobject.h
+
+1358321110 /usr/include/python2.7/iterobject.h
+
+1358321110 /usr/include/python2.7/genobject.h
+
+1358321110 /usr/include/python2.7/descrobject.h
+
+1358321111 /usr/include/python2.7/warnings.h
+
+1358321111 /usr/include/python2.7/weakrefobject.h
+
+1358321110 /usr/include/python2.7/codecs.h
+
+1358321110 /usr/include/python2.7/pyerrors.h
+	<stdarg.h>
+
+1358321110 /usr/include/python2.7/pystate.h
+
+1358321110 /usr/include/python2.7/pyarena.h
+
+1358321110 /usr/include/python2.7/modsupport.h
+	<stdarg.h>
+
+1358321111 /usr/include/python2.7/pythonrun.h
+
+1358321110 /usr/include/python2.7/ceval.h
+
+1358321111 /usr/include/python2.7/sysmodule.h
+
+1358321110 /usr/include/python2.7/intrcheck.h
+
+1358321110 /usr/include/python2.7/import.h
+
+1358321110 /usr/include/python2.7/abstract.h
+
+1358321110 /usr/include/python2.7/compile.h
+	"code.h"
+
+1358321110 /usr/include/python2.7/code.h
+
+1358321110 /usr/include/python2.7/eval.h
+
+1358321110 /usr/include/python2.7/pyctype.h
+
+1358321110 /usr/include/python2.7/pystrtod.h
+
+1358321110 /usr/include/python2.7/pystrcmp.h
+
+1358321110 /usr/include/python2.7/dtoa.h
+
+1358321110 /usr/include/python2.7/pyfpe.h
+	<signal.h>
+	<setjmp.h>
+	<math.h>
+
+1361341246 source:/home/mirror/work/domino/src/src/testp/cStringIO.c
+	"Python.h"
+	"structmember.h"
+
+1358321111 /usr/include/python2.7/structmember.h
+	<stddef.h>
+
+1361354825 source:/home/mirror/work/domino/src/src/testp/noddy2.c
+	<Python.h>
+	<structmember.h>
+	"testp.h"
+
+1361429220 source:/home/mirror/work/domino/src/src/testp/template.c
+	<Python.h>
+	<domino.h>
+	<locale.h>
+	"pydomino.h"
+
+1361429384 /home/mirror/work/domino/src/src/testp/pydomino.h
+	<Python.h>
+	<domino.h>
+

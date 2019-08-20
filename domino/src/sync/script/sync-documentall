@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+
+if [ $1 -lt 10 ] ; then
+    SFUNIT="СФ0$1"
+else
+    SFUNIT="СФ$1"
+fi
+
+/usr/local/domino/bin/sync-client$1 document_period ПТ.$1,F1.$SFUNIT,РТ.$1,PR.$1 all parcels $1 
+#>>/usr/local/domino/log/sync-client$1.log

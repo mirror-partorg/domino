@@ -1,0 +1,54 @@
+#!/bin/bash
+
+ROOT="/usr/local/domino"
+BIN=$ROOT/bin
+ETC=$ROOT/etc
+TMP=$ROOT/var/tmp
+URL_GRLSPL="http://grls.rosminzdrav.ru/forum/files/export//limprice/"
+FILE="lp"$(date +%Y-%m-%d)
+ZIP=".zip"
+XLS=".xls"
+CONFIG=$ETC"/grlspl.xml"
+PRG=$BIN"/grlspl-load"
+ALIASS="local.tta local.chel network"
+
+cd $TMP
+
+rm -f $FILE$ZIP
+echo "Fetch "$URL_GRLSPL$FILE$ZIP
+wget $URL_GRLSPL$FILE$ZIP 2>lastlog.log
+
+if [ $? -gt 0 ] ; then 
+    ERROR="Error fetch "$URL_GRLSPL$FILE$ZIP
+    echo $ERROR
+    $BIN/send-error-message "$ERROR"
+    cat lastlog.log
+    exit 
+fi
+unzip -o $FILE$ZIP "*.[xX][lL][sS]" 2>lastlog.log
+if [ $? -gt 0 ] ; then 
+    ERROR="Error unzip "$FILE$ZIP
+    echo $ERROR
+    $BIN/send-error-message "$ERROR"
+    cat lastlog.log
+    exit 
+fi
+if [ ! -f $FILE$XLS ] ; then
+    ERROR="Error file "$FILE$XLS" not found"
+    echo $ERROR
+    $BIN/send-error-message  "$ERROR"
+    exit 
+fi
+for i in ${ALIASS}; do
+    $PRG -o stdout $i $CONFIG $FILE$XLS
+    if [ $? -gt 0 ] ; then
+	ERROR="Error load price limit in "$i
+	echo $ERROR
+	$BIN/send-error-message  "$ERROR"
+	exit 
+    fi
+done
+
+
+
+

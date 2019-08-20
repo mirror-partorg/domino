@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="domino" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="E:\work\domino\realease\bin\domino-debug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-u dct1 -p dct1 /MainMenu/Action/Inventory --hidecontrol --fullscreen" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\Release\domino" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-mms-bitfields" />
+			<Add option="-DUSE_GTK" />
+			<Add option="-DUSE_UTF8" />
+			<Add option="-DWIN_RELOAD_ACCEL" />
+			<Add option="-DUSE_DEPRECATE_PRINT" />
+			<Add option="-DBINARY_UPDATE" />
+			<Add option="-DUSE_GTK_DEPRECATE_LOG" />
+			<Add option="-DEXPAT" />
+			<Add option="-DUSE_BTI" />
+			<Add option="-DDEBUG" />
+			<Add directory="e:\dev\MinGw\include" />
+			<Add directory="e:\dev\MinGw\include\gtk-2.0" />
+			<Add directory="e:\dev\MinGw\include\cairo" />
+			<Add directory="e:\dev\MinGw\include\gdk" />
+			<Add directory="e:\dev\MinGw\include\glib-2.0" />
+			<Add directory="e:\dev\MinGw\lib\glib-2.0\include" />
+			<Add directory="e:\dev\MinGw\include\pango-1.0" />
+			<Add directory="e:\dev\MinGw\lib\gtk-2.0\include" />
+			<Add directory="e:\dev\MinGw\include\atk-1.0" />
+		</Compiler>
+		<Linker>
+			<Add library="gtk-win32-2.0" />
+			<Add library="gobject-2.0" />
+			<Add library="glib-2.0" />
+			<Add library="iconv" />
+			<Add library="gdk_pixbuf-2.0" />
+			<Add library="gdk-win32-2.0" />
+			<Add library="pango-1.0" />
+			<Add library="webkitgtk-1.0" />
+			<Add library="gio-2.0" />
+			<Add library="ws2_32" />
+			<Add library="expat" />
+			<Add library="gthread-2.0" />
+			<Add library="loudmouth-1" />
+			<Add library="artix" />
+			<Add library="dolib" />
+			<Add library="w3btrv7" />
+			<Add library="domino" />
+			<Add directory="e:\dev\MinGw\lib" />
+			<Add directory="..\..\lib\artix" />
+			<Add directory="..\..\lib\domino" />
+			<Add directory="..\..\lib\dolib" />
+		</Linker>
+		<Unit filename="..\..\die\main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../../lib/libvlc-gtk/gtk-libvlc-instance.c" open="0" top="0" tabpos="2">
+		<Cursor position="436" topLine="0" />
+	</File>
+	<File name="../../lib/libvlc-gtk/gtk-libvlc-media-player.c" open="1" top="1" tabpos="0">
+		<Cursor position="18701" topLine="589" />
+	</File>
+	<File name="../../lib/libvlc-gtk/util.c" open="0" top="0" tabpos="3">
+		<Cursor position="213" topLine="34" />
+	</File>
+	<File name="../../src/cctv/main.c" open="0" top="0" tabpos="1">
+		<Cursor position="7306" topLine="226" />
+	</File>
+</CodeBlocks_layout_file>

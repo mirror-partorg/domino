@@ -1,0 +1,141 @@
+# depslib dependency file v1.0
+1331523060 source:e:\work\domino\src\lib\dolib\auth.c
+	<string.h>
+	<stdio.h>
+	<errno.h>
+	<stdlib.h>
+	<sys/types.h>
+	"../../config/config.h"
+	"../../misc/define.h"
+	<dolib.h>
+
+1331523060 e:\work\domino\src\config\config.h
+
+1331523060 e:\work\domino\src\misc\define.h
+
+1331523060 source:e:\work\domino\src\lib\dolib\log.c
+	<dolib.h>
+	"../../misc/define.h"
+	"win32/syslog.c"
+	<windows.h>
+	<sys/syslog.h>
+	<errno.h>
+	<string.h>
+	<stdarg.h>
+	<time.h>
+
+1331523060 e:\work\domino\src\lib\dolib\win32\syslog.c
+	<stdio.h>
+	<windows.h>
+	<string.h>
+	<stdlib.h>
+	"win32/syslog.h"
+	"syslogmes.h"
+
+1331523060 e:\work\domino\src\lib\dolib\win32\syslogmes.h
+
+1331523060 source:e:\work\domino\src\lib\dolib\mem.c
+	<stdlib.h>
+	<string.h>
+	<dolib.h>
+	<stdarg.h>
+	"../../misc/define.h"
+	<errno.h>
+	<windows.h>
+	<pthread.h>
+
+1331523060 source:e:\work\domino\src\lib\dolib\proc_state.c
+	<stdio.h>
+	<dolib.h>
+	"../misc/define.h"
+
+1331523060 source:e:\work\domino\src\lib\dolib\rpc.c
+	<string.h>
+	<errno.h>
+	<stdio.h>
+	<locale.h>
+	<stdarg.h>
+	<zlib.h>
+	<gcrypt.h>
+	<dolib.h>
+	"../../misc/define.h"
+	"thread.h"
+	"socket_io.h"
+	<windows.h>
+	"../../misc/iconv_.h"
+	"telnet.h"
+
+1331523060 e:\work\domino\src\lib\dolib\thread.h
+	<windows.h>
+	<process.h>
+	<pthread.h>
+
+1331523060 e:\work\domino\src\lib\dolib\socket_io.h
+	"../../misc/socket.h"
+	<dolib.h>
+
+1331523060 e:\work\domino\src\misc\socket.h
+	<winsock2.h>
+	<sys/socket.h>
+	<arpa/inet.h>
+	<netdb.h>
+	<unistd.h>
+
+1331523060 e:\work\domino\src\misc\iconv_.h
+	<iconv.h>
+
+1331523060 e:\work\domino\src\lib\dolib\telnet.h
+
+1331523060 source:e:\work\domino\src\lib\dolib\rpc_client.c
+	<dolib.h>
+	"socket_io.h"
+	"../../misc/define.h"
+	"../../misc/iconv_.h"
+	<errno.h>
+	<string.h>
+	<stdio.h>
+	<gcrypt.h>
+	<zlib.h>
+
+1331523060 source:e:\work\domino\src\lib\dolib\scanner.c
+	<string.h>
+	<dolib.h>
+	"../misc/iconv_.h"
+	"../misc/define.h"
+	<ctype.h>
+
+1331523060 source:e:\work\domino\src\lib\dolib\service.c
+	<stdio.h>
+	<dolib.h>
+	<errno.h>
+	<string.h>
+	"../misc/define.h"
+	<fcntl.h>
+	<unistd.h>
+	<sys/syslog.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<pwd.h>
+	<dolib.h>
+	<windows.h>
+
+1331523060 source:e:\work\domino\src\lib\dolib\socket_io.c
+	"socket_io.h"
+	<gcrypt.h>
+	<zlib.h>
+	<dolib.h>
+	<errno.h>
+	<sys/timeb.h>
+
+1331523060 source:e:\work\domino\src\lib\dolib\util.c
+	<dolib.h>
+	"../misc/define.h"
+	<errno.h>
+
+1331523060 source:e:\work\domino\src\misc\iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+

@@ -1,0 +1,68 @@
+# depslib dependency file v1.0
+1383806463 source:/home/mirror/work/domino/src/src/crntsale/main.c
+	<dolib.h>
+	<domino.h>
+	"option.h"
+	"../../config/config.h"
+	"version.h"
+	"crntsale.h"
+	<string.h>
+	<locale.h>
+
+1382494740 /home/mirror/work/domino/src/src/crntsale/option.h
+	<dolib.h>
+
+1383014545 /home/mirror/work/domino/src/config/config.h
+	"macros.h"
+
+1383787966 /home/mirror/work/domino/src/config/macros.h
+
+1383733922 /home/mirror/work/domino/src/src/crntsale/version.h
+
+1382494740 /home/mirror/work/domino/src/src/crntsale/crntsale.h
+	"option.h"
+
+1383806161 source:/home/mirror/work/domino/src/src/crntsale/crntsale.c
+	"crntsale.h"
+	<domino.h>
+	<artix.h>
+	<limits.h>
+	<dolib.h>
+
+1382494740 source:/home/mirror/work/domino/src/src/crntsale/option.c
+	<stdlib.h>
+	<getopt.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	"option.h"
+	"../../config/config.h"
+	<artix.h>
+	<domino.h>
+	<dolib.h>
+	"../../misc/csv_util.h"
+
+1382494740 /home/mirror/work/domino/src/misc/csv_util.h
+
+1383807084 source:/home/mirror/work/domino/src/lib/artix/artix_alias.c
+	"artix.h"
+	"../../misc/define.h"
+	"../../misc/iconv_.h"
+	"../../misc/socket.h"
+	<dolib.h>
+	<stdarg.h>
+	<string.h>
+	<locale.h>
+
+1382494740 /home/mirror/work/domino/src/misc/define.h
+
+1382494740 /home/mirror/work/domino/src/misc/iconv_.h
+	<iconv.h>
+
+1382494740 /home/mirror/work/domino/src/misc/socket.h
+	<winsock2.h>
+	<sys/socket.h>
+	<arpa/inet.h>
+	<netdb.h>
+	<unistd.h>
+

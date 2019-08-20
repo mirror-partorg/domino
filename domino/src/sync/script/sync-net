@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+
+SKLADS="13 14 15"
+
+for i in ${SKLADS}; do
+    /usr/local/domino/bin/sync-$1 $i "${@:2}"
+done
+

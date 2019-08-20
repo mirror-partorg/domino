@@ -1,0 +1,480 @@
+#include "price-scan.h"
+#include <locale.h>
+#include <string.h>
+#include <stdio.h>
+#include <malloc.h>
+//#include <aspell.h>
+
+#define MAX_LEXEM 255
+#define LOG_DOMAIN "scanner"
+
+static void price_scan_get_property  (GObject              *object,
+					     guint                 param_id,
+					     GValue               *value,
+					     GParamSpec           *pspec);
+static void price_scan_set_property  (GObject              *object,
+					     guint                 param_id,
+					     const GValue         *value,
+					     GParamSpec           *pspec);
+
+static void price_scan_finalize (GObject          *object);
+
+#define PRICE_SCAN_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), PRICE_TYPE_SCAN, PriceScanPrivate))
+
+
+typedef struct _PriceScanPrivate PriceScanPrivate;
+
+#define PRICE_TYPE_SCAN_LEXEM_TYPE price_scan_lexem_get_type()
+
+
+struct _PriceScanPosition
+{
+    gint pos;
+    gint col;
+    gint row;
+    gint page;
+
+    gchar *page_;
+    gchar *string_;
+};
+
+struct _PriceScanPrivate
+{
+    gchar *text;
+    PriceScanPosition crnt;
+
+    gchar lexem[MAX_LEXEM+1];
+    gchar locale_decimal_point;
+    PriceScanLexemType lexem_type;
+  //  GList *spellers;
+};
+
+
+enum {
+    PROP_0,
+    PROP_TEXT,
+    PROP_LAST_LEXEM,
+    PROP_LAST_LEXEM_TYPE,
+//    PROP_LANGS,
+    PROP_POSITION,
+
+};
+
+G_DEFINE_TYPE (PriceScan, price_scan, G_TYPE_OBJECT)
+
+GType price_scan_lexem_get_type(void)
+{
+    static GType type = 0;
+    if (G_UNLIKELY (type == 0))
+    {
+        static const GEnumValue _price_scan_lexem_type_values[] = {
+            {PRICE_SCAN_LEXEM_ERROR,"PRICE_SCAN_LEXEM_ERROR", "error"},
+            {PRICE_SCAN_LEXEM_MINUS,"PRICE_SCAN_LEXEM_MINUS","-"},
+            //{PRICE_SCAN_LEXEM_DIV,"PRICE_SCAN_LEXEM_DIV","/"},
+            {PRICE_SCAN_LEXEM_LEFT_BRACKET,"PRICE_SCAN_LEXEM_LEFT_BRACKET","("},
+            {PRICE_SCAN_LEXEM_RIGHT_BRACKET,"PRICE_SCAN_LEXEM_RIGTH_BRACKET",")"},
+
+            {PRICE_SCAN_LEXEM_END,"PRICE_SCAN_LEXEM_END","end of text"},
+            { 0, NULL, NULL }
+        };
+        type = g_enum_register_static("PriceScanLexemType", _price_scan_lexem_type_values);
+    }
+    return type;
+}
+
+
+static void price_scan_init (PriceScan *scan)
+{
+ //   PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+	//memset(priv, 0, sizeof(PriceScanPrivate));
+}
+
+static GObject *price_scan_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
+{
+    GObject *object;
+    PriceScanPrivate *priv;
+    PriceScan *scan;
+
+    object = G_OBJECT_CLASS (price_scan_parent_class)->constructor(type, n_construct_properties, construct_params);
+    scan = PRICE_SCAN(object);
+    priv = PRICE_SCAN_GET_PRIVATE(scan);
+
+    priv->locale_decimal_point = '.';
+
+	return object;
+}
+
+static void price_scan_class_init (PriceScanClass *class)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
+
+    object_class->constructor  = price_scan_constructor;
+    object_class->get_property = price_scan_get_property;
+    object_class->set_property = price_scan_set_property;
+    object_class->finalize     = price_scan_finalize;
+
+// signal
+// property
+
+    g_object_class_install_property (object_class,
+				   PROP_TEXT,
+				   g_param_spec_string ("text",
+							"Text",
+							"Text",
+							NULL,
+							G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+  /*  g_object_class_install_property (object_class,
+				   PROP_LANGS,
+				   g_param_spec_string ("langs",
+							"Langs",
+							"Langs",
+							"ru,en",
+							G_PARAM_READABLE));*/
+
+    g_object_class_install_property (object_class,
+				   PROP_LAST_LEXEM,
+				   g_param_spec_string ("last-lexem",
+							"Last lexem",
+							"Last lexem",
+							NULL,
+							G_PARAM_READABLE));
+    g_object_class_install_property (object_class,
+				   PROP_LAST_LEXEM_TYPE,
+				   g_param_spec_enum("last-lexem-type",
+							"Last lexem type",
+							"Last lexem type",
+							PRICE_TYPE_SCAN_LEXEM_TYPE,
+							PRICE_SCAN_LEXEM_ERROR,
+							G_PARAM_READABLE));
+
+    g_object_class_install_property (object_class,
+				   PROP_POSITION,
+				   g_param_spec_pointer("position",
+							"position",
+							"position",
+							G_PARAM_READABLE));
+
+    g_type_class_add_private (object_class, sizeof (PriceScanPrivate));
+}
+
+static void price_scan_get_property (GObject     *object,
+				guint        param_id,
+				GValue      *value,
+				GParamSpec  *pspec)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (object);
+
+    switch (param_id) {
+        case PROP_TEXT:
+            g_value_set_string (value, priv->text);
+            break;
+        case PROP_LAST_LEXEM:
+            g_value_set_string (value, priv->lexem);
+            break;
+        case PROP_LAST_LEXEM_TYPE:
+            g_value_set_enum(value, priv->lexem_type);
+            break;
+        case PROP_POSITION:
+            g_value_set_pointer(value, price_scan_get_position(PRICE_SCAN(object)));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+            break;
+    }
+}
+
+static void
+price_scan_set_property (GObject      *object,
+				guint         param_id,
+				const GValue *value,
+				GParamSpec   *pspec)
+{
+ //   PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (object);
+
+    switch ( param_id ) {
+        case PROP_TEXT:
+            price_scan_set_text(PRICE_SCAN(object), g_value_get_string(value));
+            break;
+        /*case PROP_LANGS:
+            price_scan_set_langs(PRICE_SCAN(object), g_value_get_string(value));
+            break;*/
+        case PROP_POSITION:
+            price_scan_set_position(PRICE_SCAN(object), g_value_get_pointer(value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+            break;
+    }
+}
+static void price_scan_finalize (GObject          *object)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (object);
+    g_free(priv->text);
+    //g_list_foreach(priv->spellers, (GFunc)delete_aspell_speller, NULL);
+    //g_list_free(priv->spellers);
+
+    G_OBJECT_CLASS (price_scan_parent_class)->finalize (object);
+}
+PriceScan *price_scan_new(const gchar *text)
+{
+    return g_object_new (PRICE_TYPE_SCAN, "text", text, NULL);
+}
+gint price_scan_position_get_col(PriceScanPosition *position)
+{
+    return position->col;
+}
+gint price_scan_position_get_row(PriceScanPosition *position)
+{
+    return position->row;
+}
+gint price_scan_position_get_page(PriceScanPosition *position)
+{
+    return position->page;
+}
+void price_scan_position_free(PriceScanPosition *position)
+{
+    g_free(position);
+}
+PriceScanPosition *price_scan_get_position(PriceScan *scan)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    PriceScanPosition *res;
+    res = g_malloc0(sizeof(PriceScanPosition));
+
+    *res = priv->crnt;
+
+    return res;
+}
+void price_scan_set_position(PriceScan *scan, PriceScanPosition *position)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    priv->crnt = *position;
+}
+void price_scan_set_position_first(PriceScan *scan)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    priv->crnt.pos=0;
+    priv->crnt.row=0;
+    priv->crnt.col=0;
+    priv->crnt.page=0;
+    priv->crnt.page_ = priv->text;
+    priv->crnt.string_ = priv->text;
+}
+void price_scan_set_text(PriceScan *scan, const gchar *text)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    g_free(priv->text);
+    priv->text = g_strdup(text);
+    price_scan_set_position_first(scan);
+    priv->lexem_type=PRICE_SCAN_LEXEM_ERROR;
+}
+void price_scan_set_string(PriceScan *scan, const gchar *text, int n)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    price_scan_set_text(scan, text);
+    priv->crnt.row=n;
+}
+
+gchar *price_scan_get_text(PriceScan *scan)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    return priv->text;
+}
+gchar *price_scan_get_text_range(PriceScan *scan, PriceScanPosition *st, PriceScanPosition *end)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    gint pos1,pos2;
+    pos1 = ( !st ) ? 0 : st->pos;
+    pos2 = ( !end ) ? priv->crnt.pos : end->pos;
+    return g_strndup(priv->text+pos1, pos2-pos1);
+}
+/*
+void price_scan_set_langs(PriceScan *scan, const gchar *langs)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    g_list_foreach(priv->spellers, (GFunc)delete_aspell_speller, NULL);
+    g_list_free(priv->spellers);
+
+    gchar **sp;
+    int i,n;
+    sp = g_strsplit(langs, ",", -1);
+    n = g_strv_length(sp);
+    for ( i = 0; sp[i] && i < n; i++ ) {
+        AspellConfig *config;
+        AspellCanHaveError *ret;
+        AspellSpeller *speller;
+
+        config = new_aspell_config();
+        aspell_config_replace(config, "lang", sp[i]);
+        ret = new_aspell_speller(config);
+        delete_aspell_config(config);
+
+        if (aspell_error(ret) != 0) {
+            g_log(LOG_DOMAIN, G_LOG_LEVEL_ERROR, "Ошибка открытия словаря: %s\n",aspell_error_message(ret));
+            delete_aspell_can_have_error(ret);
+            continue;
+        }
+
+        speller = to_aspell_speller(ret);
+        priv->spellers = g_list_append(priv->spellers, speller);
+    }
+    g_strfreev (sp);
+}
+*/
+
+#define RETURN_NULL(a) { priv->lexem[0] = '\0'; return priv->lexem_type = a; }
+#define RETURN(a) { priv->crnt.col+= (p - priv->text-priv->crnt.pos);priv->crnt.pos = p - priv->text; priv->lexem[0] = '\0'; return priv->lexem_type = a; }
+#define IS_CH(a) ( *p == a )
+#define RETURN_STR(a) { priv->crnt.col+= (p - priv->text-priv->crnt.pos);priv->crnt.pos = p - priv->text; strncpy(priv->lexem, head, p - head); priv->lexem[p - head] = '\0'; return priv->lexem_type = a; }
+#define RETURN_STR_(a,b) { priv->crnt.col+= (p - priv->text-priv->crnt.pos);priv->crnt.pos = p - priv->text; strncpy(priv->lexem, head, p - head); priv->lexem[p - head] = '\0'; b; return priv->lexem_type = a; }
+#define POS_ADD_CHAR {priv->crnt.col++;priv->crnt.pos++;}
+
+typedef struct {
+    gchar *name;
+    PriceScanLexemType type;
+} const_key_t;
+
+const const_key_t const_keys[] =
+{
+ {"№", PRICE_SCAN_LEXEM_NN},
+ {"-", PRICE_SCAN_LEXEM_MINUS},
+// {"/", PRICE_SCAN_LEXEM_DIV},
+ {"(", PRICE_SCAN_LEXEM_LEFT_BRACKET},
+ {")", PRICE_SCAN_LEXEM_RIGHT_BRACKET},
+};
+
+PriceScanLexemType price_scan_step(PriceScan *scan)
+{
+
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    gchar *head;
+    gchar *p;
+    gchar *buf;
+    gunichar ch;
+    int col;
+    int i;
+
+    if ( !priv->text )
+        RETURN_NULL(PRICE_SCAN_LEXEM_END);
+
+/*    if ( !priv->spellers )
+        price_scan_set_langs(scan, "ru");*/
+
+    p = priv->text + priv->crnt.pos;
+
+
+    for ( ;*p != '\0'; p = g_utf8_next_char (p) ) { // trim space
+        ch = g_utf8_get_char (p);
+        if ( !g_unichar_isspace (ch) )
+            break;
+        if ( *p == '\n' ) {
+            priv->crnt.row++;
+            priv->crnt.col=0;
+            priv->crnt.string_ = p+1;
+        }
+    }
+
+    if ( IS_CH('\0') ) // end text
+        RETURN(PRICE_SCAN_LEXEM_END);
+
+    head = p;
+    ch = g_utf8_get_char (p);
+
+    for ( i = 0; i < G_N_ELEMENTS(const_keys); i++ ) { // const keys
+        if ( !strncmp(p, const_keys[i].name, strlen(const_keys[i].name) ) ) {
+            p += strlen(const_keys[i].name);
+            RETURN_STR(const_keys[i].type);
+        }
+    }
+
+    if ( g_unichar_isdigit(ch) ) {
+        for ( ; g_unichar_isdigit(ch) ; p = g_utf8_next_char (p), ch = g_utf8_get_char (p));
+
+        if ( IS_CH('.') || IS_CH(',') ) {
+            p++;
+            for (ch = g_utf8_get_char (p); g_unichar_isdigit(ch) ; p = g_utf8_next_char (p), ch = g_utf8_get_char (p) );
+        }
+        RETURN_STR(PRICE_SCAN_LEXEM_NUMBER);
+    }
+
+    if ( g_unichar_isalpha(ch) ) {
+
+        for ( ; g_unichar_isalpha(ch) ; p = g_utf8_next_char (p), ch = g_utf8_get_char (p) );
+
+        if ( IS_CH('\'') ) {
+            gchar *pos;
+            //GList *l;
+
+            pos = p;
+            p++;
+            for (ch = g_utf8_get_char (p); g_unichar_isalpha(ch) ; p = g_utf8_next_char (p), ch = g_utf8_get_char (p) );
+
+            /*for ( l = priv->spellers; l && pos != p - 1; l=l->next ) {
+                AspellSpeller *speller;
+                speller = l->data;
+                if ( aspell_speller_check(speller, head, p - head) == 1 ) {
+                    RETURN_STR_(PRICE_SCAN_LEXEM_WORD_SIMPLE, {fprintf(stderr, "%s\n", priv->lexem);});
+                }
+            }*/
+            p = pos;
+        }
+        if ( g_unichar_isdigit(ch) ) {
+            fprintf(stderr, "%s\n", priv->crnt.string_);
+
+            RETURN_STR(PRICE_SCAN_LEXEM_NUMBER);
+        }
+        if ( IS_CH('/') ) {
+
+
+        }
+        if ( IS_CH('.') )
+            RETURN_STR_(PRICE_SCAN_LEXEM_WORD_SHORT, POS_ADD_CHAR);
+
+        RETURN_STR(PRICE_SCAN_LEXEM_WORD_SIMPLE);
+    }
+    if ( IS_CH('"') || IS_CH('\'') ) {
+        char end_char;
+        end_char = *p;
+        p++;
+        head = p;
+
+        for ( ; *p != end_char && *p != '\0'; p = g_utf8_next_char(p) );
+
+        if ( *p != '\0') {
+
+            RETURN_STR_(PRICE_SCAN_LEXEM_WORD_TITLE, {priv->crnt.col++;priv->crnt.pos++;/*fprintf(stderr, "%s\n", priv->lexem);*/} )
+        }
+        else {
+            //fprintf(stderr, "%s", priv->text);
+            for ( p = priv->crnt.string_, col=0; p < head; p = g_utf8_next_char(p), col++ );
+            //g_log(LOG_DOMAIN, G_LOG_LEVEL_WARNING, "[%d:%d] Не закрытый символ (%c) : %s", priv->crnt.row+1, col, end_char, priv->crnt.string_);
+            RETURN_STR(PRICE_SCAN_LEXEM_WORD_TITLE);
+        }
+    }
+    POS_ADD_CHAR;
+    return PRICE_SCAN_LEXEM_NN;
+    //
+    head = p;
+    p = g_utf8_next_char(p);
+    buf = g_strndup(head, p - head + 1);
+    buf[p - head] = '\0';
+    for ( p = priv->crnt.string_, col=0; p < head; p = g_utf8_next_char(p), col++ );
+
+    g_log(LOG_DOMAIN, G_LOG_LEVEL_ERROR, "[%d:%d] Неизвестный символ (%s)", priv->crnt.row+1, col, buf);
+    g_free(buf);
+
+    RETURN_STR(PRICE_SCAN_LEXEM_ERROR);
+}
+gboolean price_scan_skip(PriceScan *scan, PriceScanLexemType lex)
+{
+    PriceScanPrivate *priv = PRICE_SCAN_GET_PRIVATE (scan);
+    PriceScanLexemType type = PRICE_SCAN_LEXEM_ERROR;
+    while ( type != PRICE_SCAN_LEXEM_END && type != lex ) {
+        type = price_scan_step(scan);
+    }
+    if ( type == lex ) {
+        priv->crnt.pos -= strlen(priv->lexem);
+    }
+    return type == lex;
+}

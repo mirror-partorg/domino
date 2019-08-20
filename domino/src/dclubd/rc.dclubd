@@ -1,0 +1,31 @@
+#!/bin/sh
+# Start/stop/restart dclubd:
+
+DOMINO_BIN=/usr/local/domino/bin
+
+exchanged_start() {
+    echo "$DOMINO_BIN/dclubd" | su - domino || exit 1
+}
+
+exchanged_stop() {
+    killall -10 dclubd
+}
+
+case "$1" in
+'start')
+  exchanged_start
+  ;;
+'stop')
+  exchanged_stop
+  ;;
+'restart')
+  exchanged_stop
+    while [ "X`ps xa -eo args | grep dlubd | grep -v grep | grep -v $0`" != "X" ] ; do
+	sleep 1
+    done
+  exchanged_start
+  ;;
+*)
+  echo "usage $0 start|stop|restart"
+esac
+

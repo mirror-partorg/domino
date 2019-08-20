@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<domainCollections>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>265</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>28</cmactioncode>
+        <keyvalue>F1</keyvalue>
+        <keycode>265</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>267</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>37</cmactioncode>
+        <keyvalue>F3</keyvalue>
+        <keycode>267</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>268</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>16</cmactioncode>
+        <keyvalue>F4</keyvalue>
+        <keycode>268</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>271</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>3</cmactioncode>
+        <keyvalue>F7</keyvalue>
+        <keycode>271</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>272</keycode>
+            <context>receiptpayment</context>
+        </pk>
+        <cmactioncode>50</cmactioncode>
+        <keyvalue>F8</keyvalue>
+        <keycode>272</keycode>
+        <context>receiptpayment</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>273</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>9</cmactioncode>
+        <keyvalue>F9</keyvalue>
+        <keycode>273</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>274</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>10</cmactioncode>
+        <keyvalue>F10</keyvalue>
+        <keycode>274</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>275</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>33</cmactioncode>
+        <keyvalue>F11</keyvalue>
+        <keycode>275</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>276</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>35</cmactioncode>
+        <keyvalue>F12</keyvalue>
+        <keycode>276</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>281</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>24</cmactioncode>
+        <keyvalue>SHIFT+F5</keyvalue>
+        <keycode>281</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>285</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>18</cmactioncode>
+        <keyvalue>SHIFT+F9</keyvalue>
+        <keycode>285</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>286</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>25</cmactioncode>
+        <keyvalue>SHIFT+F10</keyvalue>
+        <keycode>286</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>287</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>2</cmactioncode>
+        <keyvalue>SHIFT+F11</keyvalue>
+        <keycode>287</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>288</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>23</cmactioncode>
+        <keyvalue>SHIFT+F12</keyvalue>
+        <keycode>288</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>292</keycode>
+            <context>receiptpayment</context>
+        </pk>
+        <cmactioncode>37</cmactioncode>
+        <keyvalue>CTRL+F4</keyvalue>
+        <keycode>292</keycode>
+        <context>receiptpayment</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>293</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>7</cmactioncode>
+        <keyvalue>CTRL+F5</keyvalue>
+        <keycode>293</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>294</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>8</cmactioncode>
+        <keyvalue>CTRL+F6</keyvalue>
+        <keycode>294</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>295</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>34</cmactioncode>
+        <keyvalue>CTRL+F7</keyvalue>
+        <keycode>295</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>297</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>29</cmactioncode>
+        <keyvalue>CTRL+F9</keyvalue>
+        <keycode>297</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>269</keycode>
+            <context>receiptview</context>
+        </pk>
+        <cmactioncode>119</cmactioncode>
+        <keyvalue>F5</keyvalue>
+        <keycode>269</keycode>
+        <context>receiptview</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>269</keycode>
+            <context>receiptchange</context>
+        </pk>
+        <cmactioncode>132</cmactioncode>
+        <keyvalue>F5</keyvalue>
+        <keycode>269</keycode>
+        <context>receiptchange</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>269</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>119</cmactioncode>
+        <keyvalue>F5</keyvalue>
+        <keycode>269</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>13</keycode>
+            <context>receiptview</context>
+        </pk>
+        <cmactioncode>11</cmactioncode>
+        <keyvalue>Enter</keyvalue>
+        <keycode>13</keycode>
+        <context>receiptview</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>13</keycode>
+            <context>moneyoperation</context>
+        </pk>
+        <cmactioncode>86</cmactioncode>
+        <keyvalue>Enter</keyvalue>
+        <keycode>13</keycode>
+        <context>moneyoperation</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>276</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>101</cmactioncode>
+        <keyvalue>F12</keyvalue>
+        <keycode>276</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>13</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>122</cmactioncode>
+        <keyvalue>Enter</keyvalue>
+        <keycode>13</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>13</keycode>
+            <context>receiptpayment</context>
+        </pk>
+        <cmactioncode>87</cmactioncode>
+        <keyvalue>Enter</keyvalue>
+        <keycode>13</keycode>
+        <context>receiptpayment</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>266</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>15</cmactioncode>
+        <keyvalue>F2</keyvalue>
+        <keycode>266</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>282</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>17</cmactioncode>
+        <keyvalue>SHIFT+F6</keyvalue>
+        <keycode>282</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>283</keycode>
+            <context>receiptforming</context>
+        </pk>
+        <cmactioncode>14</cmactioncode>
+        <keyvalue>SHIFT+F7</keyvalue>
+        <keycode>283</keycode>
+        <context>receiptforming</context>
+    </domainCollection>
+    <domainCollection xsi:type="kbkey" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <pk>
+            <keycode>270</keycode>
+            <context>allcontext</context>
+        </pk>
+        <cmactioncode>30</cmactioncode>
+        <keyvalue>F6</keyvalue>
+        <keycode>270</keycode>
+        <context>allcontext</context>
+    </domainCollection>
+</domainCollections>

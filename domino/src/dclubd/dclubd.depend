@@ -1,0 +1,103 @@
+# depslib dependency file v1.0
+1382455140 source:/home/mirror/work/domino/src/misc/csv_util.c
+	"csv_util.h"
+	<string.h>
+
+1382455140 /home/mirror/work/domino/src/misc/csv_util.h
+
+1382455140 source:/home/mirror/work/domino/src/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1382455140 /home/mirror/work/domino/src/misc/iconv_.h
+	<iconv.h>
+
+1382455140 source:/home/mirror/work/domino/src/misc/mask.c
+	"mask.h"
+	"csv_util.h"
+	<stdio.h>
+	<dolib.h>
+	<wchar.h>
+	<wctype.h>
+	<ctype.h>
+	<windows.h>
+
+1382455140 /home/mirror/work/domino/src/misc/mask.h
+
+1382455140 source:/home/mirror/work/domino/src/misc/mproc_state.c
+	"mproc_state.h"
+
+1382455140 /home/mirror/work/domino/src/misc/mproc_state.h
+	<dolib.h>
+
+1382455140 source:/home/mirror/work/domino/src/src/dclubd/dclubd.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<dolib.h>
+	"version.h"
+	"option.h"
+	<domino.h>
+	"dclubinfo.h"
+	"dclub.h"
+	"../misc/mproc_state.h"
+	<windows.h>
+
+1420430691 /home/mirror/work/domino/src/src/dclubd/version.h
+
+1382455140 /home/mirror/work/domino/src/src/dclubd/option.h
+	<dolib.h>
+
+1382455140 /home/mirror/work/domino/src/src/dclubd/dclubinfo.h
+	<dolib.h>
+	"option.h"
+
+1407739328 /home/mirror/work/domino/src/src/dclubd/dclub.h
+	<dolib.h>
+	"../misc/mask.h"
+	<domino.h>
+	"dclubinfo.h"
+	"option.h"
+	<iconv.h>
+
+1382455140 source:/home/mirror/work/domino/src/src/dclubd/dclubinfo.c
+	"dclubinfo.h"
+	<string.h>
+	"dclub.h"
+	"option.h"
+	<domino.h>
+	<dolib.h>
+
+1382455140 source:/home/mirror/work/domino/src/src/dclubd/option.c
+	<stdlib.h>
+	<getopt.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	"option.h"
+	"../config/config.h"
+	"../misc/csv_util.h"
+	<dolib.h>
+
+1420428765 source:/home/mirror/work/domino/src/src/dclubd/dclub.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<dirent.h>
+	<time.h>
+	"dclub.h"
+	<domino.h>
+	"option.h"
+	<dolib.h>
+	"../misc/mproc_state.h"
+	"../misc/iconv_.h"
+	"../misc/csv_util.h"
+	"../misc/mask.h"
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+

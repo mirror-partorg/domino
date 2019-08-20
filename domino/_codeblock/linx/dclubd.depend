@@ -1,0 +1,270 @@
+# depslib dependency file v1.0
+1293508740 source:/home/mirror/work/app-domino/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1293016020 /home/mirror/work/app-domino/misc/iconv_.h
+	<iconv.h>
+
+1285949280 source:/home/mirror/work/app-domino/misc/mproc_state.c
+	"mproc_state.h"
+
+1285949280 /home/mirror/work/app-domino/misc/mproc_state.h
+	<dolib.h>
+
+1308284804 source:/home/mirror/work/app-domino/src/dclubd/dclub.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<dirent.h>
+	<time.h>
+	"dclub.h"
+	<domino.h>
+	"option.h"
+	<dolib.h>
+	"../misc/mproc_state.h"
+	"../misc/iconv_.h"
+	"../misc/csv_util.h"
+	"../misc/mask.h"
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+
+1308284237 /home/mirror/work/app-domino/src/dclubd/dclub.h
+	<dolib.h>
+	"../misc/mask.h"
+	<domino.h>
+	"dclubinfo.h"
+	"option.h"
+	<iconv.h>
+
+1285949280 /home/mirror/work/app-domino/src/dclubd/dclubinfo.h
+	<dolib.h>
+	"option.h"
+
+1285949280 /home/mirror/work/app-domino/src/dclubd/option.h
+	<dolib.h>
+
+1308210186 source:/home/mirror/work/app-domino/src/dclubd/dclubd.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<dolib.h>
+	"version.h"
+	"option.h"
+	<domino.h>
+	"dclubinfo.h"
+	"dclub.h"
+	"../misc/mproc_state.h"
+	<windows.h>
+
+1308285754 /home/mirror/work/app-domino/src/dclubd/version.h
+
+1285949280 source:/home/mirror/work/app-domino/src/dclubd/dclubinfo.c
+	"dclubinfo.h"
+	<string.h>
+	"dclub.h"
+	"option.h"
+	<domino.h>
+	<dolib.h>
+
+1285949280 source:/home/mirror/work/app-domino/src/dclubd/option.c
+	<stdlib.h>
+	<getopt.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	"option.h"
+	"../config/config.h"
+	"../misc/csv_util.h"
+	<dolib.h>
+
+1352198218 source:/home/mirror/work/domino/src/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1352198218 /home/mirror/work/domino/src/misc/iconv_.h
+	<iconv.h>
+
+1352198218 source:/home/mirror/work/domino/src/misc/mproc_state.c
+	"mproc_state.h"
+
+1352198218 /home/mirror/work/domino/src/misc/mproc_state.h
+	<dolib.h>
+
+1352198218 source:/home/mirror/work/domino/src/misc/mask.c
+	"mask.h"
+	"csv_util.h"
+	<stdio.h>
+	<dolib.h>
+	<wchar.h>
+	<wctype.h>
+	<ctype.h>
+	<windows.h>
+
+1352198218 /home/mirror/work/domino/src/misc/mask.h
+
+1352198218 /home/mirror/work/domino/src/misc/csv_util.h
+
+1352198216 source:/home/mirror/work/domino/src/src/dclubd/dclub.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<dirent.h>
+	<time.h>
+	"dclub.h"
+	<domino.h>
+	"option.h"
+	<dolib.h>
+	"../misc/mproc_state.h"
+	"../misc/iconv_.h"
+	"../misc/csv_util.h"
+	"../misc/mask.h"
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+
+1352198216 /home/mirror/work/domino/src/src/dclubd/dclub.h
+	<dolib.h>
+	"../misc/mask.h"
+	<domino.h>
+	"dclubinfo.h"
+	"option.h"
+	<iconv.h>
+
+1352198216 /home/mirror/work/domino/src/src/dclubd/dclubinfo.h
+	<dolib.h>
+	"option.h"
+
+1354177398 /home/mirror/work/domino/src/src/dclubd/option.h
+	<dolib.h>
+
+1352198216 source:/home/mirror/work/domino/src/src/dclubd/dclubd.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<dolib.h>
+	"version.h"
+	"option.h"
+	<domino.h>
+	"dclubinfo.h"
+	"dclub.h"
+	"../misc/mproc_state.h"
+	<windows.h>
+
+1354183985 /home/mirror/work/domino/src/src/dclubd/version.h
+
+1352198216 source:/home/mirror/work/domino/src/src/dclubd/dclubinfo.c
+	"dclubinfo.h"
+	<string.h>
+	"dclub.h"
+	"option.h"
+	<domino.h>
+	<dolib.h>
+
+1382374800 source:/home/mirror/work/src/domino/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1382374800 /home/mirror/work/src/domino/misc/iconv_.h
+	<iconv.h>
+
+1382374800 source:/home/mirror/work/src/domino/misc/mask.c
+	"mask.h"
+	"csv_util.h"
+	<stdio.h>
+	<dolib.h>
+	<wchar.h>
+	<wctype.h>
+	<ctype.h>
+	<windows.h>
+
+1382374800 /home/mirror/work/src/domino/misc/mask.h
+
+1382374800 /home/mirror/work/src/domino/misc/csv_util.h
+
+1382374800 source:/home/mirror/work/src/domino/misc/mproc_state.c
+	"mproc_state.h"
+
+1382374800 /home/mirror/work/src/domino/misc/mproc_state.h
+	<dolib.h>
+
+1535103339 source:/home/mirror/work/src/domino/src/dclubd/dclub.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<dirent.h>
+	<time.h>
+	"dclub.h"
+	<domino.h>
+	"option.h"
+	<dolib.h>
+	"../misc/mproc_state.h"
+	"../misc/iconv_.h"
+	"../misc/csv_util.h"
+	"../misc/mask.h"
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+
+1535103349 /home/mirror/work/src/domino/src/dclubd/dclub.h
+	<dolib.h>
+	"../misc/mask.h"
+	<domino.h>
+	"dclubinfo.h"
+	"option.h"
+	<iconv.h>
+
+1382374800 /home/mirror/work/src/domino/src/dclubd/dclubinfo.h
+	<dolib.h>
+	"option.h"
+
+1526438356 /home/mirror/work/src/domino/src/dclubd/option.h
+	<dolib.h>
+
+1514279326 source:/home/mirror/work/src/domino/src/dclubd/dclubd.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<dolib.h>
+	"version.h"
+	"option.h"
+	<domino.h>
+	"dclubinfo.h"
+	"dclub.h"
+	"../misc/mproc_state.h"
+	<windows.h>
+
+1533105760 /home/mirror/work/src/domino/src/dclubd/version.h
+
+1382374800 source:/home/mirror/work/src/domino/src/dclubd/dclubinfo.c
+	"dclubinfo.h"
+	<string.h>
+	"dclub.h"
+	"option.h"
+	<domino.h>
+	<dolib.h>
+
+1526438985 source:/home/mirror/work/src/domino/src/dclubd/option.c
+	<stdlib.h>
+	<getopt.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	"option.h"
+	"../config/config.h"
+	"../misc/csv_util.h"
+	<dolib.h>
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd /tmp
+rm -f latest-cash45.deb
+wget http://soft.glekar.com/domino/latest-cash45.deb
+if [ -f latest-cash45.deb ] ; then
+dpkg -i latest-cash45.deb
+fi

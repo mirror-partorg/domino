@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
+	<ActiveTarget name="Debug" />
+	<File name="../../src/domino/do_limit_view.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="40325" topLine="1164" />
+		</Cursor>
+	</File>
+	<File name="../../include/dolib.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9379" topLine="255" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_sale_view.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="28448" topLine="774" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_barcode_dialog.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="306" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../lib/domino/domino.c" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="12771" topLine="419" />
+		</Cursor>
+	</File>
+	<File name="../../lib/dolib/list.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9602" topLine="308" />
+		</Cursor>
+	</File>
+	<File name="../../lib/domino/do_config.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="22306" topLine="690" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_inventory_view.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="28733" topLine="725" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_inventory_menu.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="23278" topLine="670" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_html_view.c" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="21293" topLine="657" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_check_dialog.c" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15568" topLine="423" />
+		</Cursor>
+	</File>
+	<File name="../../include/domino.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="17623" topLine="574" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_window.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="17180" topLine="555" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_view.c" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8250" topLine="352" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_tree_view.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="18870" topLine="493" />
+		</Cursor>
+	</File>
+	<File name="../../lib/domino/do_protocol.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11895" topLine="262" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_inventory_dialog.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="30" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_common_actions.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="54662" topLine="1469" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_sale_dialog.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15030" topLine="379" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_notebook.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11512" topLine="414" />
+		</Cursor>
+	</File>
+	<File name="../../lib/domino/do_action.c" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="883" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_about_dialog.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="966" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../misc/iconv_.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="900" topLine="25" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_enum_box.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6676" topLine="198" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_schedule_view.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="25320" topLine="680" />
+		</Cursor>
+	</File>
+	<File name="../../lib/domino/do_alias.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="266525" topLine="5496" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_utilx.c" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_rz_view.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_product_edit.c" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="133014" topLine="3476" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_order_view.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="36957" topLine="1031" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_keyboard_view.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_password_dialog.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9070" topLine="270" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_report_view.c" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6025" topLine="179" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/domino.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_product_model.c" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="33612" topLine="925" />
+		</Cursor>
+	</File>
+	<File name="../../misc/utf8util.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="364" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_rest_view.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15734" topLine="469" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_cash_view.c" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="16" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_product_view.c" open="1" top="1" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="142493" topLine="3614" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_view_actions.c" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../include/domino_db.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="17501" topLine="544" />
+		</Cursor>
+	</File>
+	<File name="../../lib/domino/report.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2909" topLine="78" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_keyboard_model.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15423" topLine="388" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_icons.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6234" topLine="168" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_entry_box.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1079" topLine="24" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_message.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5694" topLine="159" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_rz_edit.c" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="22993" topLine="651" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_password.c" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8176" topLine="265" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_entry_date_box.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="425" topLine="39" />
+		</Cursor>
+	</File>
+	<File name="../../lib/artix/artix_info.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/main.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7971" topLine="236" />
+		</Cursor>
+	</File>
+	<File name="../../src/domino/do_schedule_dialog.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9164" topLine="264" />
+		</Cursor>
+	</File>
+	<File name="../../lib/domino/domino_action.c" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1030" topLine="0" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>

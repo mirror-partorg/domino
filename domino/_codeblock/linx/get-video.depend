@@ -1,0 +1,590 @@
+# depslib dependency file v1.0
+1350276727 source:/home/mirror/work/domino/src/src/get-video/cmdutils.c
+	<string.h>
+	<stdlib.h>
+	<errno.h>
+	<math.h>
+	"libavformat/avformat.h"
+	"libavfilter/avfilter.h"
+	"libavdevice/avdevice.h"
+	"libswscale/swscale.h"
+	"libswresample/swresample.h"
+	"libpostproc/postprocess.h"
+	"libavutil/avstring.h"
+	"libavutil/mathematics.h"
+	"libavutil/parseutils.h"
+	"libavutil/pixdesc.h"
+	"libavutil/eval.h"
+	"libavutil/dict.h"
+	"libavutil/opt.h"
+	"cmdutils.h"
+	"libavformat/network.h"
+	<sys/resource.h>
+	<windows.h>
+
+1350276721 /home/mirror/work/domino/src/src/get-video/cmdutils.h
+	<stdint.h>
+	"libavcodec/avcodec.h"
+	"libavfilter/avfilter.h"
+	"libavformat/avformat.h"
+	"libswscale/swscale.h"
+
+1359002083 source:/home/mirror/work/domino/src/src/get-video/main.c
+	<signal.h>
+	<dolib.h>
+	"libav.h"
+	<string.h>
+	<stdio.h>
+	<unistd.h>
+	<locale.h>
+	"../misc/storage.h"
+	"../misc/send_error.h"
+	<libavutil/log.h>
+	"version.h"
+	"option.h"
+	"../misc/mproc_state.h"
+	<fcntl.h>
+	<unistd.h>
+	<sys/syslog.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<pwd.h>
+	<grp.h>
+	<windows.h>
+
+1350025605 /home/mirror/work/domino/src/src/get-video/cmdutils_common_opts.h
+
+1354781894 source:/home/mirror/work/domino/src/src/get-video/libav.c
+	"libav.h"
+	<ctype.h>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	<errno.h>
+	<signal.h>
+	<limits.h>
+	<unistd.h>
+	<dolib.h>
+	<libavformat/avformat.h>
+	<libavdevice/avdevice.h>
+	<libswscale/swscale.h>
+	<libavutil/opt.h>
+	<libavutil/parseutils.h>
+	<libavutil/mathematics.h>
+	<libavutil/fifo.h>
+	<libavutil/avassert.h>
+	<libavutil/imgutils.h>
+	<libavutil/avstring.h>
+	<sys/types.h>
+	<sys/time.h>
+	<sys/resource.h>
+	<windows.h>
+	<windows.h>
+	<psapi.h>
+	<libavfilter/avcodec.h>
+	<libavfilter/avfilter.h>
+	<libavfilter/avfiltergraph.h>
+	<libavfilter/buffersink.h>
+	<libavfilter/buffersrc.h>
+	<libavfilter/vsrc_buffer.h>
+	<sys/select.h>
+	<time.h>
+
+1354781894 /home/mirror/work/domino/src/src/get-video/libav.h
+	<stdlib.h>
+	<stdint.h>
+	<time.h>
+
+1382455140 source:/home/mirror/work/domino/src/misc/mythread.c
+	<dolib.h>
+	<errno.h>
+	"mythread.h"
+
+1382455140 /home/mirror/work/domino/src/misc/mythread.h
+	<windows.h>
+	<process.h>
+	<pthread.h>
+
+1353919392 source:/home/mirror/work/domino/src/src/get-video/storage.c
+	"storage.h"
+	"../misc/mythread.h"
+	<dolib.h>
+	<libsmbclient.h>
+	<errno.h>
+	"version.h"
+	"../misc/send_error.h"
+	<dirent.h>
+	<libpq-fe.h>
+
+1352198217 /home/mirror/work/domino/src/src/get-video/storage.h
+	<time.h>
+
+1382455140 source:/home/mirror/work/domino/src/misc/send_error.c
+	"send_error.h"
+	<loudmouth/loudmouth.h>
+	<errno.h>
+	<dolib.h>
+	"send_error.h"
+	"../config/config.h"
+	<windows.h>
+	<unistd.h>
+
+1382455140 /home/mirror/work/domino/src/misc/send_error.h
+
+1382974920 /home/mirror/work/domino/src/config/config.h
+	"macros.h"
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/loudmouth.h
+	<loudmouth/lm-connection.h>
+	<loudmouth/lm-error.h>
+	<loudmouth/lm-message.h>
+	<loudmouth/lm-message-handler.h>
+	<loudmouth/lm-message-node.h>
+	<loudmouth/lm-proxy.h>
+	<loudmouth/lm-utils.h>
+	<loudmouth/lm-ssl.h>
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-connection.h
+	<loudmouth/lm-message.h>
+	<loudmouth/lm-proxy.h>
+	<loudmouth/lm-ssl.h>
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-message.h
+	<loudmouth/lm-message-node.h>
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-message-node.h
+	<glib.h>
+
+1369888045 /usr/include/glib-2.0/glib.h
+	<glib/galloca.h>
+	<glib/garray.h>
+	<glib/gasyncqueue.h>
+	<glib/gatomic.h>
+	<glib/gbacktrace.h>
+	<glib/gbase64.h>
+	<glib/gbitlock.h>
+	<glib/gbookmarkfile.h>
+	<glib/gbytes.h>
+	<glib/gcharset.h>
+	<glib/gchecksum.h>
+	<glib/gconvert.h>
+	<glib/gdataset.h>
+	<glib/gdate.h>
+	<glib/gdatetime.h>
+	<glib/gdir.h>
+	<glib/genviron.h>
+	<glib/gerror.h>
+	<glib/gfileutils.h>
+	<glib/ggettext.h>
+	<glib/ghash.h>
+	<glib/ghmac.h>
+	<glib/ghook.h>
+	<glib/ghostutils.h>
+	<glib/giochannel.h>
+	<glib/gkeyfile.h>
+	<glib/glist.h>
+	<glib/gmacros.h>
+	<glib/gmain.h>
+	<glib/gmappedfile.h>
+	<glib/gmarkup.h>
+	<glib/gmem.h>
+	<glib/gmessages.h>
+	<glib/gnode.h>
+	<glib/goption.h>
+	<glib/gpattern.h>
+	<glib/gpoll.h>
+	<glib/gprimes.h>
+	<glib/gqsort.h>
+	<glib/gquark.h>
+	<glib/gqueue.h>
+	<glib/grand.h>
+	<glib/gregex.h>
+	<glib/gscanner.h>
+	<glib/gsequence.h>
+	<glib/gshell.h>
+	<glib/gslice.h>
+	<glib/gslist.h>
+	<glib/gspawn.h>
+	<glib/gstrfuncs.h>
+	<glib/gstring.h>
+	<glib/gstringchunk.h>
+	<glib/gtestutils.h>
+	<glib/gthread.h>
+	<glib/gthreadpool.h>
+	<glib/gtimer.h>
+	<glib/gtimezone.h>
+	<glib/gtrashstack.h>
+	<glib/gtree.h>
+	<glib/gtypes.h>
+	<glib/gunicode.h>
+	<glib/gurifuncs.h>
+	<glib/gutils.h>
+	<glib/gvarianttype.h>
+	<glib/gvariant.h>
+	<glib/gversion.h>
+	<glib/gversionmacros.h>
+	<glib/gwin32.h>
+	<glib/deprecated/gallocator.h>
+	<glib/deprecated/gcache.h>
+	<glib/deprecated/gcompletion.h>
+	<glib/deprecated/gmain.h>
+	<glib/deprecated/grel.h>
+	<glib/deprecated/gthread.h>
+
+1369888045 /usr/include/glib-2.0/glib/galloca.h
+	<glib/gtypes.h>
+	<alloca.h>
+	<malloc.h>
+
+1369888045 /usr/include/glib-2.0/glib/gtypes.h
+	<glibconfig.h>
+	<glib/gmacros.h>
+	<glib/gversionmacros.h>
+	<time.h>
+
+1369888045 /usr/lib64/glib-2.0/include/glibconfig.h
+	<glib/gmacros.h>
+	<limits.h>
+	<float.h>
+
+1369888045 /usr/include/glib-2.0/glib/gmacros.h
+	<stddef.h>
+
+1369888045 /usr/include/glib-2.0/glib/garray.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gasyncqueue.h
+	<glib/gthread.h>
+
+1369888045 /usr/include/glib-2.0/glib/gthread.h
+	<glib/gatomic.h>
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/gerror.h
+	<stdarg.h>
+	<glib/gquark.h>
+
+1369888045 /usr/include/glib-2.0/glib/gquark.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gutils.h
+	<glib/gtypes.h>
+	<stdarg.h>
+
+1369888045 /usr/include/glib-2.0/glib/gatomic.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gbacktrace.h
+	<glib/gtypes.h>
+	<signal.h>
+
+1369888045 /usr/include/glib-2.0/glib/gbase64.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gbitlock.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gbookmarkfile.h
+	<glib/gerror.h>
+	<time.h>
+
+1339140124 /usr/include/glib-2.0/glib/gcache.h
+	<glib/glist.h>
+
+1369888045 /usr/include/glib-2.0/glib/glist.h
+	<glib/gmem.h>
+	<glib/gnode.h>
+
+1369888045 /usr/include/glib-2.0/glib/gmem.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gslice.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gchecksum.h
+	<glib/gtypes.h>
+	<glib/gbytes.h>
+
+1339140124 /usr/include/glib-2.0/glib/gcompletion.h
+	<glib/glist.h>
+
+1369888045 /usr/include/glib-2.0/glib/gconvert.h
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/gdataset.h
+	<glib/gquark.h>
+
+1369888045 /usr/include/glib-2.0/glib/gdate.h
+	<time.h>
+	<glib/gtypes.h>
+	<glib/gquark.h>
+
+1369888045 /usr/include/glib-2.0/glib/gdatetime.h
+	<glib/gtimezone.h>
+
+1369888045 /usr/include/glib-2.0/glib/gtimezone.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gdir.h
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/gfileutils.h
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/ghash.h
+	<glib/gtypes.h>
+	<glib/glist.h>
+
+1369888045 /usr/include/glib-2.0/glib/ghmac.h
+	<glib/gtypes.h>
+	"gchecksum.h"
+
+1369888045 /usr/include/glib-2.0/glib/ghook.h
+	<glib/gmem.h>
+
+1369888045 /usr/include/glib-2.0/glib/ghostutils.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/giochannel.h
+	<glib/gconvert.h>
+	<glib/gmain.h>
+	<glib/gstring.h>
+
+1369888045 /usr/include/glib-2.0/glib/gmain.h
+	<glib/gpoll.h>
+	<glib/gslist.h>
+	<glib/gthread.h>
+
+1369888045 /usr/include/glib-2.0/glib/gpoll.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gslist.h
+	<glib/gmem.h>
+	<glib/gnode.h>
+
+1369888045 /usr/include/glib-2.0/glib/gstring.h
+	<glib/gtypes.h>
+	<glib/gunicode.h>
+	<glib/gbytes.h>
+	<glib/gutils.h>
+
+1369888045 /usr/include/glib-2.0/glib/gunicode.h
+	<glib/gerror.h>
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gkeyfile.h
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/gmappedfile.h
+	<glib/gbytes.h>
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/gmarkup.h
+	<stdarg.h>
+	<glib/gerror.h>
+	<glib/gslist.h>
+
+1369888045 /usr/include/glib-2.0/glib/gmessages.h
+	<stdarg.h>
+	<glib/gtypes.h>
+	<glib/gmacros.h>
+
+1369888045 /usr/include/glib-2.0/glib/gnode.h
+	<glib/gmem.h>
+
+1369888045 /usr/include/glib-2.0/glib/goption.h
+	<glib/gerror.h>
+	<glib/gquark.h>
+
+1369888045 /usr/include/glib-2.0/glib/gpattern.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gprimes.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gqsort.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gqueue.h
+	<glib/glist.h>
+
+1369888045 /usr/include/glib-2.0/glib/grand.h
+	<glib/gtypes.h>
+
+1339140124 /usr/include/glib-2.0/glib/grel.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gregex.h
+	<glib/gerror.h>
+	<glib/gstring.h>
+
+1369888045 /usr/include/glib-2.0/glib/gscanner.h
+	<glib/gdataset.h>
+	<glib/ghash.h>
+
+1369888045 /usr/include/glib-2.0/glib/gsequence.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gshell.h
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/gspawn.h
+	<glib/gerror.h>
+
+1369888045 /usr/include/glib-2.0/glib/gstrfuncs.h
+	<stdarg.h>
+	<glib/gmacros.h>
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gtestutils.h
+	<glib/gmessages.h>
+	<glib/gstring.h>
+	<glib/gerror.h>
+	<glib/gslist.h>
+
+1369888045 /usr/include/glib-2.0/glib/gthreadpool.h
+	<glib/gthread.h>
+
+1369888045 /usr/include/glib-2.0/glib/gtimer.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gtree.h
+	<glib/gnode.h>
+
+1369888045 /usr/include/glib-2.0/glib/gurifuncs.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gvarianttype.h
+	<glib/gmessages.h>
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gvariant.h
+	<glib/gvarianttype.h>
+	<glib/gstring.h>
+
+1369888045 /usr/include/glib-2.0/glib/gwin32.h
+	<glib/gtypes.h>
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-proxy.h
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-ssl.h
+	<glib.h>
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-error.h
+	<glib.h>
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-message-handler.h
+	<loudmouth/lm-connection.h>
+
+1329539309 /usr/include/loudmouth-1.0/loudmouth/lm-utils.h
+	<glib.h>
+
+1351248267 /home/mirror/work/domino/src/src/get-video/config.h
+
+1354781894 /home/mirror/work/domino/src/src/get-video/option.h
+	<dolib.h>
+
+1354781894 source:/home/mirror/work/domino/src/src/get-video/option.c
+	<stdlib.h>
+	<getopt.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	"option.h"
+	"../config/config.h"
+	"../misc/csv_util.h"
+	"version.h"
+	<dolib.h>
+	<ctype.h>
+
+1351057715 source:/home/mirror/work/domino/src/lib/dolib/service.c
+	<stdio.h>
+	<dolib.h>
+	<errno.h>
+	<string.h>
+	"../misc/define.h"
+	<fcntl.h>
+	<unistd.h>
+	<sys/syslog.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<pwd.h>
+	<dolib.h>
+	<windows.h>
+
+1385351122 /usr/include/postgresql/libpq-fe.h
+	<stdio.h>
+	"postgres_ext.h"
+
+1385351122 /usr/include/postgresql/postgres_ext.h
+
+1354851783 /home/mirror/work/domino/src/src/get-video/version.h
+
+1382455140 source:/home/mirror/work/domino/src/misc/mproc_state.c
+	"mproc_state.h"
+
+1382455140 /home/mirror/work/domino/src/misc/mproc_state.h
+	<dolib.h>
+
+1385682060 source:/home/mirror/work/domino/src/misc/storage.c
+	"storage.h"
+	"../misc/mythread.h"
+	<dolib.h>
+	<libsmbclient.h>
+	<errno.h>
+	<glib.h>
+	"send_error.h"
+	<dirent.h>
+	<limits.h>
+	<sys/vfs.h>
+	<libpq-fe.h>
+
+1384102500 /home/mirror/work/domino/src/misc/storage.h
+	<time.h>
+	<dolib.h>
+
+1369888045 /usr/include/glib-2.0/glib/gversionmacros.h
+
+1369888045 /usr/include/glib-2.0/glib/gbytes.h
+	<glib/gtypes.h>
+	<glib/garray.h>
+
+1369888045 /usr/include/glib-2.0/glib/gcharset.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/genviron.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/ggettext.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gstringchunk.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/gtrashstack.h
+	<glib/gutils.h>
+
+1369888045 /usr/include/glib-2.0/glib/gversion.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/deprecated/gallocator.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/deprecated/gcache.h
+	<glib/glist.h>
+
+1369888045 /usr/include/glib-2.0/glib/deprecated/gcompletion.h
+	<glib/glist.h>
+
+1369888045 /usr/include/glib-2.0/glib/deprecated/gmain.h
+	<glib/gmain.h>
+
+1369888045 /usr/include/glib-2.0/glib/deprecated/grel.h
+	<glib/gtypes.h>
+
+1369888045 /usr/include/glib-2.0/glib/deprecated/gthread.h
+	<glib/gthread.h>
+	<pthread.h>
+
+1386657948 /home/mirror/work/domino/src/config/macros.h
+

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="exchange-1c" />
+		<Option execution_dir="/home/mirror/work/domino/src/src/exchange-1c/" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../../release/bin/exchange-1c" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-f /home/mirror/tmp/object20171010114202.xml  -s 2017-09-01 -e 2017-09-01 -o sad.xml -a local.net --type goods" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/exchange-1c" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`pkg-config gtk+-2.0 libxml-2.0  --cflags`" />
+			<Add option="-DDEPRICATE_MONEY_INFO" />
+			<Add option="-DALFA_" />
+			<Add directory="e:/dev/MinGw/include" />
+			<Add directory="e:/dev/MinGw/include/gtk-2.0" />
+			<Add directory="e:/dev/MinGw/include/cairo" />
+			<Add directory="e:/dev/MinGw/include/gdk" />
+			<Add directory="e:/dev/MinGw/include/glib-2.0" />
+			<Add directory="e:/dev/MinGw/lib/glib-2.0/include" />
+			<Add directory="e:/dev/MinGw/include/pango-1.0" />
+			<Add directory="e:/dev/MinGw/lib/gtk-2.0/include" />
+			<Add directory="e:/dev/MinGw/include/atk-1.0" />
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config gtk+-2.0 libxml-2.0  --libs`" />
+			<Add library="domino" />
+			<Add library="dolib" />
+			<Add directory="e:/dev/MinGw/lib" />
+		</Linker>
+		<Unit filename="../../src/exchange-1c/do_context.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/do_link_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/do_message.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/do_progress_info.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/do_scan.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/document.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/exchange.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/misc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/exchange-1c/partner.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,124 @@
+# depslib dependency file v1.0
+1293508740 source:/home/mirror/work/app-domino/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1293016020 /home/mirror/work/app-domino/misc/iconv_.h
+	<iconv.h>
+
+1285949280 source:/home/mirror/work/app-domino/misc/mproc_state.c
+	"mproc_state.h"
+
+1285949280 /home/mirror/work/app-domino/misc/mproc_state.h
+	<dolib.h>
+
+1308559956 source:/home/mirror/work/app-domino/src/exchanged/exchanged.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<dolib.h>
+	"version.h"
+	"option.h"
+	<domino.h>
+	<artix.h>
+	"exchangeinfo.h"
+	"exchange.h"
+	"../misc/mproc_state.h"
+	"../misc/artix_send.h"
+	<windows.h>
+
+1308286427 /home/mirror/work/app-domino/src/exchanged/version.h
+
+1308036237 /home/mirror/work/app-domino/src/exchanged/option.h
+	<dolib.h>
+
+1285949280 /home/mirror/work/app-domino/src/exchanged/exchangeinfo.h
+	<dolib.h>
+	"option.h"
+
+1285949280 /home/mirror/work/app-domino/src/exchanged/exchange.h
+	<domino.h>
+	<artix.h>
+	<dolib.h>
+	"exchangeinfo.h"
+	"option.h"
+
+1285949280 source:/home/mirror/work/app-domino/src/exchanged/exchangeinfo.c
+	"exchangeinfo.h"
+	<string.h>
+	"exchange.h"
+	"option.h"
+	<domino.h>
+	<dolib.h>
+	"version.h"
+	"../misc/mproc_state.h"
+
+1308126249 source:/home/mirror/work/app-domino/src/exchanged/option.c
+	<stdlib.h>
+	<getopt.h>
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	"option.h"
+	"../../config/config.h"
+	<domino.h>
+	<dolib.h>
+	"../misc/csv_util.h"
+	"../misc/artix_send.h"
+
+1294295520 /home/mirror/work/app-domino/config/config.h
+
+1308560262 source:/home/mirror/work/app-domino/misc/artix_send.c
+	<domino.h>
+	"artix_send.h"
+
+1308041857 /home/mirror/work/app-domino/misc/artix_send.h
+	<artix.h>
+	<domino.h>
+	<dolib.h>
+
+1308307796 source:/home/mirror/work/app-domino/src/exchanged/exchange.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<dirent.h>
+	<time.h>
+	"exchange.h"
+	<domino.h>
+	<dolib.h>
+	<artix.h>
+	"../misc/iconv_.h"
+	"../misc/mproc_state.h"
+	"option.h"
+	<time.h>
+
+1308559815 source:/home/mirror/work/app-domino/lib/artix/artix_info.c
+	"artix.h"
+	<dolib.h>
+	"../../config/config.h"
+	"../../misc/socket.h"
+	"../../misc/mthrift.h"
+	"../../misc/iconv_.h"
+	"../../misc/define.h"
+	<stdint.h>
+	<errno.h>
+	<string.h>
+
+1285949280 /home/mirror/work/app-domino/misc/socket.h
+	<winsock2.h>
+	<sys/socket.h>
+	<arpa/inet.h>
+	<netdb.h>
+	<unistd.h>
+
+1308548787 /home/mirror/work/app-domino/misc/mthrift.h
+	<stdint.h>
+	"socket.h"
+	<dolib.h>
+
+1285949280 /home/mirror/work/app-domino/misc/define.h
+

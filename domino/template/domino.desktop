@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Domino
+Name[ru]=Справочник
+Comment=Handbook
+Comment[ru]=Справочник товаров
+Exec=/usr/local/domino/bin/domino -u domino -p domino --hidecontrol /MainMenu/Handbook/ProductExtended %U
+Icon=bookcase
+Terminal=false
+Type=Application
+StartupNotify=true
+OnlyShowIn=GNOME;Unity;
+Categories=GNOME;GTK;Utility;Core;
+MimeType=inode/directory;application/x-gnome-saved-search;
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=domino
+X-GNOME-Bugzilla-Component=general
+X-GNOME-Bugzilla-Version=3.6.3

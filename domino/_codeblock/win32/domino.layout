@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="..\..\misc\iconv_.c" open="1" top="0" tabpos="8">
+		<Cursor position="2769" topLine="93" />
+	</File>
+	<File name="..\..\misc\print.c" open="0" top="0" tabpos="0">
+		<Cursor position="273" topLine="3" />
+	</File>
+	<File name="..\..\misc\send_error.c" open="0" top="0" tabpos="2">
+		<Cursor position="1108" topLine="43" />
+	</File>
+	<File name="..\..\misc\simple_expr.c" open="0" top="0" tabpos="10">
+		<Cursor position="9981" topLine="325" />
+	</File>
+	<File name="..\..\misc\template.c" open="0" top="0" tabpos="2">
+		<Cursor position="6152" topLine="183" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_about_dialog.c" open="0" top="0" tabpos="5">
+		<Cursor position="1479" topLine="10" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_barcode_dialog.c" open="0" top="0" tabpos="10">
+		<Cursor position="2394" topLine="87" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_cash_property.c" open="0" top="0" tabpos="11">
+		<Cursor position="13838" topLine="382" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_cash_view.c" open="0" top="0" tabpos="1">
+		<Cursor position="14801" topLine="355" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_common_actions.c" open="0" top="0" tabpos="5">
+		<Cursor position="21307" topLine="503" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_context.c" open="0" top="0" tabpos="0">
+		<Cursor position="275" topLine="0" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_discount_dialog.c" open="0" top="0" tabpos="5">
+		<Cursor position="19407" topLine="514" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_discount_view.c" open="1" top="1" tabpos="5">
+		<Cursor position="19738" topLine="552" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_entry.c" open="0" top="0" tabpos="2">
+		<Cursor position="4537" topLine="132" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_entry_box.c" open="0" top="0" tabpos="0">
+		<Cursor position="3365" topLine="115" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_entry_calc.c" open="0" top="0" tabpos="6">
+		<Cursor position="103" topLine="0" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_entry_date.c" open="0" top="0" tabpos="11">
+		<Cursor position="9648" topLine="284" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_entry_date_box.c" open="0" top="0" tabpos="10">
+		<Cursor position="6683" topLine="228" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_entry_partner.c" open="0" top="0" tabpos="2">
+		<Cursor position="17256" topLine="470" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_entry_partner_box.c" open="0" top="0" tabpos="1">
+		<Cursor position="2851" topLine="59" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_enum_box.c" open="0" top="0" tabpos="5">
+		<Cursor position="5137" topLine="146" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_enum_value.c" open="0" top="0" tabpos="4">
+		<Cursor position="3699" topLine="126" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_filter.c" open="0" top="0" tabpos="8">
+		<Cursor position="2120" topLine="64" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_html_view.c" open="0" top="0" tabpos="12">
+		<Cursor position="253" topLine="0" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_input_csv.c" open="0" top="0" tabpos="14">
+		<Cursor position="46" topLine="0" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_inventory_dialog.c" open="1" top="0" tabpos="1">
+		<Cursor position="23522" topLine="528" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_inventory_menu.c" open="1" top="0" tabpos="3">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_inventory_view.c" open="1" top="0" tabpos="2">
+		<Cursor position="20100" topLine="537" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_keyboard_model.c" open="0" top="0" tabpos="18">
+		<Cursor position="14287" topLine="358" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_keyboard_view.c" open="0" top="0" tabpos="19">
+		<Cursor position="45566" topLine="1200" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_notebook.c" open="0" top="0" tabpos="4">
+		<Cursor position="3668" topLine="112" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_password_dialog.c" open="0" top="0" tabpos="9">
+		<Cursor position="4961" topLine="124" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_pko_dialog.c" open="0" top="0" tabpos="5">
+		<Cursor position="24469" topLine="701" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_print.c" open="0" top="0" tabpos="0">
+		<Cursor position="1518" topLine="25" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_product_edit.c" open="0" top="0" tabpos="10">
+		<Cursor position="16777" topLine="486" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_product_embed_edit.c" open="0" top="0" tabpos="4">
+		<Cursor position="7712" topLine="186" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_product_model.c" open="0" top="0" tabpos="3">
+		<Cursor position="62768" topLine="1719" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_product_view.c" open="0" top="0" tabpos="8">
+		<Cursor position="19054" topLine="375" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_pv_dialog.c" open="0" top="0" tabpos="23">
+		<Cursor position="23182" topLine="632" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_report_unit_model.c" open="0" top="0" tabpos="9">
+		<Cursor position="16024" topLine="406" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_report_view.c" open="0" top="0" tabpos="24">
+		<Cursor position="8513" topLine="254" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_rz_edit.c" open="0" top="0" tabpos="25">
+		<Cursor position="10236" topLine="308" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_rz_view.c" open="0" top="0" tabpos="0">
+		<Cursor position="35089" topLine="839" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_search.c" open="0" top="0" tabpos="9">
+		<Cursor position="2675" topLine="81" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_seller_dialog.c" open="1" top="0" tabpos="4">
+		<Cursor position="381" topLine="0" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_setting_view.c" open="0" top="0" tabpos="7">
+		<Cursor position="4043" topLine="101" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_tree_view.c" open="0" top="0" tabpos="8">
+		<Cursor position="7155" topLine="184" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_upload.c" open="0" top="0" tabpos="27">
+		<Cursor position="2393" topLine="80" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_utilx.c" open="0" top="0" tabpos="3">
+		<Cursor position="5971" topLine="170" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_validate.c" open="0" top="0" tabpos="0">
+		<Cursor position="709" topLine="0" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_view.c" open="0" top="0" tabpos="9">
+		<Cursor position="4886" topLine="196" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_view_actions.c" open="0" top="0" tabpos="12">
+		<Cursor position="3127" topLine="63" />
+	</File>
+	<File name="..\..\src\domino\gtk\do_window.c" open="0" top="0" tabpos="8">
+		<Cursor position="16702" topLine="519" />
+	</File>
+	<File name="..\..\src\domino\gtk\domino.c" open="0" top="0" tabpos="2">
+		<Cursor position="1466" topLine="31" />
+	</File>
+	<File name="..\..\src\domino\main.c" open="1" top="0" tabpos="10">
+		<Cursor position="5442" topLine="173" />
+	</File>
+</CodeBlocks_layout_file>

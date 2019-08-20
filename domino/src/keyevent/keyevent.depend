@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1387431248 source:/home/mirror/work/domino/src/src/keyevent/main.c
+	<X11/Intrinsic.h>
+	<X11/Xlib.h>
+	<X11/extensions/XTest.h>
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<ctype.h>
+

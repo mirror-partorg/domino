@@ -1,0 +1,54 @@
+# depslib dependency file v1.0
+1291103802 source:e:\work\app-domino\_codeblock\win32\main.c
+	<artix.h>
+	<domino.h>
+	"../../config/config.h"
+	<locale.h>
+
+1285963680 e:\work\app-domino\config\config.h
+
+1291085524 source:e:\work\app-domino\lib\domino\do_extended.c
+	<domino.h>
+	<dolib.h>
+	<stdarg.h>
+	"btr_struct.h"
+	"../../misc/define.h"
+
+1285963680 e:\work\app-domino\lib\domino\btr_struct.h
+	<btrieve.h>
+
+1285866000 e:\work\app-domino\misc\define.h
+
+1291104012 source:e:\work\app-domino\lib\domino\report.c
+	<domino.h>
+	"../misc/define.h"
+
+1291102983 source:e:\work\app-domino\lib\domino\meta_alias.c
+	<domino.h>
+	"../misc/define.h"
+	"../config/config.h"
+
+1291097990 source:e:\work\app-domino\lib\domino\do_config.c
+	<domino.h>
+	<dolib.h>
+	<expat.h>
+	<errno.h>
+	"../../misc/define.h"
+
+1328071277 source:e:\work\app-domino\src\utils\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+	<domino.h>
+	<../config/config.h>
+
+1328070689 source:e:\work\app-domino\lib\dolib\mem.c
+	<stdlib.h>
+	<string.h>
+	<dolib.h>
+	"../../misc/define.h"
+	<errno.h>
+	<windows.h>
+	<pthread.h>
+

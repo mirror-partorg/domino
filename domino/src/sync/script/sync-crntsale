@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+
+DOCS="ЧК.$1"
+
+/usr/local/domino/bin/sync-client$1 document_period $DOCS all

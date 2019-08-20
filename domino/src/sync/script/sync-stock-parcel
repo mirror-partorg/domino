@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+
+/usr/local/domino/bin/sync-client$1 stocks $1 parcels $1 

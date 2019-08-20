@@ -1,0 +1,80 @@
+<ui>
+      <menubar name='MainMenu'>
+        <menu name='File' action='File'> 
+          <menuitem name='Save' action='SaveAction'/> 
+          <menuitem name='SaveAs' action='SaveAsAction'/> 
+          <separator/> 
+          <menuitem name='PrintNow' action='PrintNowAction'/> 
+          <menuitem name='Print' action='PrintAction'/> 
+          <separator/> 
+          <menuitem name='Close' action='CloseAction'/> 
+          <menuitem name='Quit' action='QuitAction'/> 
+        </menu> 
+        <menu name='ViewCommand' action='ViewAction'> 
+          <menuitem name='Insert' action='InsertAction'/> 
+          <menuitem name='Copy' action='CopyAction'/> 
+          <menuitem name='Edit' action='EditAction'/> 
+          <menuitem name='Delete' action='DeleteAction'/> 
+          <separator/> 
+          <menuitem name='Apply' action='ApplyAction'/> 
+          <menuitem name='UndoApply' action='UndoApplyAction'/> 
+          <menuitem name='MailSend' action='MailSendAction'/> 
+          <separator/> 
+	  <menuitem name='Refresh' action='RefreshAction'/> 
+          <separator/> 
+	  <menuitem name='ProductStock' action='ProductEditStock'/> 
+	  <menuitem name='ProductParcel' action='ProductEditParcel'/> 
+	  <menuitem name='ProductPrihod' action='ProductEditPrihod'/> 
+	  <menuitem name='ProductCheck' action='ProductEditCheck'/> 
+	  <menuitem name='ProductOrder' action='ProductEditOrder'/> 
+	  <menuitem name='ProductRz' action='ProductEditRz'/> 
+	  <menuitem name='FindByBarcode' action='FindByBarcode'/> 
+        </menu> 
+        <menu name='Handbook' action='Handbook'> 
+          <menuitem name='Product' action='ProductView'/> 
+          <menuitem name='ProductExtended' action='ProductViewExtended'/> 
+          <menuitem name='ProductEmbedEdit' action='ProductEmbedEdit'/> 
+          <menuitem name='Keyboard' action='KeyboardView'/> 
+          <menuitem name='RZ' action='RzView'/> 
+        </menu> 
+        <menu name='Action' action='Action'> 
+          <menuitem name='PKO' action='PKOPrint'/> 
+          <menuitem name='PV' action='PVPrint'/> 
+        </menu> 
+        <menu name='Report' action='Report'> 
+          <menuitem name='SellerInOut' action='SellerInOutReport'/> 
+          <menuitem name='SellerInDetail' action='SellerInDetailReport'/> 
+          <menuitem name='Discount' action='DiscountReport'/> 
+        </menu> 
+        <menu name='Tools' action='Tools'> 
+          <menuitem name='CommonEdit' action='CommonEdit'/> 
+        </menu> 
+        <menu name='Tabs' action='Tabs'> 
+          <menuitem name='TabsPrevious' action='TabsPrevious'/> 
+          <menuitem name='TabsNext' action='TabsNext'/> 
+          <separator/> 
+          <menuitem name='TabsMoveLeft' action='TabsMoveLeft'/> 
+          <menuitem name='TabsMoveRight' action='TabsMoveRight'/> 
+    	   <placeholder name='TabsOpen'> 
+            <separator name='TabsSep2'/> 
+          </placeholder> 
+        </menu> 
+        <menu name='View' action='View'> 
+          <menuitem name='FullScreen' action='FullScreen'/> 
+          <menuitem name='MainMenu' action='MainMenu'/> 
+        </menu> 
+        <menu name='Help' action='HelpAction'> 
+          <menuitem name='About' action='AboutAction'/> 
+          <menuitem name='UpdateAction' action='UpdateAction'/> 
+        </menu> 
+      </menubar> 
+      <toolbar name='MainToolbar'> 
+        <toolitem action='RefreshAction'/> 
+        <separator/> 
+        <toolitem action='MailSendAction'/> 
+        <separator/> 
+        <toolitem action='PrintAction'/> 
+        <toolitem action='PrintNowAction'/> 
+        <toolitem action='QuitAction'/> 
+      </toolbar> 
+</ui>

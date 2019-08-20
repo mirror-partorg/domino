@@ -1,0 +1,92 @@
+# depslib dependency file v1.0
+1293420120 source:/home/mirror/work/app-domino/lib/xls/ole.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<dolib.h>
+	"ole.h"
+	"numutils.h"
+
+1293420120 /home/mirror/work/app-domino/lib/xls/ole.h
+
+1293420120 /home/mirror/work/app-domino/lib/xls/numutils.h
+	<stdint.h>
+
+1293505441 source:/home/mirror/work/app-domino/lib/xls/xls2csv.c
+	<stdio.h>
+	<locale.h>
+	<dolib.h>
+	"do_xls.h"
+
+1293420120 /home/mirror/work/app-domino/lib/xls/xltypes.h
+
+1293089053 /home/mirror/work/app-domino/lib/xls/xls.h
+	<stdio.h>
+	<math.h>
+	"ole.h"
+
+1293420120 source:/home/mirror/work/app-domino/lib/xls/numutils.c
+	"numutils.h"
+
+1293023029 source:/home/mirror/work/app-domino/lib/xls/xlsparse.c
+	<config.h>
+	<stdlib.h>
+	<string.h>
+	"xls.h"
+	"ole.h"
+	"xltypes.h"
+	"numutils.h"
+	<math.h>
+	<time.h>
+	<stdint.h>
+	"charset.h"
+	"../misc/iconv_.h"
+	"../compat/strftime.h"
+
+1293420120 /home/mirror/work/app-domino/lib/xls/charset.h
+
+1293425347 source:/home/mirror/work/app-domino/lib/xls/charset.c
+	"charset.h"
+	<stdio.h>
+
+1140803046 source:/home/mirror/work/app-domino/lib/xls/sheet.c
+	<config.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	"xls.h"
+
+1293508772 source:/home/mirror/work/app-domino/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1293016064 /home/mirror/work/app-domino/misc/iconv_.h
+	<iconv.h>
+
+1293420120 /home/mirror/work/app-domino/lib/xls/do_xls.h
+
+1293508935 source:/home/mirror/work/app-domino/lib/xls/xls.c
+	"do_xls.h"
+	<dolib.h>
+	<errno.h>
+	"../misc/define.h"
+	"ole.h"
+	"xltypes.h"
+	"numutils.h"
+	"../misc/iconv_.h"
+	"charset.h"
+	<math.h>
+
+1293104511 source:/home/mirror/work/app-domino/lib/dolib/list.c
+	<dolib.h>
+	"../../misc/define.h"
+	<stdarg.h>
+	<string.h>
+	<stdio.h>
+
+1285956480 /home/mirror/work/app-domino/misc/define.h
+

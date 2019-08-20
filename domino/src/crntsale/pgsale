@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+sys.path.append('/usr/local/domino/lib/python')
+
+from artixexchange import ArtixLekarExchange
+from myutil import ConfigFile,AlertMessage
+
+try:
+    ArtixLekarExchange("host=mainbase dbname=domino user=kassa password=kassa").get()
+except:
+    AlertMessage().message(u"Ошибка выгрузки текущих продаж в postgresql")

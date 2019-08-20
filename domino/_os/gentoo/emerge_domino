@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ ! -d /var/tmp/domino ] ; then
+    mkdir /var/tmp/domino
+fi
+cd /var/tmp/domino
+rm -R *
+wget http://soft.glekar.ru/domino/latest.tar.bz2
+tar xf latest.tar.bz2
+
+./configure $@
+
+make
+make install 
