@@ -1,5 +1,6 @@
 CC = gcc
-TMP_DIR=var/Linux/Gentoo/database/x86_64
+LINK = g++
+TMP_DIR=/home/mirror/work/var
 DOMINO_ETC=/usr/local/domino/etc
 DOMINO_BIN=/usr/local/domino/bin
 DOMINO_LOG=/usr/local/domino/log
@@ -8,7 +9,7 @@ DOMINO_TEMPLATE=/usr/local/domino/template
 DOMINO_SHARE=/usr/local/domino/share
 MAKE=make
 AM_MAKEFLAGS=CC=gcc
-AM_FLAGS=-L../../var/Linux/Gentoo/database/x86_64/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/psql/lib -L/usr/local/psql/lib64 -DBTI_LINUX_64 -I../../var/Linux/Gentoo/database/x86_64\
+AM_FLAGS=-L${TMP_DIR}/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/psql/lib -L/usr/local/psql/lib64 -DBTI_LINUX_64 -I../../var/Linux/Gentoo/database/x86_64\
 -DEXPAT \
 -DZLIB \
 -DUSE_NCURSES \

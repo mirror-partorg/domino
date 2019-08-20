@@ -13,14 +13,15 @@ $(NAME):
 			echo $$f ; \
 			$(CC) -shared -fPIC $(AM_FLAGS) $(OPT_FLAGS) $(CFLAGS) -c $$f -o $$n; \
 		fi ;\
-	done
-	for f in $(SRCS) ; do OBJS="$$OBJS $(DIR_TMP)/$$(basename $$f).o"; done 
+	done ; \
+	for f in $(SRCS) ; do OBJS="$$OBJS $(DIR_TMP)/$$(basename $$f).o"; done ; \
 	if [[ "$(MAKEDLL)" == "1" ]] ; \
 	then \
 		$(LINK) -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
                   $$OBJS -o $(LIB_DIR)/$(DLL) $(LDFLAGS) \
                   -Wl,-soname,$(NAME).$(VER) ; \
 	else  \
+		echo $$OBJS ; \
 		$(LINK) -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
                   $$OBJS -o $(LIB_DIR)/$(NAME).$(GET_VERSION)  $(LDFLAGS) \
                   -Wl,-soname,$(NAME).$(VER) ; \
