@@ -1,6 +1,8 @@
 
 #include "do_notebook.h"
 #include "do_view_actions.h"
+#include "do_utilx.h"
+#include "do_window.h"
 #include <gtk/gtk.h>
 
 #define TAB_WIDTH_N_CHARS 15
@@ -33,9 +35,6 @@ static int  do_notebook_insert_page	 (GtkNotebook *notebook,
 static void do_notebook_remove	 (GtkContainer *container,
 					  GtkWidget *tab_widget);
 static void sync_label (DoView *view, GParamSpec *pspec, GtkWidget *label);
-#if GTK_MAJOR_VERSION == 2
-static void sync_icon (DoView *view, GParamSpec *pspec, GtkImage *icon);
-#endif
 static void sync_load_status (DoView *view, GParamSpec *pspec, GtkWidget *proxy);
 static void sync_load_progress (DoView *view, GParamSpec *pspec, GtkWidget *proxy);
 
@@ -110,20 +109,6 @@ static void do_notebook_class_init (DoNotebookClass *klass)
 	container_class->remove = do_notebook_remove;
 
 	notebook_class->insert_page = do_notebook_insert_page;
-#if GTK_MAJOR_VERSION == 2
-	static const gchar *style =
-    "style \"do-tab-close-button-style\"\n"
-			     "{\n"
-			       "GtkWidget::focus-padding = 0\n"
-			       "GtkWidget::focus-line-width = 0\n"
-			       "xthickness = 0\n"
-			       "ythickness = 0\n"
-			     "}\n"
-			     "widget \"*.do-tab-close-button\" style \"do-tab-close-button-style\"";
-    gtk_rc_parse_string(style);
-
-#endif // GTK_MAJOR_VERSION
-
 	signals[TAB_CLOSE_REQUEST] =
 		g_signal_new ("tab-close-request",
 			      G_OBJECT_CLASS_TYPE (object_class),
@@ -166,16 +151,17 @@ static DoNotebook *find_notebook_at_pointer (gint abs_x, gint abs_y)
 	gpointer toplevel = NULL;
 	gint x, y;
 
-	/* FIXME multi-head */
-#if GTK_MAJOR_VERSION == 2
-	win_at_pointer = gdk_window_at_pointer (&x, &y);
+    GdkDevice *pointer;
+#if GTK_CHECK_VERSION(3,20,0)
+    GdkDisplay *display;
+    display = gdk_display_get_default();
+    pointer = gdk_seat_get_pointer(gdk_display_get_default_seat(display));
 #else
     GdkDeviceManager *manager;
-    GdkDevice *pointer;
-    manager = gdk_display_get_device_manager (gdk_display_get_default ());
+    manager = gdk_display_get_device_manager(gdk_display_get_default ());
     pointer = gdk_device_manager_get_client_pointer (manager);
-    win_at_pointer = gdk_device_get_window_at_position (pointer, &x, &y);
 #endif
+    win_at_pointer = gdk_device_get_window_at_position (pointer, &x, &y);
 	if (win_at_pointer == NULL)
 	{
 		/* We are outside all windows containing a notebook */
@@ -190,13 +176,11 @@ static DoNotebook *find_notebook_at_pointer (gint abs_x, gint abs_y)
 	/* toplevel should be an DoWindow */
 	if (toplevel != NULL && GTK_IS_WINDOW (toplevel))
 	{
-		return DO_NOTEBOOK (do_window_get_notebook
-					(GTK_WIDGET (toplevel)));
+		return DO_NOTEBOOK(do_window_get_notebook(DO_WINDOW(toplevel)));
 	}
 
 	return NULL;
 }
-
 static gboolean is_in_notebook_window (DoNotebook *notebook,
 		       gint abs_x, gint abs_y)
 {
@@ -350,7 +334,8 @@ do_notebook_switch_page_cb (GtkNotebook *notebook,
 
 	/* Remove the old page, we dont want to grow unnecessarily
 	 * the list */
-    do_view_actions_set_view(child);
+    //do_view_actions_set_view(child);
+    do_view_actions_refresh(GTK_WIDGET(notebook));
 
 	if ( priv->focused_pages )
 	{
@@ -444,83 +429,15 @@ static void close_button_clicked_cb (GtkWidget *widget, GtkWidget *tab)
 	notebook = gtk_widget_get_parent (tab);
 	g_signal_emit (notebook, signals[TAB_CLOSE_REQUEST], 0, tab);
 }
-/*
-static void tab_label_style_set_cb (GtkWidget *hbox,
-			GtkStyle *previous_style,
-			gpointer user_data)
-{
-	PangoFontMetrics *metrics;
-	PangoContext *context;
-	GtkWidget *button;
-	int char_width, h, w;
-
-	context = gtk_widget_get_pango_context (hbox);
-	metrics = pango_context_get_metrics (context,
-					     hbox->style->font_desc,
-					     pango_context_get_language (context));
-
-	char_width = pango_font_metrics_get_approximate_digit_width (metrics);
-	pango_font_metrics_unref (metrics);
-
-	gtk_icon_size_lookup_for_settings (gtk_widget_get_settings (hbox),
-					   GTK_ICON_SIZE_MENU, &w, &h);
-
-	gtk_widget_set_size_request
-		(hbox, TAB_WIDTH_N_CHARS * PANGO_PIXELS(char_width) + 2 * w, -1);
-
-	button = g_object_get_data (G_OBJECT (hbox), "close-button");
-	gtk_widget_set_size_request (button, w + 4, h);
-}
-*/
-#if GTK_MAJOR_VERSION == 2
-static int tab_label_width (GtkLabel *label)
-{
-	PangoFontMetrics *metrics;
-	PangoContext *context;
-	GtkStyle *style;
-	int char_width;
-
-	context = gtk_widget_get_pango_context (GTK_WIDGET(label));
-	style = gtk_widget_get_style(GTK_WIDGET(label));
-
-	metrics = pango_context_get_metrics (context,
-					     style->font_desc,
-					     pango_context_get_language (context));
-
-	char_width = pango_font_metrics_get_approximate_digit_width (metrics);
-	pango_font_metrics_unref (metrics);
-	return TAB_WIDTH_N_CHARS * PANGO_PIXELS(char_width);
-}
-#endif
 
 static GtkWidget *build_tab_label (DoNotebook *nb, DoView *view)
 {
 	GtkWidget *hbox, *label, *close_button, *image;
-#if GTK_MAJOR_VERSION == 2
-	GtkWidget *spinner, *icon;
-#endif
 	/* set hbox spacing and label padding (see below) so that there's an
 	 * equal amount of space around the label */
-#if GTK_MAJOR_VERSION == 2
-    hbox=gtk_hbox_new(FALSE, 4);
-#else
     hbox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
-#endif
 	gtk_widget_show (hbox);
-#if GTK_MAJOR_VERSION == 2
-	int h, w;
-	gtk_icon_size_lookup_for_settings (gtk_widget_get_settings (hbox),
-					   GTK_ICON_SIZE_MENU, &w, &h);
-#endif
 	/* setup load feedback */
-#if GTK_MAJOR_VERSION == 2
-#if GTK_MINOR_VERSION >= 20
-	spinner = gtk_spinner_new ();
-#else
-	spinner = do_spinner_new ();
-#endif
-#endif
-#if GTK_MAJOR_VERSION > 2
    static const gchar *style =
        "* {\n"
         "-GtkButton-default-border : 0;\n"
@@ -537,27 +454,14 @@ static GtkWidget *build_tab_label (DoNotebook *nb, DoView *view)
     gtk_css_provider_load_from_data (css_provider, style, -1, NULL);
     gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER (css_provider),
                                         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-#endif // GTK_MAJOR_VERSION
-#if GTK_MAJOR_VERSION == 2
-    gtk_widget_set_size_request(spinner, w, h);
-	gtk_box_pack_start (GTK_BOX (hbox), spinner, FALSE, FALSE, 0);
-
-	/* setup site icon, empty by default */
-	icon = gtk_image_new ();
-	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
-	/* don't show the icon */
-#endif
 	/* setup label */
 	label = gtk_label_new (NULL);
 
 	//gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
 
-#if GTK_MAJOR_VERSION == 2
-	gtk_widget_set_size_request(label, tab_label_width(GTK_LABEL(label)), -1);
-#endif
 	gtk_label_set_single_line_mode (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_misc_set_padding (GTK_MISC (label), 0, 0);
+	g_object_set(G_OBJECT(label), "halign", 0.0, "valign", 0.5, NULL);
+	//to do gtk_misc_set_padding (GTK_MISC (label), 0, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 	gtk_widget_show (label);
 
@@ -566,15 +470,14 @@ static GtkWidget *build_tab_label (DoNotebook *nb, DoView *view)
 	gtk_button_set_relief (GTK_BUTTON (close_button),
 			       GTK_RELIEF_NONE);
 	/* don't allow focus on the close button */
+#if GTK_CHECK_VERSION(3,20,0)
+	gtk_widget_set_focus_on_click (GTK_WIDGET (close_button), FALSE);
+#else
 	gtk_button_set_focus_on_click (GTK_BUTTON (close_button), FALSE);
-
+#endif
 	gtk_widget_set_name (close_button, "do-tab-close-button");
 
-#if GTK_MAJOR_VERSION > 2
 	image = gtk_image_new_from_icon_name("window-close-symbolic", GTK_ICON_SIZE_MENU);
-#else
-	image = gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
-#endif
 	gtk_widget_set_tooltip_text (close_button, "Закрыть");
 	g_signal_connect (close_button, "clicked",
 			  G_CALLBACK (close_button_clicked_cb), view);
@@ -590,13 +493,6 @@ static GtkWidget *build_tab_label (DoNotebook *nb, DoView *view)
 		//	  G_CALLBACK (tab_label_style_set_cb), NULL);
 
 	g_object_set_data (G_OBJECT (hbox), "label", label);
-#if GTK_MAJOR_VERSION ==2
-	g_object_set_data (G_OBJECT (hbox), "spinner", spinner);
-	g_object_set_data (G_OBJECT (hbox), "icon", icon);
-    sync_icon (view, NULL, GTK_IMAGE (icon));
-	g_signal_connect_object (view, "notify::icon",
-				 G_CALLBACK (sync_icon), icon, 0);
-#endif
 	g_object_set_data (G_OBJECT (hbox), "close-button", close_button);
 	g_object_set_data (G_OBJECT (hbox), "notebook", nb);
 
@@ -767,8 +663,9 @@ do_notebook_remove (GtkContainer *container,
 	{
 		gtk_widget_destroy (gtk_widget_get_toplevel (GTK_WIDGET (notebook)));
 	}
-	if (gtk_notebook_get_n_pages (gnotebook) == 0)
-        do_view_actions_set_view(NULL);
+	if (gtk_notebook_get_n_pages (gnotebook) == 0) {
+        do_view_actions_refresh(GTK_WIDGET(container));
+	}
 }
 static void
 sync_label (DoView *view, GParamSpec *pspec, GtkWidget *label)
@@ -784,50 +681,11 @@ sync_label (DoView *view, GParamSpec *pspec, GtkWidget *label)
 	 */
 	gtk_widget_set_tooltip_text (gtk_widget_get_parent(label), title);
 }
-#if GTK_MAJOR_VERSION == 2
-static void
-sync_icon (DoView *view,
-	   GParamSpec *pspec,
-	   GtkImage *icon)
-{
-    gtk_image_set_from_pixbuf (icon, do_view_get_icon (view));
-}
-#endif
 static void
 sync_load_status (DoView *view, GParamSpec *pspec, GtkWidget *proxy)
 {
 	GtkWidget *nb;
-#if GTK_MAJOR_VERSION == 2
-	GtkWidget /* *spinner,*/ *icon;
-
-	//spinner = GTK_WIDGET (g_object_get_data (G_OBJECT (proxy), "spinner"));
-	icon = GTK_WIDGET (g_object_get_data (G_OBJECT (proxy), "icon"));
-	g_return_if_fail (/*spinner != NULL &&*/ icon != NULL);
-#endif
 	nb = GTK_WIDGET (g_object_get_data (G_OBJECT (proxy), "notebook"));
-
-#if GTK_MAJOR_VERIOS == 2
-    if ( view && do_view_get_load_status (view) )
-	{
-		gtk_widget_hide (icon);
-		gtk_widget_show (spinner);
-#if GTK_CHECK_VERSION(2,20,0)
-		gtk_spinner_start (GTK_SPINNER (spinner));
-#else
-		do_spinner_start (DO_SPINNER (spinner));
-#endif
-	}
-    else
-	{
-#if GTK_CHECK_VERSION(2,20,0)
-		gtk_spinner_stop (GTK_SPINNER (spinner));
-#else
-		do_spinner_stop (DO_SPINNER (spinner));
-#endif
-		gtk_widget_hide (spinner);
-		gtk_widget_show (icon);
-	}
-#endif
 	get_load_status(DO_NOTEBOOK(nb));
 }
 static void

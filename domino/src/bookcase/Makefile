@@ -2,9 +2,9 @@ include ../../common.mak
 
 lib_dox  = ../domino/
 
-LDFLAGS = $(LIBGTK) $(WINAPP_) $(LIBDO) $(LIBWEBKIT) $(LIBEXPAT)
+LDFLAGS = $(LIBGTK) $(WINAPP_) $(LIBDO) $(LIBWEBKIT) $(LIBEXPAT) -Wfatal-errors
 
-CFLAGS = -DUSE_GTK -DUSE_UTF8 $(GTKCFLAGS) -DNODOMINO -DEXPAT $(WEBKITCFLAG)
+CFLAGS = -DUSE_GTK -DUSE_UTF8 $(GTKCFLAGS) -DNODOMINO -DEXPAT -Wfatal-errors
 
 
 SRCS = main.c \

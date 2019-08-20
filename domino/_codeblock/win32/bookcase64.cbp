@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="bookcase64" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="C:/var/work/openSUSE_Leap_15/usr/x86_64-w64-mingw32/sys-root/mingw/bin/bookcase-debug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="C:/dev/var/MSYS_NT-10.0-17134/x86_64/codeblocks" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="AdsView" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/bookcase" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-DDOMINO78 -I../../include -I../../var/MSYS_NT-10.0-17134/x86_64 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/gtk-3.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/glib-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/glib-2.0/include -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/pango-1.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/cairo -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/gdk-pixbuf-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/atk-1.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/webkitgtk-3.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/libsoup-2.4 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include/librsvg-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0/include -IC:/Python34/include -D_WIN32 -DBTI_WIN_32 -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0 -IC:/MinGW/mingw64/include -IC:/MinGW/mingw64/include/json-c -LC:/var/work/src/domino/var/MSYS_NT-10.0-17134/x86_64/.libs -DZLIB -DBINARY_UPDATE  -s -g0 -O2 -DUSE_GTK -DUSE_UTF8  -DNODOMINO -DEXPAT" />
+			<Add option="-DDOMINO78 -I../../include -I../../var/MSYS_NT-10.0/x86_64 -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/gtk-3.0 -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/glib-2.0 -IC:/MinGW/mingw64/x86_64-w64-mingw32/lib/glib-2.0/include -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/pango-1.0 -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/cairo -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/gdk-pixbuf-2.0 -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/atk-1.0 -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/webkitgtk-3.0 -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/libsoup-2.4 -IC:/MinGW/mingw64/x86_64-w64-mingw32/include/librsvg-2.0 -IC:/MinGW/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0/include -IC:/Python34/include -D_WIN32 -DBTI_WIN_32 -IC:/MinGW/mingw64/include -IC:/MinGW/mingw64/include/json-c -DZLIB -DUSE_GTK -DUSE_UTF8 -I../domino -DNODOMINO" />
+		</Compiler>
+		<Linker>
+			<Add option="-LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0 -LC:/var/work/src/domino/var/MSYS_NT-10.0-17134/x86_64/.libs -lgtk-3 -lgobject-2.0 -lglib-2.0 -lgdk-3 -lpango-1.0 -lgthread-2.0 -lgdk_pixbuf-2.0 -lgio-2.0 -lrsvg-2 -ldolib -lexpat" />
+			<Add directory="../../var/MSYS_NT-10.0-17134/x86_64/.libs" />
+		</Linker>
+		<Unit filename="../../src/bookcase/do_ads_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_application.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_common_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_config.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_context.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_entry.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_marshal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_message.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_notebook.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_setting_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_tree_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_utilx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_validate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_view_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_window.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/domino.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/hig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

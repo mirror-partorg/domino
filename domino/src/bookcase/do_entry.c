@@ -7,9 +7,6 @@
 #include <string.h>
 #include "do_validate.h"
 #include "do_utilx.h"
-#if GTK_MAJOR_VERSION == 2
-#include <gdk/gdkkeysyms.h>
-#endif
 
 enum {
     SUBSTITUTION,
@@ -39,11 +36,7 @@ struct _DoEntryPrivate
     gchar              *regex_mask;
 };
 
-#if GTK_MAJOR_VERSION == 3
 static void do_entry_editable_init (GtkEditableInterface *iface);
-#else
-static void do_entry_editable_init (GtkEditableClass *iface);
-#endif
 static void do_entry_validate_init (DoValidateIface *iface);
 static void set_background (DoEntry *entry);
 static gboolean do_entry_validate(DoValidate *iface);
@@ -62,11 +55,7 @@ static void do_entry_changed (GtkEditable *editable)
     set_background(DO_ENTRY(editable));
 }
 
-#if GTK_MAJOR_VERSION == 3
 static void do_entry_editable_init (GtkEditableInterface *iface)
-#else
-static void do_entry_editable_init (GtkEditableClass *iface)
-#endif
 {
     iface->changed = do_entry_changed;
 }
@@ -101,11 +90,8 @@ static GObject *do_entry_constructor(GType type, guint n_construct_properties, G
     completion = gtk_entry_completion_new ();
     gtk_entry_set_completion (GTK_ENTRY (entry), completion);
     g_object_unref (completion);
-#if GTK_MAJOR_VERSION >2
-//!!    gtk_entry_set_icon_from_stock(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "edit-clear-all-symbolic");
-#else
-    gtk_entry_set_icon_from_stock(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
-#endif
+    gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "edit-clear-all-symbolic");
+
     g_signal_connect(entry, "icon-press",
 			G_CALLBACK (entry_icon_press), object);
 	set_background(entry);
@@ -248,7 +234,7 @@ static gboolean do_entry_validate(DoValidate *iface)
 
 static void set_background (DoEntry *entry)
 {
-#if GTK_MAJOR_VERSION > 2
+#if GTK_MAJOR_VERSION > 2 //to do
 #else
     static const GdkColor error_color = { 0, 65535, 60000, 60000 };
 

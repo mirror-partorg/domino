@@ -103,9 +103,9 @@ static void do_html_view_view_init(DoViewIface *iface)
 
 static void do_html_view_init(DoHtmlView *temp)
 {
-	DoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (temp);
-    GtkIconTheme *icon_theme;
-    icon_theme = gtk_icon_theme_get_default();
+	//DoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (temp);
+    //GtkIconTheme *icon_theme;
+    //icon_theme = gtk_icon_theme_get_default();
     //priv->icon = gtk_icon_theme_load_icon(icon_theme, DO_STOCK_DOMINO_WEB, DO_VIEW_ICON_SIZE, 0, NULL);
 
 }
@@ -172,6 +172,7 @@ static void do_html_view_load_changed(WebKitWebView *web_view,
 }
 
 static void do_html_view_set_url(DoHtmlView *view, const gchar *url);
+/*
 static void url_activated(GtkEntry *entry, DoView *view)
 {
     DoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (view);
@@ -184,7 +185,7 @@ static void url_activated(GtkEntry *entry, DoView *view)
 
     }
 
-}
+}*/
 gboolean
 user_function1 (WebKitWebView  *web_view,
                WebKitWebFrame *web_frame,
@@ -234,7 +235,13 @@ static GObject *do_html_view_constructor(GType type, guint n_construct_propertie
     g_signal_connect(priv->view_html,  "load-progress-changed",  G_CALLBACK(do_html_view_load_changed), object);
     //g_signal_connect(priv->view_html,  "load-error",  G_CALLBACK(user_function1), object);
 
-    /*WebKitSettings *s2 = webkit_settings_new ();
+    WebKitWebSettings *s2 = webkit_web_settings_new();
+    //g_object_set(G_OBJECT(s2), "enable-java-applet", FALSE, NULL);
+    //g_object_set(G_OBJECT(s2), "enable-scripts", FALSE, NULL);
+    g_object_set(G_OBJECT(s2), "enable-plugins", FALSE, NULL);
+    webkit_web_view_set_settings(WEBKIT_WEB_VIEW(priv->view_html), s2);
+
+    /*
     printf("%d\n", webkit_settings_get_enable_java(s2));
     WebKitWebPluginDatabase *s1;
     s1 = webkit_get_web_plugin_database();
@@ -291,14 +298,6 @@ static void do_set_html_string(DoHtmlView *view, const gchar *string)
     webkit_web_view_load_html_string(WEBKIT_WEB_VIEW(priv->view_html),
                   priv->html_string, NULL);
 }
-#ifndef CASH
-#if (GTK_MAJOR_VERSION < 3 && GTK_MINOR_VERSION <= 20)
-char *soup_uri_get_host(SoupURI *uri)
-{
-    return uri->host;
-}
-#endif
-#endif
 static void do_html_view_set_url(DoHtmlView *view, const gchar *url)
 {
 	DoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (view);
@@ -313,7 +312,7 @@ static void do_html_view_set_url(DoHtmlView *view, const gchar *url)
         const gchar *ignore;
         gchar *host;
         guint len, ilen;
-        gboolean no_proxy;
+        gboolean no_proxy = TRUE;
 
         if ( proxyIgnore && proxyIgnore[0] != '\0' )
             ignore = proxyIgnore;
@@ -688,13 +687,14 @@ static gboolean	command_can_do_save_as(DoView *view)
 
 static void focus_in(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
-    do_view_actions_set_view(user_data);
+    //do_view_actions_set_view(user_data);
+    do_view_actions_refresh(widget);
 }
 
 static gboolean key_press(GtkWidget *widget, GdkEventKey *event, DoView *do_view)
 {
-	DoHtmlViewPrivate  *priv;
-	priv = DO_HTML_VIEW_GET_PRIVATE (do_view);
+	//DoHtmlViewPrivate  *priv;
+	//priv = DO_HTML_VIEW_GET_PRIVATE (do_view);
 	guint mask = gtk_accelerator_get_default_mod_mask ();
 	if ((event->state & mask) == 0)
 	{
@@ -817,6 +817,5 @@ static gint view_get_load_progress(DoView *view)
 void do_html_set_entry(DoHtmlView *view, GtkWidget *entry)
 {
 	DoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (view);
-	return priv->load_progress_bar = entry;
-
+	priv->load_progress_bar = entry;
 }

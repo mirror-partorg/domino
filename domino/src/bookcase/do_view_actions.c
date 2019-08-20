@@ -1,18 +1,21 @@
 #include "do_view_actions.h"
 #include "do_view.h"
+#include "do_application.h"
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
 
-static GtkUIManager   * myUIManager = NULL;
-static GtkActionGroup * myGroup = NULL;
-static DoView         * myCrntView = NULL;
+//static GSimpleActionGroup * myGroup = NULL;
 
-static void action_cb(GtkAction *a, GtkWidget **view)
+static void activate_action(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
-    if (*view && DO_IS_VIEW(*view)) {
-        DoView *doView = DO_VIEW(*view);
 
-        gchar *action_name = (gchar*)gtk_action_get_name(a);
+    if ( user_data && DO_IS_WINDOW(user_data) ) {
+
+        DoView *doView = DO_VIEW(do_window_get_active_child(DO_WINDOW(user_data)));
+        if ( !doView )
+            return;
+
+        gchar *action_name = (gchar*)g_action_get_name(G_ACTION(action));
         if (!strcmp( action_name, "DeleteAction"))
             do_view_do_delete(doView);
         else
@@ -75,223 +78,85 @@ static void action_cb(GtkAction *a, GtkWidget **view)
     }
 }
 
-static GtkActionEntry entries[] =
+static GActionEntry entries[] =
 {
-    { "ViewAction", NULL,( "Да_нные" ), NULL, "Основные операции с данными", NULL},
-    { "DeleteAction", GTK_STOCK_REMOVE,( "Удалить" ), "Delete", "Удаление записи", G_CALLBACK( action_cb )},
-    { "InsertAction", GTK_STOCK_ADD,( "Новая" ), "Insert", "Создать новую запись", G_CALLBACK( action_cb )},
-    { "CopyAction", GTK_STOCK_COPY,( "Копировать" ), "<ctrl>Insert", "Копировать запись", G_CALLBACK( action_cb )},
-    { "SaveAsAction", GTK_STOCK_SAVE_AS, ( "Сохранить как..." ), NULL, "Сохранить как", G_CALLBACK( action_cb )},
-    { "SaveAction", GTK_STOCK_SAVE, ( "Сохранить" ), "<ctrl>S", "Сохранить", G_CALLBACK( action_cb )},
-    { "OpenAction", GTK_STOCK_OPEN, ( "Открыть" ), "<ctrl>O", "Открыть", G_CALLBACK( action_cb )},
-    { "RefreshAction", GTK_STOCK_REFRESH, ( "Обновить" ), "<ctrl>R", "Обновить", G_CALLBACK( action_cb )},
-    { "EditAction", GTK_STOCK_EDIT,( "Редактировать" ), NULL, "Редактирование записи", G_CALLBACK( action_cb )},
-#ifndef MIN_SCREEN
-    { "ProductEditParcel", GTK_STOCK_PROPERTIES,( "Просмотр партий товара" ),
-    "F4",
-    "Просмотр партий товара", G_CALLBACK( action_cb )},
-    { "ProductEditStock", GTK_STOCK_PROPERTIES,( "Просмотр остатков товара" ),"F3", "Просмотр остатков товара", G_CALLBACK( action_cb )},
-    { "ProductEditPrihod", GTK_STOCK_PROPERTIES,( "Просмотр приходов товара" ),
-#ifdef CASH
-   NULL,
-#else
-"F5",
-#endif
- "Просмотр приходов товара", G_CALLBACK( action_cb )},
-    { "ProductEditCheck", GTK_STOCK_PROPERTIES,( "Просмотр чеков по товару" ), NULL, "Просмотр чеков по товару", G_CALLBACK( action_cb )},
-    { "ProductEditOrder", GTK_STOCK_PROPERTIES,( "Просмотр заказов по товару" ), NULL, "Просмотр заказов по товару", G_CALLBACK( action_cb )},
-    { "ProductEditRz", GTK_STOCK_PROPERTIES,( "Просмотр зарегистрированных цен" ), NULL, "Просмотр зарегистрированных цен", G_CALLBACK( action_cb )},
-#endif
-    { "ApplyAction", GTK_STOCK_APPLY,( "Выбрать" ),
-#ifndef CASH_KEYBOARD
-    "<shift>Return",
-#else
-    "F12",
-#endif
-    "Выбрать записи", G_CALLBACK( action_cb )},
-    { "UndoApplyAction", GTK_STOCK_CANCEL,( "Отменить" ),
-#ifndef CASH_KEYBOARD
-    "<shift>Delete",
-#else
-    "F2",
-#endif
-    "Отмена выбора записей", G_CALLBACK( action_cb )},
-    { "PrintAction", NULL, ( "Печать..." ), "<ctrl>p", "Печать...", G_CALLBACK( action_cb )},
-    { "PrintNowAction", GTK_STOCK_PRINT,( "Печать" ),"F9", "Печать", G_CALLBACK( action_cb )},
-    { "PrintActionTool", NULL,( "Печать (Ctrl+P)" ), NULL, "Печать...", G_CALLBACK( action_cb )},
-    { "PrintNowActionTool", GTK_STOCK_PRINT,( "Печать(F9)" ),NULL, "Печать", G_CALLBACK( action_cb )},
-    { "FindByBarcode", GTK_STOCK_FIND,( "Поиск по продажному коду" ),"F7", "Поиск по продажному коду", G_CALLBACK( action_cb )},
-    { "MailSendAction", NULL,( "Передать" ),
-#ifdef CASH
- "F5",
-#else
-NULL,
-#endif
- "Передать записи", G_CALLBACK( action_cb )},
-    { "ClockAction", NULL , ( "Время" ), NULL, "Посмотреть календать", G_CALLBACK( action_cb )},
+    { "DeleteAction", activate_action},
+    { "InsertAction", activate_action},
+    { "CopyAction", activate_action},
+    { "SaveAsAction", activate_action},
+    { "SaveAction", activate_action},
+    { "OpenAction", activate_action},
+    { "RefreshAction", activate_action},
+    { "EditAction", activate_action},
+    { "ApplyAction", activate_action},
+    { "UndoApplyAction", activate_action},
+    { "PrintAction", activate_action},
+    { "PrintNowAction", activate_action},
+    { "FindByBarcode", activate_action},
+    { "MailSendAction", activate_action},
 };
 
-void do_view_actions_init(GtkUIManager * ui_manager)
-{
-    const int   n_entries = G_N_ELEMENTS( entries );
-    GtkActionGroup *action_group;
-    myUIManager = ui_manager;
 
-    action_group = myGroup = gtk_action_group_new("DoViewAction");
-    gtk_action_group_add_actions( action_group,
-                                  entries, n_entries,
-                                  &myCrntView );
-    gtk_ui_manager_insert_action_group( ui_manager, action_group, 0 );
-    g_object_unref ( G_OBJECT( action_group ) );
-    do_view_actions_refresh(NULL);
+
+void do_view_actions_init(DoWindow *window)
+{
+    GSimpleActionGroup *group;
+    group = g_simple_action_group_new();
+    g_action_map_add_action_entries(G_ACTION_MAP(group), entries, G_N_ELEMENTS (entries), window);
+	gtk_widget_insert_action_group (GTK_WIDGET (window),
+	                                "view-actions",
+	                                G_ACTION_GROUP (group));
+
+    do_view_actions_refresh(GTK_WIDGET(window));
 }
 
-static GHashTable * key_to_action = NULL;
-void do_view_actions_add_ui_from_string(const gchar *buffer, GError **error)
+void do_view_actions_action_sensitize(DoWindow *window, const char * name, gboolean b)
 {
-     gtk_ui_manager_add_ui_from_string(myUIManager, buffer, -1, error);
+    GActionGroup *group = gtk_widget_get_action_group(GTK_WIDGET(window), "view-actions");
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP(group), name);
+    g_assert( action != NULL );
+    g_simple_action_set_enabled(G_SIMPLE_ACTION(action), b);
 }
 
-
-static void ensure_action_map_loaded( GtkUIManager * uim )
+void do_view_actions_refresh(GtkWidget *widget)
 {
-    GList * l;
-
-    if( key_to_action != NULL )
+    if ( !widget || !DO_IS_WINDOW(gtk_widget_get_toplevel(widget)) )
         return;
+    DoWindow *window = DO_WINDOW(gtk_widget_get_toplevel(widget));
 
-    key_to_action =
-        g_hash_table_new_full( g_str_hash, g_str_equal, g_free, NULL );
-    return; //fix me
-    for( l = gtk_ui_manager_get_action_groups( uim ); l != NULL;
-         l = l->next )
-    {
-        GtkActionGroup * action_group = GTK_ACTION_GROUP( l->data );
-        GList *          ait, *actions = gtk_action_group_list_actions(
-            action_group );
-        for( ait = actions; ait != NULL; ait = ait->next )
-        {
-            GtkAction *  action = GTK_ACTION( ait->data );
-            const char * name = gtk_action_get_name( action );
-            g_hash_table_insert( key_to_action, g_strdup( name ), action );
-        }
-        g_list_free( actions );
-    }
-}
-
-#if GTK_MAJOR_VERSION > 22
-static GAction* get_action( const char* name )
-{
-    ensure_action_map_loaded( myUIManager );
-    return ( GAction* ) g_hash_table_lookup( key_to_action, name );
-}
-#else
-static GtkAction* get_action( const char* name )
-{
-    ensure_action_map_loaded( myUIManager );
-    return ( GtkAction* ) g_hash_table_lookup( key_to_action, name );
-}
-#endif
-void do_view_actions_action_activate( const char * name )
-{
-    GtkAction * action = get_action( name );
-
-    g_assert( action != NULL );
-    gtk_action_activate( action );
-}
-
-void do_view_actions_action_sensitize( const char * name,
-                  gboolean     b )
-{
-    return; //fix me
-    GtkAction * action = get_action( name );
-
-    g_assert( action != NULL );
-    g_object_set( action, "sensitive", b, NULL );
-}
-
-void do_view_actions_action_toggle( const char * name,
-               gboolean     b )
-{
-    GtkAction * action = get_action( name );
-
-    gtk_toggle_action_set_active( GTK_TOGGLE_ACTION( action ), b );
-}
-
-GtkWidget* do_view_actions_action_get_widget( const char * path )
-{
-    return gtk_ui_manager_get_widget( myUIManager, path );
-}
-
-void do_view_actions_refresh()
-{
     const int n_entries = G_N_ELEMENTS(entries);
+    DoView *view = DO_VIEW(do_window_get_active_child(window));
     int i;
-    if ( myCrntView ) {
-        do_view_actions_action_sensitize("DeleteAction", do_view_can_do_delete(myCrntView));
-        do_view_actions_action_sensitize("InsertAction", do_view_can_do_insert(myCrntView));
-        do_view_actions_action_sensitize("CopyAction", do_view_can_do_copy(myCrntView));
-        do_view_actions_action_sensitize("EditAction", do_view_can_do_edit(myCrntView, NULL));
-        do_view_actions_action_sensitize("ApplyAction", do_view_can_do_apply(myCrntView));
-        do_view_actions_action_sensitize("UndoApplyAction", do_view_can_do_unapply(myCrntView));
-        do_view_actions_action_sensitize("MailSendAction", do_view_can_do_mail_send(myCrntView));
-        do_view_actions_action_sensitize("PrintAction", do_view_can_do_print(myCrntView));
-        do_view_actions_action_sensitize("PrintNowAction", do_view_can_do_print(myCrntView));
-        do_view_actions_action_sensitize("PrintActionTool", do_view_can_do_print(myCrntView));
-        do_view_actions_action_sensitize("PrintNowActionTool", do_view_can_do_print(myCrntView));
-        do_view_actions_action_sensitize("SaveAsAction", do_view_can_do_save_as(myCrntView));
-        do_view_actions_action_sensitize("SaveAction", do_view_can_do_save(myCrntView));
-        do_view_actions_action_sensitize("OpenAction", do_view_can_do_open(myCrntView));
-#ifndef NODOMINO
-#ifndef MIN_SCREEN
-        do_view_actions_action_sensitize("ProductEditParcel", DO_IS_PRODUCT_VIEW(myCrntView) &&
-                                                              do_view_can_do_edit(myCrntView, "Parcel"));
-        do_view_actions_action_sensitize("ProductEditStock", (DO_IS_PRODUCT_VIEW(myCrntView)
-                                                               ||
-                                                               DO_IS_RZ_VIEW(myCrntView) ||
-#ifndef CASH
-                                                               DO_IS_ORDER_VIEW(myCrntView) ||
-                                                               DO_IS_LIMIT_VIEW(myCrntView) ||
-#endif
-                                                               DO_IS_RZ_EDIT_VIEW(myCrntView)
-                                                              )&&
-                                                              do_view_can_do_edit(myCrntView, "Stock"));
-        do_view_actions_action_sensitize("ProductEditPrihod", (DO_IS_PRODUCT_VIEW(myCrntView)
-                                                               ||
-                                                               DO_IS_RZ_EDIT_VIEW(myCrntView)
-                                                               )&&
-                                                              do_view_can_do_edit(myCrntView, "Prohod"));
-        do_view_actions_action_sensitize("ProductEditCheck", (DO_IS_PRODUCT_VIEW(myCrntView)
-                                                               ||
-                                                               DO_IS_RZ_EDIT_VIEW(myCrntView)
-                                                               )&&
-                                                              do_view_can_do_edit(myCrntView, "Check"));
-        do_view_actions_action_sensitize("ProductEditOrder", (DO_IS_PRODUCT_VIEW(myCrntView)
-                                                              ||
-                                                               DO_IS_RZ_EDIT_VIEW(myCrntView)
-                                                               )&&
-                                                              do_view_can_do_edit(myCrntView, "Order"));
-        do_view_actions_action_sensitize("ProductEditRz", (DO_IS_PRODUCT_VIEW(myCrntView)
-                                                              ||
-                                                               DO_IS_RZ_EDIT_VIEW(myCrntView)
-                                                               )&&
-                                                              do_view_can_do_edit(myCrntView, "Rz"));
-#endif
-        do_view_actions_action_sensitize("FindByBarcode", do_view_can_do_find_barcode(myCrntView));
-#endif
-        do_view_actions_action_sensitize("RefreshAction", do_view_can_do_refresh(myCrntView));
+    if ( view ) {
+        do_view_actions_action_sensitize(window, "DeleteAction", do_view_can_do_delete(view));
+        do_view_actions_action_sensitize(window, "InsertAction", do_view_can_do_insert(view));
+        do_view_actions_action_sensitize(window, "CopyAction", do_view_can_do_copy(view));
+        do_view_actions_action_sensitize(window, "EditAction", do_view_can_do_edit(view, NULL));
+        do_view_actions_action_sensitize(window, "ApplyAction", do_view_can_do_apply(view));
+        do_view_actions_action_sensitize(window, "UndoApplyAction", do_view_can_do_unapply(view));
+        do_view_actions_action_sensitize(window, "MailSendAction", do_view_can_do_mail_send(view));
+        do_view_actions_action_sensitize(window, "PrintAction", do_view_can_do_print(view));
+        do_view_actions_action_sensitize(window, "PrintNowAction", do_view_can_do_print(view));
+        //do_view_actions_action_sensitize(window, "PrintActionTool", do_view_can_do_print(view));
+        //do_view_actions_action_sensitize(window, "PrintNowActionTool", do_view_can_do_print(view));
+        do_view_actions_action_sensitize(window, "SaveAsAction", do_view_can_do_save_as(view));
+        do_view_actions_action_sensitize(window, "SaveAction", do_view_can_do_save(view));
+        do_view_actions_action_sensitize(window, "OpenAction", do_view_can_do_open(view));
+        do_view_actions_action_sensitize(window, "FindByBarcode", do_view_can_do_find_barcode(view));
+        do_view_actions_action_sensitize(window, "RefreshAction", do_view_can_do_refresh(view));
     }
     else
-        for (i = 1; i < n_entries; i++)
-            do_view_actions_action_sensitize(entries[i].name, FALSE);
-    do_view_actions_action_sensitize("ClockAction", TRUE);
+        for (i = 0; i < n_entries; i++)
+            do_view_actions_action_sensitize(window, entries[i].name, FALSE);
 }
+/*
 void  do_view_actions_set_view(GtkWidget *view)
 {
 
     if (DO_IS_VIEW(view))
-        myCrntView = do_view_get_active_child(DO_VIEW(view));
+        view = do_view_get_active_child(DO_VIEW(view));
     else
-        myCrntView = NULL;
+        view = NULL;
     do_view_actions_refresh();
 }
+*/

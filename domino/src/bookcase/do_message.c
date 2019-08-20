@@ -80,9 +80,6 @@ static void button_exit_clicked (GtkButton *button,
 {
     exit(1);
 }
-#if GTK_MAJOR_VERSION == 2
-#include <gdk/gdkkeysyms.h>
-#endif
 #ifndef GDK_KEY_Escape
 #define GDK_KEY_Escape GDK_Escape
 #endif
@@ -183,39 +180,19 @@ static void do_messages_show()
                 gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ALWAYS);
                 gtk_window_set_icon_name(GTK_WINDOW(dialog), "bookcase");
                 g_signal_connect (dialog, "destroy", G_CALLBACK(dialog_destroy_event), NULL);
-#if GTK_MAJOR_VERSION == 2
-                vbox = gtk_vbox_new(FALSE, 16);
-#else
                 vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 16);
-#endif
                 gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
                 gtk_container_add(GTK_CONTAINER(dialog), vbox);
-#if GTK_MAJOR_VERSION == 2
-                box = gtk_hbox_new(FALSE, 6);
-#else
                 box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-#endif
                 gtk_box_pack_start(GTK_BOX(vbox), box, FALSE, FALSE, 0);
                 if ( msg->log_flags & G_LOG_LEVEL_WARNING ) {
-#if GTK_MAJOR_VERSION == 2
-                    w = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_DIALOG);
-#else
                     w = gtk_image_new_from_icon_name("dialog-warning-symbolic", GTK_ICON_SIZE_DIALOG);
-#endif // GTK_MAJOR_VERSION
                 };
                 if ( msg->log_flags & G_LOG_LEVEL_INFO ) {
-#if GTK_MAJOR_VERSION == 2
-                    w = gtk_image_new_from_stock(GTK_STOCK_DIALOG_INFO, GTK_ICON_SIZE_DIALOG);
-#else
                     w = gtk_image_new_from_icon_name("dialog-information-symbolic", GTK_ICON_SIZE_DIALOG);
-#endif // GTK_MAJOR_VERSION
                 };
                 if ( msg->log_flags & (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL ) ) {
-#if GTK_MAJOR_VERSION == 2
-                    w = gtk_image_new_from_stock(GTK_STOCK_DIALOG_ERROR, GTK_ICON_SIZE_DIALOG);
-#else
                     w = gtk_image_new_from_icon_name("dialog-error-symbolic", GTK_ICON_SIZE_DIALOG);
-#endif // GTK_MAJOR_VERSION
                     button = gtk_button_new();
                     gtk_button_set_label(GTK_BUTTON(button), "Завершить работу");
                     g_signal_connect(button, "clicked", G_CALLBACK(button_exit_clicked), dialog);
@@ -229,17 +206,9 @@ static void do_messages_show()
                 gtk_label_set_selectable(GTK_LABEL(w), TRUE);
                 gtk_widget_set_can_focus (w, TRUE);
                 gtk_box_pack_start(GTK_BOX(box), w, TRUE, TRUE, 0);
-#if GTK_MAJOR_VERSION == 2
-                box = gtk_hbox_new(FALSE, 6);
-#else
                 box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-#endif
                 gtk_box_pack_start(GTK_BOX(vbox), box, FALSE, FALSE, 0);
-#if GTK_MAJOR_VERSION == 2
-                w = gtk_hbox_new(FALSE, 6);
-#else
                 w = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-#endif
                 gtk_box_set_homogeneous(GTK_BOX(w), TRUE);
                 gtk_box_pack_end(GTK_BOX(box), w, FALSE, FALSE, 0);
                 if ( button )

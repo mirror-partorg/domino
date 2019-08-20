@@ -16,46 +16,21 @@
 GtkWidget*
 hig_workarea_create( void )
 {
-#if GTK_MAJOR_VERSION > 2
     GtkWidget * t = gtk_grid_new();
     gtk_grid_set_column_spacing( GTK_GRID( t ), GUI_PAD_BIG );
     gtk_grid_set_row_spacing( GTK_GRID( t ), GUI_PAD );
     gtk_grid_set_column_homogeneous(GTK_GRID(t), FALSE);
-#else
-    GtkWidget * t = gtk_table_new( 1, 2, FALSE );
-    gtk_table_set_col_spacing( GTK_TABLE( t ), 0, GUI_PAD_BIG );
-    gtk_table_set_row_spacings( GTK_TABLE( t ), GUI_PAD );
-#endif
     gtk_container_set_border_width( GTK_CONTAINER( t ), GUI_PAD_BIG );
     return t;
 }
 
-void
-hig_workarea_add_section_divider( GtkWidget * t,
-                                  int *       row )
-{
-    GtkWidget * w = gtk_alignment_new( 0.0f, 0.0f, 0.0f, 0.0f );
-
-    gtk_widget_set_size_request( w, 0u, 6u );
-
-#if GTK_MAJOR_VERSION > 2
-    gtk_grid_attach( GTK_GRID( t ), w, 0, *row, 2, 1);
-#else
-    gtk_table_attach( GTK_TABLE( t ), w, 0, 2, *row, *row + 1, 0, 0, 0, 0 );
-#endif
-    ++ * row;
-}
 
 void
 hig_workarea_add_section_title_widget( GtkWidget * t,
                                        int *       row,
                                        GtkWidget * w )
 {
-#if GTK_MAJOR_VERSION > 2
     gtk_grid_attach( GTK_GRID( t ), w, 0, *row, 2, 1);
-#else
-    gtk_table_attach( GTK_TABLE( t ), w, 0, 2, *row, *row + 1, ~0, 0, 0, 0 );
-#endif
     ++ * row;
 }
 
@@ -70,7 +45,7 @@ hig_workarea_add_section_title( GtkWidget *  t,
     g_snprintf( buf, sizeof( buf ), "<b>%s</b>", section_title );
     l = gtk_label_new( buf );
     //!!g_object_set(l, "selectable", TRUE, NULL);
-    gtk_misc_set_alignment( GTK_MISC( l ), 0.0f, 0.5f );
+	g_object_set(G_OBJECT(l), "halign", 0.0, "valign", 0.5, NULL);
     gtk_label_set_use_markup( GTK_LABEL( l ), TRUE );
     hig_workarea_add_section_title_widget( t, row, l );
     return l;
@@ -79,23 +54,25 @@ hig_workarea_add_section_title( GtkWidget *  t,
 static GtkWidget*
 rowNew( GtkWidget * w )
 {
-    GtkWidget * a;
 
     GtkWidget * h;
-#if GTK_MAJOR_VERSION < 3
-    h = gtk_hbox_new(FALSE, 0);
-#else
-    h = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-#endif
+    h = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
+#if GTK_CHECK_VERSION(3,14,0)
+    g_object_set(G_OBJECT(w), "margin-left", 18, NULL);
+    /* lhs widget */
+    if( GTK_IS_LABEL( w ) )
+        g_object_set(G_OBJECT(w), "halign", 0.0, "valign", 0.5, NULL);
+#else
+    GtkWidget * a;
     /* spacer */
     a = gtk_alignment_new( 0.0f, 0.0f, 0.0f, 0.0f );
     gtk_widget_set_size_request( a, 18u, 0u );
     gtk_box_pack_start( GTK_BOX( h ), a, FALSE, FALSE, 0 );
-
     /* lhs widget */
     if( GTK_IS_MISC( w ) )
         gtk_misc_set_alignment( GTK_MISC( w ), 0.0f, 0.5f );
+#endif
     if( GTK_IS_LABEL( w ) )
         gtk_label_set_use_markup( GTK_LABEL( w ), TRUE );
     gtk_box_pack_start( GTK_BOX( h ), w, TRUE, TRUE, 0 );
@@ -110,11 +87,7 @@ hig_workarea_add_wide_control( GtkWidget * t,
 {
     GtkWidget * r = rowNew( w );
 
-#if GTK_MAJOR_VERSION > 2
     gtk_grid_attach( GTK_GRID( t ), r, 0, *row, 2, 1);
-#else
-    gtk_table_attach( GTK_TABLE( t ), r, 0, 2, *row, *row + 1, GTK_FILL, 0, 0, 0 );
-#endif
     ++ * row;
 }
 
@@ -138,11 +111,7 @@ hig_workarea_add_label_w( GtkWidget * t,
 {
     GtkWidget * w = rowNew( l );
 
-#if GTK_MAJOR_VERSION > 2
     gtk_grid_attach( GTK_GRID( t ), w, 0, row, 1,1);
-#else
-    gtk_table_attach( GTK_TABLE( t ), w, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0 );
-#endif
 }
 
 GtkWidget*
@@ -161,16 +130,10 @@ hig_workarea_add_control( GtkWidget * t,
                           int         row,
                           GtkWidget * control )
 {
-    if( GTK_IS_MISC( control ) )
-        gtk_misc_set_alignment( GTK_MISC( control ), 0.0f, 0.5f );
+    if( GTK_IS_LABEL(control) )
+        g_object_set(G_OBJECT(control), "halign", 0.0, "valign", 0.5, NULL);
 
-#if GTK_MAJOR_VERSION > 2
     gtk_grid_attach( GTK_GRID( t ), control, 1, row, 2, 1);
-#else
-    gtk_table_attach( GTK_TABLE( t ), control,
-                      1, 2, row, row + 1,
-                      GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0, 0 );
-#endif
 }
 
 void
@@ -205,7 +168,7 @@ void
 hig_workarea_finish( GtkWidget * t,
                      int *       row )
 {
-#if GTK_MAJOR_VERION == 2
+#if GTK_MAJOR_VERION == 2 // to do
     gtk_table_resize( GTK_TABLE( t ), *row, 2 );
 #endif
 }

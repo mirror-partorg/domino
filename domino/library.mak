@@ -1,10 +1,11 @@
-DIR_TMP=$(dir $(lastword $(MAKEFILE_LIST)))/$(TMP_DIR)/$(NAME)
-LIB_DIR=$(dir $(lastword $(MAKEFILE_LIST)))/$(TMP_DIR)/.libs
+DIR_TMP=$(TMP_DIR)/$(NAME)
+LIB_DIR=$(TMP_DIR)/.libs
 all: $(NAME)
 $(NAME):
 	$(PRE_NAME)
 	OBJS=""
 	mkdir -p $(DIR_TMP)
+	mkdir -p $(LIB_DIR)
 	for f in $(SRCS) ; do \
 		n=$(DIR_TMP)/$$(basename $$f).o ; \
 		if [[ $$f -nt $$n ]] ; \
@@ -13,12 +14,19 @@ $(NAME):
 			$(CC) -shared -fPIC $(AM_FLAGS) $(OPT_FLAGS) $(CFLAGS) -c $$f -o $$n; \
 		fi ;\
 	done
-	for f in $(SRCS) ; do OBJS="$$OBJS $(DIR_TMP)/$$(basename $$f).o"; done ;\
-	g++ -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
+	for f in $(SRCS) ; do OBJS="$$OBJS $(DIR_TMP)/$$(basename $$f).o"; done 
+	if [[ "$(MAKEDLL)" == "1" ]] ; \
+	then \
+		$(LINK) -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
+                  $$OBJS -o $(LIB_DIR)/$(DLL) $(LDFLAGS) \
+                  -Wl,-soname,$(NAME).$(VER) ; \
+	else  \
+		$(LINK) -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
                   $$OBJS -o $(LIB_DIR)/$(NAME).$(GET_VERSION)  $(LDFLAGS) \
-                  -Wl,-soname,$(NAME).$(VER)
-	ln -fs $(NAME).$(GET_VERSION) $(LIB_DIR)/$(NAME).$(VER)
-	ln -fs $(NAME).$(GET_VERSION) $(LIB_DIR)/$(NAME)
+                  -Wl,-soname,$(NAME).$(VER) ; \
+		ln -fs $(NAME).$(GET_VERSION) $(LIB_DIR)/$(NAME).$(VER) ; \
+		ln -fs $(NAME).$(GET_VERSION) $(LIB_DIR)/$(NAME) ; \
+	fi
 	$(POST_NAME)
 install:
 	install  $(LIB_DIR)/$(NAME).$(GET_VERSION) $(DOMINO_LIB)/

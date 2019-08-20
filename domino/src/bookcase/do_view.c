@@ -444,15 +444,15 @@ gboolean do_view_can_set_cursor_to_context (DoView *view, DoContext *context)
     else
         return FALSE;
 }
-DoView	   *do_view_get_active_child(DoView *view)
+GtkWidget	   *do_view_get_active_child(DoView *view)
 {
     DoViewIface *iface;
 
     iface = DO_VIEW_GET_IFACE (view);
     if (iface->get_active_child)
-        return iface->get_active_child(view);
+        return GTK_WIDGET(iface->get_active_child(view));
     else
-        return view;
+        return GTK_WIDGET(view);
 }
 gboolean do_view_sender_do_close (DoView *view)
 {

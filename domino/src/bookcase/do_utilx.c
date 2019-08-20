@@ -2,6 +2,8 @@
 #include "do_view.h"
 #include "do_validate.h"
 #include "do_notebook.h"
+#include "do_entry.h"
+#include "hig.h"
 #include <dolib.h>
 #include "../misc/print.h"
 #include "../misc/iconv_.h"
@@ -22,17 +24,6 @@ const char *domino_unit()
 {
     return "5";
 }
-
-GtkWidget *do_window_get_notebook(GtkWidget *widget)
-{
-    GList *l;
-    for (l = gtk_container_get_children(GTK_CONTAINER(widget)); l; l=l->next)
-        if DO_IS_NOTEBOOK(l->data)
-            return GTK_WIDGET(l->data);
-    return NULL;
-}
-
-
 void gtk_tree_view_row_redraw(GtkTreeView *view, GtkTreePath *path)
 {
     GdkRectangle rect, visible_rect;
@@ -367,25 +358,35 @@ static window_state_t get_window_state(const gchar *name)
 
     return WINDOW_NORMAL;
 }
+static void get_workarea_geometry(GtkWindow *window, gint *width, gint *height)
+{
+#if GTK_CHECK_VERSION(3,22,0)
+    GdkRectangle geom;
+    GdkDisplay *display = gdk_window_get_display(gtk_widget_get_window(GTK_WIDGET(window)));
+    GdkMonitor *monitor = gdk_display_get_primary_monitor(display);
+    gdk_monitor_get_geometry(monitor, &geom);
+
+    *width = geom.width;
+    *height = geom.height;
+#else
+    GdkScreen *screen = gtk_window_get_screen (window);
+    *width = gdk_screen_get_width(screen);
+    *height = gdk_screen_get_height(screen);
+#endif
+}
 static gboolean get_window_size(GtkWindow *window, const gchar *value, gint *width, gint *height)
 {
-    GdkScreen *screen = gtk_window_get_screen (window);
     gchar *p;
     if (!strcmp(value, "workarea"))
     {
-        *width  = gdk_screen_get_width(screen);
-        *height = gdk_screen_get_height(screen);
+        get_workarea_geometry(window, width, height);
         return TRUE;
     }
     *width = strtol(value, &p, 10);
     if (*width <= 0)
-    {
         return FALSE;
-    }
-
     if (*p == 'x')
         *height = strtol(p + 1, &p, 10);
-
     if (*height <= 0)
     {
         return FALSE;
@@ -393,14 +394,17 @@ static gboolean get_window_size(GtkWindow *window, const gchar *value, gint *wid
 
     if (*p == '%')
     {
-        *height = gdk_screen_get_height(screen)*(*width/100.);
-        *width  = gdk_screen_get_width(screen)*(*width/100.);
+        gint s_width,s_height;
+        get_workarea_geometry(window, &s_width, &s_height);
+
+        *height = s_height*(*width/100.);
+        *width  = s_width*(*width/100.);
     }
     return TRUE;
 }
 static gboolean get_window_position(GtkWindow *window, const gchar *value, gint *left, gint *top, GtkWindowPosition *position)
 {
-    GdkScreen *screen = gtk_window_get_screen (window);
+    //GdkScreen *screen = gtk_window_get_screen (window);
     gchar *p;
     *position = GTK_WIN_POS_NONE;
     if (!strcmp(value, "center"))
@@ -413,24 +417,24 @@ static gboolean get_window_position(GtkWindow *window, const gchar *value, gint 
         *position = GTK_WIN_POS_CENTER_ON_PARENT;
         return TRUE;
     }
+    *top = 0;
     *left = strtol(value, &p, 10);
-    if (*left <= 0)
+    if (*left < 0)
     {
         return FALSE;
     }
 
-    if (*p == 'x')
+    if (*p == 'x') {
         *top = strtol(p + 1, &p, 10);
-
-    if (*top <= 0)
-    {
-        return FALSE;
+        if (*top < 0)
+            return FALSE;
     }
-
     if (*p == '%')
     {
-        *top = gdk_screen_get_width(screen)*(*left/100.);
-        *left  = gdk_screen_get_height(screen)*(*left/100.);
+        gint s_width,s_height;
+        get_workarea_geometry(window, &s_width, &s_height);
+        *top = s_width*(*left/100.);
+        *left  = s_height*(*left/100.);
     }
     return TRUE;
 }
@@ -443,8 +447,14 @@ void do_widget_set_property(GObject *widget, const gchar *name, const gchar *val
         case PROP_WIDGET_WINDOW_SIZE:
             if (GTK_IS_WINDOW(widget)) {
                 gint width, height;
-                if (get_window_size(GTK_WINDOW(widget), value, &width, &height))
-                    gtk_window_set_default_size (GTK_WINDOW(widget), width, height);
+                if (get_window_size(GTK_WINDOW(widget), value, &width, &height)) {
+                    //gtk_window_set_default_size (GTK_WINDOW(widget), width, height);
+                    GtkAllocation allocation;
+                    gtk_widget_get_allocation(GTK_WIDGET(widget), &allocation);
+                    allocation.width = width;
+                    allocation.height = height;
+                    gtk_widget_set_allocation(GTK_WIDGET(widget), &allocation);
+                }
             }
             break;
         case PROP_WIDGET_WINDOW_POSITION:
@@ -757,7 +767,7 @@ void do_window_save_setting(GtkWindow *window, const gchar *path)
     }
 }
 
-#define RU_MONEY "р"
+#define RU_MONEY "₽"
 gchar *do_money_format(double value, int abr)
 {
     if ( value < 0.004 && value > -0.004 )
@@ -1316,55 +1326,6 @@ void do_tree_cell_data_func_money_bold_no_negative(GtkTreeViewColumn *tree_colum
         g_object_set(cell, "markup", "", NULL);
 }
 
-static GList* valuta_list = NULL;
-static const gchar *empty_str = "";
-
-static void do_utilx_valuta_info_list_create()
-{
-    GList *list, *l;
-    list = DOMINO_COMMON_PROPERTIES("Valuta");
-
-    for (l = list; l; l = l->next) {
-        DoValutaInfo *valuta;
-        gchar        *name;
-        gchar        *sign;
-        DOMINO_COMMON_GET("Valuta", l->data, &name, NULL);
-        DOMINO_COMMON_GET("ValutaSign", l->data, &sign, NULL);
-        if ( !name || !sign ) continue;
-        valuta = g_malloc0(sizeof(DoValutaInfo));
-        valuta->name = name;
-        valuta->code = atoi(l->data);
-        if (!sign)
-            valuta->sign = (gchar*)empty_str;
-        else
-            valuta->sign = sign;
-        valuta_list = g_list_append(valuta_list, valuta);
-    }
-    g_list_free(list);
-}
-
-GList *do_utilx_get_valuta_info_list()
-{
-    if (!valuta_list)
-        do_utilx_valuta_info_list_create();
-    return valuta_list;
-}
-
-DoValutaInfo *do_utilx_get_valuta_info(gint code)
-{
-	GList *l;
-    if (!valuta_list)
-        do_utilx_valuta_info_list_create();
-	for (l = valuta_list; l; l = l->next) {
-	    DoValutaInfo *valuta;
-	    valuta = l->data;
-	    if (valuta->code == code)
-            return valuta;
-	}
-	return NULL;
-}
-
-
 void do_tree_cell_data_func_money_with_sign(GtkTreeViewColumn *tree_column,
                                                          GtkCellRenderer *cell,
                                                          GtkTreeModel *tree_model,
@@ -1372,22 +1333,12 @@ void do_tree_cell_data_func_money_with_sign(GtkTreeViewColumn *tree_column,
                                                          gpointer data)
 {
     GValue value = { 0, };
-    GValue code = { 0, };
     gchar *buf;
-    DoValutaInfo *valuta;
 
     gtk_tree_model_get_value(tree_model, iter, GPOINTER_TO_INT(data), &value);
-    gtk_tree_model_get_value(tree_model, iter, GPOINTER_TO_INT(data) + 1, &code);
 
-    buf = do_money_format(g_value_get_double(&value), FALSE);
-    valuta = do_utilx_get_valuta_info(g_value_get_int(&code));
-    if (valuta) {
-        gchar *buf1 = g_strdup_printf("%s%s", buf, valuta->sign);
-        g_object_set(cell, "text", buf1, NULL);
-        g_free (buf1);
-    }
-    else
-        g_object_set(cell, "text", buf, NULL);
+    buf = do_money_format(g_value_get_double(&value), TRUE);
+    g_object_set(cell, "text", buf, NULL);
     g_free (buf);
 }
 
@@ -1458,11 +1409,7 @@ void do_tree_cell_data_func_pixbuf_bool(GtkTreeViewColumn *tree_column,
     GValue value = { 0, };
     gtk_tree_model_get_value(tree_model, iter, GPOINTER_TO_INT(data), &value);
     if (g_value_get_boolean(&value))
-#if GTK_MAJOR_VERSION > 2
         g_object_set(cell, "icon-name", "object-select-symbolic", NULL);
-#else
-        g_object_set(cell, "icon-name", GTK_STOCK_YES, NULL);
-#endif
     else
         g_object_set(cell, "icon-name", NULL, NULL);
 }
@@ -1475,11 +1422,7 @@ void do_tree_cell_data_func_pixbuf_warning(GtkTreeViewColumn *tree_column,
     GValue value = { 0, };
     gtk_tree_model_get_value(tree_model, iter, GPOINTER_TO_INT(data), &value);
     if (g_value_get_boolean(&value))
-#if GTK_MAJOR_VERSION > 2
         g_object_set(cell, "icon-name", "dialog-warning-symbolic", NULL);
-#else
-        g_object_set(cell, "icon-name", GTK_STOCK_DIALOG_WARNING, NULL);
-#endif
     else
         g_object_set(cell, "icon-name", NULL, NULL);
 }
@@ -1492,7 +1435,6 @@ void do_tree_cell_data_func_pixbuf_connect(GtkTreeViewColumn *tree_column,
 {
     GValue value = { 0, };
     gtk_tree_model_get_value(tree_model, iter, GPOINTER_TO_INT(data), &value);
-#if GTK_MAJOR_VERSION > 2
     switch (g_value_get_int(&value)) {
         case 0 :
             g_object_set(cell, "icon-name", "network-wired-acquiring-symbolic", NULL);
@@ -1507,22 +1449,6 @@ void do_tree_cell_data_func_pixbuf_connect(GtkTreeViewColumn *tree_column,
             g_object_set(cell, "icon-name", NULL, NULL);
             break;
     };
-#else
-    switch (g_value_get_int(&value)) {
-        case 0 :
-            g_object_set(cell, "icon-name", GTK_STOCK_REFRESH, NULL);
-            break;
-        case 1:
-            g_object_set(cell, "icon-name", GTK_STOCK_YES, NULL);
-            break;
-        case -1:
-            g_object_set(cell, "icon-name", GTK_STOCK_NO, NULL);
-            break;
-        default:
-            g_object_set(cell, "icon-name", NULL, NULL);
-            break;
-    };
-#endif
 }
 static void do_find_barcode_dialog_entry_activate_cb(GtkWidget *entry, GtkWindow *dialog)
 {
@@ -1562,11 +1488,7 @@ gchar *do_find_barcode_dialog(GtkWidget *parent)
 
     gtk_container_set_border_width( GTK_CONTAINER( vbox ), 12 );
 
-#if GTK_MAJOR_VERSION == 2
-	hbox = gtk_hbox_new(FALSE, 0);
-#else
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-#endif
 
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 4 );
 
@@ -1699,7 +1621,7 @@ void domino_font_style_apply(const gchar *fontname)
 {
     if ( !fontname )
         return;
-#if GTK_MAJOR_VERSION == 2
+#if GTK_MAJOR_VERSION == 2 // to do
 	gchar *style;
 	style = g_strdup_printf(
     "style \"myfont\"{\n font_name = \"%s\"\n}\nwidget_class \"*\" style \"myfont\"\ngtk-font-name = \"%s\"\n",
@@ -1885,11 +1807,7 @@ gboolean do_common_edit(GtkWidget *widget)
     g_signal_connect (w, "file-set",
                       G_CALLBACK (do_file_set), entry[DO_KEY_ENTRY_EXTENDED_PPDF]);
 
-#if GTK_MAJOR_VERSION == 2
-	hbox = gtk_hbox_new(FALSE, 0);
-#else
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-#endif
 
 	gtk_box_pack_start (GTK_BOX (hbox), entry[DO_KEY_ENTRY_EXTENDED_PPDF], TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), w, TRUE, TRUE, 0);
@@ -1902,11 +1820,7 @@ gboolean do_common_edit(GtkWidget *widget)
                       G_CALLBACK (do_file_set), entry[DO_KEY_ENTRY_EXTENDED_EMAIL]);
 
 
-#if GTK_MAJOR_VERSION == 2
-	hbox = gtk_hbox_new(FALSE, 0);
-#else
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-#endif
 	gtk_box_pack_start (GTK_BOX (hbox), entry[DO_KEY_ENTRY_EXTENDED_EMAIL], TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), w, TRUE, TRUE, 0);
 
@@ -2203,42 +2117,6 @@ void do_utf8_log(int level, const gchar *format, ...)
     g_free (message);
 }
 static do_list_t *gtk_thread_log_off = NULL;
-#if GTK_MAJOR_VERSION < 3 && GTK_MINOR_VERSION <=20
-static GMutex *mutex = NULL;
-void do_gtk_log_init()
-{
-    gtk_thread_log_off = do_list_new(FALSE);
-    mutex = g_mutex_new();
-
-}
-void do_gtk_log_off()
-{
-    int i;
-
-    GThread *self_thread;
-    self_thread = g_thread_self();
-    g_mutex_lock(mutex);
-    for ( i = 0; i < gtk_thread_log_off->count; i++ )
-        if ( gtk_thread_log_off->list[i] == self_thread )
-            return;
-    do_list_add(gtk_thread_log_off, self_thread);
-    g_mutex_unlock(mutex);
-}
-void do_gtk_log_on()
-{
-    int i;
-    GThread *self_thread;
-    self_thread = g_thread_self();
-
-    g_mutex_lock(mutex);
-    for ( i = 0; i < gtk_thread_log_off->count; i++ )
-        if ( gtk_thread_log_off->list[i] == self_thread ) {
-            do_list_delete(gtk_thread_log_off, i);
-            break;
-        }
-    g_mutex_unlock(mutex);
-}
-#else
 static GMutex mutex;
 void do_gtk_log_init()
 {
@@ -2273,7 +2151,6 @@ void do_gtk_log_on()
         }
     g_mutex_unlock(&mutex);
 }
-#endif
 /*
 int do_gtk_log(const char *str, int level, void *user_data)
 {
@@ -2330,22 +2207,20 @@ static GdkCursor* cursor_wait = NULL;
 void do_start_long_operation(GtkWidget *widget)
 {
     if ( !cursor_wait ) {
-//!!        GdkDisplay *display;
+#if GTK_CHECK_VERSION(3,16,0)
+        GdkDisplay *display = gdk_window_get_display(gtk_widget_get_window(GTK_WIDGET(widget)));
+        gdk_cursor_new_for_display(display,GDK_WATCH);
+#else
         cursor_wait = gdk_cursor_new(GDK_WATCH);
-//!!        display = gtk_widget_get_display(widget);
-        //!!cursor_pre_wait = gdk_cursor_new_from_name(display, GDK_LEFT_PTR_WATCH_NAME);
+#endif
     }
-#ifndef CURSOR_OFF
     if ( widget && GDK_IS_WINDOW(gtk_widget_get_window(widget)) )
         gdk_window_set_cursor(gtk_widget_get_window(widget), cursor_wait);
-#endif
 }
 void do_end_long_operation(GtkWidget *widget)
 {
-#ifndef CURSOR_OFF
     if ( widget && GDK_IS_WINDOW(gtk_widget_get_window(widget)) )
         gdk_window_set_cursor(gtk_widget_get_window(widget), NULL);
-#endif
 }
 GList *util_string_to_colon(const gchar *text, gint colwidth)
 {

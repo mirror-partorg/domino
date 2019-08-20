@@ -123,7 +123,6 @@ int dominox_init(const char *filename)
     do_gtk_log_init();
     do_message_init();
     setlocale(LC_ALL, "");
-    gdk_threads_init();
     gint i;
     for (i = 0; i < DOMINO_CONFIG_N; i++)
         domino_config_read(i);
@@ -567,11 +566,7 @@ gchar *do_share_get_ui_filename(const gchar *name)
     gchar *uri = NULL;
     int i, k;
     if ( strcmp(name+strlen(name)-3, ".ui") ) {
-#if GTK_MAJOR_VERSION < 3
-        fname = g_strdup_printf("%s2.ui", name);
-#else
         fname = g_strdup_printf("%s.ui", name);
-#endif
     }
     else
         fname = strdup(name);
@@ -1085,29 +1080,6 @@ GtkWidget *do_builder_get_widget(GtkBuilder *builder, const gchar *name)
         return NULL;
     }
     return GTK_WIDGET(w);
-}
-#if GTK_MAJOR_VERSION > 2
-GAction *do_builder_get_action(GtkBuilder *builder, const gchar *name)
-#else
-GtkAction *do_builder_get_action(GtkBuilder *builder, const gchar *name)
-#endif
-{
-    GObject *w;
-#if GTK_MAJOR_VERSION > 2
-    w = gtk_builder_get_object(builder, name);
-    if ( !w || !GTK_IS_ACTION(w) ) {
-        do_log(LOG_ERR, "Обьект интерфейса с именем \"%s\" не найден", name);
-        return NULL;
-    }
-    return G_ACTION(w);
-#else
-    w = gtk_builder_get_object(builder, name);
-    if ( !w || !GTK_IS_ACTION(w) ) {
-        do_log(LOG_ERR, "Обьект интерфейса с именем \"%s\" не найден", name);
-        return NULL;
-    }
-    return GTK_ACTION(w);
-#endif
 }
 #ifdef USE_IM
 

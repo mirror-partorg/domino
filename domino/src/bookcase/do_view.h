@@ -163,7 +163,7 @@ gboolean	do_view_can_do_close_for_esc(DoView *view);
 void		do_view_do_refresh(DoView *view);
 gboolean	do_view_can_do_refresh(DoView *view);
 
-DoView	   *do_view_get_active_child(DoView *view);
+GtkWidget  *do_view_get_active_child(DoView *view);
 gboolean    do_view_sender_do_close (DoView *view);
 
 G_END_DECLS

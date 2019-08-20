@@ -1,10 +1,3 @@
-send_error.c: In function ‘send_error_new’:
-send_error.c:117:17: warning: implicit declaration of function ‘DOMINO_CONFIG’ [-Wimplicit-function-declaration]
-         fname = DOMINO_CONFIG(SEND_ERROR_CONFIG_FILE);
-                 ^~~~~~~~~~~~~
-send_error.c:117:15: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
-         fname = DOMINO_CONFIG(SEND_ERROR_CONFIG_FILE);
-               ^
 send_error.c: In function ‘send_error_message’:
 send_error.c:232:5: error: unknown type name ‘do_string_list_t’
      do_string_list_t *sendlist;
