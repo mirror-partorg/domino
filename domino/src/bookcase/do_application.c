@@ -1,7 +1,6 @@
 
 
 #include "do_application.h"
-#include <webkit/webkit.h>
 #include "domino.h"
 #include "do_utilx.h"
 #include "do_notebook.h"

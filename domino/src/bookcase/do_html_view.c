@@ -4,7 +4,11 @@
 #include "do_utilx.h"
 #include "do_view_actions.h"
 #include "domino.h"
+#ifdef WEBKIT2
+#include <webkit2/webkit2.h>
+#else
 #include <webkit/webkit.h>
+#endif
 #include <libsoup/soup.h>
 #include <string.h>
 #include <unistd.h>
@@ -109,7 +113,26 @@ static void do_html_view_init(DoHtmlView *temp)
     //priv->icon = gtk_icon_theme_load_icon(icon_theme, DO_STOCK_DOMINO_WEB, DO_VIEW_ICON_SIZE, 0, NULL);
 
 }
+#ifdef WEBKIT2
+static void do_html_view_load_changed(WebKitWebView  *web_view,
+                                                         WebKitLoadEvent load_event,
+                                                        DoView *view)
+{
+    switch (load_event) {
+    case WEBKIT_LOAD_STARTED:
+        do_html_view_load_started(web_view, view);
+        break;
+    case WEBKIT_LOAD_FINISHED:
+        do_html_view_load_finished(web_view, view);
+        break;
+    };
 
+	//fix meDoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (view);
+	//priv->load_progress = webkit_web_view_get_estimated_load_progress(web_view)*100;
+    //g_object_notify (G_OBJECT (view), "load-progress");
+    //gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(priv->load_progress_bar), priv->load_progress/100.);
+}
+#else
 static void do_html_view_load_started(WebKitWebView  *web_view,
                                                         WebKitWebFrame *frame,
                                                         DoView *view)
@@ -140,24 +163,6 @@ static void do_html_view_load_finished(WebKitWebView  *web_view,
 #endif
    gtk_widget_grab_focus(priv->view_html);
 }
-/*static void do_html_view_load_changed(WebKitWebView  *web_view,
-                                                         WebKitLoadEvent load_event,
-                                                        DoView *view)
-{
-    switch (load_event) {
-    case WEBKIT_LOAD_STARTED:
-        do_html_view_load_started(web_view, view);
-        break;
-    case WEBKIT_LOAD_FINISHED:
-        do_html_view_load_finished(web_view, view);
-        break;
-    };
-
-	//fix meDoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (view);
-	//priv->load_progress = webkit_web_view_get_estimated_load_progress(web_view)*100;
-    //g_object_notify (G_OBJECT (view), "load-progress");
-    //gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(priv->load_progress_bar), priv->load_progress/100.);
-}*/
 
 static void do_html_view_load_changed(WebKitWebView *web_view,
                                                         gint           progress,
@@ -170,6 +175,8 @@ static void do_html_view_load_changed(WebKitWebView *web_view,
     gtk_entry_set_progress_fraction(GTK_ENTRY(priv->load_progress_bar),progress/100.);
 
 }
+#endif
+
 
 static void do_html_view_set_url(DoHtmlView *view, const gchar *url);
 /*
@@ -186,6 +193,8 @@ static void url_activated(GtkEntry *entry, DoView *view)
     }
 
 }*/
+#ifdef WEBKIT2
+#else
 gboolean
 user_function1 (WebKitWebView  *web_view,
                WebKitWebFrame *web_frame,
@@ -205,6 +214,7 @@ user_function1 (WebKitWebView  *web_view,
     DOMINO_SHOW_MESSAGE();
     return TRUE;
 }
+#endif
 static GObject *do_html_view_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
 {
 	GObject            *object;
@@ -230,16 +240,20 @@ static GObject *do_html_view_constructor(GType type, guint n_construct_propertie
     g_signal_connect(priv->view_html,  "focus-in-event",  G_CALLBACK(focus_in), object);
     g_signal_connect(priv->view_html,  "key-press-event",  G_CALLBACK(key_press), object);
     //g_signal_connect(priv->view_html,  "load-changed",  G_CALLBACK(do_html_view_load_changed), object);
+#ifdef WEBKIT2
+    g_signal_connect(priv->view_html,  "load-changed",  G_CALLBACK(do_html_view_load_changed), object);
+#else
     g_signal_connect(priv->view_html,  "load-started",  G_CALLBACK(do_html_view_load_started), object);
     g_signal_connect(priv->view_html,  "load-finished",  G_CALLBACK(do_html_view_load_finished), object);
     g_signal_connect(priv->view_html,  "load-progress-changed",  G_CALLBACK(do_html_view_load_changed), object);
+#endif
     //g_signal_connect(priv->view_html,  "load-error",  G_CALLBACK(user_function1), object);
 
-    WebKitWebSettings *s2 = webkit_web_settings_new();
+    //WebKitWebSettings *s2 = webkit_web_settings_new();
     //g_object_set(G_OBJECT(s2), "enable-java-applet", FALSE, NULL);
     //g_object_set(G_OBJECT(s2), "enable-scripts", FALSE, NULL);
-    g_object_set(G_OBJECT(s2), "enable-plugins", FALSE, NULL);
-    webkit_web_view_set_settings(WEBKIT_WEB_VIEW(priv->view_html), s2);
+    //g_object_set(G_OBJECT(s2), "enable-plugins", FALSE, NULL);
+    //webkit_web_view_set_settings(WEBKIT_WEB_VIEW(priv->view_html), s2);
 
     /*
     printf("%d\n", webkit_settings_get_enable_java(s2));

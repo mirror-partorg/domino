@@ -130,10 +130,6 @@ for arg in $@ ; do
     clean)
 	make clean
 	rm -f Makefile
-	rm -f common.mak
-	rm -f library.mak
-	rm -f pylibrary.mak
-	rm -f program.mak
 	rm -f -R ./_codeblock/linx/bin
 	rm -f -R ./_codeblock/linx/obj
 	rm -f -R ./_codeblock/win32/bin
@@ -152,15 +148,8 @@ done
 
 
 mkdir -p $DIR_TMP
-cat template/Makefile.tmpl  >Makefile
-for f in "common" "program" "library" "pylibrary" 
-do
-cp -f template/$f.mak $f.mak
-done
 
 cd $DIR_TMP
-mkdir -p .libs
-mkdir -p .progs
 
 if [ $USE_GCRYPT != 1 ] ; then
 	SUBDIRS=${SUBDIRS/src\/genkey/} 
@@ -169,11 +158,11 @@ if [ $USE_PYTHON != 1 ] ; then
 	SUBDIRS=${SUBDIRS/lib\/python/} 
 fi
 
-if [ $USE_CASH == 1 ] ; then
-cp -f ./src/domino/Makefile.cash ./src/domino/Makefile
-else
-cp -f ./src/domino/Makefile.norm ./src/domino/Makefile
-fi
+#if [ $USE_CASH == 1 ] ; then
+#cp -f ./src/domino/Makefile.cash ./src/domino/Makefile
+#else
+#cp -f ./src/domino/Makefile.norm ./src/domino/Makefile
+#fi
 echo "+++++ Checking machine hardware..."
 
 echo "#ifndef DOMINO_MACROS_H_">do-macros.h
@@ -332,7 +321,8 @@ fi
 echo ok
 
 echo CC = gcc>common.mak
-echo TMP_DIR=$DIR_TMP>>common.mak
+echo LINK = g++>>common.mak
+echo TMP_DIR=../../../../$DIR_TMP>>common.mak
 echo DOMINO_ETC=$DOMINO_ETC>>common.mak
 echo DOMINO_BIN=$DOMINO_BIN>>common.mak
 echo DOMINO_LOG=$DOMINO_LOG>>common.mak
@@ -341,7 +331,7 @@ echo DOMINO_TEMPLATE=$DOMINO_TEMPLATE>>common.mak
 echo DOMINO_SHARE=$DOMINO_SHARE>>common.mak
 echo MAKE=make>>common.mak
 echo AM_MAKEFLAGS=CC=gcc >>common.mak
-echo AM_FLAGS=-L../../$DIR_TMP/.libs \
+echo AM_FLAGS=-L\$\(TMP_DIR\)/.libs \
 	 $LOUDMOUTH_FLAGS $LIBAV_CFLAGS -I../../include \
         -D_LINUX -DHAVE_SYSLOG -L$PSQL_LIB -L$PSQL_LIB64 -D$BTI_FLAG $M32 -I../../$DIR_TMP\\>>common.mak
 
@@ -375,8 +365,8 @@ echo LIBPSQL="-lpsqlmif">>common.mak
 echo LIBPTHREAD="-lpthread">>common.mak
 if [ $USE_GTK3 -eq 1 ] 
 then 
-echo WEBKITCFLAG="`pkg-config webkitgtk-3.0 --cflags`">>common.mak 
-echo LIBWEBKIT="`pkg-config webkitgtk-3.0 --libs`">>common.mak 
+echo WEBKITCFLAG="`pkg-config webkit2gtk-4.0 --cflags`">>common.mak 
+echo LIBWEBKIT="`pkg-config webkit2gtk-4.0 --libs`">>common.mak 
 else 
 echo WEBKITCFLAG="`pkg-config webkit-1.0 --cflags`">>common.mak 
 echo LIBWEBKIT="`pkg-config webkit-1.0 --libs`">>common.mak 

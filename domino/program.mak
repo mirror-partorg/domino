@@ -11,7 +11,6 @@ $(APP):
 		if [[ $$f -nt $$n ]] ; \
 		then \
 			echo $$f ; \
-			set path=C:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin;%PATH% ; \
 			$(CC) $(AM_FLAGS) $(OPT_FLAGS) $(CFLAGS) -c $$f -o $$n; \
 		fi ;\
 	done
