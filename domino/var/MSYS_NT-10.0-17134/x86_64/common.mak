@@ -1,6 +1,6 @@
 CC = C:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/gcc.bat
 LINK= C:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/g++.bat
-TMP_DIR=c:/Dev/var/MSYS_NT-10.0-17134/x86_64
+TMP_DIR=c:/var/work/var/MSYS_NT-10.0-17134/x86_64
 MAKE=make
 AM_MAKEFLAGS=CC=gcc
 PYTHON_VERSION_3=3.4

@@ -30,11 +30,16 @@ $(NAME):
 	fi
 	$(POST_NAME)
 install:
-	install  $(LIB_DIR)/$(NAME).$(GET_VERSION) $(DOMINO_LIB)/
-	rm -f $(DOMINO_LIB)/$(NAME).$(VER)
-	ln -s $(DOMINO_LIB)/$(NAME).$(GET_VERSION) $(DOMINO_LIB)/$(NAME).$(VER)
-	rm -f $(DOMINO_LIB)/$(NAME)
-	ln -s $(DOMINO_LIB)/$(NAME).$(GET_VERSION) $(DOMINO_LIB)/$(NAME)
+	if [[ "$(MAKEDLL)" == "1" ]] ; \
+	then \
+		install  $(LIB_DIR)/$(DLL) $(DOMINO_BIN)/ ; \
+	else \
+		install  $(LIB_DIR)/$(NAME).$(GET_VERSION) $(DOMINO_LIB)/ ;\
+		rm -f $(DOMINO_LIB)/$(NAME).$(VER)                        ;\
+		ln -s $(DOMINO_LIB)/$(NAME).$(GET_VERSION) $(DOMINO_LIB)/$(NAME).$(VER) ;\
+		rm -f $(DOMINO_LIB)/$(NAME) ;\
+		ln -s $(DOMINO_LIB)/$(NAME).$(GET_VERSION) $(DOMINO_LIB)/$(NAME) ;\
+	fi
 	$(INSTALL)
 clean:
 	rm -fR $(DIR_TMP)
