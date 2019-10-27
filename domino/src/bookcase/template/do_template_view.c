@@ -1,7 +1,6 @@
 
 #include "do_template_view.h"
 
-#define DO_TEMPLATE_VIEW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_TEMPLATE_VIEW, DoTemplateViewPrivate))
 #define DO_TYPE_TEMPLATE_VIEW_FLAGS do_template_view_flags_get_type()
 
 
@@ -83,6 +82,7 @@ struct _DoTemplateViewPrivate
 G_DEFINE_TYPE_WITH_CODE (DoTemplateView, do_template_view, GTK_TYPE_WIDGET, // to do
     		 G_IMPLEMENT_INTERFACE (DO_TYPE_VIEW,
                                     do_template_view_view_init)
+             G_ADD_PRIVATE(DoTemplateView)
                                     );
 
 
@@ -138,7 +138,8 @@ static void do_template_view_view_init(DoViewIface *iface)
 
 static void do_template_view_init(DoTemplateView *do_view)
 {
-    DoTemplateViewPrivate *priv = DO_TEMPLATE_VIEW_GET_PRIVATE (do_view);
+    DoTemplateViewPrivate *priv = do_template_view_get_instance_private(do_view);
+    //memset(priv, 0, sizeof(*priv));
     // to do
 }
 static GObject *do_template_view_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
@@ -149,20 +150,20 @@ static GObject *do_template_view_constructor(GType type, guint n_construct_prope
 
     object = G_OBJECT_CLASS (do_template_view_parent_class)->constructor(type, n_construct_properties, construct_params);
 
-    priv = DO_TEMPLATE_VIEW_GET_PRIVATE(object);
+	priv = DO_TEMPLATE_VIEW_GET_PRIVATE(object);
     // to do
     //gtk_widget_show(GTK_WIDGET(object));
     return object;
 }
 static void do_template_view_finalize (GObject *object)
 {
-    DoTemplateViewPrivate *priv = DO_TEMPLATE_VIEW_GET_PRIVATE (object);
+    DoTemplateViewPrivate *priv = do_template_view_get_instance_private (object);
     // to do
     G_OBJECT_CLASS (do_template_view_parent_class)->finalize (object);
 }
 static void do_template_view_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
-    DoTemplateViewPrivate *priv = DO_TEMPLATE_VIEW_GET_PRIVATE (object);
+    DoTemplateViewPrivate *priv = do_template_view_get_instance_private (object);
 
     switch (prop_id)
     {
@@ -177,7 +178,7 @@ static void do_template_view_get_property(GObject *object, guint prop_id, GValue
 
 static void do_template_view_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
-    DoTemplateViewPrivate *priv = DO_TEMPLATE_VIEW_GET_PRIVATE (object);
+    DoTemplateViewPrivate *priv = do_template_view_get_instance_private(object);
 
     switch (prop_id)
     {
@@ -198,7 +199,7 @@ static void do_template_view_class_init (DoTemplateViewClass *klass)
     o_class->get_property = do_template_view_get_property;
     o_class->set_property = do_template_view_set_property;
 
-    g_type_class_add_private (o_class, sizeof (DoTemplateViewPrivate));
+    //g_type_class_add_private (o_class, sizeof (DoTemplateViewPrivate));
 
     g_object_class_install_property
     	(o_class,

@@ -2,12 +2,19 @@
 #define DOMINOX_H_INCLUDED
 
 #include <gtk/gtk.h>
+#include <dolib.h>
 
 #include "do_context.h"
 #include "do_utilx.h"
 #include "do_view.h"
 #include "do_message.h"
 
+
+#if     __GNUC__ >= 4
+#define DO_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
+#else
+#define DO_GNUC_NULL_TERMINATED
+#endif
 
 G_BEGIN_DECLS
 
@@ -38,9 +45,12 @@ typedef struct {
 #define DOMINO_PROFILE_PROPERTIES(a) \
        domino_config_properties(DOMINO_CONFIG_PROFILE, a)
 
-#define DOMINO_COMMON_SET(a, b, ...) \
+#define DOMINO_COMMON1_SET(a, b, ...) \
        {domino_config_property_set(DOMINO_CONFIG_COMMON, a, __VA_ARGS__); \
        domino_config_kind_set(DOMINO_CONFIG_COMMON, a, b); \
+       domino_config_save(DOMINO_CONFIG_COMMON, FALSE);}
+#define DOMINO_COMMON_SET(a,...) \
+       {domino_config_property_set(DOMINO_CONFIG_COMMON, a, __VA_ARGS__); \
        domino_config_save(DOMINO_CONFIG_COMMON, FALSE);}
 #define DOMINO_COMMON_OBJECT_INIT(a, b, ...) \
        domino_config_property_to_object(DOMINO_CONFIG_COMMON, a, b, __VA_ARGS__)

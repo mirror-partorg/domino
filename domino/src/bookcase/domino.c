@@ -1,6 +1,5 @@
 #include "domino.h"
 #include "version.h"
-#include "../config/config.h"
 #include "do_config.h"
 #include "do_message.h"
 #include <stdarg.h>
@@ -8,6 +7,7 @@
 #include <errno.h>
 #include <gtk/gtk.h>
 #include <locale.h>
+#include "../config/config.h"
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -118,15 +118,14 @@ Cleanup:
     return fIsRunAsAdmin;
 }
 #endif
-int dominox_init(const char *filename)
+int dominox_init()
 {
     do_gtk_log_init();
-    do_message_init();
+    //do_message_init();
     setlocale(LC_ALL, "");
     gint i;
     for (i = 0; i < DOMINO_CONFIG_N; i++)
         domino_config_read(i);
-    g_set_application_name(DOMINO_APPLICATION_NAME);
     return TRUE;
 }
 static GtkWindow *main_window = NULL;
@@ -372,8 +371,8 @@ void domino_config_property_set(gint type, const gchar *path, ...)
     va_list args;
     gchar *attr, *value;
     va_start (args, path);
-    attr = va_arg (args, gchar *);
-    if (!path) {
+    attr = va_arg (args, gchar*);
+    if ( !path ) {
         path = g_strdup("Sad");
     }
     while (attr != NULL) {

@@ -4,7 +4,6 @@
 #include <glib-object.h>
 #include <glib.h>
 #include "do_context.h"
-#include <domino.h>
 
 G_BEGIN_DECLS
 
@@ -24,10 +23,10 @@ typedef struct _DoViewIface	DoViewIface;
 
 typedef enum
 {
-    DO_MARKED_UNMARK = DOMINO_MARKED_UNMARK,
-    DO_MARKED = DOMINO_MARKED,
-    DO_MARKED_AND_ACCEPT = DOMINO_MARKED_AND_ACCEPT,
-    DO_MARKED_AND_REJECT = DOMINO_MARKED_AND_REJECT,
+    DO_MARKED_UNMARK = 0,
+    DO_MARKED = 1,
+    DO_MARKED_AND_ACCEPT = 2,
+    DO_MARKED_AND_REJECT = 3,
 } DoMarked;
 
 

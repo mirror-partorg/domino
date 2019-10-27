@@ -55,6 +55,7 @@ static gboolean    do_tree_view_do_grab_focus(DoView *view);
 G_DEFINE_TYPE_WITH_CODE (DoTreeView, do_tree_view, GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (DO_TYPE_VIEW,
                                     do_tree_view_view_init)
+             G_ADD_PRIVATE(DoTreeView)
                             )
 
 static void do_tree_view_view_init(DoViewIface *iface)
@@ -71,7 +72,8 @@ static gboolean do_tree_view_cols_sync_width(DoTreeView *view);
 
 static void do_tree_view_init(DoTreeView *dialog)
 {
-
+    //DoTreeViewPrivate *priv = DO_TREE_VIEW_GET_PRIVATE(dialog);
+	//memset(priv, 0, sizeof(*priv));
 }
 static void do_tree_view_focus_in(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
@@ -84,6 +86,11 @@ static void do_tree_view_focus_out(GtkWidget *widget, GdkEventFocus *event, gpoi
     //if ( !priv->popup_menu )
     //    do_view_actions_set_view(NULL);
     priv->popup_menu = FALSE;
+}
+static void do_tree_view_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, DoTreeView *view)
+{
+	if ( do_view_can_do_edit(DO_VIEW(view), NULL) )
+		do_view_do_edit(DO_VIEW(view), NULL);
 }
 static void do_tree_view_selection_changed(GtkTreeSelection *selection, gpointer user_data)
 {
@@ -221,6 +228,7 @@ static GObject *do_tree_view_constructor(GType type, guint n_construct_propertie
     g_signal_connect(tree_view, "popup-menu", G_CALLBACK( do_tree_view_menu_popup ), object);
     g_signal_connect(tree_view, "button-press-event", G_CALLBACK( do_tree_view_button_pressed ), object);
     g_signal_connect(tree_view, "button-release-event",  G_CALLBACK( do_tree_view_button_released ), NULL);
+    g_signal_connect(tree_view, "row-activated",  G_CALLBACK( do_tree_view_row_activated ), object);
 
     priv->tree_selection = sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
     g_signal_connect(sel, "changed", G_CALLBACK(do_tree_view_selection_changed), object);
@@ -351,7 +359,7 @@ static void do_tree_view_class_init (DoTreeViewClass *klass)
 	object_class->get_property = do_tree_view_get_property;
 	object_class->set_property = do_tree_view_set_property;
 
-	g_type_class_add_private (object_class, sizeof (DoTreeViewPrivate));
+	//g_type_class_add_private (object_class, sizeof (DoTreeViewPrivate));
 
     g_object_class_install_property
         (object_class,

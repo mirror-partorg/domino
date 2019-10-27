@@ -27,6 +27,7 @@ static void notebook_page_close_request_cb (DoNotebook *notebook,
 static void do_window_finalize		(GObject *object);
 
 static gboolean window_state_event(GtkWidget* window, GdkEventWindowState* event);
+static gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *event, gchar *path);
 
 #define DEFAULT_WINDOW_SIZE "800x500"
 #define DEFAULT_WINDOW_POSITION "0x0"
@@ -55,22 +56,20 @@ static void impl_set_active_child (GtkContainer *container,
 		       GtkWidget *child)
 {
 	int page;
-	DoWindow *window;
-
-	window = DO_WINDOW (container);
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(container);
 
 	page = gtk_notebook_page_num
-		(GTK_NOTEBOOK(window->priv->notebook), GTK_WIDGET (child));
+		(GTK_NOTEBOOK(priv->notebook), GTK_WIDGET (child));
 	gtk_notebook_set_current_page
-		(GTK_NOTEBOOK(window->priv->notebook), page);
+		(GTK_NOTEBOOK(priv->notebook), page);
 }
 
 static GList *
 impl_get_children (DoWindow *window)
 {
-	//EphyWindow *window = DO_WINDOW (window);
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
 
-	return gtk_container_get_children (GTK_CONTAINER (window->priv->notebook));
+	return gtk_container_get_children (GTK_CONTAINER (priv->notebook));
 }
 
 static void do_window_set_property (GObject *object,
@@ -90,7 +89,7 @@ static void do_window_set_property (GObject *object,
 	}
 }
 
-G_DEFINE_TYPE (DoWindow, do_window, GTK_TYPE_WINDOW )
+G_DEFINE_TYPE_WITH_CODE (DoWindow, do_window, GTK_TYPE_WINDOW, G_ADD_PRIVATE(DoWindow) )
 
 static void do_window_get_property (GObject *object,
 			  guint prop_id,
@@ -124,7 +123,7 @@ static void do_window_class_init (DoWindowClass *klass)
                                          g_param_spec_object ("active-child", NULL, NULL,
                                                               GTK_TYPE_WIDGET /* Can't use an interface type here */,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB));
-	g_type_class_add_private (object_class, sizeof (DoWindowPrivate));
+	//g_type_class_add_private (object_class, sizeof (DoWindowPrivate));
 
 	/*gtk_widget_class_set_template_from_resource (widget_class,
 	                                             "/org/glekar/bookcase/ui/bookcase-window.ui");
@@ -137,8 +136,10 @@ static void do_window_class_init (DoWindowClass *klass)
 
 static void do_window_init (DoWindow *window)
 {
-	window->priv = DO_WINDOW_GET_PRIVATE (window);
+    //DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
 	//gtk_widget_init_template (GTK_WIDGET (window));
+    //DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    //memset(priv, 0, sizeof(*priv));
     do_view_actions_init(window);
     do_common_actions_init(window);
 }
@@ -170,7 +171,7 @@ static GObject *do_window_constructor (GType type,
     g_signal_connect (window, "configure-event",
                       G_CALLBACK (do_window_configure_event_cb), OBJECT_ROOT_PATH);
 
-    priv = window->priv;
+    priv = DO_WINDOW_GET_PRIVATE(window);
 
     //do_view_actions_init(manager);
     //to do do_common_actions_init(manager, GTK_WINDOW(window));
@@ -178,7 +179,7 @@ static GObject *do_window_constructor (GType type,
 
     priv->notebook = notebook = GTK_WIDGET(g_object_new(DO_TYPE_NOTEBOOK, NULL));
     gtk_container_add(GTK_CONTAINER(window), notebook);
-    //do_notebook_set_show_tabs(DO_NOTEBOOK(notebook), FALSE); // to do
+    do_notebook_set_show_tabs(DO_NOTEBOOK(notebook), FALSE); // to do
 	g_signal_connect (priv->notebook, "tab-close-request",  G_CALLBACK (notebook_page_close_request_cb), window);
 	g_signal_connect_after (priv->notebook, "switch-page", G_CALLBACK (notebook_switch_page_cb), window);
 
@@ -210,13 +211,15 @@ static GObject *do_window_constructor (GType type,
     g_menu_append(G_MENU(submenu), "Сохранить как...", "view-actions.SaveAsAction");
     g_menu_append(G_MENU(submenu), "Открыть...", "view-actions.OpenAction");
     g_menu_append(G_MENU(submenu), "Обновить", "view-actions.ResfreshAction");
-    g_menu_append(G_MENU(submenu), "Ректировать", "view-actions.EditAction");
+    g_menu_append(G_MENU(submenu), "Редактировать", "view-actions.EditAction");
     g_menu_append(G_MENU(submenu), "Применить", "view-actions.ApplyAction");
     g_menu_append(G_MENU(submenu), "Отменить", "view-actions.UndoApplyAction");
     g_menu_append(G_MENU(submenu), "Печать...", "view-actions.PrintAction");
     g_menu_append(G_MENU(submenu), "Печать", "view-actions.PrintNowAction");
     g_menu_append(G_MENU(submenu), "Поиск...", "view-actions.FindByBarcodeAction");
     g_menu_append(G_MENU(submenu), "Послать по почте", "view-actions.MailSendAction");
+
+    g_menu_append(G_MENU(menu), "Выход", "common-actions.Quit");
 
     DOMINO_PROFILE_OBJECT_INIT(G_OBJECT(window), OBJECT_ROOT_PATH,
               "window-state", DEFAULT_WINDOW_STATE,
@@ -245,9 +248,10 @@ DoWindow *do_window_new ()
 
 GtkWidget *do_window_get_notebook (DoWindow *window)
 {
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
 	g_return_val_if_fail (DO_IS_WINDOW (window), NULL);
 
-	return GTK_WIDGET (window->priv->notebook);
+	return GTK_WIDGET (priv->notebook);
 }
 /*
 GtkWidget *do_window_get_notebook(GtkWidget *widget)
@@ -387,4 +391,45 @@ static void notebook_switch_page_cb (GtkNotebook *notebook,
 
 	//!!update_tabs_menu_sensitivity (window);
 	*/
+}
+static void do_window_save_setting(GtkWindow *window, const gchar *path)
+{
+
+    GdkWindowState state = gdk_window_get_state (gtk_widget_get_window(GTK_WIDGET(window)));
+
+    if (!(state &
+        (GDK_WINDOW_STATE_MAXIMIZED | GDK_WINDOW_STATE_FULLSCREEN))) {
+        GtkAllocation allocation;
+        gint x, y;
+        char buffer[512];
+        gtk_widget_get_allocation(GTK_WIDGET(window), &allocation);
+        sprintf(buffer, "%dx%d", allocation.width, allocation.height);
+        DOMINO_PROFILE_SET(path, "GtkWindow", "window-size", buffer, NULL);
+        //GtkWindowPosition position;
+        //g_object_get(window, "window-position", &position, NULL);
+        //switch (position) {
+           // case GTK_WIN_POS_NONE:
+                gtk_window_get_position(window, &x, &y);
+                sprintf(buffer, "%dx%d", x, y);
+          //      break;
+/*            case GTK_WIN_POS_CENTER:
+                sprintf(buffer, "center");
+                break;
+            case GTK_WIN_POS_CENTER_ON_PARENT:
+                sprintf(buffer, "center-on-parent");
+                break;
+            default:
+                buffer[0] = '\0';
+                break;
+        }*/
+        if (buffer[0]) {
+            DOMINO_PROFILE_SET(path, "GtkWindow", "window-position", buffer, NULL);
+        }
+    }
+}
+
+static gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *event, gchar *path)
+{
+	do_window_save_setting(GTK_WINDOW(widget), path);
+	return FALSE;
 }

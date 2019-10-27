@@ -86,7 +86,7 @@ void gtk_font_button_get_font_desc(GtkFontButton *font_button, gchar **font_fami
     gchar *style;
     gchar *family_style;
 
-    desc = pango_font_description_from_string (gtk_font_button_get_font_name(font_button));
+    desc = pango_font_description_from_string (gtk_font_chooser_get_font(GTK_FONT_CHOOSER(font_button)));
     family = pango_font_description_get_family (desc);
     *font_family = g_strdup(family);
 
@@ -730,41 +730,6 @@ gchar *ru_to_en(const gchar *string, gint length)
     }
     result[nlen] = '\0';
     return result;
-}
-void do_window_save_setting(GtkWindow *window, const gchar *path)
-{
-
-    GdkWindowState state = gdk_window_get_state (gtk_widget_get_window(GTK_WIDGET(window)));
-
-    if (!(state &
-        (GDK_WINDOW_STATE_MAXIMIZED | GDK_WINDOW_STATE_FULLSCREEN))) {
-        GtkAllocation allocation;
-        gint x, y;
-        char buffer[512];
-        gtk_widget_get_allocation(GTK_WIDGET(window), &allocation);
-        sprintf(buffer, "%dx%d", allocation.width, allocation.height);
-        DOMINO_PROFILE_SET(path, "GtkWindow", "window-size", buffer, NULL);
-        //GtkWindowPosition position;
-        //g_object_get(window, "window-position", &position, NULL);
-        //switch (position) {
-           // case GTK_WIN_POS_NONE:
-                gtk_window_get_position(window, &x, &y);
-                sprintf(buffer, "%dx%d", x, y);
-          //      break;
-/*            case GTK_WIN_POS_CENTER:
-                sprintf(buffer, "center");
-                break;
-            case GTK_WIN_POS_CENTER_ON_PARENT:
-                sprintf(buffer, "center-on-parent");
-                break;
-            default:
-                buffer[0] = '\0';
-                break;
-        }*/
-        if (buffer[0]) {
-            DOMINO_PROFILE_SET(path, "GtkWindow", "window-position", buffer, NULL);
-        }
-    }
 }
 
 #define RU_MONEY "₽"
@@ -1641,7 +1606,7 @@ void domino_font_style_apply(const gchar *fontname)
 #ifndef MIN_SCREEN
 static void  font_changed(GtkFontButton *widget, gpointer user_data)
 {
-    domino_font_style_apply(gtk_font_button_get_font_name(widget));
+    domino_font_style_apply(gtk_font_chooser_get_font(GTK_FONT_CHOOSER(widget)));
 }
 #endif
 void  style_changed(GtkButton *button,
@@ -1652,7 +1617,7 @@ void  style_changed(GtkButton *button,
     active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button));
     gtk_widget_set_sensitive(entry[DO_KEY_ENTRY_FONT1], active);
     if ( active  )
-        domino_font_style_apply(gtk_font_button_get_font_name(GTK_FONT_BUTTON(entry[DO_KEY_ENTRY_FONT1])));
+        domino_font_style_apply(gtk_font_chooser_get_font(GTK_FONT_CHOOSER(entry[DO_KEY_ENTRY_FONT1])));
     else
         domino_font_style_apply("");
 }
@@ -1690,8 +1655,8 @@ gboolean do_common_edit(GtkWidget *widget)
                         "Отмена",
                         GTK_RESPONSE_REJECT,
                         NULL);
-    g_signal_connect (dialog, "configure-event",
-                      G_CALLBACK (do_window_configure_event_cb), "CommonEditDialog");
+    //g_signal_connect (dialog, "configure-event",
+    //                  G_CALLBACK (do_window_configure_event_cb), "CommonEditDialog");
 
     DOMINO_PROFILE_OBJECT_INIT(G_OBJECT(dialog), "CommonEditDialog",
               "window-position", "",
@@ -1842,7 +1807,7 @@ gboolean do_common_edit(GtkWidget *widget)
             g_object_set(entry[i], "text", text, NULL);
         else
         if GTK_IS_FONT_BUTTON(entry[i])
-            gtk_font_button_set_font_name(GTK_FONT_BUTTON(entry[i]), text);
+		    gtk_font_chooser_set_font(GTK_FONT_CHOOSER(entry[i]), text);
         else
         if GTK_IS_TOGGLE_BUTTON(entry[i])
             gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(entry[i]), !strcmp(text,"1"));
@@ -1865,7 +1830,7 @@ gboolean do_common_edit(GtkWidget *widget)
                 g_object_get(entry[i], "text", &text, NULL);
             else
             if GTK_IS_FONT_BUTTON(entry[i]) {
-                text = (char*)gtk_font_button_get_font_name(GTK_FONT_BUTTON(entry[i]));
+                text = (char*)gtk_font_chooser_get_font(GTK_FONT_CHOOSER(entry[i]));
             }
             else
             if GTK_IS_TOGGLE_BUTTON(entry[i]) {
@@ -1892,11 +1857,6 @@ gboolean do_common_edit(GtkWidget *widget)
     return retval;
 }
 #endif
-gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *event, gchar *path)
-{
-	do_window_save_setting(GTK_WINDOW(widget), path);
-	return FALSE;
-}
 #define ISLEAP(year)	((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
 #define	SECS_PER_HOUR (60 * 60)
 static const unsigned short int __mon_yday[2][13] = {
@@ -2477,6 +2437,19 @@ gchar *to_ru_upper_text(const gchar *text)
     }
     result[nlen] = '\0';
     return result;
+}
+gchar *markup_plus(const gchar *markup)
+{
+	gchar *res;
+	gchar **values;
+	values = g_strsplit(markup, "\\n", -1);
+	res = g_strjoinv("\n",values);
+	g_strfreev(values);
+	values = g_strsplit(res, "\\t", -1);
+	g_free(res);
+	res = g_strjoinv("\t",values);
+	g_strfreev(values);
+	return res;
 }
 
 gboolean gtk_tree_view_seach_by_product_name_func(GtkTreeModel *model,

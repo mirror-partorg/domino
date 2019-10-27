@@ -46,7 +46,7 @@ enum {
     PROP_CHECK,
 };
 
-G_DEFINE_TYPE (DoContext, do_context, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (DoContext, do_context, G_TYPE_OBJECT, G_ADD_PRIVATE(DoContext))
 
 GType do_context_kind_get_type(void)
 {
@@ -71,8 +71,8 @@ GType do_context_kind_get_type(void)
 
 static void do_context_init (DoContext *context)
 {
- //   DoContextPrivate *priv = DO_CONTEXT_GET_PRIVATE (context);
-	//memset(priv, 0, sizeof(DoContextPrivate));
+    //DoContextPrivate *priv = DO_CONTEXT_GET_PRIVATE (context);
+	//memset(priv, 0, sizeof(*priv));
 }
 
 static void do_context_class_init (DoContextClass *class)
@@ -179,7 +179,8 @@ static void do_context_class_init (DoContextClass *class)
 						     G_PARAM_READWRITE));
 
 
-    g_type_class_add_private (object_class, sizeof (DoContextPrivate));
+    //g_type_class_add_private (object_class, sizeof (DoContextPrivate));
+
 }
 
 static void do_context_get_property (GObject     *object,

@@ -27,6 +27,8 @@ USE_LIBVLC=0
 USE_POPPLER=1
 USE_EV=0
 USE_EXPAT=1
+USE_JSON=1
+USE_SQLITE3=1
 
 LOCAL_CASH=0
 GROUPNAME=domino
@@ -370,6 +372,15 @@ echo LIBWEBKIT="`pkg-config webkit2gtk-4.0 --libs`">>common.mak
 else 
 echo WEBKITCFLAG="`pkg-config webkit-1.0 --cflags`">>common.mak 
 echo LIBWEBKIT="`pkg-config webkit-1.0 --libs`">>common.mak 
+fi
+if [ $USE_JSON -eq 1 ]
+then
+echo JSONGLIBCFLAG="`pkg-config json-glib-1.0  --cflags`">>common.mak 
+echo LIBJSONGLIB="`pkg-config json-glib-1.0  --libs`">>common.mak 
+fi
+if [ $USE_SQLITE3 -eq 1 ]
+then
+echo LIBSQLITE3="`pkg-config sqlite3 --libs`">>common.mak 
 fi
 if [ $USE_LIBXML2 -eq 1 ] ; then echo LIBXML2="`pkg-config libxml-2.0 --libs`">>common.mak ; fi
 if [ $USE_LIBAV_LOCAL -eq 1 ] 

@@ -27,8 +27,6 @@ void gtk_widget_get_font_desc(GtkWidget *widget, const gchar *font_desc,
 void do_widget_set_property(GObject *widget, const gchar *name, const gchar *value);
 void gtk_dialog_accept(GtkDialog *dialog);
 
-gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *event, gchar *path);
-
 gchar *search_get_text(const gchar *string, gint length, gint real_len);
 gchar *ru_to_en(const gchar *string, gint length);
 
@@ -48,6 +46,7 @@ gchar *do_rest_format_ei(double value, double coef, const char *ei);
 gchar *do_date_time_format(time_t t);
 gchar *do_percent_format(double value);
 GList *util_string_to_colon(const gchar *text, gint colwidth);
+gchar *markup_plus(const gchar *markup);
 
 void do_utf8_log(int level, const gchar *format, ...);
 

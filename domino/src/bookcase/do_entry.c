@@ -47,6 +47,7 @@ G_DEFINE_TYPE_WITH_CODE (DoEntry, do_entry, GTK_TYPE_ENTRY,
 						do_entry_editable_init)
 			 G_IMPLEMENT_INTERFACE (DO_TYPE_VALIDATE,
 						do_entry_validate_init)
+             G_ADD_PRIVATE(DoEntry)
 						);
 
 static void do_entry_changed (GtkEditable *editable)
@@ -67,6 +68,8 @@ static void do_entry_validate_init (DoValidateIface *iface)
 
 static void do_entry_init(DoEntry *dialog)
 {
+    //DoEntryPrivate *priv = DO_ENTRY_GET_PRIVATE(dialog);
+    //memset(priv, 0, sizeof(*priv));
 }
 
 static void entry_icon_press(GtkEntry *entry,  GtkEntryIconPosition icon_pos, GdkEvent  *event, DoEntry *object)
@@ -83,9 +86,12 @@ static GObject *do_entry_constructor(GType type, guint n_construct_properties, G
 	GObject *object;
 	DoEntry *entry;
 	GtkEntryCompletion *completion;
+	//DoEntryPrivate *priv;
 
 	object = G_OBJECT_CLASS (do_entry_parent_class)->constructor(type, n_construct_properties, construct_params);
 	entry = (DoEntry*)object;
+
+	//priv = DO_ENTRY_GET_PRIVATE(object);
 
     completion = gtk_entry_completion_new ();
     gtk_entry_set_completion (GTK_ENTRY (entry), completion);
@@ -143,7 +149,8 @@ static void do_entry_class_init (DoEntryClass *klass)
 
     klass->substitution = do_entry_substitution;
 
-	g_type_class_add_private (object_class, sizeof (DoEntryPrivate));
+	//g_type_class_add_private (object_class, sizeof (DoEntryPrivate));
+
 
     GtkBindingSet *binding_set;
     binding_set = gtk_binding_set_by_class (&klass->parent_class);

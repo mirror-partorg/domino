@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="bookcase" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../../../../var/Linux/Debian/buster/x86_64/bookcase/bookcase" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../../../var/Linux/Debian/buster/x86_64/bookcase/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="AdsView" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/bookcase" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`pkg-config gtk+-3.0 libsoup-2.4 json-glib-1.0 --cflags`" />
+			<Add option="-DUSE_GTK -DUSE_UTF8 -DNODOMINO -DEXPAT  -DWEBKIT2 -D_LINUX" />
+			<Add directory="../../include" />
+			<Add directory="../../src/bookcase" />
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config gtk+-3.0 json-glib-1.0 libsoup-2.4 --libs` -ldolib -lexpat -lsqlite3" />
+		</Linker>
+		<Unit filename="../../src/bookcase/bookcase.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_ads_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_application.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_client.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_common_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_config.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_context.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_entry.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_marshal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_message.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_notebook.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_obj_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_setting_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_tree_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_utilx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_validate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_view.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_view_actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_window.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/domino.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/hig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

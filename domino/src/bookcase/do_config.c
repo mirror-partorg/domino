@@ -1,8 +1,9 @@
 #ifdef EXPAT
-#include <domino.h>
+#include "do_config.h"
 #include <dolib.h>
 #include <expat.h>
 #include <errno.h>
+#include <glib.h>
 #include "../../misc/define.h"
 
 typedef struct _object_t object_t;

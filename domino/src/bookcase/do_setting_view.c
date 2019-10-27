@@ -49,6 +49,7 @@ struct _DoSettingViewPrivate
 G_DEFINE_TYPE_WITH_CODE (DoSettingView, do_setting_view, GTK_TYPE_SCROLLED_WINDOW,
 			 G_IMPLEMENT_INTERFACE (DO_TYPE_VIEW,
                                     do_setting_view_view_init)
+             G_ADD_PRIVATE(DoSettingView)
                             );
 
 static void do_setting_view_view_init(DoViewIface *iface)
@@ -76,6 +77,8 @@ static void do_setting_view_init(DoSettingView *temp)
     icon_theme = gtk_icon_theme_get_default();
     priv->icon = gtk_icon_theme_load_icon(icon_theme, GTK_STOCK_PROPERTIES, DO_VIEW_ICON_SIZE, 0, NULL);
 #endif
+    //DoSettingViewPrivate *priv = DO_SETTING_VIEW_GET_PRIVATE(temp);
+	//memset(priv, 0, sizeof(*priv));
 }
 
 #define LOAD_BUFFER_SIZE 65536
@@ -178,7 +181,7 @@ static void do_setting_view_class_init (DoSettingViewClass *klass)
 	object_class->get_property = do_setting_view_get_property;
 	object_class->set_property = do_setting_view_set_property;
 
-	g_type_class_add_private (object_class, sizeof (DoSettingViewPrivate));
+	//g_type_class_add_private (object_class, sizeof (DoSettingViewPrivate));
 
 	g_object_class_install_property
 		(object_class,

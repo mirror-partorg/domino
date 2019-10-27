@@ -1,17 +1,19 @@
 
-
 #include "do_application.h"
 #include "domino.h"
+#include "do_client.h"
 #include "do_utilx.h"
 #include "do_notebook.h"
-#include "do_html_view.h"
 #include "do_window.h"
 #include "do_view_actions.h"
 
 #define DEFAULT_WINDOW_SIZE "800x500"
 #define DEFAULT_WINDOW_POSITION "0x0"
 #define DEFAULT_WINDOW_STATE NULL
+#define DEFAULT_SERVER_URL "http://192.168.8.2:15080/bookcase"
+
 #define OBJECT_ROOT_PATH "MainWindow"
+
 
 #define DO_APPLICATION_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_APPLICATION, DoApplicationPrivate))
 #define DO_TYPE_APPLICATION_FLAGS do_application_flags_get_type()
@@ -19,6 +21,8 @@
 enum
 {
 	PROP_0,
+	PROP_STORE,
+	PROP_CACHED,
 //	PROP_FLAGS
 };
 
@@ -44,29 +48,33 @@ struct _DoApplicationPrivate
 	GApplicationCommandLine *command_line;
 	GtkWidget *first_window;
 	gchar **actions;
+	GObject *client;
+	gchar *store;
+	gchar *protocol_server_version;
 };
 
-G_DEFINE_TYPE (DoApplication, do_application, GTK_TYPE_APPLICATION)
+G_DEFINE_TYPE_WITH_CODE (DoApplication, do_application, GTK_TYPE_APPLICATION, G_ADD_PRIVATE(DoApplication))
 
 static void do_application_activate(GApplication *app);
+static void do_application_add_acceletarors(GApplication *app);
+
 //static gint do_application_command_line (GApplication *application, GApplicationCommandLine *cl);
 
 static void do_application_init(DoApplication *temp)
 {
 	DoApplicationPrivate *priv;
 
-	priv = temp->priv = DO_APPLICATION_GET_PRIVATE (temp);
-	memset(priv, 0, sizeof(DoApplicationPrivate));
+	priv = DO_APPLICATION_GET_PRIVATE (temp);
+	//memset(priv, 0, sizeof(DoApplicationPrivate));
     GOptionEntry options[] =
     {
         {
             "version", 'V', 0, G_OPTION_ARG_NONE, NULL,
-            "Ïîêàçàòü âåðñèþ", NULL
         },
 
         {
             G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_STRING_ARRAY, &priv->actions, NULL,
-            "[ACTION…]"
+            "[ACTION]"
         },
         {NULL}
     };
@@ -74,17 +82,41 @@ static void do_application_init(DoApplication *temp)
 	g_application_add_main_option_entries (G_APPLICATION (temp), options);
 
 }
+static gchar *do_application_store_dialog(GtkWindow *parent)
+{
+	return "5";//to do
+}
+static void add_accelerator (DoApplication *app,
+                 const gchar    *action_name,
+                 const gchar    *accel)
+{
+    const gchar *vaccels[] = {
+        accel,
+        NULL
+    };
+
+    gtk_application_set_accels_for_action (GTK_APPLICATION(app), action_name, vaccels);
+}
 
 static GObject *do_application_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
 {
 	GObject *object;
 
 	//DoApplication *temp;
-	//DoApplicationPrivate *priv;
+	DoApplicationPrivate *priv;
+	dominox_init();
 
 	object = G_OBJECT_CLASS (do_application_parent_class)->constructor(type, n_construct_properties, construct_params);
-	//priv = DO_APPLICATION(object)->priv;
+	priv = DO_APPLICATION_GET_PRIVATE(object);
+	gchar *url = NULL;
+	DOMINO_COMMON_GET("main", "url", &url, "store", &priv->store, NULL);
+	if ( !url )
+		url = DEFAULT_SERVER_URL;
+	if ( !priv->store )
+		priv->store = g_strdup(do_application_store_dialog(NULL));
+	DOMINO_COMMON_SET("main", "store", priv->store, "url", url, NULL);
 
+	priv->client = do_client_new(url,priv->store);
 
     //g_signal_connect(object, "activate", G_CALLBACK(do_application_activate), object);
     //g_signal_connect(object, "command-line", G_CALLBACK (do_application_command_line), NULL);
@@ -94,25 +126,13 @@ static GObject *do_application_constructor(GType type, guint n_construct_propert
 
 static void do_application_finalize (GObject *object)
 {
+	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE (object);
+
 	G_OBJECT_CLASS (do_application_parent_class)->finalize (object);
+	g_free(priv->store);
+	dominox_finalize();
 }
 
-static void do_application_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
-{
-	g_assert_not_reached ();
-}
-
-static void do_application_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
-{
-	/*DoApplicationPrivate *priv = DO_APPLICATION (object)->priv;
-
-	switch (prop_id)
-	{
-		case PROP_FLAGS:
-			priv->flags = g_value_get_flags (value);
-			break;
-	}*/
-}
 GList *
 do_application_get_main_windows (DoApplication *app)
 {
@@ -199,6 +219,47 @@ do_application_create_window_impl (DoApplication *app)
 
 	return window;
 }
+static void do_application_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE (object);
+
+	switch (prop_id)
+	{
+		case PROP_STORE:
+			g_value_set_string(value, priv->store);
+	        break;
+	    case PROP_CACHED: {
+	    	gboolean res;
+	    	g_object_get(priv->client, "cached", &res, NULL);
+			g_value_set_boolean(value, res);
+	        break;
+	    }
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+            break;
+	}
+}
+
+static void do_application_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+{
+	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(object);
+
+	switch (prop_id)
+	{
+		case PROP_STORE:
+			if ( g_strcmp0(priv->store, g_value_get_string(value)) ) {
+				g_assert(g_value_get_string(value) != NULL);
+				g_free(priv->store);
+				priv->store = g_value_dup_string(value);
+				if ( priv->client )
+					g_object_set(priv->client, "store", priv->store, NULL);
+			}
+			break;
+		case PROP_CACHED:
+	    	g_object_set(priv->client, "cached", g_value_get_boolean(value), NULL);
+	        break;
+	}
+}
 
 static void do_application_class_init (DoApplicationClass *klass)
 {
@@ -210,14 +271,31 @@ static void do_application_class_init (DoApplicationClass *klass)
 	object_class->get_property = do_application_get_property;
 	object_class->set_property = do_application_set_property;
 
+
+
 	//app_class->command_line = do_application_command_line;
     app_class->activate = do_application_activate;
 
 	klass->create_window = do_application_create_window_impl;
 
+	//g_type_class_add_private (object_class, sizeof (DoApplicationPrivate));
 
-	g_type_class_add_private (object_class, sizeof (DoApplicationPrivate));
+    g_object_class_install_property
+        (object_class,
+         PROP_STORE,
+         g_param_spec_string("store",
+                      "ÐšÐ¾Ð´ Ð°Ð¿Ñ‚ÐµÐºÐ¸",
+                      "ÐšÐ¾Ð´ Ð°Ð¿Ñ‚ÐµÐºÐ¸",
+                      NULL,
+                       G_PARAM_READWRITE));
 
+    g_object_class_install_property (object_class,
+                                     PROP_CACHED,
+                                     g_param_spec_boolean ("cached",
+                                                          "ÐšÑÑˆÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¾Ñ‚Ð²ÐµÑ‚Ð¾Ð²",
+                                                          "ÐšÑÑˆÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¾Ñ‚Ð²ÐµÑ‚Ð¾Ð²",
+                                                           TRUE,
+                                                           G_PARAM_READWRITE));
 	/*g_object_class_install_property
 		(object_class,
 		 PROP_FLAGS,
@@ -230,19 +308,55 @@ static void do_application_class_init (DoApplicationClass *klass)
 				     G_PARAM_CONSTRUCT_ONLY));*/
 }
 
-GtkApplication *do_application_new (const gchar *application_id)
+JsonNode *do_application_request(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, ...)
 {
-	return g_object_new (DO_TYPE_APPLICATION, //to do application_id
-			     //"flags",  G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN,
-			     (gpointer) NULL);
+	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
+	JsonNode *node = NULL;
+	va_list args;
+    va_start (args, nocache);
+	node = do_client_request_valist(DO_CLIENT(priv->client), method, func, key, archive, nocache,args);
+    va_end (args);
+	return node;
+}
+JsonNode *do_application_request_async(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache,GFunc callback,gpointer data, ...)
+{
+	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
+	JsonNode *node = NULL;
+	va_list args;
+    va_start (args, data);
+	node = do_client_request_valist_async(DO_CLIENT(priv->client), method, func, key, archive, nocache, callback, data, args);
+    va_end (args);
+    return node;
+}
+static void do_application_set_protocol(JsonNode *node, DoApplication *app)
+{
+	if ( node ) {
+		DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
+        JsonObject *obj;
+        JsonNode *member;
+        obj = json_node_get_object(node);
+        g_assert(obj != NULL);
+        member = json_object_get_member(obj, "protocol");
+        g_assert(member != NULL && json_node_get_value_type(member) == G_TYPE_STRING);
+        priv->protocol_server_version = g_strdup(json_node_get_string(member));
+        //json_node_unref(node);
+	}
 }
 static gboolean run_actions(DoApplication *app)
 {
-	DoApplicationPrivate *priv;
+	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
 	GActionGroup *group;
 	GAction *action;
+	GDateTime *time;
+	gchar *buf;
 	gint i;
-    priv = DO_APPLICATION (app)->priv;
+
+	time = g_date_time_new_now_local();
+	buf = do_client_strftime(time);
+	do_application_request_async(app, "GET", "GetVersion", "Version", FALSE, FALSE,
+					(GFunc)do_application_set_protocol, app,
+	                NULL);
+	g_date_time_unref(time);g_free(buf);
     group = gtk_widget_get_action_group(priv->first_window, "common-actions");
 	priv = DO_APPLICATION_GET_PRIVATE (app);
     for ( i = 0; priv->actions[i]; i++ ) {
@@ -252,17 +366,16 @@ static gboolean run_actions(DoApplication *app)
     }
     return FALSE;
 }
-
 static void do_application_activate(GApplication *app)
 {
 	DoApplicationPrivate *priv;
-    priv = DO_APPLICATION (app)->priv;
+    priv = DO_APPLICATION_GET_PRIVATE(app);
     if ( !DOMINO_INIT ) {
-        DOMINO_SHOW_ERROR("Îêðóæåíèå íå èíèöèàëèçèðîâàíî");
+        DOMINO_SHOW_ERROR("ÐžÐºÑ€ÑƒÐ¶ÐµÐ½Ð¸Ðµ Ð½Ðµ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¾");
         return;
     }
-    g_print("sad\n");//fix me
     priv->first_window = GTK_WIDGET(do_application_create_window(DO_APPLICATION(app), NULL));
+    do_application_add_acceletarors(app);
     if ( priv->actions && priv->actions[0] )
         g_idle_add((GSourceFunc)run_actions, app);
 }
@@ -293,6 +406,13 @@ GtkWidget *do_application_get_focus_child(DoApplication *app)
 	}
     return NULL;
 }
+gboolean do_application_cancel_request(DoApplication *app, const gchar *key)
+{
+	DoApplicationPrivate *priv;
+    priv = DO_APPLICATION_GET_PRIVATE(app);
+    return do_client_cancel_request(DO_CLIENT(priv->client), key);
+}
+
 /*
 static void
 clear_options (DoApplication *app)
@@ -327,3 +447,21 @@ static gint do_application_command_line(GApplication *application, GApplicationC
 	return 0;
 }
 */
+void do_application_set_cache(DoApplication *app, const gchar *key, JsonNode *node)
+{
+	DoApplicationPrivate *priv;
+	priv = DO_APPLICATION_GET_PRIVATE(app);
+	do_client_set_cache(DO_CLIENT(priv->client), key, node);
+
+}
+JsonNode *do_application_get_cache(DoApplication *app, const gchar *key)
+{
+	DoApplicationPrivate *priv;
+	priv = DO_APPLICATION_GET_PRIVATE(app);
+	return do_client_get_cache(DO_CLIENT(priv->client), key);
+}
+
+static void do_application_add_acceletarors(GApplication *app)
+{
+    add_accelerator(DO_APPLICATION(app), "common-actions.Quit", "<Primary>Q");
+}

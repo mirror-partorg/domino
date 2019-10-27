@@ -23,7 +23,6 @@ typedef struct _DoNotebookPrivate	DoNotebookPrivate;
 struct _DoNotebook
 {
 	GtkNotebook parent;
-	DoNotebookPrivate *priv;
 };
 
 struct _DoNotebookClass

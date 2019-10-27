@@ -2,17 +2,18 @@ include ../../common.mak
 
 lib_dox  = ../domino/
 
-LDFLAGS = $(LIBGTK) $(WINAPP_) $(LIBDO) $(LIBWEBKIT) $(LIBEXPAT) -Wfatal-errors
+LDFLAGS = $(LIBGTK) $(WINAPP_) $(LIBDO) $(LIBWEBKIT) $(LIBEXPAT) $(LIBJSONGLIB) $(LIBSQLITE3) -Wfatal-errors
 
-CFLAGS = -DUSE_GTK -DUSE_UTF8 $(GTKCFLAGS) $(WEBKITCFLAG) -DNODOMINO -DEXPAT -Wfatal-errors -DWEBKIT2
+CFLAGS = -DUSE_GTK -DUSE_UTF8 $(GTKCFLAGS) $(WEBKITCFLAG) $(JSONGLIBCFLAG) -DNODOMINO -DEXPAT -Wfatal-errors -DWEBKIT2
 
 
-SRCS = main.c \
+SRCS = bookcase.c \
 		do_ads_view.c \
 		do_application.c \
+		do_client.c \
 		do_common_actions.c \
-		do_config.c \
 		do_context.c \
+		do_config.c \
 		do_entry.c \
 		do_filter.c \
 		do_marshal.c \
@@ -25,11 +26,12 @@ SRCS = main.c \
 		do_view.c \
 		do_view_actions.c \
 		do_window.c \
+		do_obj_view.c \
 		hig.c \
 		domino.c 
 
 APP = bookcase
-OBJ = bookcase.o
+#OBJ = bookcase.o
 RES = bookcase.rc
 
 include ../../program.mak

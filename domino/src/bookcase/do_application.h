@@ -3,6 +3,7 @@
 #define DO_APPLICATION_H
 
 #include <gtk/gtk.h>
+#include <json-glib/json-glib.h>
 #include "do_window.h"
 
 
@@ -28,7 +29,6 @@ typedef struct _DoApplicationClass		DoApplicationClass;
 struct _DoApplication
 {
 	GtkVBox parent_instance;
-	DoApplicationPrivate *priv;
 };
 
 struct _DoApplicationClass
@@ -41,9 +41,16 @@ struct _DoApplicationClass
 
 GType		do_application_get_type(void);
 
-GtkApplication  *do_application_new(const gchar *application_id);
 GtkWidget       *do_application_get_focus_child(DoApplication *app);
 DoWindow	    *do_application_create_window(DoApplication *app, GdkScreen *screen);
+JsonNode        *do_application_request(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache,...) G_GNUC_NULL_TERMINATED;
+JsonNode        *do_application_request_async(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache,GFunc callback,gpointer data, ...) G_GNUC_NULL_TERMINATED;
+gboolean         do_application_cancel_request(DoApplication *app, const gchar *key);
+void             do_application_set_cache(DoApplication *app, const gchar *key, JsonNode *node);
+JsonNode        *do_application_get_cache(DoApplication *app, const gchar *key);
+
+
+
 
 G_END_DECLS
 

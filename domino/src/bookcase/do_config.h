@@ -1,6 +1,8 @@
 #ifndef DO_CONFIG_H_INCLUDED
 #define DO_CONFIG_H_INCLUDED
 
+#include <dolib.h>
+
 typedef struct _do_config_t do_config_t;
 
 #ifdef __cplusplus

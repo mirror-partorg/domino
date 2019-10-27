@@ -12,20 +12,20 @@ struct _Message {
     gchar *message;
     GLogLevelFlags log_flags;
 };
-static GThread* main_thread = NULL;
+//static GThread* main_thread = NULL;
 //static GMutex *mutex = NULL;
 static GList *messages = NULL;
-static gboolean show_message = FALSE;
+//static gboolean show_message = FALSE;
 //static void do_register_icons();
 //static Gtk
 GtkWidget *dialog = NULL;
 
-void do_message_init()
-{
-    main_thread = g_thread_self();
+//void do_message_init()
+//{
+    //main_thread = g_thread_self();
 //    mutex = g_mutex_new();
     //do_register_icons();
-}
+//}
 
 /*
 void do_register_icons()
@@ -101,16 +101,16 @@ static gboolean dialog_key_press(GtkWidget *widget, GdkEventKey *event, GtkWidge
 }
 static void do_messages_show()
 {
-    if ( main_thread != g_thread_self() ) {
-        fprintf(stderr, "Not main thread!!!!!!!!!!\n");//!!
-        return;
-    }
+    //if ( main_thread != g_thread_self() ) {
+    //    fprintf(stderr, "Not main thread!!!!!!!!!!\n");//!!
+    //    return;
+    //}
 
 
-    if ( show_message )
-        return;
+    //if ( show_message )
+    //    return;
 
-    show_message = TRUE;
+    //show_message = TRUE;
     GList *l;
     l = messages;
     while ( l ) {
@@ -234,7 +234,7 @@ static void do_messages_show()
     g_list_free(messages);
     messages = NULL;
 //    g_mutex_unlock(mutex);
-    show_message = FALSE;
+    //show_message = FALSE;
 }
 
 void do_message_log(const gchar *message, GLogLevelFlags log_flags, void *user_data)
@@ -260,9 +260,9 @@ void do_message_log(const gchar *message, GLogLevelFlags log_flags, void *user_d
     msg->log_flags = log_flags;
     messages = g_list_append(messages, msg);
 //    g_mutex_unlock(mutex);
-    if ( main_thread == g_thread_self() ) {
+    //if ( main_thread == g_thread_self() ) {
         do_message_show_all();
-    }
+    //}
 }
 void do_message_log_gtk_func(const gchar *log_domain, GLogLevelFlags log_flags, const gchar *msg, gpointer user_data)
 {
@@ -275,24 +275,25 @@ int do_message_log_do_func(const char *mgs, int level, void *user_data)
     do_message_log(mgs, G_LOG_LEVEL_ERROR, user_data);
     return level;
 }
+/*
 static gboolean idle(gboolean *event)
 {
     do_messages_show();
     *event = FALSE;
     return FALSE;
-}
+}*/
 void wait_for(gboolean *event)
 {
     while ( *event ) g_usleep(5000);
 }
 void do_message_show_all()
 {
-    if ( main_thread != g_thread_self() ) {
+    /*if ( main_thread != g_thread_self() ) {
         gboolean event = TRUE;
         gdk_threads_add_idle((GSourceFunc)idle, &event);
         wait_for(&event);
     }
-    else
+    else*/
         do_messages_show();
 }
 static gboolean show_question(const gchar *msg)
@@ -320,15 +321,15 @@ typedef struct {
     gboolean res;
 } idle_msg_t;
 
-static gboolean idle_question(idle_msg_t *m)
+/*static gboolean idle_question(idle_msg_t *m)
 {
     m->res = show_question(m->msg);
     m->event = FALSE;
     return FALSE;
-}
+}*/
 gint do_message_question(const gchar *msg, GtkButtonsType button)
 {
-    if ( main_thread != g_thread_self() ) {
+    /*if ( main_thread != g_thread_self() ) {
         idle_msg_t m;
         m.event = TRUE;
         m.msg = msg;
@@ -337,6 +338,6 @@ gint do_message_question(const gchar *msg, GtkButtonsType button)
         return m.res;
 
     }
-    else
+    else*/
         return show_question(msg);
 }

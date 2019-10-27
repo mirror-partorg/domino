@@ -45,13 +45,14 @@ GType do_filter_flags_get_type(void)
     return type;
 }
 
-G_DEFINE_TYPE (DoFilter, do_filter, GTK_TYPE_BOX);
+G_DEFINE_TYPE_WITH_CODE (DoFilter, do_filter, GTK_TYPE_BOX, G_ADD_PRIVATE(DoFilter));
 
 
 
 static void do_filter_init(DoFilter *dialog)
 {
-
+	//DoFilterPrivate *priv = DO_FILTER_GET_PRIVATE(dialog);
+	//memset(priv, 0, sizeof(*priv));
 }
 static GObject *do_filter_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
 {
@@ -75,7 +76,6 @@ static GObject *do_filter_constructor(GType type, guint n_construct_properties, 
 	object = G_OBJECT_CLASS (do_filter_parent_class)->constructor(type, n_construct_properties, construct_params);
 	box = GTK_BOX(object);
 	priv = DO_FILTER_GET_PRIVATE(object);
-
     g_object_set(object, "orientation", GTK_ORIENTATION_HORIZONTAL, NULL);
 
     parent = (GtkWindow*)gtk_widget_get_toplevel(priv->parent);
@@ -90,12 +90,12 @@ static GObject *do_filter_constructor(GType type, guint n_construct_properties, 
     model = priv->model = gtk_list_store_new(2, G_TYPE_INT, G_TYPE_STRING);
 
     entry = priv->entry = do_entry_new();
-#if GTK_MAJOR_VERSION > 2 || GTK_MINOR_VERSION >= 24    
+#if GTK_MAJOR_VERSION > 2 || GTK_MINOR_VERSION >= 24
     combo = priv->combo = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(model));
     gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(combo), 1);
-#else    
+#else
     combo = priv->combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(model));
-#endif    
+#endif
     child = gtk_bin_get_child(GTK_BIN (combo));
     gtk_container_remove(GTK_CONTAINER(combo), child);
     gtk_container_add(GTK_CONTAINER(combo), entry);
@@ -174,7 +174,7 @@ static void do_filter_class_init (DoFilterClass *klass)
 	object_class->get_property = do_filter_get_property;
 	object_class->set_property = do_filter_set_property;
 
-	g_type_class_add_private (object_class, sizeof (DoFilterPrivate));
+	//g_type_class_add_private (object_class, sizeof (DoFilterPrivate));
 
     g_object_class_install_property (object_class,
                                    PROP_ENTRY,

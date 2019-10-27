@@ -24,8 +24,6 @@ struct _DoWindow
 {
 	GtkWindow parent;
 
-	/*< private >*/
-	DoWindowPrivate *priv;
 };
 
 struct _DoWindowClass

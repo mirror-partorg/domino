@@ -56,7 +56,7 @@ static guint signals[LAST_SIGNAL];
 static gboolean get_load_status(DoNotebook *notebook);
 static gboolean get_load_progress(DoNotebook *notebook);
 
-G_DEFINE_TYPE (DoNotebook, do_notebook, GTK_TYPE_NOTEBOOK)
+G_DEFINE_TYPE_WITH_CODE (DoNotebook, do_notebook, GTK_TYPE_NOTEBOOK,G_ADD_PRIVATE(DoNotebook))
 
 static void do_notebook_get_property (GObject *object,
 			    guint prop_id,
@@ -142,7 +142,7 @@ static void do_notebook_class_init (DoNotebookClass *klass)
 							       TRUE,
 							       G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB));
 
-	g_type_class_add_private (object_class, sizeof (DoNotebookPrivate));
+	//g_type_class_add_private (object_class, sizeof (DoNotebookPrivate));
 }
 
 static DoNotebook *find_notebook_at_pointer (gint abs_x, gint abs_y)
@@ -366,7 +366,7 @@ static void
 update_tabs_visibility (DoNotebook *nb,
 			gboolean before_inserting)
 {
-	DoNotebookPrivate *priv = nb->priv;
+	DoNotebookPrivate *priv = DO_NOTEBOOK_GET_PRIVATE(nb);
 	//gboolean show_tabs;
 	//guint num;
 
@@ -384,7 +384,8 @@ static void do_notebook_init (DoNotebook *notebook)
 {
 	DoNotebookPrivate *priv;
 
-	priv = notebook->priv = DO_NOTEBOOK_GET_PRIVATE (notebook);
+	priv = DO_NOTEBOOK_GET_PRIVATE (notebook);
+	//memset(priv, 0, sizeof(*priv));
 
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
@@ -438,7 +439,7 @@ static GtkWidget *build_tab_label (DoNotebook *nb, DoView *view)
     hbox=gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (hbox);
 	/* setup load feedback */
-   static const gchar *style =
+/*   static const gchar *style =
        "* {\n"
         "-GtkButton-default-border : 0;\n"
         "-GtkButton-default-outside-border : 0;\n"
@@ -453,14 +454,14 @@ static GtkWidget *build_tab_label (DoNotebook *nb, DoView *view)
     css_provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_data (css_provider, style, -1, NULL);
     gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER (css_provider),
-                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);*/
 	/* setup label */
 	label = gtk_label_new (NULL);
 
 	//gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
 
 	gtk_label_set_single_line_mode (GTK_LABEL (label), TRUE);
-	g_object_set(G_OBJECT(label), "halign", 0.0, "valign", 0.5, NULL);
+	g_object_set(G_OBJECT(label), "xalign", 0.0, "yalign", 0.5, NULL);
 	//to do gtk_misc_set_padding (GTK_MISC (label), 0, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 	gtk_widget_show (label);
@@ -515,7 +516,7 @@ void
 do_notebook_set_show_tabs (DoNotebook *nb,
 			     gboolean show_tabs)
 {
-	DoNotebookPrivate *priv = nb->priv;
+	DoNotebookPrivate *priv = DO_NOTEBOOK_GET_PRIVATE(nb);
 
 	priv->show_tabs = show_tabs != FALSE;
 
@@ -525,9 +526,10 @@ do_notebook_set_show_tabs (DoNotebook *nb,
 GList *
 do_notebook_get_focused_pages (DoNotebook *nb)
 {
+    DoNotebookPrivate *priv = DO_NOTEBOOK_GET_PRIVATE(nb);
 	g_return_val_if_fail (DO_IS_NOTEBOOK (nb), NULL);
 
-	return nb->priv->focused_pages;
+	return priv->focused_pages;
 }
 
 static int
@@ -716,7 +718,7 @@ static gboolean get_load_status(DoNotebook *notebook)
 }
 static gint get_load_progress(DoNotebook *notebook)
 {
-	DoNotebookPrivate *priv = notebook->priv;
+	DoNotebookPrivate *priv = DO_NOTEBOOK_GET_PRIVATE(notebook);
 	gint load_progress = 0;
     int page_num = 0;
     GtkNotebook *nb = GTK_NOTEBOOK(notebook);

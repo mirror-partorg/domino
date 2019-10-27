@@ -3,7 +3,6 @@
 #define __DO_CONTEXT_H__
 
 #include <gtk/gtk.h>
-#include <domino.h>
 
 G_BEGIN_DECLS
 
@@ -54,8 +53,6 @@ DoContextKind do_context_get_kind(DoContext *context);
 void        do_context_set_kind(DoContext *context, DoContextKind kind);
 gint        do_context_compare(DoContext *a, DoContext *b);
 
-void        do_context_set_document_order_key0(DoContext *context, do_alias_t *alias, document_order_key0_t *document_order_key0);
-void        do_context_get_document_order_key0(DoContext *context, do_alias_t *alias, document_order_key0_t *document_order_key0);
 
 
 G_END_DECLS
