@@ -31,7 +31,7 @@ SRCS = bookcase.c \
 		domino.c 
 
 APP = bookcase
-#OBJ = bookcase.o
+OBJ = bookcaserc.o
 RES = bookcase.rc
 
 include ../../program.mak

@@ -1,5 +1,5 @@
-DIR_TMP=$(dir $(lastword $(MAKEFILE_LIST)))/$(TMP_DIR)/$(NAME)
-LIB_DIR=$(dir $(lastword $(MAKEFILE_LIST)))/$(TMP_DIR)/.libs
+DIR_TMP=$(TMP_DIR)/$(NAME)
+LIB_DIR=$(TMP_DIR)/.libs
 compile:
 	mkdir -p $(DIR_TMP)
 	if [[ "X$(PYTHON_VERSION_2)" != "X" ]] ; \
@@ -29,7 +29,7 @@ compile:
 				OBJS="$$OBJS $$n"; \
 			done ; \
 			echo $$OBJS ; \
-			g++ -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
+			$(LINK) -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
                   $$OBJS -o $(LIB_DIR)/$(NAME)-$$ver $(LDFLAGS) \
                   -Wl,-soname,$(LIB_DIR)/$(NAME)-$$ver ; \
 		fi ; \
@@ -42,6 +42,8 @@ compile:
 		for f in `cat var/files.lst` ; \
 		do \
 			n=$(DIR_TMP)/$$(basename $$f).o.$$ver ; \
+			echo $$f; \
+			echo $$n; \
 			if [[ $$f -nt $$n ]] ; \
 			then \
 				echo $$f ; \
@@ -61,7 +63,7 @@ compile:
 				OBJS="$$OBJS $$n"; \
 			done ; \
 			echo $$OBJS ; \
-			g++ -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
+			$(LINK) -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
                   $$OBJS -o $(LIB_DIR)/$(NAME)-$$ver $(LDFLAGS) \
                   -Wl,-soname,$(LIB_DIR)/$(NAME)-$$ver ; \
 		fi ; \

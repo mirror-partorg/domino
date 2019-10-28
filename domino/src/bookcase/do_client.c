@@ -4,6 +4,7 @@
 #include "config.h"
 #include <libsoup/soup.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <sqlite3.h>
 
 #define DO_CLIENT_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_CLIENT, DoClientPrivate))
@@ -106,15 +107,23 @@ static int do_client_read_cache_callback(void *client, int argc, char **argv, ch
 		g_error ("Unable to parse %s\n", error->message);
 		g_error_free (error);
 	}
+#ifdef JSON12
 	node = json_parser_get_root(parser);
 	json_node_ref(node);
+#else
+	node = json_node_copy(json_parser_get_root(parser));
+#endif
 	g_object_unref (parser);
 	if ( !node )
 		g_warning("key empty %s\n", key); // fix me
     value = g_hash_table_lookup(priv->hash, key);
     if ( value ) {
     	g_date_time_unref(value->time);
+#ifdef JSON12
 	    json_node_unref(value->node);
+#else
+        json_node_free(value->node);
+#endif
 	    value->time = time;
 	    value->node = node;
 	}
@@ -414,7 +423,11 @@ static void do_client_update_cache(DoClient *client, const gchar *key, JsonNode 
 	}
 	if ( value ) {
 		g_date_time_unref(value->time);
+#ifdef JSON12
 		json_node_unref(value->node);
+#else
+		json_node_free(value->node);
+#endif
 		value->time = g_date_time_new_now_local();
 		value->node = node;
 	}
@@ -531,10 +544,14 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
                     return cache;
 				}
 			}
+#ifdef JSON12
 			json_node_ref(res);
+#else
+            res = json_node_copy(res);
+#endif
 			g_object_unref (parser);
 			do_client_update_cache(client, key, res);
-			json_node_ref(res);
+//			json_node_ref(res);
 		}
 	}
 	if ( callback ) {
@@ -560,7 +577,11 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 		DoValue *value;
 		value = do_client_get_cache_value(client, key);
 		if ( value ) {
+#ifdef JSON12
 			json_node_ref(value->node);
+#else
+            json_node_free(value->node);
+#endif
 			cache_time = value->time;
 			if ( check_valid_cache(key, cache_time) ) {
 				if ( callback ) {

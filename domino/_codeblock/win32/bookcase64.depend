@@ -1,60 +1,62 @@
 # depslib dependency file v1.0
-1565945651 source:c:\var\git\domino\domino\src\bookcase\do_ads_view.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_ads_view.c
 	"do_ads_view.h"
 	"do_tree_view.h"
+	"do_application.h"
+	"do_utilx.h"
+	"do_common_actions.h"
 
 1565918942 c:\var\git\domino\domino\src\bookcase\do_ads_view.h
 	<gtk/gtk.h>
 	"do_view.h"
 
-1565760803 c:\var\git\domino\domino\src\bookcase\do_view.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_view.h
 	<glib-object.h>
 	<glib.h>
 	"do_context.h"
-	<domino.h>
 
-1440478440 c:\var\git\domino\domino\src\bookcase\do_context.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_context.h
 	<gtk/gtk.h>
-	<domino.h>
 
 1440478440 c:\var\git\domino\domino\src\bookcase\do_tree_view.h
 	<gtk/gtk.h>
 
-1565944380 source:c:\var\git\domino\domino\src\bookcase\do_application.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_application.c
 	"do_application.h"
-	<webkit/webkit.h>
 	"domino.h"
+	"do_client.h"
 	"do_utilx.h"
 	"do_notebook.h"
-	"do_html_view.h"
 	"do_window.h"
 	"do_view_actions.h"
 
-1565924346 c:\var\git\domino\domino\src\bookcase\do_application.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_application.h
 	<gtk/gtk.h>
+	<json-glib/json-glib.h>
 	"do_window.h"
 
-1565767844 c:\var\git\domino\domino\src\bookcase\do_window.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_window.h
 	<glib-object.h>
 	<glib.h>
 	<gtk/gtk.h>
 	"do_view.h"
 
-1565492480 c:\var\git\domino\domino\src\bookcase\domino.h
+1572225741 c:\var\git\domino\domino\src\bookcase\domino.h
 	<gtk/gtk.h>
+	<dolib.h>
 	"do_context.h"
 	"do_utilx.h"
 	"do_view.h"
 	"do_message.h"
 
-1565767468 c:\var\git\domino\domino\src\bookcase\do_utilx.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_utilx.h
 	<gtk/gtk.h>
 
 1508476951 c:\var\git\domino\domino\src\bookcase\do_message.h
 	<glib.h>
 	<gtk/gtk.h>
 
-1440478440 c:\var\git\domino\domino\src\bookcase\do_notebook.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_notebook.h
 	<glib.h>
 	<gtk/gtk.h>
 	"do_view.h"
@@ -67,7 +69,7 @@
 	<gtk/gtk.h>
 	"do_window.h"
 
-1565918436 source:c:\var\git\domino\domino\src\bookcase\do_common_actions.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_common_actions.c
 	"do_common_actions.h"
 	"do_utilx.h"
 	"do_window.h"
@@ -76,19 +78,21 @@
 	"do_notebook.h"
 	"do_setting_view.h"
 	"do_ads_view.h"
+	"do_obj_view.h"
 
-1565931874 c:\var\git\domino\domino\src\bookcase\do_common_actions.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_common_actions.h
 	<gtk/gtk.h>
 	"do_window.h"
 
 1440478440 c:\var\git\domino\domino\src\bookcase\do_setting_view.h
 	<gtk/gtk.h>
 
-1565499540 source:c:\var\git\domino\domino\src\bookcase\do_config.c
-	<domino.h>
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_config.c
+	"do_config.h"
 	<dolib.h>
 	<expat.h>
 	<errno.h>
+	<glib.h>
 	"../../misc/define.h"
 	<wchar.h>
 	<wctype.h>
@@ -97,10 +101,10 @@
 
 1566289390 c:\var\git\domino\domino\misc\define.h
 
-1565490449 source:c:\var\git\domino\domino\src\bookcase\do_context.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_context.c
 	"do_context.h"
 
-1565766305 source:c:\var\git\domino\domino\src\bookcase\do_entry.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_entry.c
 	"do_entry.h"
 	<gtk/gtk.h>
 	<gdk/gdk.h>
@@ -118,7 +122,7 @@
 	<glib.h>
 	"do_context.h"
 
-1512953400 source:c:\var\git\domino\domino\src\bookcase\do_filter.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_filter.c
 	<gtk/gtk.h>
 	"do_filter.h"
 	"domino.h"
@@ -134,7 +138,7 @@
 1440478440 c:\var\git\domino\domino\src\bookcase\do_marshal.h
 	<glib-object.h>
 
-1565765926 source:c:\var\git\domino\domino\src\bookcase\do_message.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_message.c
 	"do_message.h"
 	<stdio.h>
 	<gtk/gtk.h>
@@ -142,14 +146,14 @@
 	<dolib.h>
 	"domino.h"
 
-1565852005 source:c:\var\git\domino\domino\src\bookcase\do_notebook.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_notebook.c
 	"do_notebook.h"
 	"do_view_actions.h"
 	"do_utilx.h"
 	"do_window.h"
 	<gtk/gtk.h>
 
-1565852028 source:c:\var\git\domino\domino\src\bookcase\do_setting_view.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_setting_view.c
 	"do_setting_view.h"
 	"do_view.h"
 	"do_utilx.h"
@@ -157,7 +161,7 @@
 	"domino.h"
 	<string.h>
 
-1565945582 source:c:\var\git\domino\domino\src\bookcase\do_tree_view.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_tree_view.c
 	<gtk/gtk.h>
 	"do_tree_view.h"
 	"domino.h"
@@ -165,7 +169,7 @@
 	"do_view_actions.h"
 	"do_filter.h"
 
-1565767493 source:c:\var\git\domino\domino\src\bookcase\do_utilx.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_utilx.c
 	"do_utilx.h"
 	"do_view.h"
 	"do_validate.h"
@@ -197,7 +201,7 @@
 	<string.h>
 	<gdk/gdkkeysyms.h>
 
-1565932198 source:c:\var\git\domino\domino\src\bookcase\do_window.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_window.c
 	"do_window.h"
 	"do_view_actions.h"
 	"do_common_actions.h"
@@ -209,10 +213,9 @@
 	<gdk/gdkkeysyms.h>
 	<time.h>
 
-1565765285 source:c:\var\git\domino\domino\src\bookcase\domino.c
+1572225741 source:c:\var\git\domino\domino\src\bookcase\domino.c
 	"domino.h"
 	"version.h"
-	"../config/config.h"
 	"do_config.h"
 	"do_message.h"
 	<stdarg.h>
@@ -220,14 +223,16 @@
 	<errno.h>
 	<gtk/gtk.h>
 	<locale.h>
+	"../config/config.h"
 	<windows.h>
 	<loudmouth/loudmouth.h>
 	<X11/Xlib.h>
 	<X11/keysym.h>
 
-1565347849 c:\var\git\domino\domino\src\bookcase\version.h
+1572225741 c:\var\git\domino\domino\src\bookcase\version.h
 
-1565428996 c:\var\git\domino\domino\src\bookcase\do_config.h
+1572225741 c:\var\git\domino\domino\src\bookcase\do_config.h
+	<dolib.h>
 
 1565766092 source:c:\var\git\domino\domino\src\bookcase\hig.c
 	<gtk/gtk.h>
@@ -236,4 +241,33 @@
 1565924302 source:c:\var\git\domino\domino\src\bookcase\main.c
 	"version.h"
 	"do_application.h"
+
+1572225741 c:\var\git\domino\domino\src\bookcase\do_obj_view.h
+	<gtk/gtk.h>
+	"do_view.h"
+
+1572225741 c:\var\git\domino\domino\src\bookcase\do_client.h
+	<gtk/gtk.h>
+	<json-glib/json-glib.h>
+
+1572225741 source:c:\var\git\domino\domino\src\bookcase\bookcase.c
+	"version.h"
+	"do_application.h"
+
+1572225741 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
+	"do_obj_view.h"
+	"do_tree_view.h"
+	"do_application.h"
+	"do_common_actions.h"
+	"do_utilx.h"
+
+1572227881 source:c:\var\git\domino\domino\src\bookcase\do_client.c
+	"do_client.h"
+	"config.h"
+	<libsoup/soup.h>
+	<stdarg.h>
+	<stdlib.h>
+	<sqlite3.h>
+
+1572225741 c:\var\git\domino\domino\src\bookcase\config.h
 
