@@ -44,13 +44,13 @@ compile:
 			n=$(DIR_TMP)/$$(basename $$f).o.$$ver ; \
 			echo $$f; \
 			echo $$n; \
-			if [[ $$f -nt $$n ]] ; \
+			if [[ 1 -eq 1 ]] ; \
 			then \
 				echo $$f ; \
 				m="1" ; \
 				$(CC) -shared -fPIC -Wall \
-				$(PYTHON_CFLAGS_3) $(PYTHON_LIBS_3) \
-                         $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
+				$(PYTHON_CFLAGS_3) \
+                         $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) $(PYTHON_LIBS_3) \
                          -c $$f -o $$n || exit 1; \
 			fi ; \
 		done ; \
@@ -65,7 +65,7 @@ compile:
 			echo $$OBJS ; \
 			$(LINK) -shared -fPIC -Wall  $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) \
                   $$OBJS -o $(LIB_DIR)/$(NAME)-$$ver $(LDFLAGS) \
-                  -Wl,-soname,$(LIB_DIR)/$(NAME)-$$ver ; \
+                  -Wl,-soname,$(LIB_DIR)/$(NAME)-$$ver $(PYTHON_LIBS_3) ; \
 		fi ; \
 	fi
 install:

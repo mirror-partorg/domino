@@ -51,10 +51,15 @@ GList        *do_window_get_children (DoWindow *window);
 
 void          do_window_add_ui_from_string(DoWindow *window, const char *ui, gsize length);
 
-void          do_windows_set_tree_view_lines(DoWindow *window, GtkTreeViewGridLines grid_lines);
+void          do_window_set_tree_view_lines(DoWindow *window, GtkTreeViewGridLines grid_lines);
 
-void          do_windows_set_toolbar_markup(DoWindow *windows, const gchar *markup);
-//gchar        *do_windows_get_toolbar_markup(DoWindow *windows);
+void          do_window_set_toolbar_progress(DoWindow *window, int proc);
+int           do_window_get_toolbar_progress(DoWindow *window);
+void          do_window_set_toolbar_text(DoWindow *window, const gchar *text);
+const gchar  *do_window_get_toolbar_text(DoWindow *window);
+
+void          do_window_update_toolbar(DoWindow *window);
+
 
 
 G_END_DECLS

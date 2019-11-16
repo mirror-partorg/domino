@@ -75,7 +75,7 @@ struct _DoViewIface
 	void	    (* do_close)	     (DoView *view);
 	const char *(* get_title)        (DoView *view);
 	GdkPixbuf  *(* get_icon)	     (DoView *view);
-	gboolean	(* get_load_status)  (DoView *view);
+	const gchar*(* get_load_status)  (DoView *view);
 	gint     	(* get_load_progress)  (DoView *view);
 
 	DoMarked	(* get_marked)          (DoView *view, DoContext *context);
@@ -144,7 +144,7 @@ gboolean	do_view_can_do_save_as(DoView *view);
 void		do_view_do_close(DoView *view);
 const char     *do_view_get_title(DoView *embed);
 GdkPixbuf      *do_view_get_icon(DoView *embed);
-gboolean	do_view_get_load_status(DoView *embed);
+const gchar	   *do_view_get_load_status(DoView *embed);
 gint    	do_view_get_load_progress(DoView *embed);
 
 gboolean    do_view_set_marked(DoView *view, DoContext *context, DoMarked merked);

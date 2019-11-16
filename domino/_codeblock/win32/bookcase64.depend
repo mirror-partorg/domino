@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_ads_view.c
+1573619073 source:c:\var\git\domino\domino\src\bookcase\do_ads_view.c
 	"do_ads_view.h"
 	"do_tree_view.h"
 	"do_application.h"
@@ -10,7 +10,7 @@
 	<gtk/gtk.h>
 	"do_view.h"
 
-1572225741 c:\var\git\domino\domino\src\bookcase\do_view.h
+1573618449 c:\var\git\domino\domino\src\bookcase\do_view.h
 	<glib-object.h>
 	<glib.h>
 	"do_context.h"
@@ -21,7 +21,7 @@
 1440478440 c:\var\git\domino\domino\src\bookcase\do_tree_view.h
 	<gtk/gtk.h>
 
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_application.c
+1573527764 source:c:\var\git\domino\domino\src\bookcase\do_application.c
 	"do_application.h"
 	"domino.h"
 	"do_client.h"
@@ -35,7 +35,7 @@
 	<json-glib/json-glib.h>
 	"do_window.h"
 
-1572225741 c:\var\git\domino\domino\src\bookcase\do_window.h
+1573618651 c:\var\git\domino\domino\src\bookcase\do_window.h
 	<glib-object.h>
 	<glib.h>
 	<gtk/gtk.h>
@@ -69,7 +69,7 @@
 	<gtk/gtk.h>
 	"do_window.h"
 
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_common_actions.c
+1573527716 source:c:\var\git\domino\domino\src\bookcase\do_common_actions.c
 	"do_common_actions.h"
 	"do_utilx.h"
 	"do_window.h"
@@ -146,14 +146,14 @@
 	<dolib.h>
 	"domino.h"
 
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_notebook.c
+1573619406 source:c:\var\git\domino\domino\src\bookcase\do_notebook.c
 	"do_notebook.h"
 	"do_view_actions.h"
 	"do_utilx.h"
 	"do_window.h"
 	<gtk/gtk.h>
 
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_setting_view.c
+1573619450 source:c:\var\git\domino\domino\src\bookcase\do_setting_view.c
 	"do_setting_view.h"
 	"do_view.h"
 	"do_utilx.h"
@@ -161,7 +161,7 @@
 	"domino.h"
 	<string.h>
 
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_tree_view.c
+1573619501 source:c:\var\git\domino\domino\src\bookcase\do_tree_view.c
 	<gtk/gtk.h>
 	"do_tree_view.h"
 	"domino.h"
@@ -190,7 +190,7 @@
 1440478440 source:c:\var\git\domino\domino\src\bookcase\do_validate.c
 	"do_validate.h"
 
-1565760833 source:c:\var\git\domino\domino\src\bookcase\do_view.c
+1573618449 source:c:\var\git\domino\domino\src\bookcase\do_view.c
 	"do_view.h"
 	"do_marshal.h"
 
@@ -201,7 +201,7 @@
 	<string.h>
 	<gdk/gdkkeysyms.h>
 
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_window.c
+1573815662 source:c:\var\git\domino\domino\src\bookcase\do_window.c
 	"do_window.h"
 	"do_view_actions.h"
 	"do_common_actions.h"

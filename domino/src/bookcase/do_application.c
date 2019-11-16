@@ -463,5 +463,6 @@ JsonNode *do_application_get_cache(DoApplication *app, const gchar *key)
 
 static void do_application_add_acceletarors(GApplication *app)
 {
+    add_accelerator(DO_APPLICATION(app), "common-actions.Close", "<Primary>W");
     add_accelerator(DO_APPLICATION(app), "common-actions.Quit", "<Primary>Q");
 }

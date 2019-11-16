@@ -3,7 +3,7 @@ LINK= C:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/g++.bat
 TMP_DIR=c:/var/work/var/MSYS_NT-10.0-17134/x86_64
 MAKE=make
 AM_MAKEFLAGS=CC=gcc
-PYTHON_VERSION_3=3.7
+PYTHON_VERSION_3=3.8
 AM_FLAGS=-DDOMINO78 \
 -DWINSOCK \
 -I../../include \
@@ -49,6 +49,7 @@ LIBWEBKIT=-lwebkitgtk-3.0 -lsoup-2.4 -llibjavascriptcoregtk-3.0
 LIBGTK=-lgtk-3 -lgobject-2.0 -lglib-2.0 -lgdk-3 -lpango-1.0 -lgthread-2.0 -lgdk_pixbuf-2.0 -lgio-2.0 -lrsvg-2 
 LIBGLIB=-lglib-2.0
 LIBLOUDMOUTH=-lloudmouth-1
+PYTHON_LIBS_3=-lpython38 -Lc:/Python38
 WINAPP=-mms-bitfields -Wl,-subsystem,windows
 WINMM=-lwinmm
 MAKEDLL=1

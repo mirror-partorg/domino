@@ -48,7 +48,7 @@ static void        do_tree_view_view_init(DoViewIface *iface);
 static void        do_tree_view_close(DoView *view);
 static const char *do_tree_view_get_title(DoView *view);
 static GdkPixbuf  *do_tree_view_get_icon(DoView *view);
-static gboolean	   do_tree_view_get_load_status(DoView *view);
+static const gchar *do_tree_view_get_load_status(DoView *view);
 static gint	       do_tree_view_get_load_progress(DoView *view);
 static gboolean    do_tree_view_do_grab_focus(DoView *view);
 
@@ -618,9 +618,10 @@ static GdkPixbuf *do_tree_view_get_icon(DoView *view)
 {
     return NULL;
 }
-static gboolean	do_tree_view_get_load_status(DoView *view)
+static const gchar *do_tree_view_get_load_status(DoView *view)
 {
-    return FALSE;
+    //to do
+    return NULL;
 }
 static gint	do_tree_view_get_load_progress(DoView *view)
 {

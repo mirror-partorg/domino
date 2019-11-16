@@ -48,7 +48,7 @@ static 	gboolean	do_ads_view_do_grab_focus	(DoView *view);
 static 	void	 	do_ads_view_do_close	 	(DoView *view);
 static 	const char *do_ads_view_get_title 		(DoView *view);
 //static 	GdkPixbuf  *do_ads_view_get_icon	 	(DoView *view);
-//static 	gboolean	do_ads_view_get_load_status(DoView *view);
+static 	const gchar *do_ads_view_get_load_status(DoView *view);
 //static 	gint 		do_ads_view_get_load_progress(DoView *view);
 //static 	DoMarked	do_ads_view_get_marked 	(DoView *view, DoContext *context);
 //static 	gboolean 	do_ads_view_set_marked 	(DoView *view, DoContext *context, DoMarked marked);
@@ -68,7 +68,7 @@ static void do_ads_view_fill(DoAdsView *view, const gchar *id, const gchar *sele
 static gboolean do_ads_view_fill_first(DoAdsView *view);
 static void model_fill(JsonNode *node, GArray *params);
 static void do_ads_view_model_fill(DoAdsView *view, const gchar *id, const gchar *select_id, JsonNode *node);
-
+static void do_ads_view_set_load_status(DoAdsView *view, const gchar *load_status);
 enum
 {
     PROP_0,
@@ -100,6 +100,7 @@ struct _DoAdsViewPrivate
     GtkTreeModel  *model;
     GSList        *path;
     gchar         *updated_key;
+    gchar         *load_status_;
 };
 
 G_DEFINE_TYPE_WITH_CODE (DoAdsView, do_ads_view, GTK_TYPE_SCROLLED_WINDOW, // to do
@@ -141,7 +142,7 @@ static void do_ads_view_view_init(DoViewIface *iface)
 	iface->do_close = do_ads_view_do_close;
 	iface->get_title = do_ads_view_get_title;
 	//iface->get_icon = do_ads_view_get_icon;
-	//iface->get_load_status = do_ads_view_get_load_status;
+	iface->get_load_status = do_ads_view_get_load_status;
 	//iface->get_load_progress = do_ads_view_get_load_progress;
 	//iface->get_marked = do_ads_view_get_marked;
 	//iface->set_marked = do_ads_view_set_marked;
@@ -204,8 +205,8 @@ static GObject *do_ads_view_constructor(GType type, guint n_construct_properties
 }
 static void do_ads_view_finalize (GObject *object)
 {
-    //DoAdsViewPrivate *priv = DO_ADS_VIEW_GET_PRIVATE (object);
-    // to do
+    DoAdsViewPrivate *priv = DO_ADS_VIEW_GET_PRIVATE (object);
+    g_free(priv->load_status_);
     G_OBJECT_CLASS (do_ads_view_parent_class)->finalize (object);
 }
 static gboolean do_ads_view_do_grab_focus(DoView *view)
@@ -342,7 +343,11 @@ static void do_ads_view_fill(DoAdsView *view, const gchar *id, const gchar *sele
     		                    (GFunc)model_fill, params,
 								"id",id ? id : "", NULL);
     if ( node ) {
+        do_ads_view_set_load_status(view, "Обновление данных");
     	do_ads_view_model_fill(view, id, select_id, node);
+    }
+    else {
+        do_ads_view_set_load_status(view, "Запрос данных");
     }
 	//g_free(key);
 }
@@ -392,6 +397,7 @@ static void model_fill(JsonNode *node, GArray *params)
 	g_array_free(params,FALSE);
 	g_free(id);g_free(select_id);g_free(key);
 	priv->updated_key = NULL;
+	do_ads_view_set_load_status(view, NULL);
 }
 
 static gboolean set_view_cursor(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, DoAdsViewId *AdsId)
@@ -495,4 +501,19 @@ static 	gboolean do_ads_view_can_do_edit(DoView *view, const gchar *tab)
 static 	gboolean do_ads_view_can_do_close_for_esc (DoView *view)
 {
 	return TRUE; // to do
+}
+static 	const gchar *do_ads_view_get_load_status(DoView *view)
+{
+	DoAdsViewPrivate *priv = DO_ADS_VIEW_GET_PRIVATE(view);
+    return priv->load_status_;
+}
+static void do_ads_view_set_load_status(DoAdsView *view, const gchar *load_status)
+{
+    DoAdsViewPrivate *priv = DO_ADS_VIEW_GET_PRIVATE(view);
+    g_free(priv->load_status_);
+    if ( load_status && load_status[0] != '\0')
+        priv->load_status_ = g_strdup(load_status);
+    else
+        priv->load_status_ = NULL;
+
 }

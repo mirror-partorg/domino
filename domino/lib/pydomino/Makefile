@@ -6,7 +6,7 @@ CFLAGS1 = -D_REENTRANT -D_DEBUG -DUSE_IM
 CFLAGS = -D_DEBUG1 -D_REENTRANT 
 
 NAME = pydomino.so
-DLL = pydomino.dll
+DLL = pydomino.pyd
 APP = pydomino
 
 all: gen compile

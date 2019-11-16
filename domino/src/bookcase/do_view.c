@@ -331,8 +331,7 @@ do_view_get_icon (DoView *view)
     else
         return NULL;
 }
-gboolean
-do_view_get_load_status (DoView *view)
+const gchar *do_view_get_load_status (DoView *view)
 {
 	DoViewIface *iface = DO_VIEW_GET_IFACE (view);
 	if (iface->get_load_status)

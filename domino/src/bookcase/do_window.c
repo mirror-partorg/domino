@@ -28,11 +28,13 @@ static void do_window_finalize		(GObject *object);
 
 static gboolean window_state_event(GtkWidget* window, GdkEventWindowState* event);
 static gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *event, gchar *path);
+static void do_window_entry_changed(GtkEditable *editable, DoWindow *window);
 
 #define DEFAULT_WINDOW_SIZE "800x500"
 #define DEFAULT_WINDOW_POSITION "0x0"
 #define DEFAULT_WINDOW_STATE NULL
 #define OBJECT_ROOT_PATH "MainWindow"
+#define DEFAULT_PLACEHOLDER_TEXT  "Поиск по совпадению,МНН (нажмите →)"
 
 #define DO_WINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_WINDOW, DoWindowPrivate))
 
@@ -44,6 +46,7 @@ struct _DoWindowPrivate
     GtkWidget     *notebook;
 	GtkWidget     *gear_button;
     guint          clock_event_source;
+    guint          search_src;
 };
 
 enum
@@ -190,6 +193,7 @@ static GObject *do_window_constructor (GType type,
     priv->entry = entry = gtk_entry_new();
     gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
     gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, "edit-find-symbolic");
+    g_signal_connect(priv->entry, "changed", G_CALLBACK(do_window_entry_changed), window);
     gtk_header_bar_set_custom_title(GTK_HEADER_BAR(headerbar), entry);
 
     menu = g_menu_new();
@@ -219,6 +223,7 @@ static GObject *do_window_constructor (GType type,
     g_menu_append(G_MENU(submenu), "Поиск...", "view-actions.FindByBarcodeAction");
     g_menu_append(G_MENU(submenu), "Послать по почте", "view-actions.MailSendAction");
 
+    g_menu_append(G_MENU(menu), "Закрыть", "common-actions.Close");
     g_menu_append(G_MENU(menu), "Выход", "common-actions.Quit");
 
     DOMINO_PROFILE_OBJECT_INIT(G_OBJECT(window), OBJECT_ROOT_PATH,
@@ -432,4 +437,58 @@ static gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigur
 {
 	do_window_save_setting(GTK_WINDOW(widget), path);
 	return FALSE;
+}
+void do_window_set_toolbar_progress(DoWindow *window, int proc)
+{
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+	if ( proc )
+        gtk_entry_set_progress_fraction(GTK_ENTRY(priv->entry), proc/100.);
+    else {
+        if ( gtk_entry_get_progress_fraction(GTK_ENTRY(priv->entry)) > 0 ) {
+            gtk_entry_set_progress_fraction(GTK_ENTRY(priv->entry), 0.0);
+            gtk_entry_set_progress_pulse_step(GTK_ENTRY(priv->entry), 0);
+        }
+    }
+}
+int do_window_get_toolbar_progress(DoWindow *window)
+{
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+	int ret;
+	ret = gtk_entry_get_progress_fraction(GTK_ENTRY(priv->entry)) *100;
+	return ret;
+}
+void do_window_set_toolbar_text(DoWindow *window, const gchar *markup)
+{
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+	gtk_entry_set_placeholder_text(GTK_ENTRY(priv->entry), markup? markup : DEFAULT_PLACEHOLDER_TEXT);
+}
+const gchar *do_window_get_toolbar_text(DoWindow *window)
+{
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+	return gtk_entry_get_placeholder_text(GTK_ENTRY(priv->entry));
+}
+void  do_window_update_toolbar(DoWindow *window)
+{
+    GtkWidget *widget;
+    widget = do_window_get_active_child(window);
+    const gchar *text = NULL;
+    gint proc = 0;
+    if ( DO_IS_VIEW(widget) ) {
+        text = do_view_get_load_status(DO_VIEW(widget));
+        proc = do_view_get_load_progress(DO_VIEW(widget));
+    }
+    do_window_set_toolbar_text(window, text);
+    do_window_set_toolbar_progress(window, proc);
+}
+static void do_window_entry_changed(GtkEditable *editable, DoWindow *window)
+{
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+	const gchar *text;
+
+    if ( gtk_widget_is_focus(GTK_WIDGET(priv->entry)) ) {
+        text = gtk_entry_get_text(GTK_ENTRY(priv->entry));
+        if ( text && text[0] != '\0' ) {
+            //to do gtk_ent
+        }
+    }
 }

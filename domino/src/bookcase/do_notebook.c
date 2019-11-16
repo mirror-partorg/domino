@@ -42,8 +42,8 @@ enum
 {
 	PROP_0,
 	PROP_SHOW_TABS,
-	PROP_LOAD_STATUS,
-	PROP_LOAD_PROGRESS
+	//PROP_LOAD_STATUS,
+	//PROP_LOAD_PROGRESS
 };
 
 enum
@@ -53,8 +53,8 @@ enum
 };
 
 static guint signals[LAST_SIGNAL];
-static gboolean get_load_status(DoNotebook *notebook);
-static gboolean get_load_progress(DoNotebook *notebook);
+//static gboolean get_load_status(DoNotebook *notebook);
+//static gboolean get_load_progress(DoNotebook *notebook);
 
 G_DEFINE_TYPE_WITH_CODE (DoNotebook, do_notebook, GTK_TYPE_NOTEBOOK,G_ADD_PRIVATE(DoNotebook))
 
@@ -71,12 +71,12 @@ static void do_notebook_get_property (GObject *object,
 		case PROP_SHOW_TABS:
 			g_value_set_boolean (value, priv->show_tabs);
 			break;
-        case PROP_LOAD_STATUS:
-            g_value_set_boolean(value, get_load_status(notebook));
-            break;
-        case PROP_LOAD_PROGRESS:
-            g_value_set_int(value, get_load_progress(notebook));
-            break;
+        //case PROP_LOAD_STATUS:
+        //    g_value_set_boolean(value, get_load_status(notebook));
+        //    break;
+        //case PROP_LOAD_PROGRESS:
+        //    g_value_set_int(value, get_load_progress(notebook));
+        //    break;
 
 	}
 }
@@ -119,7 +119,7 @@ static void do_notebook_class_init (DoNotebookClass *klass)
 			      G_TYPE_NONE,
 			      1,
 			      GTK_TYPE_WIDGET /* Can't use an interface type here */);
-    g_object_class_install_property (object_class,
+    /*g_object_class_install_property (object_class,
 				   PROP_LOAD_STATUS,
 				   g_param_spec_boolean("load-status",
 							"Статус загрузки",
@@ -133,7 +133,7 @@ static void do_notebook_class_init (DoNotebookClass *klass)
 							"Процент загрузки",
 							"Справочник загружается",
 							0,100,0,
-							G_PARAM_READABLE));
+							G_PARAM_READABLE));*/
 
 
 	g_object_class_install_property (object_class,
@@ -345,8 +345,12 @@ do_notebook_switch_page_cb (GtkNotebook *notebook,
 
 	priv->focused_pages = g_list_append (priv->focused_pages, child);
 
-    g_object_notify (G_OBJECT (notebook), "load-status");
-    g_object_notify (G_OBJECT (notebook), "load-progress");
+    //g_object_notify (G_OBJECT (notebook), "load-status");
+    //g_object_notify (G_OBJECT (notebook), "load-progress");
+	GtkWidget *window;
+	window = gtk_widget_get_toplevel(GTK_WIDGET(notebook));
+	if ( window && DO_IS_WINDOW(window))
+        do_window_update_toolbar(DO_WINDOW(window));
 }
 static void
 do_notebook_removed_page_cb (GtkNotebook *notebook,
@@ -354,8 +358,12 @@ do_notebook_removed_page_cb (GtkNotebook *notebook,
 			      guint page_num,
 			      gpointer data)
 {
-    g_object_notify (G_OBJECT (notebook), "load-status");
-    g_object_notify (G_OBJECT (notebook), "load-progress");
+    //g_object_notify (G_OBJECT (notebook), "load-status");
+    //g_object_notify (G_OBJECT (notebook), "load-progress");
+	GtkWidget *window;
+	window = gtk_widget_get_toplevel(GTK_WIDGET(notebook));
+	if ( window && DO_IS_WINDOW(window))
+        do_window_update_toolbar(DO_WINDOW(window));
 }
 
 /*
@@ -504,10 +512,10 @@ static GtkWidget *build_tab_label (DoNotebook *nb, DoView *view)
 
 	g_signal_connect_object (view, "notify::title",
 				 G_CALLBACK (sync_label), label, 0);
-	g_signal_connect_object (view, "notify::load-status",
-				 G_CALLBACK (sync_load_status), hbox, 0);
-	g_signal_connect_object (view, "notify::load-progress",
-				 G_CALLBACK (sync_load_progress), nb, 0);
+	//g_signal_connect_object (view, "notify::load-status",
+	//			 G_CALLBACK (sync_load_status), hbox, 0);
+	//g_signal_connect_object (view, "notify::load-progress",
+	//			 G_CALLBACK (sync_load_progress), nb, 0);
 
 	return hbox;
 }
@@ -562,7 +570,11 @@ do_notebook_insert_page (GtkNotebook *gnotebook,
 
 	gtk_notebook_set_tab_reorderable (gnotebook, tab_widget, TRUE);
 
-	get_load_status(DO_NOTEBOOK(gnotebook));
+	//get_load_status(DO_NOTEBOOK(gnotebook));
+	GtkWidget *window;
+	window = gtk_widget_get_toplevel(GTK_WIDGET(notebook));
+	if ( window && DO_IS_WINDOW(window))
+        do_window_update_toolbar(DO_WINDOW(window));
 
 	return position;
 }
@@ -688,16 +700,25 @@ sync_load_status (DoView *view, GParamSpec *pspec, GtkWidget *proxy)
 {
 	GtkWidget *nb;
 	nb = GTK_WIDGET (g_object_get_data (G_OBJECT (proxy), "notebook"));
-	get_load_status(DO_NOTEBOOK(nb));
+	//get_load_status(DO_NOTEBOOK(nb));
+	GtkWidget *window;
+	window = gtk_widget_get_toplevel(GTK_WIDGET(nb));
+	if ( window && DO_IS_WINDOW(window))
+        do_window_update_toolbar(DO_WINDOW(window));
+
 }
 static void
 sync_load_progress (DoView *view, GParamSpec *pspec, GtkWidget *proxy)
 {
 
-    get_load_progress(DO_NOTEBOOK(proxy));
+    //get_load_progress(DO_NOTEBOOK(proxy));
 
+	GtkWidget *window;
+	window = gtk_widget_get_toplevel(GTK_WIDGET(proxy));
+	if ( window && DO_IS_WINDOW(window))
+        do_window_update_toolbar(DO_WINDOW(window));
 }
-
+/*
 static gboolean get_load_status(DoNotebook *notebook)
 {
 	gboolean load_status = FALSE;
@@ -739,3 +760,4 @@ static gint get_load_progress(DoNotebook *notebook)
 	}
 	return priv->load_progress;
 }
+*/

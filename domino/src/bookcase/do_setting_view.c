@@ -22,11 +22,12 @@ static void do_setting_view_changed(GtkTextBuffer *textbuffer, DoSettingView *vi
 static void        view_close(DoView *embed);
 static const char *view_get_title(DoView *embed);
 static GdkPixbuf  *view_get_icon			(DoView *embed);
-static gboolean	   view_get_load_status	(DoView *embed);
+//static gboolean	   view_get_load_status	(DoView *embed);
 
 static void		command_do_save(DoView *view);
 static gboolean	command_can_do_save(DoView *view);
 static gboolean command_do_grab_focus(DoView *view);
+static gboolean command_can_do_close_for_esc(DoView *view);
 
 enum
 {
@@ -58,10 +59,11 @@ static void do_setting_view_view_init(DoViewIface *iface)
     iface->close_request   = view_close_request;
     iface->get_title       = view_get_title;
     iface->get_icon        = view_get_icon;
-    iface->get_load_status = view_get_load_status;
+    //iface->get_load_status = view_get_load_status;
     iface->do_save         = command_do_save;
     iface->can_do_save     = command_can_do_save;
     iface->do_grab_focus   = command_do_grab_focus;
+    iface->can_do_close_for_esc = command_can_do_close_for_esc;
 }
 
 static void focus_in(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
@@ -236,10 +238,11 @@ static GdkPixbuf    *view_get_icon			(DoView *embed)
 
     return priv->icon;
 }
+/*
 static gboolean	  view_get_load_status	(DoView *embed)
 {
     return FALSE;
-}
+}*/
 
 static void command_do_save(DoView *view)
 {
@@ -295,5 +298,9 @@ static gboolean	command_do_grab_focus(DoView *view)
 	DoSettingViewPrivate  *priv;
 	priv = DO_SETTING_VIEW_GET_PRIVATE (view);
 	gtk_widget_grab_focus(GTK_WIDGET(priv->view));
+	return TRUE;
+}
+static gboolean command_can_do_close_for_esc(DoView *view)
+{
 	return TRUE;
 }
