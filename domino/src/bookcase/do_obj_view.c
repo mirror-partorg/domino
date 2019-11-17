@@ -626,8 +626,19 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(priv->notebook), view, l);
 	g_free(name);
-
 	json_array_foreach_element(columns, do_obj_view_make_column, view);
+#ifdef DEBUG
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
+	renderer = gtk_cell_renderer_text_new();
+	column = do_tree_view_add_column(DO_TREE_VIEW(view), "id", "id", -1);
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_add_attribute(column, renderer, "text", 0);
+	renderer = gtk_cell_renderer_text_new();
+	column = do_tree_view_add_column(DO_TREE_VIEW(view), "key", "key", -1);
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_add_attribute(column, renderer, "text", 1);
+#endif
 	gtk_widget_show_all(GTK_WIDGET(view));
 }
 static void do_obj_view_fill_page(JsonArray *pages, guint index_, JsonNode *element_node, gpointer data)

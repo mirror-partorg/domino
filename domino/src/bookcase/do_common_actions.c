@@ -7,8 +7,13 @@
 #include "do_setting_view.h"
 #include "do_ads_view.h"
 #include "do_obj_view.h"
+#include "do_application.h"
+
 
 static void do_common_actions_do_profile_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
+static void do_common_actions_do_setting_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
 static void do_common_actions_do_ads_view(GSimpleAction *action,
@@ -37,6 +42,7 @@ GActionEntry entries[] =
 	{ "AdsView", do_common_actions_do_ads_view, },
 	{ "ObjView", do_common_actions_do_obj_view, "s" },
 	{ "ProfileView", do_common_actions_do_profile_view, },
+	{ "SettingView", do_common_actions_do_setting_view, },
 	{ "Quit", do_common_actions_quit },
 	{ "Close", do_common_actions_close },
 };
@@ -139,4 +145,12 @@ static void do_common_actions_do_obj_view(GSimpleAction *action,
     do_notebook_add_tab(DO_NOTEBOOK(nb), view, -1, TRUE);
     gtk_widget_grab_focus(GTK_WIDGET(nb));
     do_view_do_grab_focus(DO_VIEW(view));
+}
+static void do_common_actions_do_setting_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       window)
+{
+    GtkApplication *app = gtk_window_get_application(
+                    GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(window))));
+    do_application_settings(DO_APPLICATION(app));
 }

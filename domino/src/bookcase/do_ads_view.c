@@ -5,6 +5,7 @@
 #include "do_utilx.h"
 #include "do_common_actions.h"
 
+
 #define DO_ADS_VIEW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_ADS_VIEW, DoAdsViewPrivate))
 #define DO_TYPE_ADS_VIEW_FLAGS do_ads_view_flags_get_type()
 

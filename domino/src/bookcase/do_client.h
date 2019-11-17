@@ -67,7 +67,7 @@ JsonNode  *do_client_request_valist_async(DoClient *client,
 									va_list args);
 gchar     *do_client_strftime(GDateTime *time);
 GDateTime *do_client_strptime(const gchar* str);
-void       do_client_set_cache(DoClient *client, const gchar *key, JsonNode *node);
+void       do_client_set_cache(DoClient *client, const gchar *key, JsonNode *node, gchar *text, gint length);
 JsonNode  *do_client_get_cache(DoClient *client, const gchar *key);
 
 G_END_DECLS

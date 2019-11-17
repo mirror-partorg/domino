@@ -48,7 +48,7 @@ JsonNode        *do_application_request_async(DoApplication *app, const gchar *m
 gboolean         do_application_cancel_request(DoApplication *app, const gchar *key);
 void             do_application_set_cache(DoApplication *app, const gchar *key, JsonNode *node);
 JsonNode        *do_application_get_cache(DoApplication *app, const gchar *key);
-
+gboolean         do_application_settings(DoApplication *app);
 
 
 

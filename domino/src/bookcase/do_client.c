@@ -11,6 +11,7 @@
 //#define DO_CLIENT_GET_PRIVATE(object)do_client_get_instance_private (object)
 typedef struct _DoValue	DoValue;
 typedef struct _DoQueue	DoQueue;
+#
 
 enum
 {
@@ -22,8 +23,12 @@ enum
 
 struct _DoValue
 {
-	GDateTime *time;
-	JsonNode  *node;
+	GDateTime  *time;
+	JsonParser *parser;
+	JsonNode   *node;
+#ifdef DEBUG
+    gchar      *key;
+#endif // DEBUG
 };
 
 struct _DoQueue
@@ -38,12 +43,93 @@ struct _DoQueue
 	gchar       *key;
 	gboolean     canceled;
 	JsonNode    *cache;
+
 };
 
 static void do_value_free(DoValue *value)
 {
-	g_object_unref(value->time);
-	json_node_free(value->node);
+#ifdef DEBUG
+    g_print("Clear cache \"%s\"\n", value->key);
+    g_free(value->key);
+#endif
+    if ( value->time ) {
+        g_date_time_unref(value->time);
+    }
+	if ( value->parser ) {
+        g_object_unref(value->parser);
+    }
+	if ( value->node ) {
+        json_node_free(value->node);
+    }
+    value->parser = NULL;
+    value->node = NULL;
+    value->time = NULL;
+}
+#ifdef DEBUG
+static void do_value_set_parser(DoValue *value, GDateTime *time, JsonParser *parser, const gchar *key)
+#else
+static void do_value_set_parser(DoValue *value, GDateTime *time, JsonParser *parser)
+#endif
+{
+    do_value_free(value);
+	value->time = time;
+	value->parser = parser;
+#ifdef DEBUG
+    value->key = g_strdup(key);
+#endif // DEBUG
+}
+#ifdef DEBUG
+static void do_value_set_node(DoValue *value, GDateTime *time, JsonNode *node, const gchar *key)
+#else
+static void do_value_set_node(DoValue *value, GDateTime *time, JsonNode *node)
+#endif
+{
+    do_value_free(value);
+	value->time = time;
+	//if ( JSON_NODE_TYPE(node) != JSON_TYPE_OBJECT )
+    //    g_warning(json_node_get_object(node));
+	//else
+    value->node = json_node_copy(node);
+#ifdef DEBUG
+    value->key = g_strdup(key);
+#endif // DEBUG
+}
+#ifdef DEBUG
+static DoValue *do_value_new_from_parser(GDateTime *time, JsonParser *parser, const gchar *key)
+#else
+static DoValue *do_value_new_from_parser(GDateTime *time, JsonParser *parser)
+#endif
+{
+    DoValue *value;
+    value = g_new0(DoValue,1);
+	value->time = time;
+	value->parser = parser;
+#ifdef DEBUG
+    value->key = g_strdup(key);
+#endif // DEBUG
+	return value;
+}
+#ifdef DEBUG
+static DoValue *do_value_new_from_node(GDateTime *time, JsonNode *node, const gchar *key)
+#else
+static DoValue *do_value_new_from_node(GDateTime *time, JsonNode *node)
+#endif
+{
+    DoValue *value;
+    value = g_new0(DoValue,1);
+	value->time = time;
+	//if ( JSON_NODE_TYPE(node) != JSON_TYPE_OBJECT )
+    //    g_warning(json_node_get_object(node));
+	//else
+    value->node = json_node_copy(node);
+#ifdef DEBUG
+    value->key = g_strdup(key);
+#endif // DEBUG
+	return value;
+}
+static JsonNode *do_value_get_node(DoValue *value)
+{
+	return value->parser ? json_parser_get_root(value->parser) : value->node;
 }
 
 struct _DoClientPrivate
@@ -59,6 +145,7 @@ struct _DoClientPrivate
 	sqlite3     *conn;
 	gchar       *cache_url;
 	gchar       *cache_store;
+	guint        source;
 };
 
 G_DEFINE_TYPE_WITH_CODE (DoClient, do_client, G_TYPE_OBJECT, G_ADD_PRIVATE(DoClient))
@@ -66,6 +153,7 @@ G_DEFINE_TYPE_WITH_CODE (DoClient, do_client, G_TYPE_OBJECT, G_ADD_PRIVATE(DoCli
 static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, GFunc callback, gpointer data, va_list args);
 static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key, gboolean archive, GFunc callback, gpointer data, JsonNode *cache);
 static void do_client_update_cache_store_url(DoClient *client);
+static gboolean do_client_cleaning(DoClient *client);
 
 static void do_client_init(DoClient *temp)
 {
@@ -77,7 +165,7 @@ static int do_client_read_cache_callback(void *client, int argc, char **argv, ch
     const gchar *key;
     const gchar *data;
     GDateTime *time;
-    JsonNode *node;
+    //JsonNode *node;
     DoValue *value;
     GError *error = NULL;
 	JsonParser *parser;
@@ -107,30 +195,15 @@ static int do_client_read_cache_callback(void *client, int argc, char **argv, ch
 		g_error ("Unable to parse %s\n", error->message);
 		g_error_free (error);
 	}
-#ifdef JSON12
-	node = json_parser_get_root(parser);
-	json_node_ref(node);
-#else
-	node = json_node_copy(json_parser_get_root(parser));
-#endif
-	g_object_unref (parser);
-	if ( !node )
-		g_warning("key empty %s\n", key); // fix me
     value = g_hash_table_lookup(priv->hash, key);
-    if ( value ) {
-    	g_date_time_unref(value->time);
-#ifdef JSON12
-	    json_node_unref(value->node);
-#else
-        json_node_free(value->node);
-#endif
-	    value->time = time;
-	    value->node = node;
-	}
+    if ( value )
+        do_value_set_parser(value, time, parser, key);
 	else {
-		value = g_new(DoValue,1);
-		value->time = time;
-		value->node = node;
+#ifdef DEBUG
+		value = do_value_new_from_parser(time, parser, key);
+#else
+		value = do_value_new_from_parser(time, parser);
+#endif
 		g_hash_table_insert(priv->hash, g_strdup(key), value);
 	}
     return 0;
@@ -161,7 +234,7 @@ static gboolean do_client_open_db(DoClient *client)
 		sqlite3_free(error);
 	}
 	if ( priv->conn && sqlite3_exec(priv->conn,
-			"SELECT key,time,data FROM cache",
+			"SELECT key,time,data FROM cache WHERE key IN ('CACHE_STORE','CACHE_URL')",
 			do_client_read_cache_callback, client, &error) != SQLITE_OK ) {
 		g_error("Ошибка выполнения запроса %s\n", error ? error : "");
 		priv->conn = NULL;
@@ -169,6 +242,7 @@ static gboolean do_client_open_db(DoClient *client)
 	}
 	return priv->conn != NULL;
 }
+
 
 static GObject *do_client_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
 {
@@ -182,6 +256,7 @@ static GObject *do_client_constructor(GType type, guint n_construct_properties, 
 	priv->hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, (GDestroyNotify)do_value_free);
 	priv->cached = TRUE;
 	do_client_open_db(DO_CLIENT(object));
+	priv->source = g_timeout_add(CACHE_LIVETIME_SECONDS*1000, (GSourceFunc)do_client_cleaning, object);
 	return object;
 }
 static void do_client_clear_cache(GObject *object, const gchar *key)
@@ -218,7 +293,8 @@ static void do_client_finalize (GObject *object)
 	g_free(priv->store);
 	if ( priv->conn )
 		sqlite3_close(priv->conn);
-
+    if ( priv->source )
+        g_source_remove(priv->source);
 	G_OBJECT_CLASS (do_client_parent_class)->finalize (object);
 }
 
@@ -412,46 +488,64 @@ static void do_client_update_cache_store_url(DoClient *client)
 			sqlite3_get_autocommit(priv->conn);
 	}
 }
-static void do_client_update_cache(DoClient *client, const gchar *key, JsonNode *node)
+static void do_client_update_cache(DoClient *client, const gchar *key, JsonParser *parser, JsonNode *node, gchar *text, gint length)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
 	DoValue *value;
+	GDateTime *time;
+	JsonGenerator *generator = NULL;
+
 	value = g_hash_table_lookup(priv->hash, key);
-	if ( !node ) {
-		g_warning("empty update key %s\n", key);//fix me
-		return;
-	}
+	time = g_date_time_new_now_local();
 	if ( value ) {
-		g_date_time_unref(value->time);
-#ifdef JSON12
-		json_node_unref(value->node);
+        if ( parser )
+#ifdef DEBUG
+            do_value_set_parser(value, time, parser, key);
 #else
-		json_node_free(value->node);
+            do_value_set_parser(value, time, parser);
 #endif
-		value->time = g_date_time_new_now_local();
-		value->node = node;
-	}
+        else
+#ifdef DEBUG
+            do_value_set_node(value, time, node, key);
+#else
+            do_value_set_node(value, time, node);
+#endif
+    }
 	else {
-		value = g_new(DoValue,1);
-		value->time = g_date_time_new_now_local();
-		value->node = node;
+        if ( parser )
+#ifdef DEBUG
+            value = do_value_new_from_parser(time, parser, key);
+#else
+            value = do_value_new_from_parser(time, parser);
+#endif // DEBUG
+        else
+#ifdef DEBUG
+            value = do_value_new_from_node(time, node, key);
+#else
+            value = do_value_new_from_node(time, node);
+#endif
 		g_hash_table_insert(priv->hash, g_strdup(key), value);
 	}
 	if ( priv->cached ) {
-		gchar *timestr, *data, *sql_text, *error = NULL;
-		JsonGenerator *generator = json_generator_new();
-		json_generator_set_root(generator, value->node);
-		data = json_generator_to_data(generator, NULL);
-		g_object_unref(generator);
-		if ( (!data) || (data[0] == '\0') ) {
-			g_warning("insert empty key %s\n", key);
-			return;
+		gchar *timestr, *sql_text, *error = NULL, *data;
+		if ( text ) {
+            if ( length != -1 ) {
+                data = g_malloc(length + 1);
+                strncpy(data, text, length);
+                data[length] = '\0';
+            }
+            else
+                data = text;
+        }
+        else {
+            generator = json_generator_new();
+            json_generator_set_root(generator, do_value_get_node(value));
+            data = json_generator_to_data(generator, NULL);
 		}
 		timestr = g_date_time_format(value->time, DATETIME_FORMAT);
 		sql_text = sqlite3_mprintf("REPLACE INTO cache (key,time,data) VALUES (%Q,%Q,%Q)",
 				 key,timestr, data);
 		g_free(timestr);
-		g_free(data);
 		if ( priv->conn && sqlite3_exec(priv->conn,
 				sql_text,
 				NULL, NULL, &error) != SQLITE_OK ) {
@@ -462,6 +556,10 @@ static void do_client_update_cache(DoClient *client, const gchar *key, JsonNode 
 		sqlite3_free(sql_text);
 		if ( priv->conn )
 			sqlite3_get_autocommit(priv->conn);
+		if ( !text || length != -1 )
+            g_free(data);
+        if ( generator )
+            g_object_unref(generator);
 	}
 }
 
@@ -522,7 +620,6 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 		if ( !out ) {
 			out = (gchar*)msg->response_body->data;
 			length = msg->response_body->length;
-			//g_print("%s\n", out);
 		}
 		parser = json_parser_new();
 		json_parser_load_from_data(parser, out, length, &error);
@@ -544,14 +641,7 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
                     return cache;
 				}
 			}
-#ifdef JSON12
-			json_node_ref(res);
-#else
-            res = json_node_copy(res);
-#endif
-			g_object_unref (parser);
-			do_client_update_cache(client, key, res);
-//			json_node_ref(res);
+			do_client_update_cache(client, key, parser, NULL, out, length);
 		}
 	}
 	if ( callback ) {
@@ -564,6 +654,28 @@ static DoValue *do_client_get_cache_value(DoClient *client, const gchar *key)
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
 	DoValue *value;
 	value = g_hash_table_lookup(priv->hash, key);
+	if ( !value && priv->conn ) {
+        gchar *sql, *error = NULL;
+        gint res;
+#ifdef DEBUG
+        g_print("read from local db \"%s\"\n", key);
+#endif
+        sql = g_strdup_printf("SELECT key,time,data FROM cache WHERE key = '%s'", key);
+        res = sqlite3_exec(priv->conn, sql, do_client_read_cache_callback, client, &error);
+        if ( res != SQLITE_OK ) {
+            g_error("Ошибка выполнения запроса %s\n", error ? error : "");
+            priv->conn = NULL;
+            sqlite3_free(error);
+        }
+        g_free(sql);
+        value = g_hash_table_lookup(priv->hash, key);
+    }
+#ifdef DEBUG
+    if ( !value )
+        g_print("Not found in cache \"%s\"\n", key);
+    else
+        g_print("In cache \"%s\"\n", key);
+#endif // DEBUG
 	return value;
 }
 
@@ -577,27 +689,16 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 		DoValue *value;
 		value = do_client_get_cache_value(client, key);
 		if ( value ) {
-#ifdef JSON12
-			json_node_ref(value->node);
-#else
-            json_node_free(value->node);
-#endif
+            res = do_value_get_node(value);
 			cache_time = value->time;
 			if ( check_valid_cache(key, cache_time) ) {
 				if ( callback ) {
-					callback(value->node, data);
+					callback(res, data);
 					return NULL;
 				}
-				else {
-					if ( !callback )
-						return value->node;
-					else {
-						callback(value->node, data);
-						return NULL;
-					}
-				}
+				else
+                    return res;
 			}
-			res = value->node;
 		}
 	}
 
@@ -684,16 +785,43 @@ GDateTime *do_client_strptime(const gchar* str)
 	g_strfreev(d);
 	return res;
 }
-void do_client_set_cache(DoClient *client, const gchar *key, JsonNode *node)
+void do_client_set_cache(DoClient *client, const gchar *key, JsonNode *node, gchar *text, gint length)
 {
-	do_client_update_cache(client, key, node);
+	do_client_update_cache(client, key, NULL, node, text, length);
 }
 JsonNode  *do_client_get_cache(DoClient *client, const gchar *key)
 {
 	DoValue *value;
 	value = do_client_get_cache_value(client, key);
 	if ( value )
-		return value->node;
+		return do_value_get_node(value);
 	else
 		return NULL;
+}
+static void cleaning_cache(gchar *key, DoValue *value, GSList **list)
+{
+	GDateTime *now = g_date_time_new_now_local();
+    if ( g_date_time_difference(now, value->time) > CACHE_LIVETIME_SECONDS * MICRO ) {
+        *list = g_slist_append(*list, key);
+    }
+	g_date_time_unref(now);
+}
+
+static gboolean do_client_cleaning(DoClient *client)
+{
+	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
+    GSList *clean = NULL, *l;
+#ifdef DEBUG
+    g_print("Cleaning caches\n");
+#endif // DEBUG
+	g_hash_table_foreach(priv->hash, (GHFunc)cleaning_cache, &clean);
+	for ( l = clean; l; l = l->next ) {
+        gchar *key;
+        key = l->data;
+#ifdef DEBUG
+        g_print("Cleaning cache \"%s\"\n", key);
+#endif // DEBUG
+        g_hash_table_remove(priv->hash, key);
+	}
+	return TRUE;
 }

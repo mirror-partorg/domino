@@ -10,7 +10,9 @@
 #define DEFAULT_WINDOW_SIZE "800x500"
 #define DEFAULT_WINDOW_POSITION "0x0"
 #define DEFAULT_WINDOW_STATE NULL
-#define DEFAULT_SERVER_URL "http://192.168.8.2:15080/bookcase"
+
+#define DEFAULT_SERVER_URL "http://api.glekar.com:15080/bookcase"
+#define DEFAULT_STORE "1"
 
 #define OBJECT_ROOT_PATH "MainWindow"
 
@@ -57,6 +59,7 @@ G_DEFINE_TYPE_WITH_CODE (DoApplication, do_application, GTK_TYPE_APPLICATION, G_
 
 static void do_application_activate(GApplication *app);
 static void do_application_add_acceletarors(GApplication *app);
+static void quit_all (void);
 
 //static gint do_application_command_line (GApplication *application, GApplicationCommandLine *cl);
 
@@ -82,10 +85,6 @@ static void do_application_init(DoApplication *temp)
 	g_application_add_main_option_entries (G_APPLICATION (temp), options);
 
 }
-static gchar *do_application_store_dialog(GtkWindow *parent)
-{
-	return "5";//to do
-}
 static void add_accelerator (DoApplication *app,
                  const gchar    *action_name,
                  const gchar    *accel)
@@ -103,20 +102,11 @@ static GObject *do_application_constructor(GType type, guint n_construct_propert
 	GObject *object;
 
 	//DoApplication *temp;
-	DoApplicationPrivate *priv;
+	//DoApplicationPrivate *priv;
 	dominox_init();
 
 	object = G_OBJECT_CLASS (do_application_parent_class)->constructor(type, n_construct_properties, construct_params);
-	priv = DO_APPLICATION_GET_PRIVATE(object);
-	gchar *url = NULL;
-	DOMINO_COMMON_GET("main", "url", &url, "store", &priv->store, NULL);
-	if ( !url )
-		url = DEFAULT_SERVER_URL;
-	if ( !priv->store )
-		priv->store = g_strdup(do_application_store_dialog(NULL));
-	DOMINO_COMMON_SET("main", "store", priv->store, "url", url, NULL);
-
-	priv->client = do_client_new(url,priv->store);
+	//priv = DO_APPLICATION_GET_PRIVATE(object);
 
     //g_signal_connect(object, "activate", G_CALLBACK(do_application_activate), object);
     //g_signal_connect(object, "command-line", G_CALLBACK (do_application_command_line), NULL);
@@ -351,6 +341,16 @@ static gboolean run_actions(DoApplication *app)
 	gchar *buf;
 	gint i;
 
+	gchar *url = NULL;
+	DOMINO_COMMON_GET("main", "url", &url, "store", &priv->store, NULL);
+	if ( url && priv->store )
+        priv->client = do_client_new(url, priv->store);
+    else {
+        if ( !do_application_settings(app) )
+            quit_all();
+        DOMINO_COMMON_GET("main", "url", &url, "store", &priv->store, NULL);
+        priv->client = do_client_new(url, priv->store);
+    }
 	time = g_date_time_new_now_local();
 	buf = do_client_strftime(time);
 	do_application_request_async(app, "GET", "GetVersion", "Version", FALSE, FALSE,
@@ -359,11 +359,12 @@ static gboolean run_actions(DoApplication *app)
 	g_date_time_unref(time);g_free(buf);
     group = gtk_widget_get_action_group(priv->first_window, "common-actions");
 	priv = DO_APPLICATION_GET_PRIVATE (app);
-    for ( i = 0; priv->actions[i]; i++ ) {
-        action = g_action_map_lookup_action(G_ACTION_MAP(group),priv->actions[i]);
-        if ( action )
-            g_action_activate(action,NULL);
-    }
+	if ( priv->actions )
+        for ( i = 0; priv->actions[i]; i++ ) {
+            action = g_action_map_lookup_action(G_ACTION_MAP(group),priv->actions[i]);
+            if ( action )
+                g_action_activate(action,NULL);
+        }
     return FALSE;
 }
 static void do_application_activate(GApplication *app)
@@ -376,8 +377,8 @@ static void do_application_activate(GApplication *app)
     }
     priv->first_window = GTK_WIDGET(do_application_create_window(DO_APPLICATION(app), NULL));
     do_application_add_acceletarors(app);
-    if ( priv->actions && priv->actions[0] )
-        g_idle_add((GSourceFunc)run_actions, app);
+    //if ( priv->actions && priv->actions[0] )
+    g_idle_add((GSourceFunc)run_actions, app);
 }
 DoWindow *do_application_create_window (DoApplication *app, GdkScreen *screen)
 {
@@ -451,7 +452,7 @@ void do_application_set_cache(DoApplication *app, const gchar *key, JsonNode *no
 {
 	DoApplicationPrivate *priv;
 	priv = DO_APPLICATION_GET_PRIVATE(app);
-	do_client_set_cache(DO_CLIENT(priv->client), key, node);
+	do_client_set_cache(DO_CLIENT(priv->client), key, node, NULL, -1);
 
 }
 JsonNode *do_application_get_cache(DoApplication *app, const gchar *key)
@@ -465,4 +466,95 @@ static void do_application_add_acceletarors(GApplication *app)
 {
     add_accelerator(DO_APPLICATION(app), "common-actions.Close", "<Primary>W");
     add_accelerator(DO_APPLICATION(app), "common-actions.Quit", "<Primary>Q");
+}
+gboolean do_application_settings(DoApplication *app)
+{
+	DoApplicationPrivate *priv;
+    GtkWindow *win = NULL;
+	if ( app ) {
+        priv = DO_APPLICATION_GET_PRIVATE(app);
+        if ( priv->first_window )
+            win = GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(priv->first_window)));
+    }
+
+#define N_DO_KEY_ENTRY_ 2
+    GtkDialog *dialog;
+    GtkWidget *l;
+	GtkWidget *vbox;
+	GtkWidget *entry[N_DO_KEY_ENTRY_];
+	GtkWidget *notebook;
+	GtkWidget *grid, *e;
+	gint row;
+	gboolean ret = FALSE;
+
+
+    dialog =  (GtkDialog*)gtk_dialog_new_with_buttons(
+                        "Парaметры",
+                        win,
+                        GTK_DIALOG_MODAL,
+                        "Ok",
+                        GTK_RESPONSE_ACCEPT,
+                        "Отмена",
+                        GTK_RESPONSE_REJECT,
+                        NULL);
+    /*g_signal_connect (dialog, "configure-event",
+                      G_CALLBACK (do_window_configure_event_cb), "CommonEditDialog");*/
+
+    gtk_dialog_set_default_response (dialog, GTK_RESPONSE_ACCEPT);
+    gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_window_set_icon_name (GTK_WINDOW(dialog), "bookcase");
+
+	vbox = gtk_dialog_get_content_area(dialog);
+	gtk_box_set_spacing(GTK_BOX(vbox), 6);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+	notebook = gtk_notebook_new();
+	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
+
+	grid = gtk_grid_new();
+	gtk_widget_set_size_request(grid, 500, -1);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), grid, gtk_label_new("Основные"));
+	gtk_grid_set_row_spacing (GTK_GRID(grid), 6);
+	gtk_grid_set_column_spacing(GTK_GRID(grid), 6);
+	gtk_container_set_border_width(GTK_CONTAINER(grid), 6);
+
+	row = 0;
+    entry[0] = e = gtk_entry_new();
+    l = gtk_label_new("Адрес сервера (url):");
+    gtk_label_set_xalign(GTK_LABEL(l), 0.0);
+    gtk_widget_set_hexpand(e, TRUE);
+    gtk_grid_attach(GTK_GRID(grid), l, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), e, 1, row++, 1, 1);
+    entry[1] = e = gtk_entry_new();
+    l = gtk_label_new("Номер аптеки:");
+    gtk_label_set_xalign(GTK_LABEL(l), 0.0);
+    gtk_widget_set_hexpand(e, TRUE);
+    gtk_grid_attach(GTK_GRID(grid), l, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), e, 1, row++, 1, 1);
+
+	gtk_widget_show_all (vbox);
+	gchar *url, *store;
+	DOMINO_COMMON_GET("main", "url", &url, "store", &store, NULL);
+    gtk_entry_set_text(GTK_ENTRY(entry[0]), url ? url : DEFAULT_SERVER_URL);
+    gtk_entry_set_text(GTK_ENTRY(entry[1]), store ? store : DEFAULT_STORE);
+
+    while ( gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT ) {
+        g_object_get(entry[0], "text", &url, NULL);
+        g_object_get(entry[1], "text", &store, NULL);
+        DOMINO_COMMON_SET("main","url", url, "store", store, NULL);
+        if ( domino_config_save(DOMINO_CONFIG_COMMON, TRUE) ) {
+            if ( !priv->client )
+                priv->client = do_client_new(url, priv->store);
+            else
+                g_object_set(priv->client, "url", url, "store", priv->store, NULL);
+            ret = TRUE;
+            break;
+        }
+        else {
+            // to do
+            DOMINO_SHOW_ERROR("Невозможно сохранить параметры. Возможно нехватает прав, попробуйте запустить первый раз под администратором.");
+        }
+
+    }
+    gtk_widget_destroy(GTK_WIDGET(dialog));
+    return ret;
 }
