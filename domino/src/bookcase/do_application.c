@@ -5,6 +5,7 @@
 #include "do_utilx.h"
 #include "do_notebook.h"
 #include "do_window.h"
+#include "do_common_actions.h"
 #include "do_view_actions.h"
 
 #define DEFAULT_WINDOW_SIZE "800x500"
@@ -85,6 +86,7 @@ static void do_application_init(DoApplication *temp)
 	g_application_add_main_option_entries (G_APPLICATION (temp), options);
 
 }
+#if GTK_CHECK_VERSION(3,12,0)
 static void add_accelerator (DoApplication *app,
                  const gchar    *action_name,
                  const gchar    *accel)
@@ -96,7 +98,7 @@ static void add_accelerator (DoApplication *app,
 
     gtk_application_set_accels_for_action (GTK_APPLICATION(app), action_name, vaccels);
 }
-
+#endif
 static GObject *do_application_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
 {
 	GObject *object;
@@ -357,7 +359,11 @@ static gboolean run_actions(DoApplication *app)
 					(GFunc)do_application_set_protocol, app,
 	                NULL);
 	g_date_time_unref(time);g_free(buf);
-    group = gtk_widget_get_action_group(priv->first_window, "common-actions");
+#if GTK_CHECK_VERSION(3,16,0)
+        group = gtk_widget_get_action_group(priv->first_window, "common-actions");
+#else
+	group = do_common_action_get_group();
+#endif
 	priv = DO_APPLICATION_GET_PRIVATE (app);
 	if ( priv->actions )
         for ( i = 0; priv->actions[i]; i++ ) {
@@ -464,8 +470,10 @@ JsonNode *do_application_get_cache(DoApplication *app, const gchar *key)
 
 static void do_application_add_acceletarors(GApplication *app)
 {
+#if GTK_CHECK_VERSION(3,12,0)
     add_accelerator(DO_APPLICATION(app), "common-actions.Close", "<Primary>W");
     add_accelerator(DO_APPLICATION(app), "common-actions.Quit", "<Primary>Q");
+#endif
 }
 gboolean do_application_settings(DoApplication *app)
 {
@@ -520,13 +528,21 @@ gboolean do_application_settings(DoApplication *app)
 	row = 0;
     entry[0] = e = gtk_entry_new();
     l = gtk_label_new("Адрес сервера (url):");
+#if GTK_CHECK_VERSION(3,16,0)
     gtk_label_set_xalign(GTK_LABEL(l), 0.0);
+#else
+    g_object_set(l,"xalign", 0.0, NULL);
+#endif
     gtk_widget_set_hexpand(e, TRUE);
     gtk_grid_attach(GTK_GRID(grid), l, 0, row, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), e, 1, row++, 1, 1);
     entry[1] = e = gtk_entry_new();
     l = gtk_label_new("Номер аптеки:");
+#if GTK_CHECK_VERSION(3,16,0)
     gtk_label_set_xalign(GTK_LABEL(l), 0.0);
+#else
+    g_object_set(l,"xalign", 0.0, NULL);
+#endif
     gtk_widget_set_hexpand(e, TRUE);
     gtk_grid_attach(GTK_GRID(grid), l, 0, row, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), e, 1, row++, 1, 1);

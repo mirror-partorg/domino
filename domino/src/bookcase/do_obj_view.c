@@ -4,6 +4,7 @@
 #include "do_application.h"
 #include "do_common_actions.h"
 #include "do_utilx.h"
+#include <string.h>
 
 #define DO_OBJ_VIEW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_OBJ_VIEW, DoObjViewPrivate))
 #define DO_TYPE_OBJ_VIEW_FLAGS do_obj_view_flags_get_type()
@@ -191,7 +192,11 @@ static GObject *do_obj_view_constructor(GType type, guint n_construct_properties
 
 
     priv->label = l = gtk_label_new("");
-    gtk_label_set_xalign(GTK_LABEL(l), 0);
+#if GTK_CHECK_VERSION(3,16,0)
+    gtk_label_set_xalign(GTK_LABEL(l), 0.0);
+#else
+    g_object_set(l,"xalign", 0.0, NULL);
+#endif
     gtk_label_set_selectable(GTK_LABEL(l), TRUE);
     gtk_widget_set_can_focus (l, TRUE);
 
@@ -594,14 +599,23 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 	view = do_tree_view_new(name);
 	p->header = gtk_label_new("");
 	gtk_label_set_markup(GTK_LABEL(p->header), WAITING_DATA_TEXT);
-	gtk_label_set_xalign(GTK_LABEL(p->header), 0);
+#if GTK_CHECK_VERSION(3,16,0)
+	gtk_label_set_xalign(GTK_LABEL(p->header), 0.0);
+#else
+	g_object_set(p->header,"xalign", 0.0, NULL);
+#endif
+
 	p->footer = gtk_label_new("");
 	p->more_widget = gtk_button_new();
 	gtk_widget_child_focus(p->more_widget, FALSE);
 	gtk_button_set_relief(GTK_BUTTON(p->more_widget), GTK_RELIEF_NONE);
 	gtk_button_set_label(GTK_BUTTON(p->more_widget), TREE_VIEW_MORE_TEXT);
 	g_signal_connect(p->more_widget, "clicked", G_CALLBACK(more_button_clicked), data);
-	gtk_label_set_xalign(GTK_LABEL(p->footer), 0);
+#if GTK_CHECK_VERSION(3,16,0)
+	gtk_label_set_xalign(GTK_LABEL(p->footer), 0.0);
+#else
+	g_object_set(p->footer,"xalign", 0.0, NULL);
+#endif
 	do_tree_view_pack_header(DO_TREE_VIEW(view), p->header);
 	do_tree_view_pack_footer(DO_TREE_VIEW(view), p->more_widget);
 	do_tree_view_pack_footer(DO_TREE_VIEW(view), p->footer);

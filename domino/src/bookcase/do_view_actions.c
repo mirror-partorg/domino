@@ -4,7 +4,7 @@
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
 
-//static GSimpleActionGroup * myGroup = NULL;
+GSimpleActionGroup *group;
 
 static void activate_action(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
@@ -100,7 +100,6 @@ static GActionEntry entries[] =
 
 void do_view_actions_init(DoWindow *window)
 {
-    GSimpleActionGroup *group;
     group = g_simple_action_group_new();
     g_action_map_add_action_entries(G_ACTION_MAP(group), entries, G_N_ELEMENTS (entries), window);
 	gtk_widget_insert_action_group (GTK_WIDGET (window),
@@ -112,7 +111,8 @@ void do_view_actions_init(DoWindow *window)
 
 void do_view_actions_action_sensitize(DoWindow *window, const char * name, gboolean b)
 {
-    GActionGroup *group = gtk_widget_get_action_group(GTK_WIDGET(window), "view-actions");
+
+    //GActionGroup *group = gtk_widget_get_action_group(GTK_WIDGET(window), "view-actions");
     GAction *action = g_action_map_lookup_action (G_ACTION_MAP(group), name);
     g_assert( action != NULL );
     g_simple_action_set_enabled(G_SIMPLE_ACTION(action), b);

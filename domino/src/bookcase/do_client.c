@@ -1,11 +1,11 @@
 
-
 #include "do_client.h"
 #include "config.h"
 #include <libsoup/soup.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <sqlite3.h>
+#include <string.h>
 
 #define DO_CLIENT_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_CLIENT, DoClientPrivate))
 //#define DO_CLIENT_GET_PRIVATE(object)do_client_get_instance_private (object)
@@ -197,7 +197,11 @@ static int do_client_read_cache_callback(void *client, int argc, char **argv, ch
 	}
     value = g_hash_table_lookup(priv->hash, key);
     if ( value )
-        do_value_set_parser(value, time, parser, key);
+#ifdef DEBUG
+            do_value_set_parser(value, time, parser, key);
+#else
+            do_value_set_parser(value, time, parser);
+#endif
 	else {
 #ifdef DEBUG
 		value = do_value_new_from_parser(time, parser, key);
@@ -282,8 +286,11 @@ static void do_client_clear_cache(GObject *object, const gchar *key)
 		sqlite3_free(error);
 	}
 	sqlite3_free(sql_text);
-	if ( priv->conn )
+	if ( priv->conn ) {
+		g_print("commit\n");
 		sqlite3_get_autocommit(priv->conn);
+		g_print("commit ok\n");
+	}
 }
 static void do_client_finalize (GObject *object)
 {
@@ -463,7 +470,7 @@ static void do_client_update_cache_store_url(DoClient *client)
 			if ( priv->conn && sqlite3_exec(priv->conn,
 					sql_text,
 					NULL, NULL, &error) != SQLITE_OK ) {
-				g_error("Ошибка обновление записей cache %s\n", error ? error : "");
+				g_warning("Ошибка обновление записей cache %s\n", error ? error : "");
 				priv->conn = NULL;
 				sqlite3_free(error);
 			}
@@ -477,15 +484,18 @@ static void do_client_update_cache_store_url(DoClient *client)
 			if ( priv->conn && sqlite3_exec(priv->conn,
 					sql_text,
 					NULL, NULL, &error) != SQLITE_OK ) {
-				g_error("Ошибка обновление записей cache %s\n", error ? error : "");
+				g_warning("Ошибка обновление записей cache %s\n", error ? error : "");
 				priv->conn = NULL;
 				sqlite3_free(error);
 			}
 			sqlite3_free(sql_text);
 		}
 		g_free(timestr);
-		if ( priv->conn )
+		if ( priv->conn ) {
+			g_print("commit 1\n");
 			sqlite3_get_autocommit(priv->conn);
+			g_print("commit 1 ok\n");
+		}
 	}
 }
 static void do_client_update_cache(DoClient *client, const gchar *key, JsonParser *parser, JsonNode *node, gchar *text, gint length)
@@ -549,13 +559,16 @@ static void do_client_update_cache(DoClient *client, const gchar *key, JsonParse
 		if ( priv->conn && sqlite3_exec(priv->conn,
 				sql_text,
 				NULL, NULL, &error) != SQLITE_OK ) {
-			g_error("Ошибка обновление записей cache %s\n", error ? error : "");
+			g_warning("Ошибка обновление записей cache %s\n", error ? error : "");
 			priv->conn = NULL;
 			sqlite3_free(error);
 		}
 		sqlite3_free(sql_text);
-		if ( priv->conn )
+		if ( priv->conn ) {
+			g_print("commit 2 \n");
 			sqlite3_get_autocommit(priv->conn);
+			g_print("commit 2 ok\n");
+		}
 		if ( !text || length != -1 )
             g_free(data);
         if ( generator )

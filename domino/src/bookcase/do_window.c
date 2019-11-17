@@ -30,6 +30,10 @@ static gboolean window_state_event(GtkWidget* window, GdkEventWindowState* event
 static gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *event, gchar *path);
 static void do_window_entry_changed(GtkEditable *editable, DoWindow *window);
 
+#if !GTK_CHECK_VERSION(3,12,0)
+static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event, gpointer data);
+#endif
+
 #define DEFAULT_WINDOW_SIZE "800x500"
 #define DEFAULT_WINDOW_POSITION "0x0"
 #define DEFAULT_WINDOW_STATE NULL
@@ -173,7 +177,10 @@ static GObject *do_window_constructor (GType type,
                       G_CALLBACK (window_state_event), NULL);
     g_signal_connect (window, "configure-event",
                       G_CALLBACK (do_window_configure_event_cb), OBJECT_ROOT_PATH);
-
+#if !GTK_CHECK_VERSION(3,12,0)
+    g_signal_connect (window, "key-press-event",
+                      G_CALLBACK (do_window_key_press_event_cb), NULL);
+#endif
     priv = DO_WINDOW_GET_PRIVATE(window);
 
     //do_view_actions_init(manager);
@@ -181,26 +188,50 @@ static GObject *do_window_constructor (GType type,
     gtk_window_set_icon_name(GTK_WINDOW (window), "bookcase");
 
     priv->notebook = notebook = GTK_WIDGET(g_object_new(DO_TYPE_NOTEBOOK, NULL));
+#if GTK_CHECK_VERSION(3,12,0)
     gtk_container_add(GTK_CONTAINER(window), notebook);
+#else
+    GtkWidget *vbox;
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+#endif
     do_notebook_set_show_tabs(DO_NOTEBOOK(notebook), FALSE); // to do
 	g_signal_connect (priv->notebook, "tab-close-request",  G_CALLBACK (notebook_page_close_request_cb), window);
 	g_signal_connect_after (priv->notebook, "switch-page", G_CALLBACK (notebook_switch_page_cb), window);
 
+#if GTK_CHECK_VERSION(3,12,0)
     priv->headerbar = headerbar = gtk_header_bar_new();
     gtk_window_set_titlebar(GTK_WINDOW(window), headerbar);
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(headerbar), TRUE);
-
+#else
+    priv->headerbar = headerbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), headerbar, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
+#endif
     priv->entry = entry = gtk_entry_new();
+    gtk_widget_set_size_request(entry, 500, -1);
     gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
     gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, "edit-find-symbolic");
     g_signal_connect(priv->entry, "changed", G_CALLBACK(do_window_entry_changed), window);
-    gtk_header_bar_set_custom_title(GTK_HEADER_BAR(headerbar), entry);
 
+#if GTK_CHECK_VERSION(3,12,0)
+    gtk_header_bar_set_custom_title(GTK_HEADER_BAR(headerbar), entry);
+#else
+    gtk_box_pack_start(GTK_BOX(headerbar), entry, TRUE, TRUE, 0);
+#endif
     menu = g_menu_new();
-   	image = gtk_image_new_from_icon_name("open-menu-symbolic", GTK_ICON_SIZE_MENU);
+#if GTK_CHECK_VERSION(3,12,0)
+    image = gtk_image_new_from_icon_name("open-menu-symbolic", GTK_ICON_SIZE_MENU);
+#else
+    image = gtk_image_new_from_icon_name("view-sidebar-symbolic", GTK_ICON_SIZE_MENU);
+#endif
     priv->gear_button = gear_button = gtk_menu_button_new();
+#if GTK_CHECK_VERSION(3,12,0)
     gtk_header_bar_pack_end(GTK_HEADER_BAR(headerbar), gear_button);
     gtk_menu_button_set_use_popover(GTK_MENU_BUTTON(gear_button), TRUE);
+#else
+    gtk_box_pack_end(GTK_BOX(headerbar), gear_button, FALSE, FALSE, 0);
+#endif
     gtk_button_set_image(GTK_BUTTON(gear_button), image);
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(gear_button), G_MENU_MODEL(menu));
 
@@ -236,6 +267,7 @@ static GObject *do_window_constructor (GType type,
               "window-position", DEFAULT_WINDOW_POSITION,
                NULL);
     gtk_window_set_hide_titlebar_when_maximized (GTK_WINDOW (window), TRUE);
+    gtk_widget_set_size_request(GTK_WIDGET(window), 600, 400);
     gtk_widget_show_all(GTK_WIDGET(window));
 	return object;
 }
@@ -496,3 +528,9 @@ static void do_window_entry_changed(GtkEditable *editable, DoWindow *window)
         }
     }
 }
+#if !GTK_CHECK_VERSION(3,12,0)
+static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event, gpointer data)
+{
+    return FALSE;
+}
+#endif

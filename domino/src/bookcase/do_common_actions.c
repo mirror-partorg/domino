@@ -48,6 +48,13 @@ GActionEntry entries[] =
 };
 static GSimpleActionGroup *group = NULL;
 
+#if !GTK_CHECK_VERSION(3,16,0)
+GActionGroup *do_common_action_get_group()
+{
+    return (GActionGroup*)group;
+}
+#endif
+
 void do_common_actions_init(DoWindow *window)
 {
     group = g_simple_action_group_new();
