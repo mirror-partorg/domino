@@ -1319,7 +1319,7 @@ xmpp_connect()
     }
     if ( xmpp_connection == NULL ) {
         if ( !xmpp_username ) {
-            g_printerr("Пользователь обмена сообщениями неопределен");
+            g_printerr("Пользователь обмена сообщениями неопределен\n");
             return FALSE;
         }
         xmpp_connection = lm_connection_new (xmpp_server);
@@ -1423,7 +1423,7 @@ xmpp_send_message(const gchar *recipients, const gchar *message)
         m = lm_message_new (*r, LM_MESSAGE_TYPE_MESSAGE);
         lm_message_node_add_child (m->node, "body", message);
         if ( !lm_connection_send (xmpp_connection, m, &error) ) {
-            g_printerr("Error while sending message to '%s': %s",
+            g_printerr("Error while sending message to '%s': %s\n",
                          *r, error ? error->message:"");
             lm_message_unref (m);
             break;

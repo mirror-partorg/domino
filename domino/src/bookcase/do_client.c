@@ -287,9 +287,7 @@ static void do_client_clear_cache(GObject *object, const gchar *key)
 	}
 	sqlite3_free(sql_text);
 	if ( priv->conn ) {
-		g_print("commit\n");
 		sqlite3_get_autocommit(priv->conn);
-		g_print("commit ok\n");
 	}
 }
 static void do_client_finalize (GObject *object)
@@ -492,9 +490,7 @@ static void do_client_update_cache_store_url(DoClient *client)
 		}
 		g_free(timestr);
 		if ( priv->conn ) {
-			g_print("commit 1\n");
 			sqlite3_get_autocommit(priv->conn);
-			g_print("commit 1 ok\n");
 		}
 	}
 }
@@ -565,9 +561,7 @@ static void do_client_update_cache(DoClient *client, const gchar *key, JsonParse
 		}
 		sqlite3_free(sql_text);
 		if ( priv->conn ) {
-			g_print("commit 2 \n");
 			sqlite3_get_autocommit(priv->conn);
-			g_print("commit 2 ok\n");
 		}
 		if ( !text || length != -1 )
             g_free(data);
@@ -584,10 +578,10 @@ static void do_client_message_finished(SoupSession *session, SoupMessage *msg, g
 {
 	DoQueue *queue = data;
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (queue->client);
-	//if ( queue->canceled ) // debug it
-	//	g_print("finished canceled\n");
-	//else
-	//	g_print("finished\n");
+#ifdef DEBUG
+	if ( queue->canceled )
+        g_print("finished canceled\n");
+#endif // DEBUG
 	priv->queue_message = g_slist_remove(priv->queue_message, data);
 	if ( !queue->canceled )
 		do_client_proccess_message(queue->client, msg, queue->key, queue->archive, queue->callback, queue->data, queue->cache);
@@ -599,7 +593,9 @@ gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
 	GSList *node;
 	DoQueue *data;
-	g_print("cancel\n");
+#ifdef DEBUG
+    g_print("cancel request \"%s\"\n", key);
+#endif
 	for ( node = priv->queue_message; node; node = node->next ) { // to do not "equal" key
 		data = node->data;
 		if ( !g_strcmp0(data->key, key) ) {

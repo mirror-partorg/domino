@@ -12,7 +12,7 @@
 #define ROOT_OBJECT "obj-view"
 #define TREE_VIEW_MORE_TEXT "Показать больше данных (перейдите в конец списка и нажмите ↓)"
 #define WAITING_DATA_TEXT "<b>Ожидание получения данных</b>..."
-
+#define EMPTY_DATA_TEXT "<i>Данные не получены</i>"
 static void do_obj_view_view_init(DoViewIface *iface);
 
 static	gboolean	do_obj_view_close_request	(DoView *view);
@@ -90,6 +90,7 @@ struct _DoObjViewPrivate
     guint          source_;
     //gboolean       grab_focus;
     gboolean       filling;
+    gboolean       label_init;
 };
 struct _DoPage
 {
@@ -299,7 +300,9 @@ static 	const char *do_obj_view_get_title(DoView *view)
 }
 static void do_obj_view_do_close(DoView *view)
 {
-    gtk_widget_destroy(GTK_WIDGET(view));
+    DoObjViewPrivate *priv = DO_OBJ_VIEW_GET_PRIVATE (view);
+    if ( !priv->filling )
+        gtk_widget_destroy(GTK_WIDGET(view));
 }
 
 static gboolean do_obj_view_fill_first(DoObjView *view)
@@ -326,6 +329,8 @@ static void do_obj_view_fill(DoObjView *view, const gchar *page)
     if ( priv->filling )
         return;
     priv->filling = TRUE;
+    if ( !priv->label_init )
+        gtk_label_set_markup(GTK_LABEL(priv->label), WAITING_DATA_TEXT);
     //JsonNode *node;
     params =  g_array_new (FALSE, FALSE, sizeof (gpointer));
 	g_array_append_val(params, view);
@@ -455,6 +460,7 @@ static void do_obj_view_model_fill(DoObjView *view, const gchar *page_id, JsonNo
             }
             else
                 gtk_widget_set_visible(GTK_WIDGET(priv->label), FALSE);
+            priv->label_init = TRUE;
         }
         if ( json_object_has_member(obj, "pages") ) {
             if ( !priv->pages )
@@ -462,13 +468,21 @@ static void do_obj_view_model_fill(DoObjView *view, const gchar *page_id, JsonNo
             json_array_foreach_element(json_object_get_array_member(obj, "pages"), do_obj_view_fill_page, view);
         }
     }
+    else {
+        if ( !priv->label_init )
+            gtk_label_set_markup(GTK_LABEL(priv->label), EMPTY_DATA_TEXT);
+    }
 	//gtk_widget_show_all(GTK_WIDGET(priv->notebook));
     priv->filling = FALSE;
 }
 
 static gboolean do_obj_view_close_request(DoView *view)
 {
-	return TRUE;
+    DoObjViewPrivate *priv = DO_OBJ_VIEW_GET_PRIVATE (view);
+    if ( priv->filling )
+        return FALSE;
+    else
+        return TRUE;
 }
 static void do_obj_view_do_edit(DoView *view, const gchar *tab)
 {

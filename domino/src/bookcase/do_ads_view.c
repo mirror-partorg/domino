@@ -190,8 +190,10 @@ static GObject *do_ads_view_constructor(GType type, guint n_construct_properties
 	g_signal_connect(priv->tree_view, "row-activated",  G_CALLBACK( do_ads_view_row_activated ), object);
 
     //gtk_tree_view_set_model(tree_view, model);
-    if (GTK_IS_TREE_VIEW(priv->tree_view))
+    if (GTK_IS_TREE_VIEW(priv->tree_view)) {
         gtk_tree_view_set_model(GTK_TREE_VIEW(priv->tree_view), model);
+        gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(priv->tree_view), FALSE);
+    }
     r = gtk_cell_renderer_text_new();
     col = do_tree_view_add_column(DO_TREE_VIEW(priv->do_view), "Description", "Описание", -1);
     gtk_tree_view_column_pack_start (col, r, TRUE);
@@ -322,8 +324,6 @@ static void do_ads_view_fill(DoAdsView *view, const gchar *id, const gchar *sele
     if ( priv->updated_key ) {
         GtkApplication *app = gtk_window_get_application(
         		 GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(view))));
-
-    	g_print("updated!!!\n");
     	do_application_cancel_request(DO_APPLICATION(app), priv->updated_key);
     	priv->updated_key = NULL;
     }
@@ -465,8 +465,6 @@ static void do_ads_view_do_edit(DoView *view, const gchar *tab)
 	if ( priv->updated_key ) {
         GtkApplication *app = gtk_window_get_application(
         		 GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(view))));
-
-    	g_print("updated!!!\n");
     	do_application_cancel_request(DO_APPLICATION(app), priv->updated_key);
     	priv->updated_key = NULL;
 	}

@@ -344,13 +344,18 @@ static gboolean run_actions(DoApplication *app)
 	gint i;
 
 	gchar *url = NULL;
-	DOMINO_COMMON_GET("main", "url", &url, "store", &priv->store, NULL);
+    DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
+	if ( !url )
+        DOMINO_COMMON_GET("main", "url", &url, NULL);
+	if ( !priv->store )
+        DOMINO_COMMON_GET("main", "store", &priv->store, NULL);
+
 	if ( url && priv->store )
         priv->client = do_client_new(url, priv->store);
     else {
         if ( !do_application_settings(app) )
             quit_all();
-        DOMINO_COMMON_GET("main", "url", &url, "store", &priv->store, NULL);
+        DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
         priv->client = do_client_new(url, priv->store);
     }
 	time = g_date_time_new_now_local();
@@ -478,6 +483,7 @@ static void do_application_add_acceletarors(GApplication *app)
 gboolean do_application_settings(DoApplication *app)
 {
 	DoApplicationPrivate *priv;
+	priv = DO_APPLICATION_GET_PRIVATE(app);
     GtkWindow *win = NULL;
 	if ( app ) {
         priv = DO_APPLICATION_GET_PRIVATE(app);
@@ -549,15 +555,19 @@ gboolean do_application_settings(DoApplication *app)
 
 	gtk_widget_show_all (vbox);
 	gchar *url, *store;
-	DOMINO_COMMON_GET("main", "url", &url, "store", &store, NULL);
+    DOMINO_LOCAL_GET("main", "url", &url, "store", &store, NULL);
+	if ( !url )
+        DOMINO_COMMON_GET("main", "url", &url, NULL);
+	if ( !store )
+        DOMINO_COMMON_GET("main", "store", &store, NULL);
     gtk_entry_set_text(GTK_ENTRY(entry[0]), url ? url : DEFAULT_SERVER_URL);
     gtk_entry_set_text(GTK_ENTRY(entry[1]), store ? store : DEFAULT_STORE);
 
     while ( gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT ) {
         g_object_get(entry[0], "text", &url, NULL);
         g_object_get(entry[1], "text", &store, NULL);
-        DOMINO_COMMON_SET("main","url", url, "store", store, NULL);
-        if ( domino_config_save(DOMINO_CONFIG_COMMON, TRUE) ) {
+        DOMINO_LOCAL_SET("main","url", url, "store", priv->store, NULL);
+        if ( domino_config_save(DOMINO_CONFIG_LOCAL, TRUE) ) {
             if ( !priv->client )
                 priv->client = do_client_new(url, priv->store);
             else
