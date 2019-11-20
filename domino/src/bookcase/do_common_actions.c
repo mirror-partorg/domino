@@ -7,6 +7,7 @@
 #include "do_setting_view.h"
 #include "do_ads_view.h"
 #include "do_obj_view.h"
+#include "do_list_view.h"
 #include "do_application.h"
 
 
@@ -17,6 +18,12 @@ static void do_common_actions_do_setting_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
 static void do_common_actions_do_ads_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
+static void do_common_actions_do_goods_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
+static void do_common_actions_do_list_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
 static void do_common_actions_do_obj_view(GSimpleAction *action,
@@ -40,6 +47,8 @@ GActionEntry entries[] =
 	//{ "TabsMoveRight", do_common_actions_do_tabs_move_right, },
 	//{ "FullScreen", do_common_actions_do_fullscreen, },
 	{ "AdsView", do_common_actions_do_ads_view, },
+	{ "GoodsView", do_common_actions_do_goods_view, },
+	{ "ListView", do_common_actions_do_list_view, "s"},
 	{ "ObjView", do_common_actions_do_obj_view, "s" },
 	{ "ProfileView", do_common_actions_do_profile_view, },
 	{ "SettingView", do_common_actions_do_setting_view, },
@@ -127,6 +136,37 @@ static void do_common_actions_do_ads_view(GSimpleAction *action,
     do_notebook_add_tab(DO_NOTEBOOK(nb), view, -1, TRUE);
     gtk_widget_grab_focus(GTK_WIDGET(nb));
     do_view_do_grab_focus(DO_VIEW(view));
+}
+static void do_common_actions_do_list_view_(const gchar *name, DoWindow *window)
+{
+    GtkNotebook *nb;
+    DoView *view;
+
+    nb = GTK_NOTEBOOK (do_window_get_notebook (window));
+    g_return_if_fail (nb != NULL);
+
+    view = DO_VIEW(do_list_view_new(name));
+    do_end_long_operation(GTK_WIDGET(window));
+    if ( !view )
+        return;
+    do_notebook_add_tab(DO_NOTEBOOK(nb), view, -1, TRUE);
+    gtk_widget_grab_focus(GTK_WIDGET(nb));
+    do_view_do_grab_focus(DO_VIEW(view));
+}
+
+static void do_common_actions_do_goods_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       window)
+{
+    do_common_actions_do_list_view_("goods", DO_WINDOW(window));
+}
+static void do_common_actions_do_list_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       window)
+{
+    const gchar  *name;
+    name = g_variant_get_string(parameter, NULL);
+    do_common_actions_do_list_view_(name, DO_WINDOW(window));
 }
 
 void do_common_action_activate(const gchar *action_name, GVariant *parameter)

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <sqlite3.h>
 #include <string.h>
+#include <zlib.h>
 
 #define DO_CLIENT_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_CLIENT, DoClientPrivate))
 //#define DO_CLIENT_GET_PRIVATE(object)do_client_get_instance_private (object)
@@ -607,6 +608,84 @@ gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 	}
 	return FALSE;
 }
+gchar *inf(gchar *source, size_t len, size_t *outlen)
+{
+    #define BUFFER_SIZE 64*1024*8
+    gchar *crnt;
+    int ret;
+    unsigned have;
+    z_stream strm;
+    GSList *pieces = NULL;
+    GSList *lens = NULL;
+
+    unsigned char *out;
+
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = 0;
+    strm.next_in = Z_NULL;
+    ret = inflateInit(&strm);
+    if (ret != Z_OK)
+        return NULL;
+    crnt = source;
+    do {
+
+        strm.avail_in = BUFFER_SIZE < (len - (crnt - source)) ? BUFFER_SIZE : len - (crnt - source);
+        strm.next_in = crnt;
+
+        do {
+            out = g_malloc(BUFFER_SIZE);
+
+            strm.avail_out = BUFFER_SIZE;
+            strm.next_out = out;
+
+            ret = inflate(&strm, Z_NO_FLUSH);
+            if (ret == Z_STREAM_ERROR)
+                return NULL;
+            switch (ret) {
+            case Z_NEED_DICT:
+                ret = Z_DATA_ERROR;     /* and fall through */
+            case Z_DATA_ERROR:
+            case Z_MEM_ERROR:
+                (void)inflateEnd(&strm);
+                return NULL;
+            }
+            have = BUFFER_SIZE - strm.avail_out;
+
+            pieces = g_slist_append(pieces, out);
+            lens  = g_slist_append(lens, GINT_TO_POINTER(have));
+
+        } while (strm.avail_out == 0);
+
+        crnt += BUFFER_SIZE;
+
+    } while (ret != Z_STREAM_END && crnt < source + len);
+
+    (void)inflateEnd(&strm);
+    if ( ret == Z_STREAM_END ) {
+        GSList *l, *p;
+        size_t out_len = 0;
+        for ( l = lens; l; l = l->next )
+            out_len += GPOINTER_TO_INT(l->data);
+        out = g_malloc(out_len+1);
+        crnt = out;
+        p = pieces;
+        for ( l = lens; l ; l = l->next ) {
+            size_t len1;
+            len1 = GPOINTER_TO_INT(l->data);
+            memcpy(crnt, p->data, len1);
+            crnt = crnt + len1;
+            p = p->next;
+        }
+        out[out_len] = '\0';
+        *outlen = out_len;
+        return out;
+
+    }
+
+    return NULL;
+}
 
 static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key, gboolean archive, GFunc callback, gpointer data, JsonNode *cache)
 {
@@ -620,10 +699,14 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 		GError *error = NULL;
 		JsonObject *obj;
 		gssize length;
+		gboolean needfree = FALSE;
 		gchar *out = NULL;
 
+
 		if ( archive ) {
-			// to do
+            out = inf(msg->response_body->data, msg->response_body->length, &length);
+            if ( !out )
+                return NULL;
 		}
 
 		if ( !out ) {
@@ -647,11 +730,13 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 					if ( callback ) {
 						callback(cache, data);
 					}
+					if ( needfree ) g_free(out);
                     return cache;
 				}
 			}
 			do_client_update_cache(client, key, parser, NULL, out, length);
 		}
+        if ( needfree ) g_free(out);
 	}
 	if ( callback ) {
 		callback(res, data);
@@ -694,7 +779,7 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 	JsonNode *res = NULL;
 	GDateTime *cache_time = NULL;
 
-	if ( priv->cached && !nocache ) {
+	if ( priv->cached && !nocache && FALSE) { // fix me
 		DoValue *value;
 		value = do_client_get_cache_value(client, key);
 		if ( value ) {
@@ -712,7 +797,13 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 	}
 
 	gchar *url;
-	url = g_strdup_printf("%s/%s?store=%s", priv->url, func, priv->store);
+    url = g_strdup_printf("%s/%s?store=%s", priv->url, func, priv->store);
+	if ( archive ) {
+        gchar *buf;
+        buf = g_strdup_printf("%s&zip=1", url);
+        g_free(url);
+        url = buf;
+    }
 	if ( !g_strcmp0(method, "GET") ) {
 		gchar *buf, *name, *value;
 	    name = va_arg(args, gchar*);

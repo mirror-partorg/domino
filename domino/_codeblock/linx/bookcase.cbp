@@ -11,7 +11,7 @@
 				<Option object_output="../../../../../var/Linux/Debian/buster/x86_64/bookcase/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="AdsView" />
+				<Option parameters="GoodsView" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -37,7 +37,7 @@
 			<Add directory="../../src/bookcase" />
 		</Compiler>
 		<Linker>
-			<Add option="`pkg-config gtk+-3.0 json-glib-1.0 libsoup-2.4 --libs` -ldolib -lexpat -lsqlite3" />
+			<Add option="`pkg-config gtk+-3.0 json-glib-1.0 libsoup-2.4 --libs` -ldolib -lexpat -lsqlite3 -lz" />
 		</Linker>
 		<Unit filename="../../src/bookcase/bookcase.c">
 			<Option compilerVar="CC" />
@@ -64,6 +64,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/bookcase/do_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_list_view.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/bookcase/do_marshal.c">

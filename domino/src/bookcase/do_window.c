@@ -195,7 +195,9 @@ static GObject *do_window_constructor (GType type,
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 #endif
+#ifdef POS_MINIMAL
     do_notebook_set_show_tabs(DO_NOTEBOOK(notebook), FALSE); // to do
+#endif
 	g_signal_connect (priv->notebook, "tab-close-request",  G_CALLBACK (notebook_page_close_request_cb), window);
 	g_signal_connect_after (priv->notebook, "switch-page", G_CALLBACK (notebook_switch_page_cb), window);
 
@@ -236,6 +238,7 @@ static GObject *do_window_constructor (GType type,
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(gear_button), G_MENU_MODEL(menu));
 
     g_menu_append(G_MENU(menu), "Акции и рекомендации", "common-actions.AdsView");
+    g_menu_append(G_MENU(menu), "Товары", "common-actions.GoodsView");
     submenu = g_menu_new();
     g_menu_append_submenu(G_MENU(menu), "Настройки", G_MENU_MODEL(submenu));
     g_menu_append(G_MENU(submenu), "Пользовательские", "common-actions.ProfileView");
