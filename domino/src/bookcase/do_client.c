@@ -10,6 +10,8 @@
 
 #define DO_CLIENT_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_CLIENT, DoClientPrivate))
 //#define DO_CLIENT_GET_PRIVATE(object)do_client_get_instance_private (object)
+#define ZIP_BUFFER_SIZE 64*1024*8
+
 typedef struct _DoValue	DoValue;
 typedef struct _DoQueue	DoQueue;
 #
@@ -608,83 +610,77 @@ gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 	}
 	return FALSE;
 }
-gchar *inf(gchar *source, size_t len, size_t *outlen)
+#define min(a,b) a < b ? a : b
+gboolean decompress(const gchar *src, gssize src_len, gchar **dst, gssize *dst_len)
 {
-    #define BUFFER_SIZE 64*1024*8
-    gchar *crnt;
-    int ret;
-    unsigned have;
+    Bytef *crnt;
+    int error;
     z_stream strm;
-    GSList *pieces = NULL;
-    GSList *lens = NULL;
-
-    unsigned char *out;
+    Bytef buffer[ZIP_BUFFER_SIZE];
+    Bytef *out;
+    uInt out_len, in_len, len;
 
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
     strm.opaque = Z_NULL;
     strm.avail_in = 0;
     strm.next_in = Z_NULL;
-    ret = inflateInit(&strm);
-    if (ret != Z_OK)
-        return NULL;
-    crnt = source;
+    out = NULL;
+    out_len = 0;
+    in_len = src_len;
+
+    error = inflateInit(&strm);
+    if ( error != Z_OK ) {
+        g_error("Error zlib inflateInit %d\n", error);
+        return FALSE;
+    }
+    crnt = (Bytef*)src;
     do {
 
-        strm.avail_in = BUFFER_SIZE < (len - (crnt - source)) ? BUFFER_SIZE : len - (crnt - source);
+        strm.avail_in = min(ZIP_BUFFER_SIZE, in_len);
         strm.next_in = crnt;
 
         do {
-            out = g_malloc(BUFFER_SIZE);
 
-            strm.avail_out = BUFFER_SIZE;
-            strm.next_out = out;
+            strm.avail_out = ZIP_BUFFER_SIZE;
+            strm.next_out = buffer;
 
-            ret = inflate(&strm, Z_NO_FLUSH);
-            if (ret == Z_STREAM_ERROR)
-                return NULL;
-            switch (ret) {
-            case Z_NEED_DICT:
-                ret = Z_DATA_ERROR;     /* and fall through */
-            case Z_DATA_ERROR:
-            case Z_MEM_ERROR:
-                (void)inflateEnd(&strm);
-                return NULL;
+            error = inflate(&strm, Z_NO_FLUSH);
+            switch (error) {
+                case Z_NEED_DICT:
+                    error = Z_DATA_ERROR;     /* and fall through */
+                case Z_STREAM_ERROR:
+                case Z_DATA_ERROR:
+                case Z_MEM_ERROR:
+                    (void)inflateEnd(&strm);
+                    g_error("Error zlib inflate %d\n", error);
+                    return FALSE;
             }
-            have = BUFFER_SIZE - strm.avail_out;
-
-            pieces = g_slist_append(pieces, out);
-            lens  = g_slist_append(lens, GINT_TO_POINTER(have));
+            len = ZIP_BUFFER_SIZE - strm.avail_out;
+            out = g_realloc(out, out_len + len);
+            memcpy(out + out_len, buffer, len);
+            out_len += len;
 
         } while (strm.avail_out == 0);
 
-        crnt += BUFFER_SIZE;
+        if ( in_len > ZIP_BUFFER_SIZE )
+            in_len -= ZIP_BUFFER_SIZE;
+        else
+            break;
+        crnt += ZIP_BUFFER_SIZE;
 
-    } while (ret != Z_STREAM_END && crnt < source + len);
+    } while (error != Z_STREAM_END);
 
     (void)inflateEnd(&strm);
-    if ( ret == Z_STREAM_END ) {
-        GSList *l, *p;
-        size_t out_len = 0;
-        for ( l = lens; l; l = l->next )
-            out_len += GPOINTER_TO_INT(l->data);
-        out = g_malloc(out_len+1);
-        crnt = out;
-        p = pieces;
-        for ( l = lens; l ; l = l->next ) {
-            size_t len1;
-            len1 = GPOINTER_TO_INT(l->data);
-            memcpy(crnt, p->data, len1);
-            crnt = crnt + len1;
-            p = p->next;
-        }
-        out[out_len] = '\0';
-        *outlen = out_len;
-        return out;
-
+    if ( error == Z_STREAM_END ) {
+        *dst = (gchar*)out;
+        *dst_len = out_len;
+        return TRUE;
     }
-
-    return NULL;
+    else {
+        g_error("Error zlib inflate %d\n", error);
+    }
+    return FALSE;
 }
 
 static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key, gboolean archive, GFunc callback, gpointer data, JsonNode *cache)
@@ -704,12 +700,10 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 
 
 		if ( archive ) {
-            out = inf(msg->response_body->data, msg->response_body->length, &length);
-            if ( !out )
+            if ( !decompress(msg->response_body->data, msg->response_body->length, &out, &length) )
                 return NULL;
 		}
-
-		if ( !out ) {
+		else {
 			out = (gchar*)msg->response_body->data;
 			length = msg->response_body->length;
 		}
@@ -779,7 +773,7 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 	JsonNode *res = NULL;
 	GDateTime *cache_time = NULL;
 
-	if ( priv->cached && !nocache && FALSE) { // fix me
+	if ( priv->cached && !nocache ) {
 		DoValue *value;
 		value = do_client_get_cache_value(client, key);
 		if ( value ) {

@@ -70,7 +70,7 @@
 	<gtk/gtk.h>
 	"do_window.h"
 
-1574042136 source:c:\var\git\domino\domino\src\bookcase\do_common_actions.c
+1574266831 source:c:\var\git\domino\domino\src\bookcase\do_common_actions.c
 	"do_common_actions.h"
 	"do_utilx.h"
 	"do_window.h"
@@ -80,6 +80,7 @@
 	"do_setting_view.h"
 	"do_ads_view.h"
 	"do_obj_view.h"
+	"do_list_view.h"
 	"do_application.h"
 
 1574042136 c:\var\git\domino\domino\src\bookcase\do_common_actions.h
@@ -203,7 +204,7 @@
 	<string.h>
 	<gdk/gdkkeysyms.h>
 
-1574042136 source:c:\var\git\domino\domino\src\bookcase\do_window.c
+1574266831 source:c:\var\git\domino\domino\src\bookcase\do_window.c
 	"do_window.h"
 	"do_view_actions.h"
 	"do_common_actions.h"
@@ -256,7 +257,7 @@
 	"version.h"
 	"do_application.h"
 
-1574073631 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
+1574073673 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
 	"do_obj_view.h"
 	"do_tree_view.h"
 	"do_application.h"
@@ -264,7 +265,7 @@
 	"do_utilx.h"
 	<string.h>
 
-1574046375 source:c:\var\git\domino\domino\src\bookcase\do_client.c
+1574304054 source:c:\var\git\domino\domino\src\bookcase\do_client.c
 	"do_client.h"
 	"config.h"
 	<libsoup/soup.h>
@@ -272,6 +273,18 @@
 	<stdlib.h>
 	<sqlite3.h>
 	<string.h>
+	<zlib.h>
 
 1574042136 c:\var\git\domino\domino\src\bookcase\config.h
+
+1574266831 c:\var\git\domino\domino\src\bookcase\do_list_view.h
+	<gtk/gtk.h>
+	"do_view.h"
+
+1574327117 source:c:\var\git\domino\domino\src\bookcase\do_list_view.c
+	"do_list_view.h"
+	"do_tree_view.h"
+	"do_application.h"
+	"do_utilx.h"
+	"do_common_actions.h"
 
