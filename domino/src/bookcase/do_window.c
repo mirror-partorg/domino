@@ -29,6 +29,10 @@ static void do_window_finalize		(GObject *object);
 static gboolean window_state_event(GtkWidget* window, GdkEventWindowState* event);
 static gboolean do_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *event, gchar *path);
 static void do_window_entry_changed(GtkEditable *editable, DoWindow *window);
+#ifndef POS_MINIMAL
+static void do_window_previous_clicked(GtkWidget *widget, DoWindow *window);
+static void do_window_next_clicked(GtkWidget *widget, DoWindow *window);
+#endif
 
 #if !GTK_CHECK_VERSION(3,12,0)
 static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event, gpointer data);
@@ -221,8 +225,10 @@ static GObject *do_window_constructor (GType type,
 	priv->button_prev = b = gtk_button_new_from_icon_name("go-previous-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_style_context_add_class(gtk_widget_get_style_context(b), "left_merge");
     gtk_box_pack_start(GTK_BOX(nbox), b, FALSE, FALSE, 0);
+    g_signal_connect(b, "clicked", G_CALLBACK(do_window_previous_clicked), object);
 	priv->button_next = b = gtk_button_new_from_icon_name("go-next-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_style_context_add_class(gtk_widget_get_style_context(b), "right_merge");
+    g_signal_connect(b, "clicked", G_CALLBACK(do_window_next_clicked), object);
     gtk_box_pack_start(GTK_BOX(nbox), b, FALSE, FALSE, 0);
 #endif
     priv->entry = entry = gtk_entry_new();
@@ -546,5 +552,37 @@ static void do_window_entry_changed(GtkEditable *editable, DoWindow *window)
 static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event, gpointer data)
 {
     return FALSE;
+}
+#endif
+#ifndef POS_MINIMAL
+static void do_window_next_clicked(GtkWidget *widget, DoWindow *window)
+{
+	GActionGroup *group;
+	//DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+	GAction *action;
+#if GTK_CHECK_VERSION(3,16,0)
+    group = gtk_widget_get_action_group(GTK_WIDGET(window), "common-actions");
+#else
+	group = do_common_action_get_group();
+#endif
+
+    action = g_action_map_lookup_action(G_ACTION_MAP(group), "Next");
+    if ( action )
+        g_action_activate(action,NULL);
+}
+static void do_window_previous_clicked(GtkWidget *widget, DoWindow *window)
+{
+	GActionGroup *group;
+	GAction *action;
+	//DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+#if GTK_CHECK_VERSION(3,16,0)
+    group = gtk_widget_get_action_group(GTK_WIDGET(window), "common-actions");
+#else
+	group = do_common_action_get_group();
+#endif
+
+    action = g_action_map_lookup_action(G_ACTION_MAP(group), "Previous");
+    if ( action )
+        g_action_activate(action,NULL);
 }
 #endif

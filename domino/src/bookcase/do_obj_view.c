@@ -61,7 +61,7 @@ static 	gboolean 	do_obj_view_can_do_close_for_esc (DoView *view);
 //static 	DoView 	   *do_obj_view_get_active_child (DoView *view);
 
 static gboolean do_obj_view_fill_first(DoObjView *view);
-static void model_fill(JsonNode *node, GArray *params);
+static void do_obj_view_model_fill_cb(JsonNode *node, GArray *params);
 static void do_obj_view_fill(DoObjView *view, const gchar *page);
 static void do_obj_view_fill_more(DoObjView *view, const gchar *page);
 static void do_obj_view_model_fill(DoObjView *view, const gchar *page_id, JsonNode *node);
@@ -341,7 +341,7 @@ static void do_obj_view_fill(DoObjView *view, const gchar *page)
 	info_key = g_strdup_printf("%s.%s",priv->key,page ? page : "");
 
     /*node = */do_application_request_async(DO_APPLICATION(app), "GET", "GetInfo", info_key, FALSE, FALSE,
-    		                    (GFunc)model_fill, params,
+    		                    (GFunc)do_obj_view_model_fill_cb, params,
 								"key", priv->key,
 								"page", page ? page : "",
 								NULL);
@@ -402,7 +402,7 @@ static void do_obj_view_fill_more(DoObjView *view, const gchar *page)
 	info_key = g_strdup_printf("%s.%s.%s",priv->key, page, id);
 
     /*node = */do_application_request_async(DO_APPLICATION(app), "GET", "GetInfo", info_key, FALSE, FALSE,
-    		                    (GFunc)model_fill, params,
+    		                    (GFunc)do_obj_view_model_fill_cb, params,
 								"key", priv->key,
 								"page", page,
 								"last", id,
@@ -412,7 +412,7 @@ static void do_obj_view_fill_more(DoObjView *view, const gchar *page)
     }*/
     g_free(info_key);
 }
-static void model_fill(JsonNode *node, GArray *params)
+static void do_obj_view_model_fill_cb(JsonNode *node, GArray *params)
 {
 	DoObjView *view;
 	const gchar *page_id;
@@ -444,7 +444,15 @@ static void do_obj_view_model_fill(DoObjView *view, const gchar *page_id, JsonNo
 	JsonObject *obj;
 	gchar *markup = NULL;
 	priv = DO_OBJ_VIEW_GET_PRIVATE (view);
-
+#ifdef DEBUG
+    gchar *data;
+    JsonGenerator *generator = NULL;
+    generator = json_generator_new();
+    json_generator_set_root(generator, node);
+    data = json_generator_to_data(generator, NULL);
+    g_print("Object json \"%s\"\n%s\n", priv->key, data);
+    g_object_unref(generator);
+#endif // DEBUG
 	if ( node ) {
         obj = json_node_get_object(node);
         g_assert(obj != NULL);

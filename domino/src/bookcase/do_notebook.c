@@ -301,6 +301,7 @@ static gboolean do_notebook_key_press_cb(GtkWidget *widget, GdkEventKey *event, 
 		switch (event->keyval)
 		{
             case GDK_KEY_Escape: {
+
                 GtkWidget *child;
                 gint page_num;
                 page_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(widget));

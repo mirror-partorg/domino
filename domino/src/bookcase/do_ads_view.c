@@ -67,7 +67,7 @@ static 	gboolean 	do_ads_view_can_do_close_for_esc (DoView *view);
 
 static void do_ads_view_fill(DoAdsView *view, const gchar *id, const gchar *select_id);
 static gboolean do_ads_view_fill_first(DoAdsView *view);
-static void model_fill(JsonNode *node, GArray *params);
+static void do_ads_view_model_fill_cb(JsonNode *node, GArray *params);
 static void do_ads_view_model_fill(DoAdsView *view, const gchar *id, const gchar *select_id, JsonNode *node);
 static void do_ads_view_set_load_status(DoAdsView *view, const gchar *load_status);
 enum
@@ -341,7 +341,7 @@ static void do_ads_view_fill(DoAdsView *view, const gchar *id, const gchar *sele
 	g_array_append_val(params, select_id_);
 	g_array_append_val(params, key);
     node = do_application_request_async(DO_APPLICATION(app), "GET", "GetAds", key, FALSE, FALSE,
-    		                    (GFunc)model_fill, params,
+    		                    (GFunc)do_ads_view_model_fill_cb, params,
 								"id",id ? id : "", NULL);
     if ( node ) {
         do_ads_view_set_load_status(view, "Обновление данных");
@@ -352,7 +352,7 @@ static void do_ads_view_fill(DoAdsView *view, const gchar *id, const gchar *sele
     }
 	//g_free(key);
 }
-static void model_append(JsonArray  *array,
+static void do_ads_view_model_append(JsonArray  *array,
                                    guint       index_,
                                    JsonNode   *node,
                                    GtkListStore *model)
@@ -382,7 +382,7 @@ static void model_append(JsonArray  *array,
 	g_free(markup);
 }
 
-static void model_fill(JsonNode *node, GArray *params)
+static void do_ads_view_model_fill_cb(JsonNode *node, GArray *params)
 {
 	DoAdsView *view;
 	DoAdsViewPrivate *priv;
@@ -446,7 +446,7 @@ static void do_ads_view_model_fill(DoAdsView *view, const gchar *id, const gchar
 		}
 		gtk_list_store_clear(GTK_LIST_STORE(priv->model));
 		array = json_object_get_array_member(obj, "items");
-		json_array_foreach_element(array, (JsonArrayForeach)model_append,priv->model);
+		json_array_foreach_element(array, (JsonArrayForeach)do_ads_view_model_append,priv->model);
 		if ( !refill ) {
 			priv->path = g_slist_append(priv->path, g_strdup(id ? id : ""));
         }

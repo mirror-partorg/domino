@@ -79,6 +79,7 @@ static void do_value_set_parser(DoValue *value, GDateTime *time, JsonParser *par
 	value->parser = parser;
 #ifdef DEBUG
     value->key = g_strdup(key);
+    g_print("Set cache \"%s\"\n", value->key);
 #endif // DEBUG
 }
 #ifdef DEBUG
@@ -416,6 +417,16 @@ GObject *do_client_new (const gchar *url, const gchar *store)
 			     "store", store,
 			     (gpointer) NULL);
 }
+inline const gchar *do_client_get_url(DoClient *client)
+{
+    return DO_CLIENT_GET_PRIVATE (client)->url;
+}
+inline const gchar *do_client_get_store(DoClient *client)
+{
+    return DO_CLIENT_GET_PRIVATE (client)->store;
+}
+const gchar *do_client_get_store(DoClient *client);
+
 static gboolean check_valid_cache(const gchar *key, GDateTime *time)
 {
 	GDateTime *now = g_date_time_new_now_local();
@@ -503,7 +514,12 @@ static void do_client_update_cache(DoClient *client, const gchar *key, JsonParse
 	DoValue *value;
 	GDateTime *time;
 	JsonGenerator *generator = NULL;
+	JsonObject *obj;
 
+    obj = json_node_get_object(parser ? json_parser_get_root(parser) : node);
+	if ( obj && json_object_has_member(obj, "error") ) { // error not cache
+        return;
+	}
 	value = g_hash_table_lookup(priv->hash, key);
 	time = g_date_time_new_now_local();
 	if ( value ) {
@@ -718,6 +734,10 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 		if ( res ) {
 			obj = json_node_get_object(res);
 			if ( obj ) {
+				if ( json_object_has_member(obj, "error") ) {
+                    g_warning("Error from %s message: %s\n", soup_uri_to_string(soup_message_get_uri(msg),TRUE), json_object_get_string_member(obj, "error"));
+
+				}
 				if ( json_object_has_member(obj, "cachevalid") &&
 				     json_object_get_int_member(obj, "cachevalid") == 1 ) {
 					g_object_unref (parser);

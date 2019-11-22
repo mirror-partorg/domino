@@ -566,12 +566,16 @@ gboolean do_application_settings(DoApplication *app)
     while ( gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT ) {
         g_object_get(entry[0], "text", &url, NULL);
         g_object_get(entry[1], "text", &store, NULL);
-        DOMINO_LOCAL_SET("main","url", url, "store", priv->store, NULL);
+        DOMINO_LOCAL_SET("main","url", url, "store", store, NULL);
         if ( domino_config_save(DOMINO_CONFIG_LOCAL, TRUE) ) {
             if ( !priv->client )
                 priv->client = do_client_new(url, priv->store);
             else
-                g_object_set(priv->client, "url", url, "store", priv->store, NULL);
+                if ( g_strcmp0(url, do_client_get_url(DO_CLIENT(priv->client))) ||
+                     g_strcmp0(store, do_client_get_url(DO_CLIENT(priv->client)))
+                    ) {
+                    DOMINO_SHOW_INFO("Требуется перезапуск программы");
+                }
             ret = TRUE;
             break;
         }

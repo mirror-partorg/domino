@@ -35,6 +35,12 @@ static void do_common_actions_quit(GSimpleAction *action,
 static void do_common_actions_close(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
+static void do_common_actions_next(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
+static void do_common_actions_previous(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
 
 GActionEntry entries[] =
 {
@@ -52,6 +58,8 @@ GActionEntry entries[] =
 	{ "ObjView", do_common_actions_do_obj_view, "s" },
 	{ "ProfileView", do_common_actions_do_profile_view, },
 	{ "SettingView", do_common_actions_do_setting_view, },
+	{ "Next", do_common_actions_next },
+	{ "Previous", do_common_actions_previous },
 	{ "Quit", do_common_actions_quit },
 	{ "Close", do_common_actions_close },
 };
@@ -200,4 +208,42 @@ static void do_common_actions_do_setting_view(GSimpleAction *action,
     GtkApplication *app = gtk_window_get_application(
                     GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(window))));
     do_application_settings(DO_APPLICATION(app));
+}
+static void do_common_actions_previous(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       window)
+{
+    GtkNotebook *nb;
+    GtkWidget *child;
+    gint page_num;
+
+    nb = GTK_NOTEBOOK (do_window_get_notebook (window));
+    g_return_if_fail (nb != NULL);
+
+    page_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(nb));
+
+    if ( page_num != -1 &&
+        (child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(nb), page_num)) != NULL &&
+         do_view_can_do_close_for_esc(DO_VIEW(child)) ) {
+        do_view_do_close(DO_VIEW(child));
+    }
+}
+static void do_common_actions_next(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       window)
+{
+    GtkNotebook *nb;
+    GtkWidget *child;
+    gint page_num;
+
+    nb = GTK_NOTEBOOK (do_window_get_notebook (window));
+    g_return_if_fail (nb != NULL);
+
+    page_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(nb));
+
+    if ( page_num != -1 &&
+        (child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(nb), page_num)) != NULL &&
+         do_view_can_do_edit(DO_VIEW(child),NULL) ) {
+        do_view_do_edit(DO_VIEW(child),NULL);
+    }
 }
