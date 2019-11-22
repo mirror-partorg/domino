@@ -304,7 +304,6 @@ static gboolean do_notebook_key_press_cb(GtkWidget *widget, GdkEventKey *event, 
                 GtkWidget *child;
                 gint page_num;
                 page_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(widget));
-
                 if ( page_num != -1 &&
                     (child = gtk_notebook_get_nth_page (GTK_NOTEBOOK(widget), page_num)) != NULL &&
                      do_view_can_do_close_for_esc(DO_VIEW(child)) ) {

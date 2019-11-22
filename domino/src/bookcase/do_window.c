@@ -49,6 +49,8 @@ struct _DoWindowPrivate
     GtkWidget     *headerbar;
     GtkWidget     *notebook;
 	GtkWidget     *gear_button;
+	GtkWidget     *button_prev;
+	GtkWidget     *button_next;
     guint          clock_event_source;
     guint          search_src;
 };
@@ -158,13 +160,15 @@ static GObject *do_window_constructor (GType type,
 	GObject *object;
 	DoWindow *window;
 	GtkWidget *notebook;
-	GtkWidget *headerbar;
 	GtkWidget *entry;
 	GtkWidget *gear_button;
-	GtkWidget *image;
+	GtkWidget *b;
+	GtkWidget *box, *nbox;
+	GtkWidget *vbox;
 	GMenu *menu;
 	GMenu *submenu;
 	DoWindowPrivate *priv;
+	GtkWidget *image;
 
 
 	object = G_OBJECT_CLASS (do_window_parent_class)->constructor
@@ -187,40 +191,47 @@ static GObject *do_window_constructor (GType type,
     //to do do_common_actions_init(manager, GTK_WINDOW(window));
     gtk_window_set_icon_name(GTK_WINDOW (window), "bookcase");
 
-    priv->notebook = notebook = GTK_WIDGET(g_object_new(DO_TYPE_NOTEBOOK, NULL));
-#if GTK_CHECK_VERSION(3,12,0)
-    gtk_container_add(GTK_CONTAINER(window), notebook);
-#else
-    GtkWidget *vbox;
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    priv->notebook = notebook = GTK_WIDGET(g_object_new(DO_TYPE_NOTEBOOK, NULL));
     gtk_container_add(GTK_CONTAINER(window), vbox);
-#endif
 #ifdef POS_MINIMAL
     do_notebook_set_show_tabs(DO_NOTEBOOK(notebook), FALSE); // to do
 #endif
 	g_signal_connect (priv->notebook, "tab-close-request",  G_CALLBACK (notebook_page_close_request_cb), window);
 	g_signal_connect_after (priv->notebook, "switch-page", G_CALLBACK (notebook_switch_page_cb), window);
 
+    box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    nbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(box), nbox, FALSE, FALSE, 0);
+    gtk_style_context_add_class(gtk_widget_get_style_context(nbox),"raised");
+    gtk_style_context_add_class(gtk_widget_get_style_context(nbox),"linked");
+    gtk_style_context_add_class(gtk_widget_get_style_context(nbox),"navigation-box");
+
 #if GTK_CHECK_VERSION(3,12,0)
-    priv->headerbar = headerbar = gtk_header_bar_new();
-    gtk_window_set_titlebar(GTK_WINDOW(window), headerbar);
-    gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(headerbar), TRUE);
+    //gtk_style_context_add_class(gtk_widget_get_style_context(box), GTK_STYLE_CLASS_INLINE_TOOLBAR);
+    priv->headerbar = gtk_header_bar_new();
+    gtk_window_set_titlebar(GTK_WINDOW(window), priv->headerbar);
+    gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(priv->headerbar), TRUE);
+    gtk_header_bar_set_custom_title(GTK_HEADER_BAR(priv->headerbar), box);
 #else
-    priv->headerbar = headerbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), headerbar, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), box, TRUE, TRUE, 0);
+#endif
     gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
+#ifndef POS_MINIMAL
+	priv->button_prev = b = gtk_button_new_from_icon_name("go-previous-symbolic", GTK_ICON_SIZE_MENU);
+	gtk_style_context_add_class(gtk_widget_get_style_context(b), "left_merge");
+    gtk_box_pack_start(GTK_BOX(nbox), b, FALSE, FALSE, 0);
+	priv->button_next = b = gtk_button_new_from_icon_name("go-next-symbolic", GTK_ICON_SIZE_MENU);
+	gtk_style_context_add_class(gtk_widget_get_style_context(b), "right_merge");
+    gtk_box_pack_start(GTK_BOX(nbox), b, FALSE, FALSE, 0);
 #endif
     priv->entry = entry = gtk_entry_new();
     gtk_widget_set_size_request(entry, 500, -1);
     gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
     gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_PRIMARY, "edit-find-symbolic");
     g_signal_connect(priv->entry, "changed", G_CALLBACK(do_window_entry_changed), window);
+    gtk_box_pack_start(GTK_BOX(box), entry, TRUE, TRUE, 6);
 
-#if GTK_CHECK_VERSION(3,12,0)
-    gtk_header_bar_set_custom_title(GTK_HEADER_BAR(headerbar), entry);
-#else
-    gtk_box_pack_start(GTK_BOX(headerbar), entry, TRUE, TRUE, 0);
-#endif
     menu = g_menu_new();
 #if GTK_CHECK_VERSION(3,12,0)
     image = gtk_image_new_from_icon_name("open-menu-symbolic", GTK_ICON_SIZE_MENU);
@@ -228,8 +239,8 @@ static GObject *do_window_constructor (GType type,
     image = gtk_image_new_from_icon_name("view-sidebar-symbolic", GTK_ICON_SIZE_MENU);
 #endif
     priv->gear_button = gear_button = gtk_menu_button_new();
+    gtk_box_pack_end(GTK_BOX(box), gear_button, FALSE, FALSE, 0);
 #if GTK_CHECK_VERSION(3,12,0)
-    gtk_header_bar_pack_end(GTK_HEADER_BAR(headerbar), gear_button);
     gtk_menu_button_set_use_popover(GTK_MENU_BUTTON(gear_button), TRUE);
 #else
     gtk_box_pack_end(GTK_BOX(headerbar), gear_button, FALSE, FALSE, 0);
