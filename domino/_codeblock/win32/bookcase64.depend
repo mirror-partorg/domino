@@ -257,7 +257,7 @@
 	"version.h"
 	"do_application.h"
 
-1574386768 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
+1575975290 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
 	"do_obj_view.h"
 	"do_tree_view.h"
 	"do_application.h"
@@ -281,7 +281,7 @@
 	<gtk/gtk.h>
 	"do_view.h"
 
-1574327117 source:c:\var\git\domino\domino\src\bookcase\do_list_view.c
+1575971976 source:c:\var\git\domino\domino\src\bookcase\do_list_view.c
 	"do_list_view.h"
 	"do_tree_view.h"
 	"do_application.h"

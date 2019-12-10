@@ -454,6 +454,7 @@ static void do_obj_view_model_fill(DoObjView *view, const gchar *page_id, JsonNo
     g_object_unref(generator);
 #endif // DEBUG
 	if ( node ) {
+        g_assert(JSON_NODE_TYPE (node) == JSON_NODE_OBJECT);//fix me
         obj = json_node_get_object(node);
         g_assert(obj != NULL);
         if ( !page_id ) {
@@ -541,6 +542,7 @@ static void cache_update_columns_info(JsonArray *pages, guint index_, JsonNode *
 	const gchar *page_id;
 	JsonObject *page;
 
+    g_assert(JSON_NODE_TYPE (element_node) == JSON_NODE_OBJECT);//fix me
 	page = json_node_get_object(element_node);
 	page_id = json_object_get_string_member(page, "id");
 	key = g_strdup_printf("PAGE.%s.COLUMNS", page_id);
@@ -583,6 +585,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 	GtkTreeSelection *selection;
 
 
+    g_assert(JSON_NODE_TYPE (element_node) == JSON_NODE_OBJECT);//fix me
 	page = json_node_get_object(element_node);
 	page_id = json_object_get_string_member(page, "id");
 	key = g_strdup_printf("PAGE.%s.COLUMNS", page_id);
@@ -604,6 +607,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 								"page", page_id,
 								NULL);
 
+        g_assert(JSON_NODE_TYPE (node) == JSON_NODE_OBJECT);//fix me
         obj = json_node_get_object(node);
         g_assert(obj != NULL);
         g_assert(json_object_has_member(obj, "pages"));
@@ -688,6 +692,7 @@ static void do_obj_view_fill_page(JsonArray *pages, guint index_, JsonNode *elem
 	DoPage *p = NULL;
 	const gchar *page_id;
 
+    g_assert(JSON_NODE_TYPE (element_node) == JSON_NODE_OBJECT);//fix me
 	page = json_node_get_object(element_node);
 	page_id = json_object_get_string_member(page, "id");
 
@@ -735,6 +740,7 @@ static void do_obj_view_make_column(JsonArray *pages, guint index_, JsonNode *el
 	gchar *name;
 	const gchar* title = "";
 
+       g_assert(JSON_NODE_TYPE (element_node) == JSON_NODE_OBJECT);//fix me
 	obj = json_node_get_object(element_node);
 	renderer = gtk_cell_renderer_text_new();
 	name = g_strdup_printf("column%d", index_);
@@ -819,6 +825,7 @@ static void do_obj_view_model_append_row(JsonArray *pages, guint index_, JsonNod
 	GValue value = {0,};
 	gint i, length;
 
+        g_assert(JSON_NODE_TYPE (element_node) == JSON_NODE_OBJECT);//fix me
 	obj = json_node_get_object(element_node);
 
 	if ( json_object_has_member(obj, "id") )

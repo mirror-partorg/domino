@@ -220,7 +220,8 @@ static GObject *do_list_view_constructor(GType type, guint n_construct_propertie
 
     if (GTK_IS_TREE_VIEW(priv->tree_view)) {
         gtk_tree_view_set_model(GTK_TREE_VIEW(priv->tree_view), priv->model);
-        gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(priv->tree_view), FALSE);
+        //gtk_tree_view_set_headers_visible(|GTK_TREE_VIEW(priv->tree_view), FALSE);
+        gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(priv->tree_view), TRUE);
     }
 
     gtk_container_add (GTK_CONTAINER (object), GTK_WIDGET(priv->do_view));
@@ -403,7 +404,7 @@ static void model_fill(JsonNode *node, gpointer view)
 static gboolean set_view_cursor(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, DoListViewId *ListId)
 {
 	DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (ListId->view);
-	if ( (!ListId->id) || ListId->id[0] == '\0' ) {
+	if ((!ListId->id) || ListId->id[0] == '\0' ) {
 		gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
 		return TRUE;
 	}
@@ -430,7 +431,10 @@ static void do_list_view_model_fill(DoListView *view, JsonNode *node)
 		gtk_list_store_clear(GTK_LIST_STORE(priv->model));
 		array = json_object_get_array_member(obj, "items");
 		json_array_foreach_element(array, (JsonArrayForeach)model_append, priv->model);
-		//to do gtk_tree_model_foreach(GTK_TREE_MODEL(priv->model),(GtkTreeModelForeachFunc)set_view_cursor, &ListId);
+		DoListViewId ListId;
+		ListId.view = view;
+		ListId.id = NULL;
+		gtk_tree_model_foreach(GTK_TREE_MODEL(priv->model),(GtkTreeModelForeachFunc)set_view_cursor, &ListId);
 	}
 	//json_node_unref(node);
 }
@@ -532,6 +536,8 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
 	JsonObject *obj;
     GtkCellRenderer   *r;
     GtkTreeViewColumn *col;
+    if ( g_slist_length(priv->fields) > 2 )
+        return;// fix me
 
     obj = json_node_get_object(element_node);
     g_assert(obj != NULL);
@@ -554,6 +560,9 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
     r = gtk_cell_renderer_text_new();
     col = do_tree_view_add_column(DO_TREE_VIEW(priv->do_view), field->name, field->title ? field->title : "", -1);
     gtk_tree_view_column_pack_start (col, r, TRUE);
-    gtk_tree_view_column_add_attribute (col, r, "text", g_slist_length(priv->fields) + 3 - 1);
+    gtk_tree_view_column_set_fixed_width(col, 100);//to do
+    gtk_tree_view_column_set_resizable(col, TRUE);
 
+    //gtk_tree_view_column_add_attribute (col, r, "text", g_slist_length(priv->fields) + 3 - 1);
+    gtk_tree_view_column_add_attribute (col, r, "text", g_slist_length(priv->fields) - 1); // fix me
 }
