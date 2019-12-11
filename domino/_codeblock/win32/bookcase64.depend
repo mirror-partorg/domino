@@ -21,7 +21,7 @@
 1440478440 c:\var\git\domino\domino\src\bookcase\do_tree_view.h
 	<gtk/gtk.h>
 
-1574387588 source:c:\var\git\domino\domino\src\bookcase\do_application.c
+1576060119 source:c:\var\git\domino\domino\src\bookcase\do_application.c
 	"do_application.h"
 	"domino.h"
 	"do_client.h"
@@ -257,7 +257,7 @@
 	"version.h"
 	"do_application.h"
 
-1575975290 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
+1576061864 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
 	"do_obj_view.h"
 	"do_tree_view.h"
 	"do_application.h"
@@ -265,7 +265,7 @@
 	"do_utilx.h"
 	<string.h>
 
-1574388525 source:c:\var\git\domino\domino\src\bookcase\do_client.c
+1576061856 source:c:\var\git\domino\domino\src\bookcase\do_client.c
 	"do_client.h"
 	"config.h"
 	<libsoup/soup.h>

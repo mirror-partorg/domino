@@ -11,7 +11,7 @@
 				<Option object_output="C:/var/work/var/MSYS_NT-10.0-17134/x86_64/codeblocks" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="AdsView" />
+				<Option parameters="ObjView.PRO-34305" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

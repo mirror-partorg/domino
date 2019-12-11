@@ -514,12 +514,14 @@ static void do_client_update_cache(DoClient *client, const gchar *key, JsonParse
 	DoValue *value;
 	GDateTime *time;
 	JsonGenerator *generator = NULL;
-	JsonObject *obj;
 
-    obj = json_node_get_object(parser ? json_parser_get_root(parser) : node);
-	if ( obj && json_object_has_member(obj, "error") ) { // error not cache
-        return;
-	}
+    if ( JSON_NODE_TYPE (parser ? json_parser_get_root(parser) : node) == JSON_NODE_OBJECT ) {
+        JsonObject *obj;
+        obj = json_node_get_object(parser ? json_parser_get_root(parser) : node);
+        if ( obj && json_object_has_member(obj, "error") ) { // error not cache
+            return;
+        }
+    }
 	value = g_hash_table_lookup(priv->hash, key);
 	time = g_date_time_new_now_local();
 	if ( value ) {

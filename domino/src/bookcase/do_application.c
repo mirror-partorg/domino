@@ -372,9 +372,17 @@ static gboolean run_actions(DoApplication *app)
 	priv = DO_APPLICATION_GET_PRIVATE (app);
 	if ( priv->actions )
         for ( i = 0; priv->actions[i]; i++ ) {
-            action = g_action_map_lookup_action(G_ACTION_MAP(group),priv->actions[i]);
-            if ( action )
-                g_action_activate(action,NULL);
+            gchar **val;
+            GVariant *parameter;
+            val = g_strsplit(priv->actions[i],".",-1);
+            action = g_action_map_lookup_action(G_ACTION_MAP(group), val[0]);
+            if ( action ) {
+                parameter = NULL;
+                if ( val[1] )
+                    parameter = g_variant_new_string(val[1]);
+                g_action_activate(action, parameter);
+            }
+            g_strfreev(val);
         }
     return FALSE;
 }
