@@ -66,6 +66,9 @@
 		<Unit filename="../../src/bookcase/do_filter.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../src/bookcase/do_list_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../../src/bookcase/do_list_view.c">
 			<Option compilerVar="CC" />
 		</Unit>
