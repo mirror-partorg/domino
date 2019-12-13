@@ -2965,7 +2965,7 @@
 	<gtk/gtk.h>
 	"do_view.h"
 
-1576069941 source:/home/mirror/work/git/domino/domino/src/bookcase/do_application.c
+1576156740 source:/home/mirror/work/git/domino/domino/src/bookcase/do_application.c
 	"do_application.h"
 	"domino.h"
 	"do_client.h"
@@ -2975,7 +2975,7 @@
 	"do_common_actions.h"
 	"do_view_actions.h"
 
-1574339834 /home/mirror/work/git/domino/domino/src/bookcase/do_application.h
+1576156756 /home/mirror/work/git/domino/domino/src/bookcase/do_application.h
 	<gtk/gtk.h>
 	<json-glib/json-glib.h>
 	"do_window.h"
@@ -3193,7 +3193,7 @@
 1537218756 /usr/include/json-glib-1.0/json-glib/json-gvariant.h
 	<json-glib/json-types.h>
 
-1574425443 /home/mirror/work/git/domino/domino/src/bookcase/do_client.h
+1576153737 /home/mirror/work/git/domino/domino/src/bookcase/do_client.h
 	<gtk/gtk.h>
 	<json-glib/json-glib.h>
 
@@ -3464,8 +3464,9 @@
 	"do_utilx.h"
 	<string.h>
 
-1576069941 source:/home/mirror/work/git/domino/domino/src/bookcase/do_list_view.c
+1576195613 source:/home/mirror/work/git/domino/domino/src/bookcase/do_list_view.c
 	"do_list_view.h"
+	"do_list_model.h"
 	"do_tree_view.h"
 	"do_application.h"
 	"do_utilx.h"
@@ -3474,4 +3475,11 @@
 1574339834 /home/mirror/work/git/domino/domino/src/bookcase/do_list_view.h
 	<gtk/gtk.h>
 	"do_view.h"
+
+1576195556 source:/home/mirror/work/git/domino/domino/src/bookcase/do_list_model.c
+	"do_list_model.h"
+	"do_client.h"
+
+1576195267 /home/mirror/work/git/domino/domino/src/bookcase/do_list_model.h
+	<gtk/gtk.h>
 

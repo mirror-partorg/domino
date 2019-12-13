@@ -596,3 +596,9 @@ gboolean do_application_settings(DoApplication *app)
     gtk_widget_destroy(GTK_WIDGET(dialog));
     return ret;
 }
+GObject *do_application_get_client(DoApplication *app)
+{
+    DoApplicationPrivate *priv;
+	priv = DO_APPLICATION_GET_PRIVATE(app);
+    return priv->client;
+}

@@ -14,6 +14,13 @@ G_BEGIN_DECLS
 #define DO_IS_CLIENT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), DO_TYPE_CLIENT))
 #define DO_CLIENT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DO_TYPE_CLIENT, DoClientClass))
 
+#define DO_CLIENT_GET "GET"
+#define DO_CLIENT_POST "POST"
+#define do_client_request_get(client,func,key, ...) do_client_request(client,"GET",func,key,FALSE,FALSE,__VA_ARGS__)
+#define do_client_request_get_async(client,func,key,callback,data, ...) do_client_request_async(client,"GET",func,key,FALSE,FALSE,callback,data,__VA_ARGS__)
+
+
+
 typedef struct _DoClient		DoClient;
 typedef struct _DoClientPrivate	DoClientPrivate;
 typedef struct _DoClientClass		DoClientClass;
