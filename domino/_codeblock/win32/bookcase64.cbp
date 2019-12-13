@@ -11,7 +11,7 @@
 				<Option object_output="C:/var/work/var/MSYS_NT-10.0-17134/x86_64/codeblocks" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="ObjView.PRO-34305" />
+				<Option parameters="GoodsView" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -68,6 +68,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/bookcase/do_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_list_model.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/bookcase/do_list_view.c">

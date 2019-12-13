@@ -22,10 +22,10 @@ static gboolean do_list_model_iter_parent(GtkTreeModel *tree_model, GtkTreeIter 
 //static gboolean do_list_model_get_last_value(DoListModel *model);
 static gboolean do_list_model_fill(DoListModel *model);
 
-static void do_list_model_record_update(JsonNode *node, DoListModel *model);
 static void do_list_model_fill_keys(JsonNode *node, DoListModel *model);
 typedef struct _DoListModelRecord DoListModelRecord;
 typedef struct _DoListModelPrivate  DoListModelPrivate;
+typedef struct _DoListModelUpdate  DoListModelUpdate;
 
 // Load
 
@@ -40,9 +40,15 @@ struct _DoListModelRecord
     gint      index;
 };
 
+struct _DoListModelUpdate
+{
+    DoListModel *model;
+    DoListModelRecord *record;
+};
+
 struct _DoListModelPrivate
 {
-    //GHashTable *records;
+    GHashTable         *keys;
     DoClient           *client;
     DoListModelRecord **records;
     guint               n_records;
@@ -68,6 +74,8 @@ G_DEFINE_TYPE_WITH_CODE (DoListModel, do_list_model, G_TYPE_OBJECT,
 
 #define DO_LIST_MODEL_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_LIST_MODEL_TYPE,  DoListModelPrivate))
 
+
+static void do_list_model_record_update(JsonNode *node, DoListModelUpdate *data);
 
 static void do_list_model_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -115,14 +123,16 @@ static void do_list_model_get_property(GObject *object, guint prop_id, GValue *v
 }
 static GObject *do_list_model_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
 {
-	//DoListModelPrivate *priv;
+	DoListModelPrivate *priv;
 	GObject            *object;
 	DoListModel        *model;
 
 	object = G_OBJECT_CLASS (do_list_model_parent_class)->constructor(type, n_construct_properties, construct_params);
 	model = (DoListModel*)object;
 
-    //priv = DO_LIST_MODEL_GET_PRIVATE(object);
+    priv = DO_LIST_MODEL_GET_PRIVATE(object);
+
+    priv->keys = g_hash_table_new(g_str_hash, g_str_equal);
 
     g_return_val_if_fail (do_list_model_fill(model), object);
 
@@ -206,6 +216,7 @@ static void do_list_model_finalize(GObject *object)
     g_free(priv->name);
     g_free(priv->fields);
     g_object_unref(priv->client);
+    g_hash_table_destroy(priv->keys);
 
     G_OBJECT_CLASS (do_list_model_parent_class)->finalize (object);
 }
@@ -298,6 +309,9 @@ static void do_list_model_get_value(GtkTreeModel *tree_model, GtkTreeIter  *iter
 
     g_return_if_fail (DO_IS_LIST_MODEL (tree_model));
     g_return_if_fail (iter != NULL);
+    if ( column >= priv->n_columns )
+        if ( column == - 1 )
+            return;
     g_return_if_fail (column < priv->n_columns);
 
     g_value_init (value, do_list_model_get_column_type(tree_model, column));
@@ -329,8 +343,12 @@ static void do_list_model_get_value(GtkTreeModel *tree_model, GtkTreeIter  *iter
 
     cache_key = g_strdup_printf("RECORD.%s.%s", priv->name, record->key);
 
+    DoListModelUpdate *data;
 
-    node = do_client_request_get_async(priv->client, "GetRecord", cache_key, (GFunc)do_list_model_record_update, tree_model,
+    data = g_new0(DoListModelUpdate, 1);
+    data->model = DO_LIST_MODEL(tree_model);
+    data->record = record;
+    node = do_client_request_get_async(priv->client, "GetRecord", cache_key, (GFunc)do_list_model_record_update, data,
                                       "key", record->key, "fields", priv->fields, NULL);
     g_free(cache_key);
     if ( !node ) {
@@ -471,9 +489,20 @@ static gboolean do_list_model_fill(DoListModel *model)
         return FALSE;
     return TRUE;
 }
-static void do_list_model_record_update(JsonNode *node, DoListModel *model)
+static void do_list_model_record_update(JsonNode *node, DoListModelUpdate *data)
 {
-    // to do
+    //DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(data->model);
+    GtkTreePath *path;
+    GtkTreeIter iter;
+    DoListModelRecord *record = NULL;
+
+    record = data->record;
+    if ( record ) {
+        path = do_list_model_get_path_by_record(data->model, record);
+        do_list_model_get_iter(GTK_TREE_MODEL(data->model), &iter, path);
+        gtk_tree_model_row_changed (GTK_TREE_MODEL(data->model), path, &iter);
+    }
+    g_free(data);
 }
 static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
 {

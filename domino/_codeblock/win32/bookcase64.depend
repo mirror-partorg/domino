@@ -21,7 +21,7 @@
 1440478440 c:\var\git\domino\domino\src\bookcase\do_tree_view.h
 	<gtk/gtk.h>
 
-1576060119 source:c:\var\git\domino\domino\src\bookcase\do_application.c
+1576226788 source:c:\var\git\domino\domino\src\bookcase\do_application.c
 	"do_application.h"
 	"domino.h"
 	"do_client.h"
@@ -31,7 +31,7 @@
 	"do_common_actions.h"
 	"do_view_actions.h"
 
-1574042136 c:\var\git\domino\domino\src\bookcase\do_application.h
+1576226788 c:\var\git\domino\domino\src\bookcase\do_application.h
 	<gtk/gtk.h>
 	<json-glib/json-glib.h>
 	"do_window.h"
@@ -249,7 +249,7 @@
 	<gtk/gtk.h>
 	"do_view.h"
 
-1574387045 c:\var\git\domino\domino\src\bookcase\do_client.h
+1576226788 c:\var\git\domino\domino\src\bookcase\do_client.h
 	<gtk/gtk.h>
 	<json-glib/json-glib.h>
 
@@ -257,7 +257,7 @@
 	"version.h"
 	"do_application.h"
 
-1576061864 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
+1576062071 source:c:\var\git\domino\domino\src\bookcase\do_obj_view.c
 	"do_obj_view.h"
 	"do_tree_view.h"
 	"do_application.h"
@@ -265,7 +265,7 @@
 	"do_utilx.h"
 	<string.h>
 
-1576061856 source:c:\var\git\domino\domino\src\bookcase\do_client.c
+1576229808 source:c:\var\git\domino\domino\src\bookcase\do_client.c
 	"do_client.h"
 	"config.h"
 	<libsoup/soup.h>
@@ -281,10 +281,18 @@
 	<gtk/gtk.h>
 	"do_view.h"
 
-1575971976 source:c:\var\git\domino\domino\src\bookcase\do_list_view.c
+1576226788 source:c:\var\git\domino\domino\src\bookcase\do_list_view.c
 	"do_list_view.h"
+	"do_list_model.h"
 	"do_tree_view.h"
 	"do_application.h"
 	"do_utilx.h"
 	"do_common_actions.h"
+
+1576232119 source:c:\var\git\domino\domino\src\bookcase\do_list_model.c
+	"do_list_model.h"
+	"do_client.h"
+
+1576226788 c:\var\git\domino\domino\src\bookcase\do_list_model.h
+	<gtk/gtk.h>
 

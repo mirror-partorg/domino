@@ -11,9 +11,10 @@
 #define DO_CLIENT_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_CLIENT, DoClientPrivate))
 //#define DO_CLIENT_GET_PRIVATE(object)do_client_get_instance_private (object)
 #define ZIP_BUFFER_SIZE 64*1024*8
+#define DO_CLIENT_MAX_QUEUE 10
 
 typedef struct _DoValue	DoValue;
-typedef struct _DoQueue	DoQueue;
+typedef struct _DoQueueItem	DoQueueItem;
 #
 
 enum
@@ -33,8 +34,7 @@ struct _DoValue
     gchar      *key;
 #endif // DEBUG
 };
-
-struct _DoQueue
+struct _DoQueueItem
 {
 	DoClient    *client;
 	guint64      index;
@@ -46,7 +46,6 @@ struct _DoQueue
 	gchar       *key;
 	gboolean     canceled;
 	JsonNode    *cache;
-
 };
 
 static void do_value_free(DoValue *value)
@@ -144,12 +143,14 @@ struct _DoClientPrivate
 	gchar       *store;
 	SoupSession *session;
 	//guint64      queue_index;
-	GSList      *queue_message;
+	//GSList      *queue_message;
 	gchar       *filename;
 	sqlite3     *conn;
 	gchar       *cache_url;
 	gchar       *cache_store;
 	guint        source;
+	DoQueueItem *queue[DO_CLIENT_MAX_QUEUE];
+
 };
 
 G_DEFINE_TYPE_WITH_CODE (DoClient, do_client, G_TYPE_OBJECT, G_ADD_PRIVATE(DoClient))
@@ -595,29 +596,62 @@ JsonNode *do_client_request_valist_async(DoClient *client, const gchar *method, 
 {
 	return do_client_request_valist_(client, method, func, key, archive, nocache, callback, data, args);
 }
+static gboolean do_client_queue_item_search(DoClient *client, const gchar *key, gint *index)
+{
+	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
+	guint i;
+	*index = -1;
+    for ( i = 0; i < DO_CLIENT_MAX_QUEUE; i++ ) {
+        DoQueueItem *item;
+        item = priv->queue[i];
+        if ( item && !g_strcmp0(item->key, key) ) {
+            *index = i;
+            return TRUE;
+        }
+        if ( !item )
+            *index = i;
+    }
+    return FALSE;
+}
+static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item)
+{
+	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
+	gint index;
+	if ( do_client_queue_item_search(client, item->key, &index) ) {
+        priv->queue[index] = NULL;
+	}
+	g_free(item->key);
+	g_free(item);
+
+}
 static void do_client_message_finished(SoupSession *session, SoupMessage *msg, gpointer data)
 {
-	DoQueue *queue = data;
-	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (queue->client);
+	DoQueueItem *item = data;
+	//DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (item->client);
 #ifdef DEBUG
-	if ( queue->canceled )
+	if ( item->canceled )
         g_print("finished canceled\n");
 #endif // DEBUG
-	priv->queue_message = g_slist_remove(priv->queue_message, data);
-	if ( !queue->canceled )
-		do_client_proccess_message(queue->client, msg, queue->key, queue->archive, queue->callback, queue->data, queue->cache);
-	g_free(queue->key);
-	g_free(queue);
+	//priv->queue_message = g_slist_remove(priv->queue_message, data);
+	if ( !item->canceled )
+		do_client_proccess_message(item->client, msg, item->key, item->archive, item->callback, item->data, item->cache);
+    do_client_queue_item_clear(item->client, item);
 }
 gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
-	GSList *node;
-	DoQueue *data;
+	//GSList *node;
+	gint   index;
 #ifdef DEBUG
     g_print("cancel request \"%s\"\n", key);
 #endif
-	for ( node = priv->queue_message; node; node = node->next ) { // to do not "equal" key
+    if ( do_client_queue_item_search(client, key, &index) ) {
+        DoQueueItem *item;
+        item = priv->queue[index];
+        item->canceled = TRUE;
+        return TRUE;
+    }
+	/*for ( node = priv->queue_message; node; node = node->next ) { // to do not "equal" key
 		data = node->data;
 		if ( !g_strcmp0(data->key, key) ) {
 			data->canceled = TRUE;
@@ -625,7 +659,7 @@ gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 			//priv->queue_message = g_slist_remove(priv->queue_message, data);
 			return TRUE;
 		}
-	}
+	}*/
 	return FALSE;
 }
 #define min(a,b) a < b ? a : b
@@ -849,21 +883,29 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 		res = do_client_proccess_message(client, msg, key, archive, callback, data, res);
 	}
 	else {
-		DoQueue *queue;
-		queue = g_new(DoQueue, 1);
-		queue->callback = callback;
-		queue->data = data;
-		queue->client = client;
-		//queue->index = priv->queue_index++;
-		queue->session = session;
-		queue->msg = msg;
-		queue->archive = archive;
-		queue->key = g_strdup(key);
-		queue->canceled = FALSE;
-		queue->cache = res;
-		priv->queue_message = g_slist_append(priv->queue_message, queue);
+        gint index = -1;
+        if ( do_client_queue_item_search(client, key, &index) )
+            return res;
+        if ( index == -1 ) {
+            g_print("Queue is full\n");
+            return res;
+        }
+		DoQueueItem *item;
+		item = g_new0(DoQueueItem, 1);
+		item->callback = callback;
+		item->data = data;
+		item->client = client;
+		//item->index = priv->item_index++;
+		item->session = session;
+		item->msg = msg;
+		item->archive = archive;
+		item->key = g_strdup(key);
+		item->canceled = FALSE;
+		item->cache = res;
+		priv->queue[index] = item;
+		//priv->queue_message = g_slist_append(priv->queue_message, queue);
 
-		soup_session_queue_message(session, msg, do_client_message_finished, queue);
+		soup_session_queue_message(session, msg, do_client_message_finished, item);
 	}
 	return res;
 }
