@@ -126,6 +126,7 @@ struct _DoListViewPrivate
     gchar         *load_status_;
     gchar         *name;
     GSList        *fields;
+    gboolean       fields_filled;
 };
 
 G_DEFINE_TYPE_WITH_CODE (DoListView, do_list_view, GTK_TYPE_SCROLLED_WINDOW, // to do
@@ -340,23 +341,30 @@ static gboolean do_list_view_fill_first(DoListView *view)
 	window = gtk_widget_get_toplevel(GTK_WIDGET(view));
 	if ( !window || !GTK_IS_WINDOW(window) )
 		return TRUE;
-    if ( do_list_view_make_columns(view) ) {
-        GtkTreeModel *model;
-        gchar *fields;
-        GSList *l;
-        gint i;
 
-        fields = g_new0(gchar, g_slist_length(priv->fields));
-        for ( i = 0, l = priv->fields; l; l=l->next,i++ ) {
-            DoListViewField *field;
-            field = l->data;
-            fields[i] = field->short_;
+    if ( !priv->fields ) {
+        if ( !priv->fields_filled ) {
+            priv->fields_filled = TRUE;
+            do_list_view_make_columns(view);
         }
-
-        model = do_list_model_new(priv->name, fields, do_application_get_client(DO_APPLICATION(app)));
-        g_free(fields);
-        gtk_tree_view_set_model(priv->tree_view, model);
+        return TRUE;
     }
+
+    GtkTreeModel *model;
+    gchar *fields;
+    GSList *l;
+    gint i;
+
+    fields = g_new0(gchar, g_slist_length(priv->fields));
+    for ( i = 0, l = priv->fields; l; l=l->next,i++ ) {
+        DoListViewField *field;
+        field = l->data;
+        fields[i] = field->short_;
+    }
+
+    model = do_list_model_new(priv->name, fields, do_application_get_client(DO_APPLICATION(app)));
+    g_free(fields);
+    gtk_tree_view_set_model(priv->tree_view, model);
 #ifdef DEBUG
     do_list_view_make_key_column(view);
 #endif
@@ -509,7 +517,7 @@ static void do_list_view_set_load_status(DoListView *view, const gchar *load_sta
 }
 static gboolean do_list_view_update_columns(JsonNode *node,DoListView *view)
 {
-    //DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
 	JsonObject *obj;
     //to do gboolean fill_model = priv->fields == NULL;
     if ( !node )
@@ -517,7 +525,8 @@ static gboolean do_list_view_update_columns(JsonNode *node,DoListView *view)
     obj = json_node_get_object(node);
     g_assert(obj != NULL);
     if ( json_object_has_member(obj, "fields") ) {
-        json_array_foreach_element(json_object_get_array_member(obj, "fields"), do_list_view_make_column, view);
+        if ( !priv->fields )
+            json_array_foreach_element(json_object_get_array_member(obj, "fields"), do_list_view_make_column, view);
     }
     //to do if ( fill_model )
     //    do_list_view_fill(view);
@@ -544,7 +553,8 @@ static gboolean do_list_view_make_columns(DoListView *view)
     obj = json_node_get_object(node);
     g_assert(obj != NULL);
     if ( json_object_has_member(obj, "fields") ) {
-        json_array_foreach_element(json_object_get_array_member(obj, "fields"), do_list_view_make_column, view);
+        if ( !priv->fields )
+            json_array_foreach_element(json_object_get_array_member(obj, "fields"), do_list_view_make_column, view);
     }
     return TRUE;
 }
@@ -555,6 +565,8 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
 	JsonObject *obj;
     GtkCellRenderer   *r;
     GtkTreeViewColumn *col;
+    gint n;
+    const gchar *align;
 
     obj = json_node_get_object(element_node);
     g_assert(obj != NULL);
@@ -566,21 +578,25 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
     if ( json_object_has_member(obj, "title") )
         field->title = g_strdup(json_object_get_string_member(obj, "title"));
     field->align = PANGO_ALIGN_LEFT;
-    if ( !json_object_has_member(obj, "align") || !g_strcmp0(json_object_get_string_member(obj, "align"), "left") )
-        field->align = PANGO_ALIGN_LEFT;
-    else if ( !g_strcmp0(json_object_get_string_member(obj, "align"), "center") )
-        field->align = PANGO_ALIGN_CENTER;
-    else if ( !g_strcmp0(json_object_get_string_member(obj, "align"), "right") )
-        field->align = PANGO_ALIGN_RIGHT;
+    if ( json_object_has_member(obj, "align") ) {
+        align = json_object_get_string_member(obj, "align");
+        if ( !g_strcmp0(align, "left") )
+            field->align = PANGO_ALIGN_LEFT;
+        else if ( !g_strcmp0(align, "center") )
+            field->align = PANGO_ALIGN_CENTER;
+        else if ( !g_strcmp0(align, "right") )
+            field->align = PANGO_ALIGN_RIGHT;
+    }
     priv->fields = g_slist_append(priv->fields, field);
 
     r = gtk_cell_renderer_text_new();
+    g_object_set(r, "xalign", field->align == PANGO_ALIGN_CENTER ? 0.5 : (field->align == PANGO_ALIGN_RIGHT ? 1. : 0.), NULL);
     col = do_tree_view_add_column(DO_TREE_VIEW(priv->do_view), field->name, field->title ? field->title : "", -1);
     gtk_tree_view_column_pack_start (col, r, TRUE);
     gtk_tree_view_column_set_fixed_width(col, 100);//to do
     gtk_tree_view_column_set_resizable(col, TRUE);
-
-    gtk_tree_view_column_add_attribute (col, r, "text", g_slist_length(priv->fields) + DO_LIST_MODEL_N_KEYS - 1);
+    n = g_slist_length(priv->fields) + DO_LIST_MODEL_N_KEYS - 1;
+    gtk_tree_view_column_add_attribute (col, r, "text", n);
 }
 #ifdef DEBUG
 static void do_list_view_make_key_column(DoListView *view)

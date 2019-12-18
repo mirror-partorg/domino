@@ -580,7 +580,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 	GType *types;
 	gchar *name;
 	DoPage *p;
-	GtkTreeSelection *selection;
+	//GtkTreeSelection *selection;
 
 
 	page = json_node_get_object(element_node);
@@ -644,7 +644,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 	p->view = view;
 	g_object_set_data(G_OBJECT(view), "id", p->id);
 	g_object_get(view, "tree-view", &tree_view, NULL);
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
+	//selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
 	types = g_new0(GType, n_columns + 2);
 	for ( i = 0; i < n_columns + 2; i++ )
 		types[i] = G_TYPE_STRING;
