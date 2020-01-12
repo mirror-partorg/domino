@@ -46,12 +46,35 @@ struct _DoQueueItem
 	gchar       *key;
 	gboolean     canceled;
 	JsonNode    *cache;
+	gchar       *url;
+	gchar       *method;
 };
+
+struct _DoClientPrivate
+{
+	gchar       *url;
+	gboolean     cached;
+	GHashTable  *hash;
+	gchar       *store;
+	SoupSession *session;
+	//guint64      queue_index;
+	//GSList      *queue_message;
+	gchar       *filename;
+	sqlite3     *conn;
+	gchar       *cache_url;
+	gchar       *cache_store;
+	guint        source;
+	DoQueueItem *queue[DO_CLIENT_MAX_QUEUE];
+	GSList      *wait_queue;
+
+};
+static void do_client_message_finished(SoupSession *session, SoupMessage *msg, gpointer data);
+
 
 static void do_value_free(DoValue *value)
 {
 #ifdef DEBUG
-    g_print("Clear cache \"%s\"\n", value->key);
+    //!!g_print("Clear cache \"%s\"\n", value->key);
     g_free(value->key);
 #endif
     if ( value->time ) {
@@ -78,7 +101,7 @@ static void do_value_set_parser(DoValue *value, GDateTime *time, JsonParser *par
 	value->parser = parser;
 #ifdef DEBUG
     value->key = g_strdup(key);
-    g_print("Set cache \"%s\"\n", value->key);
+    //!!g_print("Set cache \"%s\"\n", value->key);
 #endif // DEBUG
 }
 #ifdef DEBUG
@@ -134,24 +157,6 @@ static JsonNode *do_value_get_node(DoValue *value)
 {
 	return value->parser ? json_parser_get_root(value->parser) : value->node;
 }
-
-struct _DoClientPrivate
-{
-	gchar       *url;
-	gboolean     cached;
-	GHashTable  *hash;
-	gchar       *store;
-	SoupSession *session;
-	//guint64      queue_index;
-	//GSList      *queue_message;
-	gchar       *filename;
-	sqlite3     *conn;
-	gchar       *cache_url;
-	gchar       *cache_store;
-	guint        source;
-	DoQueueItem *queue[DO_CLIENT_MAX_QUEUE];
-
-};
 
 G_DEFINE_TYPE_WITH_CODE (DoClient, do_client, G_TYPE_OBJECT, G_ADD_PRIVATE(DoClient))
 
@@ -613,15 +618,32 @@ static gboolean do_client_queue_item_search(DoClient *client, const gchar *key, 
     }
     return FALSE;
 }
-static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item)
+static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item_queue)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
 	gint index;
-	if ( do_client_queue_item_search(client, item->key, &index) ) {
-        priv->queue[index] = NULL;
+	if ( do_client_queue_item_search(client, item_queue->key, &index) ) {
+        if ( priv->wait_queue ) {
+            SoupSession *session;
+            SoupMessage *msg;
+            DoQueueItem *item;
+            item = priv->wait_queue->data;
+            priv->queue[index] = item;
+            priv->wait_queue = g_slist_delete_link(priv->wait_queue, priv->wait_queue);
+            //priv->wait_queue = priv->wait_queue->next;//fix me
+            session = soup_session_new();
+            msg = soup_message_new(item->method, item->url);
+            item->session = session;
+            item->msg = msg;
+            soup_session_queue_message(session, msg, do_client_message_finished, item);
+        }
+        else
+            priv->queue[index] = NULL;
 	}
-	g_free(item->key);
-	g_free(item);
+    g_free(item_queue->method);
+    g_free(item_queue->url);
+	g_free(item_queue->key);
+	g_free(item_queue);
 
 }
 static void do_client_message_finished(SoupSession *session, SoupMessage *msg, gpointer data)
@@ -802,7 +824,7 @@ static DoValue *do_client_get_cache_value(DoClient *client, const gchar *key)
         gchar *sql, *error = NULL;
         gint res;
 #ifdef DEBUG
-        g_print("read from local db \"%s\"\n", key);
+        //!!g_print("read from local db \"%s\"\n", key);
 #endif
         sql = g_strdup_printf("SELECT key,time,data FROM cache WHERE key = '%s'", key);
         res = sqlite3_exec(priv->conn, sql, do_client_read_cache_callback, client, &error);
@@ -815,10 +837,10 @@ static DoValue *do_client_get_cache_value(DoClient *client, const gchar *key)
         value = g_hash_table_lookup(priv->hash, key);
     }
 #ifdef DEBUG
-    if ( !value )
+    /*!!if ( !value )
         g_print("Not found in cache \"%s\"\n", key);
     else
-        g_print("In cache \"%s\"\n", key);
+        g_print("In cache \"%s\"\n", key);*/
 #endif // DEBUG
 	return value;
 }
@@ -875,20 +897,28 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 	SoupSession *session;
 	SoupMessage *msg;
 
-	session = soup_session_new();
-	msg = soup_message_new(method, url);
 	//g_print("start message key %s\n", key);//debug it
 	if ( !callback ) {
+        session = soup_session_new();
+        msg = soup_message_new(method, url);
 		soup_session_send_message(session, msg);
 		res = do_client_proccess_message(client, msg, key, archive, callback, data, res);
+		g_free(url);
 	}
 	else {
         gint index = -1;
-        if ( do_client_queue_item_search(client, key, &index) )
+        if ( do_client_queue_item_search(client, key, &index) ) {
+            g_free(url);
             return res;
-        if ( index == -1 ) {
-            g_print("Queue is full\n");
-            return res;
+        }
+        GSList *l;
+        for ( l = priv->wait_queue; l; l=l->next ) {
+            DoQueueItem *item;
+            item = l->data;
+            if ( !g_strcmp0(key, item->key) ) {
+                g_free(url);
+                return res;
+            }
         }
 		DoQueueItem *item;
 		item = g_new0(DoQueueItem, 1);
@@ -896,16 +926,24 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 		item->data = data;
 		item->client = client;
 		//item->index = priv->item_index++;
-		item->session = session;
-		item->msg = msg;
 		item->archive = archive;
 		item->key = g_strdup(key);
 		item->canceled = FALSE;
 		item->cache = res;
-		priv->queue[index] = item;
-		//priv->queue_message = g_slist_append(priv->queue_message, queue);
-
-		soup_session_queue_message(session, msg, do_client_message_finished, item);
+        item->url = g_strdup(url);
+        item->method = g_strdup(method);
+        g_free(url);
+		if ( index != -1 ) {
+            session = soup_session_new();
+            msg = soup_message_new(item->method, item->url);
+            item->session = session;
+            item->msg = msg;
+            priv->queue[index] = item;
+            soup_session_queue_message(session, msg, do_client_message_finished, item);
+        }
+        else {
+            priv->wait_queue = g_slist_append(priv->wait_queue, item);
+        }
 	}
 	return res;
 }
@@ -970,14 +1008,14 @@ static gboolean do_client_cleaning(DoClient *client)
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
     GSList *clean = NULL, *l;
 #ifdef DEBUG
-    g_print("Cleaning caches\n");
+    //!!g_print("Cleaning caches\n");
 #endif // DEBUG
 	g_hash_table_foreach(priv->hash, (GHFunc)cleaning_cache, &clean);
 	for ( l = clean; l; l = l->next ) {
         gchar *key;
         key = l->data;
 #ifdef DEBUG
-        g_print("Cleaning cache \"%s\"\n", key);
+        //!!g_print("Cleaning cache \"%s\"\n", key);
 #endif // DEBUG
         g_hash_table_remove(priv->hash, key);
 	}
