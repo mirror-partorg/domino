@@ -16,14 +16,17 @@ G_BEGIN_DECLS
 
 #define DO_CLIENT_GET "GET"
 #define DO_CLIENT_POST "POST"
-#define do_client_request_get(client,func,key, ...) do_client_request(client,"GET",func,key,FALSE,FALSE,__VA_ARGS__)
-#define do_client_request_get_async(client,func,key,callback,data, ...) do_client_request_async(client,"GET",func,key,FALSE,FALSE,callback,data,__VA_ARGS__)
-
-
 
 typedef struct _DoClient		DoClient;
 typedef struct _DoClientPrivate	DoClientPrivate;
 typedef struct _DoClientClass		DoClientClass;
+typedef enum
+{
+	DO_CLIENT_FLAGS_ARCHIVE = 1 << 0,
+	DO_CLIENT_FLAGS_NOCACHE = 1 << 1,
+	DO_CLIENT_FLAGS_MAY_IGNORE = 1 << 2,
+} DoClientFlags;
+
 
 struct _DoClient
 {
@@ -43,34 +46,31 @@ GObject   *do_client_new(const gchar *url, const gchar *store);
 const gchar *do_client_get_url(DoClient *client);
 const gchar *do_client_get_store(DoClient *client);
 gboolean   do_client_cancel_request(DoClient *client, const gchar *key);
-JsonNode  *do_client_request(DoClient *client,
+JsonNode  *do_client_request2(DoClient *client,
 		                     const gchar *method,
 							 const gchar *func,
 		                     const gchar *key,
-							 gboolean archive,
-							 gboolean nocache,...) G_GNUC_NULL_TERMINATED;
-JsonNode  *do_client_request_valist(DoClient *client,
+							 DoClientFlags flags,
+							 ...) G_GNUC_NULL_TERMINATED;
+JsonNode  *do_client_request2_valist(DoClient *client,
 		                            const gchar *method,
 									const gchar *func,
 									const gchar *key,
-									gboolean archive,
-									gboolean nocache,
+									DoClientFlags flags,
 									va_list args);
-JsonNode  *do_client_request_async(DoClient *client,
+JsonNode  *do_client_request2_async(DoClient *client,
 		                     const gchar *method,
 							 const gchar *func,
 		                     const gchar *key,
-							 gboolean archive,
-							 gboolean nocache,
+							 DoClientFlags flags,
 							 GFunc callback,
 							 gpointer data,
 							 ...) G_GNUC_NULL_TERMINATED;
-JsonNode  *do_client_request_valist_async(DoClient *client,
+JsonNode  *do_client_request2_valist_async(DoClient *client,
 		                            const gchar *method,
 									const gchar *func,
 									const gchar *key,
-									gboolean archive,
-									gboolean nocache,
+									DoClientFlags flags,
      								GFunc callback,
 								    gpointer data,
 									va_list args);

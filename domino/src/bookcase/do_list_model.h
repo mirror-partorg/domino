@@ -3,6 +3,7 @@
 #define _do_list_model_h_included_
 
 #include <gtk/gtk.h>
+#include "do_client.h"
 
 #define DO_LIST_MODEL_TYPE                  (do_list_model_get_type ())
 #define DO_LIST_MODEL(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), DO_LIST_MODEL_TYPE, DoListModel))
@@ -34,6 +35,8 @@ struct _DoListModelClass
 
 GType do_list_model_get_type (void);
 
-GtkTreeModel *do_list_model_new(const gchar *name, const gchar *fields, GObject *client);
+GtkTreeModel *do_list_model_new(const gchar *name, const gchar *fields, DoClient *client);
+void do_list_model_empty_col_change_depricated(DoListModel *model, gint code_to_col, gint sort_to_col, gint key_to_col);
+
 
 #endif /* _do_list_model_h_included_ */

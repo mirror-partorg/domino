@@ -5,6 +5,7 @@
 #include <gtk/gtk.h>
 #include <json-glib/json-glib.h>
 #include "do_window.h"
+#include "do_client.h"
 
 
 G_BEGIN_DECLS
@@ -43,8 +44,8 @@ GType		do_application_get_type(void);
 
 GtkWidget       *do_application_get_focus_child(DoApplication *app);
 DoWindow	    *do_application_create_window(DoApplication *app, GdkScreen *screen);
-JsonNode        *do_application_request(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache,...) G_GNUC_NULL_TERMINATED;
-JsonNode        *do_application_request_async(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache,GFunc callback,gpointer data, ...) G_GNUC_NULL_TERMINATED;
+JsonNode        *do_application_request2(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags,...) G_GNUC_NULL_TERMINATED;
+JsonNode        *do_application_request2_async(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, GFunc callback,gpointer data, ...) G_GNUC_NULL_TERMINATED;
 gboolean         do_application_cancel_request(DoApplication *app, const gchar *key);
 void             do_application_set_cache(DoApplication *app, const gchar *key, JsonNode *node);
 JsonNode        *do_application_get_cache(DoApplication *app, const gchar *key);

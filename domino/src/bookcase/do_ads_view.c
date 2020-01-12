@@ -340,7 +340,7 @@ static void do_ads_view_fill(DoAdsView *view, const gchar *id, const gchar *sele
 	g_array_append_val(params, id_);
 	g_array_append_val(params, select_id_);
 	g_array_append_val(params, key);
-    node = do_application_request_async(DO_APPLICATION(app), "GET", "GetAds", key, FALSE, FALSE,
+    node = do_application_request2_async(DO_APPLICATION(app), "GET", "GetAds", key, 0,
     		                    (GFunc)do_ads_view_model_fill_cb, params,
 								"id",id ? id : "", NULL);
     if ( node ) {

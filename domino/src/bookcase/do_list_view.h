@@ -4,6 +4,7 @@
 
 #include <gtk/gtk.h>
 #include "do_view.h"
+#include "do_client.h"
 
 G_BEGIN_DECLS
 
@@ -37,7 +38,7 @@ struct _DoListViewClass
 
 GType		do_list_view_get_type(void);
 
-GtkWidget  *do_list_view_new(const gchar *name);
+GtkWidget  *do_list_view_new(const gchar *name, DoClient *client);
 
 G_END_DECLS
 

@@ -300,23 +300,23 @@ static void do_application_class_init (DoApplicationClass *klass)
 				     G_PARAM_CONSTRUCT_ONLY));*/
 }
 
-JsonNode *do_application_request(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, ...)
+JsonNode *do_application_request2(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, ...)
 {
 	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
 	JsonNode *node = NULL;
 	va_list args;
-    va_start (args, nocache);
-	node = do_client_request_valist(DO_CLIENT(priv->client), method, func, key, archive, nocache,args);
+    va_start (args, flags);
+	node = do_client_request2_valist(DO_CLIENT(priv->client), method, func, key, flags, args);
     va_end (args);
 	return node;
 }
-JsonNode *do_application_request_async(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache,GFunc callback,gpointer data, ...)
+JsonNode *do_application_request2_async(DoApplication *app, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, GFunc callback,gpointer data, ...)
 {
 	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
 	JsonNode *node = NULL;
 	va_list args;
     va_start (args, data);
-	node = do_client_request_valist_async(DO_CLIENT(priv->client), method, func, key, archive, nocache, callback, data, args);
+	node = do_client_request2_valist_async(DO_CLIENT(priv->client), method, func, key, flags, callback, data, args);
     va_end (args);
     return node;
 }
@@ -360,7 +360,7 @@ static gboolean run_actions(DoApplication *app)
     }
 	time = g_date_time_new_now_local();
 	buf = do_client_strftime(time);
-	do_application_request_async(app, "GET", "GetVersion", "Version", FALSE, FALSE,
+	do_application_request2_async(app, "GET", "GetVersion", "Version", 0,
 					(GFunc)do_application_set_protocol, app,
 	                NULL);
 	g_date_time_unref(time);g_free(buf);

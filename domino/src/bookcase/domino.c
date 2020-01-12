@@ -126,6 +126,9 @@ int dominox_init()
     gint i;
     for (i = 0; i < DOMINO_CONFIG_N; i++)
         domino_config_read(i);
+
+    DOMINO_LOCAL_SET("list-goods-view", "fields", "cnsfPR", NULL);//todo
+
     return TRUE;
 }
 static GtkWindow *main_window = NULL;

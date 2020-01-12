@@ -209,7 +209,9 @@ static GObject *do_obj_view_constructor(GType type, guint n_construct_properties
     gtk_box_pack_start(GTK_BOX(object), notebook, TRUE, TRUE, 0);
 
     gtk_widget_show_all(GTK_WIDGET(object));
-
+#ifdef DEBUG
+    g_print("constractor DoObjView(%s)\n", priv->key);
+#endif
     priv->source_ = g_idle_add((GSourceFunc)do_obj_view_fill_first, object);
     return object;
 }
@@ -289,6 +291,9 @@ static void do_obj_view_class_init (DoObjViewClass *klass)
 
 GtkWidget *do_obj_view_new (const gchar *key)
 {
+#ifdef DEBUG
+    g_print("create DoObjView(%s)\n", key);
+#endif
     return g_object_new (DO_TYPE_OBJ_VIEW,
     		     "key", key,
 
@@ -308,6 +313,10 @@ static void do_obj_view_do_close(DoView *view)
 static gboolean do_obj_view_fill_first(DoObjView *view)
 {
 	//DoObjViewPrivate *priv = DO_OBJ_VIEW_GET_PRIVATE (view);
+#ifdef DEBUG
+	DoObjViewPrivate *priv = DO_OBJ_VIEW_GET_PRIVATE (view);
+    g_print("FillFirst DoObjView(%s)\n", priv->key);
+#endif
 	GtkWidget *window;
 	window = gtk_widget_get_toplevel(GTK_WIDGET(view));
 	if ( !window || !GTK_IS_WINDOW(window) )
@@ -340,7 +349,7 @@ static void do_obj_view_fill(DoObjView *view, const gchar *page)
 	g_array_append_val(params, flags);
 	info_key = g_strdup_printf("%s.%s",priv->key,page ? page : "");
 
-    /*node = */do_application_request_async(DO_APPLICATION(app), "GET", "GetInfo", info_key, FALSE, FALSE,
+    /*node = */do_application_request2_async(DO_APPLICATION(app), "GET", "GetInfo", info_key, 0,
     		                    (GFunc)do_obj_view_model_fill_cb, params,
 								"key", priv->key,
 								"page", page ? page : "",
@@ -401,7 +410,7 @@ static void do_obj_view_fill_more(DoObjView *view, const gchar *page)
 	g_array_append_val(params, flags);
 	info_key = g_strdup_printf("%s.%s.%s",priv->key, page, id);
 
-    /*node = */do_application_request_async(DO_APPLICATION(app), "GET", "GetInfo", info_key, FALSE, FALSE,
+    /*node = */do_application_request2_async(DO_APPLICATION(app), "GET", "GetInfo", info_key, 0,
     		                    (GFunc)do_obj_view_model_fill_cb, params,
 								"key", priv->key,
 								"page", page,
@@ -599,7 +608,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 
 	node = do_application_get_cache(DO_APPLICATION(app), key);
 	if ( !node ) {
-        node = do_application_request(DO_APPLICATION(app), "GET", "GetInfo", priv->key, FALSE, TRUE,
+        node = do_application_request2(DO_APPLICATION(app), "GET", "GetInfo", priv->key, DO_CLIENT_FLAGS_NOCACHE,
 								"key", priv->key,
 								"page", page_id,
 								NULL);

@@ -10,8 +10,13 @@
 
 #define DO_CLIENT_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_CLIENT, DoClientPrivate))
 //#define DO_CLIENT_GET_PRIVATE(object)do_client_get_instance_private (object)
+#define DO_TYPE_CLIENT_FLAGS do_client_flags_get_type()
+
 #define ZIP_BUFFER_SIZE 64*1024*8
-#define DO_CLIENT_MAX_QUEUE 10
+#define N_QUEUE 20
+#define N_QUEUE_RESERVED 10
+//#define N_QUEUE 1
+//#define N_QUEUE_RESERVED 0
 
 typedef struct _DoValue	DoValue;
 typedef struct _DoQueueItem	DoQueueItem;
@@ -43,10 +48,11 @@ struct _DoQueueItem
 	SoupSession *session;
 	SoupMessage *msg;
 	gboolean     archive;
-	gchar       *key;
+	gchar       *key1;
 	gboolean     canceled;
 	JsonNode    *cache;
 	gchar       *url;
+	gchar       *body;
 	gchar       *method;
 };
 
@@ -64,12 +70,28 @@ struct _DoClientPrivate
 	gchar       *cache_url;
 	gchar       *cache_store;
 	guint        source;
-	DoQueueItem *queue[DO_CLIENT_MAX_QUEUE];
+	DoQueueItem *queue[N_QUEUE];
 	GSList      *wait_queue;
+	guint        message_index;
 
 };
 static void do_client_message_finished(SoupSession *session, SoupMessage *msg, gpointer data);
 
+GType do_client_flags_get_type(void)
+{
+    static GType type = 0;
+    if (G_UNLIKELY (type == 0))
+    {
+        static const GFlagsValue _do_client_flags_values[] = {
+         { DO_CLIENT_FLAGS_ARCHIVE, "DO_CLIENT_FLAGS_ARCHIVE", "archive" },
+	     { DO_CLIENT_FLAGS_NOCACHE, "DO_CLIENT_FLAGS_NOCACHE", "nocache" },
+	     { DO_CLIENT_FLAGS_MAY_IGNORE, "DO_CLIENT_FLAGS_MAY_IGNORE", "may-ignore" },
+         { 0, NULL, NULL }
+        };
+        type = g_flags_register_static ("DoClientFlags", _do_client_flags_values);
+    }
+    return type;
+}
 
 static void do_value_free(DoValue *value)
 {
@@ -160,7 +182,7 @@ static JsonNode *do_value_get_node(DoValue *value)
 
 G_DEFINE_TYPE_WITH_CODE (DoClient, do_client, G_TYPE_OBJECT, G_ADD_PRIVATE(DoClient))
 
-static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, GFunc callback, gpointer data, va_list args);
+static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, GFunc callback, gpointer data, va_list args);
 static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key, gboolean archive, GFunc callback, gpointer data, JsonNode *cache);
 static void do_client_update_cache_store_url(DoClient *client);
 static gboolean do_client_cleaning(DoClient *client);
@@ -444,30 +466,30 @@ static gboolean check_valid_cache(const gchar *key, GDateTime *time)
 	g_date_time_unref(now);
 	return res;
 }
-JsonNode *do_client_request(DoClient *client, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache,...)
+JsonNode *do_client_request2(DoClient *client, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, ...)
 {
 	JsonNode *node;
 	va_list args;
 
-    va_start (args, nocache);
+    va_start (args, flags);
 
-	node = do_client_request_valist_(client, method, func, key, archive, nocache, NULL, NULL, args);
+	node = do_client_request2_valist_(client, method, func, key, flags, NULL, NULL, args);
 
     va_end (args);
     return node;
 }
-JsonNode *do_client_request_valist(DoClient *client, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, va_list args)
+JsonNode *do_client_request2_valist(DoClient *client, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, va_list args)
 {
-	return do_client_request_valist_(client, method, func, key, archive, nocache, NULL, NULL, args);
+	return do_client_request2_valist_(client, method, func, key, flags, NULL, NULL, args);
 }
-JsonNode *do_client_request_async(DoClient *client, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, GFunc callback, gpointer data, ...)
+JsonNode *do_client_request2_async(DoClient *client, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, GFunc callback, gpointer data, ...)
 {
 	JsonNode *node = NULL;
 	va_list args;
 
     va_start (args, data);
 
-	node = do_client_request_valist_(client, method, func, key, archive, nocache, callback, data, args);
+	node = do_client_request2_valist_(client, method, func, key, flags, callback, data, args);
 
     va_end (args);
     return node;
@@ -597,32 +619,37 @@ static void do_client_update_cache(DoClient *client, const gchar *key, JsonParse
 	}
 }
 
-JsonNode *do_client_request_valist_async(DoClient *client, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, GFunc callback, gpointer data, va_list args)
+JsonNode *do_client_request2_valist_async(DoClient *client, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, GFunc callback, gpointer data, va_list args)
 {
-	return do_client_request_valist_(client, method, func, key, archive, nocache, callback, data, args);
+	return do_client_request2_valist_(client, method, func, key, flags, callback, data, args);
 }
-static gboolean do_client_queue_item_search(DoClient *client, const gchar *key, gint *index)
+static gboolean do_client_queue_item_search(DoClient *client, const gchar *key1, gint *index, gint *capacity)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
 	guint i;
+	gboolean res = FALSE;
 	*index = -1;
-    for ( i = 0; i < DO_CLIENT_MAX_QUEUE; i++ ) {
+	if ( capacity ) *capacity = 0;
+    for ( i = 0; i < N_QUEUE; i++ ) {
         DoQueueItem *item;
         item = priv->queue[i];
-        if ( item && !g_strcmp0(item->key, key) ) {
+        if ( key1 && item && !g_strcmp0(item->key1, key1) ) {
             *index = i;
-            return TRUE;
+            if ( !capacity ) return TRUE;
+            res = TRUE;
         }
-        if ( !item )
+        if ( !item ) {
+            if ( capacity ) *capacity = *capacity + 1;
             *index = i;
+        }
     }
-    return FALSE;
+    return res;
 }
 static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item_queue)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
 	gint index;
-	if ( do_client_queue_item_search(client, item_queue->key, &index) ) {
+	if ( do_client_queue_item_search(client, item_queue->key1, &index, NULL) ) {
         if ( priv->wait_queue ) {
             SoupSession *session;
             SoupMessage *msg;
@@ -633,6 +660,12 @@ static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item_queue
             //priv->wait_queue = priv->wait_queue->next;//fix me
             session = soup_session_new();
             msg = soup_message_new(item->method, item->url);
+            if ( !g_strcmp0(item->method, "POST") && item->body ) {
+                SoupMessageBody *rbody;
+                rbody = soup_message_body_new();
+                soup_message_body_append(rbody, SOUP_MEMORY_COPY, item->body, strlen(item->body));
+                msg->request_body = rbody;
+            }
             item->session = session;
             item->msg = msg;
             soup_session_queue_message(session, msg, do_client_message_finished, item);
@@ -642,7 +675,8 @@ static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item_queue
 	}
     g_free(item_queue->method);
     g_free(item_queue->url);
-	g_free(item_queue->key);
+	g_free(item_queue->key1);
+	g_free(item_queue->body);
 	g_free(item_queue);
 
 }
@@ -656,7 +690,7 @@ static void do_client_message_finished(SoupSession *session, SoupMessage *msg, g
 #endif // DEBUG
 	//priv->queue_message = g_slist_remove(priv->queue_message, data);
 	if ( !item->canceled )
-		do_client_proccess_message(item->client, msg, item->key, item->archive, item->callback, item->data, item->cache);
+		do_client_proccess_message(item->client, msg, item->key1, item->archive, item->callback, item->data, item->cache);
     do_client_queue_item_clear(item->client, item);
 }
 gboolean do_client_cancel_request(DoClient *client, const gchar *key)
@@ -667,7 +701,7 @@ gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 #ifdef DEBUG
     g_print("cancel request \"%s\"\n", key);
 #endif
-    if ( do_client_queue_item_search(client, key, &index) ) {
+     if ( do_client_queue_item_search(client, key, &index, NULL) ) {
         DoQueueItem *item;
         item = priv->queue[index];
         item->canceled = TRUE;
@@ -757,7 +791,7 @@ gboolean decompress(const gchar *src, gssize src_len, gchar **dst, gssize *dst_l
     return FALSE;
 }
 
-static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key, gboolean archive, GFunc callback, gpointer data, JsonNode *cache)
+static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key1, gboolean archive, GFunc callback, gpointer data, JsonNode *cache)
 {
 	//g_print("process message key %s\n", key);//debug it
 	JsonNode *res = NULL;
@@ -806,7 +840,8 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
                     return cache;
 				}
 			}
-			do_client_update_cache(client, key, parser, NULL, out, length);
+			if ( key1 )
+                do_client_update_cache(client, key1, parser, NULL, out, length);
 		}
         if ( needfree ) g_free(out);
 	}
@@ -845,55 +880,60 @@ static DoValue *do_client_get_cache_value(DoClient *client, const gchar *key)
 	return value;
 }
 
-static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key, gboolean archive, gboolean nocache, GFunc callback, gpointer data, va_list args)
+static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key1, DoClientFlags flags, GFunc callback, gpointer data, va_list args)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
 	JsonNode *res = NULL;
+	JsonNode *cache_res = NULL;
 	GDateTime *cache_time = NULL;
 
-	if ( priv->cached && !nocache ) {
+	if ( priv->cached && !(flags & DO_CLIENT_FLAGS_NOCACHE) && key1 ) {
 		DoValue *value;
-		value = do_client_get_cache_value(client, key);
+		value = do_client_get_cache_value(client, key1);
 		if ( value ) {
-            res = do_value_get_node(value);
+            cache_res = do_value_get_node(value);
 			cache_time = value->time;
-			if ( check_valid_cache(key, cache_time) ) {
+			if ( check_valid_cache(key1, cache_time) ) {
 				if ( callback ) {
-					callback(res, data);
+					callback(cache_res, data);
 					return NULL;
 				}
 				else
-                    return res;
+                    return cache_res;
 			}
 		}
 	}
 
 	gchar *url;
+	gchar *body = NULL;
     url = g_strdup_printf("%s/%s?store=%s", priv->url, func, priv->store);
-	if ( archive ) {
+    if ( flags & DO_CLIENT_FLAGS_ARCHIVE ) {
         gchar *buf;
         buf = g_strdup_printf("%s&zip=1", url);
         g_free(url);
         url = buf;
     }
-	if ( !g_strcmp0(method, "GET") ) {
-		gchar *buf, *name, *value;
-	    name = va_arg(args, gchar*);
-		while ( name != NULL ) {
-			value = va_arg(args, gchar*);
-			buf = g_strdup_printf("%s&%s=%s", url, name, value);
-			g_free(url);
-			url = buf;
-			if ( cache_time ) {
-				value = do_client_strftime(cache_time);
-				buf = g_strdup_printf("%s&cache=%s", url, value);
-				g_free(url);
-				g_free(value);
-				url = buf;
-			}
-		    name = va_arg(args, gchar*);
-		}
-	}
+    gchar *buf, *name, *value;
+    name = va_arg(args, gchar*);
+    while ( name != NULL ) {
+        value = va_arg(args, gchar*);
+        if ( !g_strcmp0(name, "body") ) {
+            body = value;
+        }
+        else {
+            buf = g_strdup_printf("%s&%s=%s", url, name, value);
+            g_free(url);
+            url = buf;
+            if ( cache_time ) {
+                value = do_client_strftime(cache_time);
+                buf = g_strdup_printf("%s&cache=%s", url, value);
+                g_free(url);
+                g_free(value);
+                url = buf;
+            }
+        }
+        name = va_arg(args, gchar*);
+    }
 	SoupSession *session;
 	SoupMessage *msg;
 
@@ -901,23 +941,32 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 	if ( !callback ) {
         session = soup_session_new();
         msg = soup_message_new(method, url);
+        if ( !g_strcmp0(method, "POST") && body ) {
+            SoupMessageBody *rbody;
+            rbody = soup_message_body_new();
+            soup_message_body_append(rbody, SOUP_MEMORY_COPY, body, strlen(body));
+            msg->request_body = rbody;
+        }
 		soup_session_send_message(session, msg);
-		res = do_client_proccess_message(client, msg, key, archive, callback, data, res);
+		res = do_client_proccess_message(client, msg, key1, flags & DO_CLIENT_FLAGS_ARCHIVE, callback, data, res);
 		g_free(url);
 	}
 	else {
         gint index = -1;
-        if ( do_client_queue_item_search(client, key, &index) ) {
+        gint capacity;
+        if ( do_client_queue_item_search(client, key1, &index, &capacity) ) {
             g_free(url);
-            return res;
+            return cache_res;
         }
         GSList *l;
-        for ( l = priv->wait_queue; l; l=l->next ) {
-            DoQueueItem *item;
-            item = l->data;
-            if ( !g_strcmp0(key, item->key) ) {
-                g_free(url);
-                return res;
+        if ( key1 ) {
+            for ( l = priv->wait_queue; l; l=l->next ) {
+                DoQueueItem *item;
+                item = l->data;
+                if ( !g_strcmp0(key1, item->key1) ) {
+                    g_free(url);
+                    return cache_res;
+                }
             }
         }
 		DoQueueItem *item;
@@ -926,26 +975,39 @@ static JsonNode *do_client_request_valist_(DoClient *client, const gchar *method
 		item->data = data;
 		item->client = client;
 		//item->index = priv->item_index++;
-		item->archive = archive;
-		item->key = g_strdup(key);
+		item->archive = flags & DO_CLIENT_FLAGS_ARCHIVE;
+		item->key1 = key1 ? g_strdup(key1) : g_strdup_printf("%d", priv->message_index++);
 		item->canceled = FALSE;
 		item->cache = res;
         item->url = g_strdup(url);
+        item->body = g_strdup(body);
         item->method = g_strdup(method);
         g_free(url);
-		if ( index != -1 ) {
+		if ( index != -1 && ( !(flags & DO_CLIENT_FLAGS_MAY_IGNORE) || (capacity > N_QUEUE_RESERVED) ) ) {
             session = soup_session_new();
             msg = soup_message_new(item->method, item->url);
+            if ( !g_strcmp0(item->method, "POST") && item->body ) {
+                SoupMessageBody *rbody;
+                rbody = soup_message_body_new();
+                soup_message_body_append(rbody, SOUP_MEMORY_COPY, item->body, strlen(item->body));
+                msg->request_body = rbody;
+            }
             item->session = session;
             item->msg = msg;
             priv->queue[index] = item;
             soup_session_queue_message(session, msg, do_client_message_finished, item);
         }
         else {
-            priv->wait_queue = g_slist_append(priv->wait_queue, item);
+            //if ( !(flags & DO_CLIENT_FLAGS_MAY_IGNORE) )
+                priv->wait_queue = g_slist_append(priv->wait_queue, item);
+#ifdef DEBUG
+//            else {
+                //g_print("ignore\n");
+            //}
+#endif // DEBUG
         }
 	}
-	return res;
+	return res ? res : cache_res;
 }
 gchar *do_client_strftime(GDateTime *time)
 {

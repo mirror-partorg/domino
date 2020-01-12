@@ -149,11 +149,13 @@ static void do_common_actions_do_list_view_(const gchar *name, DoWindow *window)
 {
     GtkNotebook *nb;
     DoView *view;
+    GtkApplication *app = gtk_window_get_application(
+                    GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(window))));
 
     nb = GTK_NOTEBOOK (do_window_get_notebook (window));
     g_return_if_fail (nb != NULL);
 
-    view = DO_VIEW(do_list_view_new(name));
+    view = DO_VIEW(do_list_view_new(name, DO_CLIENT(do_application_get_client(DO_APPLICATION(app)))));
     do_end_long_operation(GTK_WIDGET(window));
     if ( !view )
         return;
