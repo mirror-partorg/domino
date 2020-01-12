@@ -61,7 +61,7 @@ static const char *key[DO_DB_END] = {
     "CHECKS",
     "REALIZATION",
     "DISCOUNT",
-    ""};
+    "STRUCT_FILE"};
 #ifdef DEBUG_BTI
 static const char* bti_oper[79] = {
 "B_OPEN",
@@ -144,9 +144,11 @@ struct _do_alias_t {
     char *aliasName;
     char *filename;
     char *host;
+    char *dbname;
     BTI_BYTE dbBlock[DO_DB_END][BTI_BLOCK_SIZE];
     BTI_BYTE emptyBlock[BTI_BLOCK_SIZE];
     char *dbfilename[DO_DB_END];
+    char *dbfilename_orig[DO_DB_END];
     int tran_stat;
     char *username;
     char *password;
@@ -167,9 +169,27 @@ static void cache_free(do_alias_cache_t *cache);
 static do_alias_cache_t *cache_new();
 static int threadID = 0;
 
+
 int do_alias_btr(do_alias_t *alias, BTI_WORD operation, file_db_t id, BTI_VOID_PTR dataBuffer, BTI_WORD_PTR dataLength, BTI_VOID_PTR keyBuffer, BTI_SINT keyNumber);
 static void to_do_init(do_alias_t *alias, int utf);
 static void from_do_init(do_alias_t *alias, int utf);
+do_alias_t *do_alias_new(const char *dbConfDir, const char* aliasName, int breakOnError, const char *username, const char* password, int utf8);;
+DO_EXPORT int do_alias_change_dbname(do_alias_t *alias, const char *dbname);
+
+DO_EXPORT do_alias_t *do_alias_clone(do_alias_t *alias)
+{
+    do_alias_t *ret;
+    ret = do_alias_new(alias->dbConfDir, alias->aliasName, alias->breakOnError, alias->username, alias->password, alias->utf8);
+    if ( alias->host ) {
+        if ( ret->host )
+ 	    do_free(ret->host);
+        ret->host = do_strdup(alias->host);
+    }
+    if ( alias->dbname )
+       do_alias_change_dbname(ret, alias->dbname);
+
+    return ret;
+}
 
 static int initClientThread(CLIENT_ID  *clientID)
 {
@@ -226,14 +246,14 @@ static int openTable(BTI_VOID_PTR  fileBlock, const char *host, const char *file
     status = B_FILE_NOT_OPEN;//BTRVID(B_STAT, fileBlock, &fileCreateBuf, &dataLen, dataBuf, 0, (BTI_BUFFER_PTR)clientID);
     if (status != B_NO_ERROR) {
         do_log_debug(ZONE, "Open file %s", fileName);
-        //do_log(LOG_INFO, "Open1 file %s", fileName);
         status = BTRVID(B_OPEN, fileBlock, &dataBuf, &dataLen, fileName, 0, (BTI_BUFFER_PTR)clientID);
+        do_log_debug(ZONE, "Open file %s status %d", fileName, status);
         if (status != B_NO_ERROR) {
             do_log(LOG_ERR, "Btrieve B_OPEN %s status = %d", fileName, status);
             do_free (fileName);
             return FALSE;
         }
-        //do_log(LOG_INFO, "Stat file %s", fileName);
+        do_log_debug(ZONE, "Stat file %s", fileName);
         status = BTRVID(B_STAT, fileBlock, &fileCreateBuf, &dataLen, dataBuf, 0, (BTI_BUFFER_PTR)clientID);
         if (status != B_NO_ERROR) {
             do_log(LOG_ERR, "Btrieve B_STAT %s status = %d", fileName, status);
@@ -352,6 +372,10 @@ static int read_alias_config(do_alias_t *alias)
     int error;
     retval = 1;
     error = 0;
+
+    for ( i = 0; i < DO_DB_END; i++ )
+        alias->dbfilename[i] = do_strdup("");
+
     while (!feof(fp))  {
         char* cp, *name, *value, *tail;
         if (fgets(line, len + 1, fp) == NULL) break;
@@ -530,6 +554,30 @@ do_alias_t *do_alias_new(const char *dbConfDir, const char* aliasName, int break
 
     return alias;
 }
+do_alias_t *do_alias_new_light(int breakOnError, const char *username, const char* password, int utf8)
+{
+    do_alias_t *alias;
+    if ( (alias = (do_alias_t *)do_malloc0(sizeof(do_alias_t))) == NULL)
+        return alias;
+    memset(&alias->dbBlock, 0, sizeof(alias->dbBlock));
+    memset(&alias->emptyBlock, 0, sizeof(alias->emptyBlock));
+    memset(&alias->dbfilename, 0, sizeof(alias->dbfilename));
+    alias->cache = NULL;
+    alias->filename = NULL;
+    alias->host = NULL;
+    alias->connect = 0;
+    alias->tran_stat = 0;
+    alias->breakOnError = breakOnError;
+    alias->username = do_strdup(username);
+    alias->password = do_strdup(password);
+    alias->fdo_conv = (iconv_t) -1;
+    alias->tdo_conv = (iconv_t) -1;
+    to_do_init(alias, utf8);
+    from_do_init(alias, utf8);
+    alias->utf8 = utf8;
+
+    return alias;
+}
 DO_EXPORT int do_alias_utf8(do_alias_t *alias)
 {
    return alias->utf8;
@@ -550,6 +598,10 @@ DO_EXPORT void do_alias_free(do_alias_t *alias)
     for (i = 0; i < DO_DB_END; i++)
         if (alias->dbfilename[i])
             do_free(alias->dbfilename[i]);
+    for (i = 0; i < DO_DB_END; i++)
+        if (alias->dbfilename_orig[i])
+            do_free(alias->dbfilename_orig[i]);
+
     do_free(alias->username);
     do_free(alias->password);
     if (alias->fdo_conv != (iconv_t) -1)
@@ -560,6 +612,33 @@ DO_EXPORT void do_alias_free(do_alias_t *alias)
         cache_free(alias->cache);
 
     do_free(alias);
+}
+DO_EXPORT int do_alias_change_dbname(do_alias_t *alias, const char *dbname)
+{
+    int i, ret;
+    ret = FALSE;
+    if ( alias->dbname )
+        do_free(alias->dbname);
+    alias->dbname = do_strdup(dbname);
+    for (i = 0; i < DO_DB_END; i++) {
+        if ( alias->dbfilename[i] ) {
+            char *head, *tail, *value;
+            if ( !alias->dbfilename_orig[i] )
+                alias->dbfilename_orig[i] = do_strdup(alias->dbfilename[i]);
+            value = do_strdup(alias->dbfilename_orig[i]);
+            head = value;
+            tail = strstr(head, alias->aliasName);
+            if ( tail ) {
+                 ret = TRUE;
+                 do_free(alias->dbfilename[i]);
+                 *tail = '\0';
+                 tail += strlen(alias->aliasName);
+                 alias->dbfilename[i] = do_strdup_printf("%s%s%s", head, dbname, tail);
+            }
+            do_free(value);
+        }
+    }
+    return ret;
 }
 
 DO_EXPORT int do_alias_close(do_alias_t *alias)
@@ -595,11 +674,9 @@ DO_EXPORT int do_alias_open(do_alias_t *alias, int openAll, ...)
     if (openAll) {
         for (i = 0; i < DO_DB_END; i++)
         {
-            if (!alias->dbfilename[i]) {
-                if ( i < DO_DB_STRUCT_FILE ) {
-                    do_log(LOG_ERR, "undefine dbname for %s", key[i]);
-                    return 0;
-                }
+            //!!do_log(LOG_INFO, "open dbname(%s) %s", key[i], alias->dbfilename[i]);
+            if ( alias->dbfilename[i][0] == '\0' ) {
+                //!!do_log(LOG_WARNING, "undefine dbname for %s skip", key[i]);
                 continue;
             }
             if ( !openTable(alias->dbBlock[i], alias->host, alias->dbfilename[i], &alias->clientID) )
@@ -623,6 +700,31 @@ DO_EXPORT int do_alias_open(do_alias_t *alias, int openAll, ...)
             }
             va_end(arg);
     };
+    alias->connect = 1;
+    do_log_debug(ZONE, "alias open");
+    return TRUE;
+}
+DO_EXPORT int do_alias_open_manual(do_alias_t *alias,  ...)
+{
+    alias->connect = 0;
+    if ( !initClientThread(&alias->clientID) ) {
+        alias->init_clientID = FALSE;
+        return 0;
+    }
+    alias->init_clientID = TRUE;
+    int id_db;
+    char *filename;
+    va_list arg;
+    va_start(arg, alias);
+    while ( (id_db = va_arg(arg, int)) < DO_DB_END ) {
+        filename = va_arg(arg, char*);
+	if ( alias->dbfilename[id_db] )
+	   do_free(alias->dbfilename[id_db]);
+        alias->dbfilename[id_db] = do_strdup(filename);
+        if ( !openTable(alias->dbBlock[id_db], alias->host, alias->dbfilename[id_db], &alias->clientID) )
+            return 0;
+    }
+    va_end(arg);
     alias->connect = 1;
     do_log_debug(ZONE, "alias open");
     return TRUE;
@@ -776,7 +878,8 @@ DO_EXPORT char *do_product_create_parcel(do_alias_t *alias, const char* base_cod
     product_key0.base_parcel = 0;
     do_text_set(alias, product_key0.code, base_code);
     int stat = do_product_get0(alias, &product, &product_key0, DO_GET_EQUAL);
-    int base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH);
+    int base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE);
+    int parcel_len = 3;//fix me!!!
     int full_pref_len;
     if (stat == DO_KEY_NOT_FOUND) {
         do_log(LOG_ERR, "base product \"%s\" not found", base_code);
@@ -807,8 +910,7 @@ DO_EXPORT char *do_product_create_parcel(do_alias_t *alias, const char* base_cod
     indx++;
     value = do_malloc(100);
     char *format = (char*)do_malloc(21);
-    sprintf(format, "%s%s", "%s%s", do_param(DO_PARAM_PRODUCT_PARCEL_CODE_FORMAT));
-    sprintf(value, format, base_code, pref, indx);
+    sprintf(value, "%s.%s%0*d", base_code, pref, parcel_len, indx);
     do_free(format);
     do_text_set(alias, product.data.code, value);
     do_free(value);
@@ -1149,7 +1251,57 @@ DO_EXPORT int do_document_key3(do_alias_t *alias, document_key3_t *key, do_alias
     }
     return DO_ERROR;
 }
-
+#ifdef DOMINO78
+DO_EXPORT int do_document_get4(do_alias_t *alias, document_rec_t *rec, document_key4_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(document_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_DOCUMENT, &rec->data, &rec->size, key, 4);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_document_key4(do_alias_t *alias, document_key4_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_DOCUMENT, NULL, 0, key, 4);
+    }
+    return DO_ERROR;
+}
+#endif
 DO_EXPORT int do_document_order_get0(do_alias_t *alias, document_order_rec_t *rec, document_order_key0_t *key, do_alias_oper_t operation)
 {
     rec->size = sizeof(document_order_struct_t);
@@ -1693,7 +1845,106 @@ DO_EXPORT int do_document_data_key0(do_alias_t *alias, document_data_key0_t *key
     }
     return DO_ERROR;
 }
-
+#ifdef DOMINO78
+DO_EXPORT int do_document_data_get1(do_alias_t *alias, document_data_rec_t *rec, document_data_key1_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(document_data_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 1);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_document_data_key1(do_alias_t *alias, document_data_key1_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 1);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_document_data_get2(do_alias_t *alias, document_data_rec_t *rec, document_data_key2_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(document_data_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_DOCUMENT_DATA, &rec->data, &rec->size, key, 2);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_document_data_key2(do_alias_t *alias, document_data_key2_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_DOCUMENT_DATA, NULL, 0, key, 2);
+    }
+    return DO_ERROR;
+}
+#endif
 DO_EXPORT int do_product_get0(do_alias_t *alias, product_rec_t *rec, product_key0_t *key, do_alias_oper_t operation)
 {
     rec->size = sizeof(product_struct_t);
@@ -2187,7 +2438,104 @@ DO_EXPORT int do_product_data_key0(do_alias_t *alias, product_data_key0_t *key, 
     }
     return DO_ERROR;
 }
-
+DO_EXPORT int do_product_data_get1(do_alias_t *alias, product_data_rec_t *rec, product_data_key1_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(product_data_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 1);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_product_data_key1(do_alias_t *alias, product_data_key1_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 1);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_product_data_get2(do_alias_t *alias, product_data_rec_t *rec, product_data_key2_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(product_data_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_PRODUCT_DATA, &rec->data, &rec->size, key, 2);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_product_data_key2(do_alias_t *alias, product_data_key2_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_PRODUCT_DATA, NULL, 0, key, 2);
+    }
+    return DO_ERROR;
+}
 DO_EXPORT int do_barcode_get0(do_alias_t *alias, barcode_rec_t *rec, barcode_key0_t *key, do_alias_oper_t operation)
 {
     rec->size = sizeof(barcode_struct_t);
@@ -3179,7 +3527,57 @@ DO_EXPORT int do_partner_data_key1(do_alias_t *alias, partner_data_key1_t *key, 
     }
     return DO_ERROR;
 }
-
+#ifdef DOMINO78
+DO_EXPORT int do_partner_data_get2(do_alias_t *alias, partner_data_rec_t *rec, partner_data_key2_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(partner_data_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_PARTNER_DATA, &rec->data, &rec->size, key, 2);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_partner_data_key2(do_alias_t *alias, partner_data_key2_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_PARTNER_DATA, NULL, 0, key, 2);
+    }
+    return DO_ERROR;
+}
+#endif
 
 DO_EXPORT int do_sklad_get0(do_alias_t *alias, sklad_rec_t *rec, sklad_key0_t *key, do_alias_oper_t operation)
 {
@@ -3429,7 +3827,106 @@ DO_EXPORT int do_stock_key1(do_alias_t *alias, stock_key1_t *key, do_alias_oper_
     }
     return DO_ERROR;
 }
-
+#ifdef DOMINO78
+DO_EXPORT int do_stock_get2(do_alias_t *alias, stock_rec_t *rec, stock_key2_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(stock_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_STOCK, &rec->data, &rec->size, key, 2);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_stock_key2(do_alias_t *alias, stock_key2_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 2);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_stock_get3(do_alias_t *alias, stock_rec_t *rec, stock_key3_t *key, do_alias_oper_t operation)
+{
+    rec->size = sizeof(stock_struct_t);
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST, DO_DB_STOCK, &rec->data, &rec->size, key, 3);
+    }
+    return DO_ERROR;
+}
+DO_EXPORT int do_stock_key3(do_alias_t *alias, stock_key3_t *key, do_alias_oper_t operation)
+{
+    switch (operation) {
+        case DO_GET_EQUAL:
+            return do_alias_btr(alias, B_GET_EQUAL + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_NEXT:
+            return do_alias_btr(alias, B_GET_NEXT + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_PREVIOUS:
+            return do_alias_btr(alias, B_GET_PREVIOUS + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_GT:
+            return do_alias_btr(alias, B_GET_GT + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_GE:
+            return do_alias_btr(alias, B_GET_GE + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_LT:
+            return do_alias_btr(alias, B_GET_LT + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_LE:
+            return do_alias_btr(alias, B_GET_LE + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_FIRST:
+            return do_alias_btr(alias, B_GET_FIRST + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+        case DO_GET_LAST:
+            return do_alias_btr(alias, B_GET_LAST + B_GET_KEY_ONLY, DO_DB_STOCK, NULL, 0, key, 3);
+    }
+    return DO_ERROR;
+}
+#endif
 DO_EXPORT int do_prowod_get0(do_alias_t *alias, prowod_rec_t *rec, prowod_key0_t *key, do_alias_oper_t operation)
 {
     rec->size = sizeof(prowod_struct_t);
@@ -4136,7 +4633,6 @@ DO_EXPORT int do_user_key0(do_alias_t *alias, user_key0_t *key, do_alias_oper_t 
     }
     return DO_ERROR;
 }
-
 DO_EXPORT int do_shift_get0(do_alias_t *alias, shift_rec_t *rec, shift_key0_t *key, do_alias_oper_t operation)
 {
     rec->size = sizeof(shift_struct_t);
@@ -4926,7 +5422,6 @@ DO_EXPORT int do_discount_key1(do_alias_t *alias, discount_key1_t *key, do_alias
     }
     return DO_ERROR;
 }
-
 DO_EXPORT int do_document_insert(do_alias_t *alias, document_rec_t *rec)
 {
     return do_alias_btr(alias, B_INSERT, DO_DB_DOCUMENT, &rec->data, &rec->size, NULL, -1);
@@ -5317,7 +5812,6 @@ DO_EXPORT int do_user_delete(do_alias_t *alias)
 {
     return do_alias_btr(alias, B_DELETE, DO_DB_USER, NULL, NULL, NULL, -1);
 }
-
 DO_EXPORT int do_shift_insert(do_alias_t *alias, shift_rec_t *rec)
 {
     return do_alias_btr(alias, B_INSERT, DO_DB_SHIFT, &rec->data, &rec->size, NULL, -1);
@@ -5449,7 +5943,6 @@ DO_EXPORT int do_alias_discount_create(do_alias_t *alias)
     }
     return 1;
 }
-
 
 static void from_do_init(do_alias_t *alias, int utf) {
 
@@ -5888,9 +6381,9 @@ DO_EXPORT void do_document_sum_set(do_alias_t *alias, document_rec_t *rec, const
         while (*cp != '\0' && *cp != ',') cp++;
         indx--;
         if (!indx) {
-            val = (char*) do_malloc((head - sum) + strlen(valuestr) + (strlen(sum) - (cp - sum)) + 1);
+            val = (char*) do_malloc((head - sum) + strlen(valuestr) + (strlen(sum) - (cp - sum)) + 10);
             strncpy(val, sum, head - sum);
-            strncpy(val + (head - sum), valuestr, strlen(valuestr));
+            strcpy(val + (head - sum), valuestr);//, strlen(valuestr));
             strcpy(val + (head - sum) + strlen(valuestr), cp);
             break;
         }
@@ -7104,15 +7597,23 @@ DO_EXPORT int do_alias_auth(const char* dbConfDir, const char* aliasName, const 
     }
     return retval;
 }
+DO_EXPORT int do_product_get_code_len(char *code, int code_len)
+{
+    char *ch;
+    for ( ch = code + code_len - 1; ch > code && *ch == ' '; ch-- );
+    return ch - code + 1;
+}
 DO_EXPORT double do_get_rest(do_alias_t *alias, const char *code, const char *sklad)
 {
     stock_key0_t stock_key0, stock_key;
     stock_key1_t stock_key1;
     stock_rec_t  stock;
     int status;
-    int len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH);
+    int len;
     double retval = 0;
     do_text_set(alias, stock_key1.code, code);
+    len = do_product_get_code_len(stock_key1.code, sizeof(stock_key1.code));
+
     do_cpy(stock_key.code, stock_key1.code);
     if ( sklad ) {
         do_cpy(stock_key0.code, stock_key1.code);
@@ -7127,7 +7628,10 @@ DO_EXPORT double do_get_rest(do_alias_t *alias, const char *code, const char *sk
     while (status == DO_OK) {
         if ( sklad && do_cmp(stock_key.sklad, stock_key0.sklad) ) break;
 
-        if ( strncmp(stock.data.code, stock_key.code ,len) ) break;
+        if ( strncmp(stock.data.code, stock_key.code, len) &&
+             ( len >= sizeof(stock.data.code) ||
+              (stock.data.code[len] != '.' &&
+               stock.data.code[len] != ' ') ) ) break;
 
         retval += do_stock_quant(alias, &stock, DO_CONST_QUANT_REST) +
                   do_stock_quant(alias, &stock, DO_CONST_QUANT_CRNTSALE);

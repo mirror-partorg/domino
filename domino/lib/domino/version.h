@@ -1,5 +1,5 @@
-#define VERSION "1.3.16"
-#define ADATE   "18 August 2018"
+#define VERSION "1.9.1"
+#define ADATE   "06 March 2019"
 
 #define DOMINO_RELEASE VERSION
 

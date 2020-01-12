@@ -371,6 +371,7 @@ const char *do_xls_cell_str(do_xls_t *xls, int worksheet, int row, int col);
 char* do_strtowupper(const char* value);
 
 int do_isworktime();
+char *do_get_config_filename(char *localname, char *filename);
 
 #ifdef __cplusplus
 }

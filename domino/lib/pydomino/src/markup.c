@@ -289,9 +289,9 @@ static PyObject *Markup_max_price_grls(Markup *self, PyObject *args, PyObject *k
             Product *p = (Product *)product;
             vat_rate = do_product_param_int(p->alias->alias, p->priv, do_param(DO_PARAM_PRODUCT_PARAMETR_NDS));
         }
-        if ( strlen(product_code) > do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH) &&
-             product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH)] == '.' )
-            product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH)] = '\0';
+        if ( strlen(product_code) > do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE) &&
+             product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE)] == '.' )
+            product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE)] = '\0';
     }
     if ( vat_rate == -1 && product_code ) {
         product_rec_t product;
@@ -427,9 +427,9 @@ static PyObject *Markup_max_pct_grls(Markup *self, PyObject *args, PyObject *kwd
             do_log(LOG_ERR, "Invalid argument \"product\": wrong type");
             return NULL;
         }
-        if ( strlen(product_code) > do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH) &&
-             product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH)] == '.' )
-            product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH)] = '\0';
+        if ( strlen(product_code) > do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE) &&
+             product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE)] == '.' )
+            product_code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE)] = '\0';
     }
     if ( store ) {
         unit_code = get_store_code(store);

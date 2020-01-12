@@ -38,7 +38,7 @@ compile:
 	then \
 		ver=$(PYTHON_VERSION_3) ; \
 		m="0" ; \
-		echo for python-$$ver ; \
+		echo "for python-$$ver"; \
 		for f in `cat var/files.lst` ; \
 		do \
 			n=$(DIR_TMP)/$$(basename $$f).o.$$ver ; \
@@ -48,10 +48,7 @@ compile:
 			then \
 				echo $$f ; \
 				m="1" ; \
-				$(CC) -shared -fPIC -Wall \
-				$(PYTHON_CFLAGS_3) \
-                         $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) $(PYTHON_LIBS_3) \
-                         -c $$f -o $$n || exit 1; \
+				echo "$(CC)  -c $$f -shared -fPIC -Wall $(PYTHON_CFLAGS_3) $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) $(PYTHON_LIBS_3) -o $$n"  || exit 1; \
 			fi ; \
 		done ; \
 		if [[ "$$m" == "1" || ! -f $(NAME)-$$ver ]] ; \

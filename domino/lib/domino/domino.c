@@ -1,5 +1,6 @@
 #include <domino.h>
 #include <errno.h>
+#include <dirent.h>
 #include "../../config/config.h"
 #include "../../misc/define.h"
 #include "../../misc/iconv_.h"
@@ -214,10 +215,9 @@ static const char *key[DO_PARAM_END + 1] = {
     "PRODUCT_PARAMETR_NO_QUANT_LIMIT",
 
     "DP_PRODUCT_BASE_PARCEL_SEPARATOR",
-    "DP_PRODUCT_CODE_FORMAT",
-    "DP_PRODUCT_BASE_CODE_FORMAT",
     "DP_PRODUCT_BASE_CODE_LENGTH",
-    "DP_PRODUCT_PARCEL_CODE_FORMAT",
+    //"DP_PRODUCT_PARCEL_CODE_FORMAT",
+
     "DP_DOCUMENT_P_CASH_FORMAT",
 
     "OTDEL_PARAMETR_FIRM",
@@ -318,6 +318,33 @@ DO_EXPORT int domino_check_role(int roles)
 }
 
 
+static char *domino_get_config_dir(char *localname, char *filename)
+{
+#ifndef _WIN32
+   char *localfilename = NULL;
+   char *config = getenv("XDG_CONFIG_HOME");
+   DIR *file;
+   if ( config && config[0] )
+       localfilename=do_strdup_printf("%s/%s", config, localname);
+   else {
+       config = getenv("HOME");
+       if ( config && config[0] )
+           localfilename=do_strdup_printf("%s/.config/%s", config, localname);
+   }
+   if ( localfilename ) {
+        if ( (file = opendir(localfilename)) == NULL ) {
+            do_free(localfilename);
+            return DOMINO_CONFIG(filename);
+        } 
+        else {
+            closedir(file);
+            return localfilename;
+        }
+   }
+   else 
+#endif
+        return  DOMINO_CONFIG(filename);
+}
 DO_EXPORT int domino_init(const char *filename, int use_utf, do_param_t end)
 {
     use_utf_charset = use_utf;
@@ -342,9 +369,9 @@ DO_EXPORT int domino_init(const char *filename, int use_utf, do_param_t end)
     if (domino.key_file) do_free(domino.key_file);
     domino.key_file  = NULL;
 
-    domino.domino_param_file = DOMINO_CONFIG(DOMINO_PARAM_CONFIG_FILE);
-    domino.domino_alias_path  = DOMINO_CONFIG(DOMINO_ALIAS_RELATIVE_PATH);
-    domino.password_file  = DOMINO_CONFIG(DOMINO_PASSWD_FILE);
+    domino.domino_param_file = do_get_config_filename(DOMINO_PARAM_LOCAL_CONFIG_FILE,DOMINO_PARAM_CONFIG_FILE);
+    domino.domino_alias_path  = domino_get_config_dir(DOMINO_ALIAS_LOCAL_PATH,DOMINO_ALIAS_RELATIVE_PATH);
+    domino.password_file  = do_get_config_filename(DOMINO_PASSWD_LOCAL_FILE,DOMINO_PASSWD_FILE);
 
     crnt_user.name = do_strdup(DOMINO_USERNAME);
     crnt_user.password = do_strdup("");
@@ -358,8 +385,9 @@ DO_EXPORT int domino_init(const char *filename, int use_utf, do_param_t end)
     domino.local_unit = do_strdup("");
     if ( filename )
         domino.config_file = do_strdup(filename);
-    else
-        domino.config_file = DOMINO_CONFIG(DOMINO_CONFIG_FILE);
+    else 
+        domino.config_file = do_get_config_filename(DOMINO_CONFIG_LOCAL_FILE,DOMINO_CONFIG_FILE);
+    
 
     if (!read_config(domino.config_file))
         return 0;
@@ -397,6 +425,51 @@ DO_EXPORT int domino_init(const char *filename, int use_utf, do_param_t end)
     return 1;
 
 }
+DO_EXPORT int domino_init_light(const char* local_unit, int use_utf, do_param_t end)
+{
+    use_utf_charset = use_utf;
+
+    if (end != DO_PARAM_END) {
+	do_log(LOG_ERR, "End of param not correct %d != %d", end, DO_PARAM_END);
+	return 0;
+    }
+    if ( !key[DO_PARAM_END] ) {
+	do_log(LOG_ERR, "End of param not init");
+	return 0;
+    }
+    product_struct_t product;
+    if ( sizeof(product) != 2470 ) {
+	do_log(LOG_ERR, "The library is compiled without __attribute__((packed)) sizeof product struct %d", sizeof(product));
+	return 0;
+    }
+    if (domino.domino_param_file) do_free(domino.domino_param_file);
+    if (domino.domino_alias_path) do_free(domino.domino_alias_path);
+    if (domino.local_unit) do_free(domino.local_unit);
+    if (domino.password_file) do_free(domino.password_file);
+    if (domino.key_file) do_free(domino.key_file);
+    domino.key_file  = NULL;
+
+    domino.domino_alias_path  = NULL;
+    domino.password_file  = NULL;
+    
+    domino.domino_param_file = do_get_config_filename(".", DOMINO_PARAM_CONFIG_FILE_NAME);
+    if ( !do_param_new(domino.domino_param_file) )
+        return 0;
+
+    crnt_user.name = do_strdup(DOMINO_USERNAME);
+    crnt_user.password = do_strdup("");
+    crnt_user.supervisore = 0;
+    crnt_user.role = DOMINO_ROLE_HANDBOOK;
+    crnt_user.groups = do_string_list_new();
+    crnt_user.rights = do_sort_list_new(0, 1, NULL, NULL);
+
+    crnt_alias_name = NULL;
+
+    domino.local_unit = do_strdup(local_unit);
+    init_lib = TRUE;
+    return 1;
+
+}
 DO_EXPORT void domino_finalize()
 {
     if (domino.config_file) do_free(domino.config_file);
@@ -431,6 +504,7 @@ DO_EXPORT const char *domino_key_file()
     return domino.key_file;
 }
 do_alias_t *do_alias_new(const char* dbConfDir, const char* aliasName, int breakOnError, const char *username, const char* password, int utf);
+do_alias_t *do_alias_new_light(int breakOnError, const char *username, const char* password, int utf);
 #ifndef NO_USE_DOMINO_DB
 DO_EXPORT do_alias_t *domino_alias_new(const char* name)
 {
@@ -445,6 +519,37 @@ DO_EXPORT do_alias_t *domino_alias_new(const char* name)
     else
         return do_alias_new(domino.domino_alias_path, name, 1, crnt_user.name, crnt_user.password, use_utf_charset);
 }
+DO_EXPORT do_alias_t *domino_alias_new_light(const char *local_unit)
+{
+    if ( !init_lib )
+        if ( !domino_init_light(local_unit, TRUE, DO_PARAM_END) ) {
+           do_log(LOG_ERR, "Окружение домино  не инициализировано");
+           return NULL;
+         }
+
+    return do_alias_new_light(1, crnt_user.name, crnt_user.password, use_utf_charset);
+}
+void do_alias_set_host(do_alias_t *alias, const char *host);
+int  do_alias_change_dbname(do_alias_t *alias, const char *dbname);
+DO_EXPORT int domino_alias_set_store_number(do_alias_t *alias, int number, const char *hostname, const char *dbname)
+{
+    char *host;
+    char *db;
+    int ret;
+    if ( hostname ) 
+        host = do_strdup(hostname);
+    else 
+        host = do_strdup_printf("%s%d", "mag", number);
+    if ( dbname ) 
+        db = do_strdup(dbname);
+    else 
+        db = do_strdup_printf("%s%d", "maria", number);
+    do_alias_set_host(alias, host);
+    ret = do_alias_change_dbname(alias, db);
+    do_free(host); do_free(db);
+    return ret;
+}
+
 DO_EXPORT void domino_set_alias_name(const char* name)
 {
     if (crnt_alias_name)
@@ -495,7 +600,7 @@ static int read_config(const char* filename)
 {
     FILE *fp;
     if ((fp = fopen(filename, "r")) == NULL)  {
-        do_log(LOG_ERR, "Error opening configuration file (%s): %s\n", filename, strerror(errno));
+        do_log(LOG_ERR, "Error opening configuration file (%s): %s", filename, strerror(errno));
         return 0;
     }
     size_t len = BUFSIZ;
@@ -570,13 +675,13 @@ static int write_config()
     FILE *fp, *fo;
     int found= FALSE;
     if ((fp = fopen(domino.config_file, "r")) == NULL)  {
-        do_log(LOG_ERR, "Error opening configuration file (%s): %s\n", domino.config_file, strerror(errno));
+        do_log(LOG_ERR, "Error opening configuration file (%s): %s", domino.config_file, strerror(errno));
         return 0;
     }
     char *outfile;
     outfile = do_strdup_printf("%s.new", domino.config_file);
     if ((fo = fopen(outfile, "w+")) == NULL)  {
-        do_log(LOG_ERR, "Error write configuration file (%s): %s\n", outfile, strerror(errno));
+        do_log(LOG_ERR, "Error write configuration file (%s): %s", outfile, strerror(errno));
         do_free(outfile);
         return 0;
     }
@@ -638,11 +743,11 @@ static int write_config()
     tmpfile = do_strdup_printf("%s~", domino.config_file);
     remove(tmpfile);
     if (rename (domino.config_file, tmpfile) == -1 ) {
-        do_log(LOG_ERR, "rename file %s to %s %s\n", domino.config_file,tmpfile, strerror(errno));
+        do_log(LOG_ERR, "rename file %s to %s %s", domino.config_file,tmpfile, strerror(errno));
         retval = FALSE;
     }
     if (retval && (rename (outfile, domino.config_file) == -1)) {
-        do_log(LOG_ERR, "rename file %s to %s %s\n", outfile, domino.config_file, strerror(errno));
+        do_log(LOG_ERR, "rename file %s to %s %s", outfile, domino.config_file, strerror(errno));
         retval = FALSE;
     }
     do_free(tmpfile);

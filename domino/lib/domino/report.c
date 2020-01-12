@@ -6,7 +6,7 @@
 static do_list_t *do_report_get_parcel(do_alias_t *alias, const char *code, int all_parcel, const char *sklad)
 {
     product_key4_t product_key4, key;
-    int len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH);
+    int len;
     char *pref;
     do_list_t *retval;
     int status;
@@ -19,6 +19,7 @@ static do_list_t *do_report_get_parcel(do_alias_t *alias, const char *code, int 
     else {
 
         do_text_set(alias, product_key4.code, code);
+        len = do_product_get_code_len(product_key4.code, sizeof(product_key4.code));
         do_list_add_alloc(retval, &product_key4, sizeof(product_key4));
         pref = domino_get_unit_prefix(alias, sklad);
         do_alias_text_set_(alias, product_key4.code + len, pref, sizeof(product_key4.code) - len);

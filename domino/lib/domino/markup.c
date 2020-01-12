@@ -195,10 +195,14 @@ static int get_base_product(do_alias_t *alias, const char *code, product_rec_t *
 {
     product_key0_t product_key0;
     product_key0.base_parcel = 0;
-    do_text_set_empty(product_key0.code);
-    strncpy(product_key0.code, code, do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH));
+    char *ch;
+    int empty = FALSE;
+    do_text_set(alias, product_key0.code, code);
+    for ( ch = product_key0.code; ch < product_key0.code + sizeof(product_key0.code); ch++ ) {
+          if ( *ch == '.' ) empty = TRUE;
+          if ( empty ) *ch = ' ';
+    }
     return  do_product_get0(alias, product, &product_key0, DO_GET_EQUAL) == DO_OK;
-
 }
 static double do_markup_get_max_grls_price__(do_alias_t *alias, const char *unit, int vat_rate, double price_for_scale, double price_for_markup)
 {

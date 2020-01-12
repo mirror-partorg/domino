@@ -456,8 +456,8 @@ DO_EXPORT int do_service_start(int install, do_main_handler_t *wrapper, LPCTSTR 
     TCHAR szPathName[MAX_PATH]; LPTSTR slash = NULL;
     GetModuleFileName(NULL, szPathName, sizeof(szPathName));
     // Set working directory to the service path
-    if((slash = strrchr(szPathName, '\\')) != '\0') {
-        *slash = 0;
+    if((slash = strrchr(szPathName, '\\')) != NULL) {
+        *slash = '\0';
         SetCurrentDirectory(szPathName);
     }
     if (!StartServiceCtrlDispatcher(DispatchTable)) {

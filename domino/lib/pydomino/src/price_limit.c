@@ -106,7 +106,7 @@ static PyObject *PriceLimit_reg_date(PriceLimit *self, void *unused)
     time = self->info->order.time;
     //tm = *gmtime(&self->info->order.time);
     p = localtime(&time);
-    //char *buf;
+    char *buf;
     if ( !p ) {
          return PyDate_FromDate(1970,1,1);
     }

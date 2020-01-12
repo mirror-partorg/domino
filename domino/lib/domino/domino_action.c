@@ -15,10 +15,6 @@ DO_EXPORT int domino_order_set_marked(do_alias_t *alias, const char *unit, const
 {
     return domino_order_set_marked_quant(alias, unit, product_code, tm1_, tm2_, marked, 0);
 }
-DO_EXPORT int domino_order_set_marked_quant(do_alias_t *alias, const char *unit, const char *product_code,  struct tm *tm1_, struct tm *tm2_, domino_marked_t marked, double quant)
-{
-    return domino_order_set_marked_full(alias, unit, product_code, tm1_, tm2_, marked, quant, 0, "", "", "", 0, 0);
-}
 DO_EXPORT int domino_order_set_marked_full(do_alias_t *alias, const char *unit, const char *product_code, struct tm *tm1_, struct tm *tm2_, domino_marked_t marked, double quant, int partner, const char *desc, const char *life_time, const char *manufactor, double price, double price_fact)
 {
     document_order_key2_t document_order_key2;
@@ -39,7 +35,7 @@ DO_EXPORT int domino_order_set_marked_full(do_alias_t *alias, const char *unit, 
 
     now = time(NULL);
     tm_now = *localtime(&now);
-    if (gethostname(hostname, 1023))
+    //if (gethostname(hostname, 1023))
         strcpy(hostname, "unknow");
 
     tm_ = *tm2_;
@@ -261,6 +257,10 @@ DO_EXPORT int domino_order_set_marked_full(do_alias_t *alias, const char *unit, 
     do_protocol_document_add_key(alias, &document_key0, DO_PROTOCOL_ACTION_ACCEPT);
 
     return TRUE;
+}
+DO_EXPORT int domino_order_set_marked_quant(do_alias_t *alias, const char *unit, const char *product_code,  struct tm *tm1_, struct tm *tm2_, domino_marked_t marked, double quant)
+{
+    return domino_order_set_marked_full(alias, unit, product_code, tm1_, tm2_, marked, quant, 0, "", "", "", 0, 0);
 }
 DO_EXPORT int domino_order_set_marked_(const char *alias_name, const char *unit, const char *product_code, struct tm *tm1, struct tm *tm2, domino_marked_t marked)
 {
@@ -496,9 +496,9 @@ DO_EXPORT int domino_order_after_traffic_in(do_alias_t *alias, const char *unit,
     BTI_LONG m_date_accept=0;
     BTI_LONG m_time_accept=0;
 
-    /*if ( !strcmp(product_code,"19139") ) {
+    if ( !strcmp(product_code,"19139") ) {
         status = 0;
-    }*/
+    }
 
     do_date_set(&date, *tm1);
     do_time_set(&time, *tm1);

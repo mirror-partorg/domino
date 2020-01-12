@@ -314,7 +314,7 @@ static PyObject *Enum_set_format(Enum* self, PyObject *args, PyObject *kwds)
 //    return result;
 }
 
-static PyObject *Enum_gt(Enum* self, PyObject *args, PyObject *kwds)
+static PyObject *Enum_prev(Enum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -325,7 +325,7 @@ static PyObject *Enum_gt(Enum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getEnumKey0Type() )
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_GT);
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_PREVIOUS);
     else
     
     {
@@ -338,7 +338,7 @@ static PyObject *Enum_gt(Enum* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Enum_last(Enum* self, PyObject *args, PyObject *kwds)
+static PyObject *Enum_gt(Enum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -349,7 +349,7 @@ static PyObject *Enum_last(Enum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getEnumKey0Type() )
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LAST);
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_GT);
     else
     
     {
@@ -386,7 +386,7 @@ static PyObject *Enum_next(Enum* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Enum_le(Enum* self, PyObject *args, PyObject *kwds)
+static PyObject *Enum_ge(Enum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -397,31 +397,7 @@ static PyObject *Enum_le(Enum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getEnumKey0Type() )
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Enum_lt(Enum* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getEnumKey0Type() )
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LT);
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -458,7 +434,7 @@ static PyObject *Enum_equal(Enum* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Enum_ge(Enum* self, PyObject *args, PyObject *kwds)
+static PyObject *Enum_last(Enum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -469,7 +445,7 @@ static PyObject *Enum_ge(Enum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getEnumKey0Type() )
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_GE);
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -482,7 +458,7 @@ static PyObject *Enum_ge(Enum* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Enum_prev(Enum* self, PyObject *args, PyObject *kwds)
+static PyObject *Enum_lt(Enum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -493,7 +469,31 @@ static PyObject *Enum_prev(Enum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getEnumKey0Type() )
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Enum_le(Enum* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getEnumKey0Type() )
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -583,150 +583,6 @@ static PyObject *Enum_iter_gt(Enum* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getEnumKey0Type() ) {
             status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Enum_iter_last(Enum* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getEnumKey0Type() ) {
-        key_cmp = (enum_key0_t*)do_malloc(sizeof(enum_key0_t));
-        memcpy(key_cmp, ((EnumKey0*)key)->priv, sizeof(enum_key0_t));
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getEnumKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((enum_key0_t*)key_cmp)->name, 
-                    ((EnumKey0*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Enum_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getEnumKey0Type() ) {
-            status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Enum_iter_le(Enum* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getEnumKey0Type() ) {
-        key_cmp = (enum_key0_t*)do_malloc(sizeof(enum_key0_t));
-        memcpy(key_cmp, ((EnumKey0*)key)->priv, sizeof(enum_key0_t));
-        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getEnumKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((enum_key0_t*)key_cmp)->name, 
-                    ((EnumKey0*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Enum_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getEnumKey0Type() ) {
-            status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -890,6 +746,78 @@ static PyObject *Enum_iter_equal(Enum* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
+static PyObject *Enum_iter_last(Enum* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getEnumKey0Type() ) {
+        key_cmp = (enum_key0_t*)do_malloc(sizeof(enum_key0_t));
+        memcpy(key_cmp, ((EnumKey0*)key)->priv, sizeof(enum_key0_t));
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getEnumKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((enum_key0_t*)key_cmp)->name, 
+                    ((EnumKey0*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Enum_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getEnumKey0Type() ) {
+            status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Enum_iter_lt(Enum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -910,6 +838,78 @@ static PyObject *Enum_iter_lt(Enum* self, PyObject *args, PyObject *kwds)
         key_cmp = (enum_key0_t*)do_malloc(sizeof(enum_key0_t));
         memcpy(key_cmp, ((EnumKey0*)key)->priv, sizeof(enum_key0_t));
         status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getEnumKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((enum_key0_t*)key_cmp)->name, 
+                    ((EnumKey0*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Enum_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getEnumKey0Type() ) {
+            status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Enum_iter_le(Enum* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getEnumKey0Type() ) {
+        key_cmp = (enum_key0_t*)do_malloc(sizeof(enum_key0_t));
+        memcpy(key_cmp, ((EnumKey0*)key)->priv, sizeof(enum_key0_t));
+        status = do_enum_get0(self->alias->alias, self->priv, ((EnumKey0*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -1034,19 +1034,19 @@ static PyObject *Enum_iter_first(Enum* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Enum_insert(Enum* self)
+static PyObject *Enum_update(Enum* self)
 {
     int status;
-    status = do_enum_insert(self->alias->alias, self->priv);
+    status = do_enum_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Enum_update(Enum* self)
+static PyObject *Enum_insert(Enum* self)
 {
     int status;
-    status = do_enum_update(self->alias->alias, self->priv);
+    status = do_enum_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1316,41 +1316,41 @@ static PyMethodDef Enum_methods[] = {
 
     {"set_format", (PyCFunction)Enum_set_format, METH_VARARGS|METH_KEYWORDS, "Enum_set_format"},
 
-    {"get_gt", (PyCFunction)Enum_gt, METH_VARARGS|METH_KEYWORDS, "Enum_gt"},
+    {"get_prev", (PyCFunction)Enum_prev, METH_VARARGS|METH_KEYWORDS, "Enum_prev"},
 
-    {"get_last", (PyCFunction)Enum_last, METH_VARARGS|METH_KEYWORDS, "Enum_last"},
+    {"get_gt", (PyCFunction)Enum_gt, METH_VARARGS|METH_KEYWORDS, "Enum_gt"},
 
     {"get_next", (PyCFunction)Enum_next, METH_VARARGS|METH_KEYWORDS, "Enum_next"},
 
-    {"get_le", (PyCFunction)Enum_le, METH_VARARGS|METH_KEYWORDS, "Enum_le"},
-
-    {"get_lt", (PyCFunction)Enum_lt, METH_VARARGS|METH_KEYWORDS, "Enum_lt"},
+    {"get_ge", (PyCFunction)Enum_ge, METH_VARARGS|METH_KEYWORDS, "Enum_ge"},
 
     {"get_equal", (PyCFunction)Enum_equal, METH_VARARGS|METH_KEYWORDS, "Enum_equal"},
 
-    {"get_ge", (PyCFunction)Enum_ge, METH_VARARGS|METH_KEYWORDS, "Enum_ge"},
+    {"get_last", (PyCFunction)Enum_last, METH_VARARGS|METH_KEYWORDS, "Enum_last"},
 
-    {"get_prev", (PyCFunction)Enum_prev, METH_VARARGS|METH_KEYWORDS, "Enum_prev"},
+    {"get_lt", (PyCFunction)Enum_lt, METH_VARARGS|METH_KEYWORDS, "Enum_lt"},
+
+    {"get_le", (PyCFunction)Enum_le, METH_VARARGS|METH_KEYWORDS, "Enum_le"},
 
     {"get_first", (PyCFunction)Enum_first, METH_VARARGS|METH_KEYWORDS, "Enum_first"},
 
     {"gets_gt", (PyCFunction)Enum_iter_gt, METH_VARARGS|METH_KEYWORDS, "Enum_iter_gt"},
 
-    {"gets_last", (PyCFunction)Enum_iter_last, METH_VARARGS|METH_KEYWORDS, "Enum_iter_last"},
-
-    {"gets_le", (PyCFunction)Enum_iter_le, METH_VARARGS|METH_KEYWORDS, "Enum_iter_le"},
-
     {"gets_ge", (PyCFunction)Enum_iter_ge, METH_VARARGS|METH_KEYWORDS, "Enum_iter_ge"},
 
     {"gets_equal", (PyCFunction)Enum_iter_equal, METH_VARARGS|METH_KEYWORDS, "Enum_iter_equal"},
 
+    {"gets_last", (PyCFunction)Enum_iter_last, METH_VARARGS|METH_KEYWORDS, "Enum_iter_last"},
+
     {"gets_lt", (PyCFunction)Enum_iter_lt, METH_VARARGS|METH_KEYWORDS, "Enum_iter_lt"},
+
+    {"gets_le", (PyCFunction)Enum_iter_le, METH_VARARGS|METH_KEYWORDS, "Enum_iter_le"},
 
     {"gets_first", (PyCFunction)Enum_iter_first, METH_VARARGS|METH_KEYWORDS, "Enum_iter_first"},
 
-    {"insert", (PyCFunction)Enum_insert, METH_VARARGS|METH_KEYWORDS, "Enum_insert"},
-
     {"update", (PyCFunction)Enum_update, METH_VARARGS|METH_KEYWORDS, "Enum_update"},
+
+    {"insert", (PyCFunction)Enum_insert, METH_VARARGS|METH_KEYWORDS, "Enum_insert"},
 
     {"delete", (PyCFunction)Enum_delete, METH_VARARGS|METH_KEYWORDS, "Enum_delete"},
 
@@ -1462,24 +1462,24 @@ static PyObject *EnumKey0_set_name(EnumKey0* self, PyObject *args, PyObject *kwd
 //    return result;
 }
 
-static PyObject *EnumKey0_gt(EnumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *EnumKey0_prev(EnumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *EnumKey0_last(EnumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *EnumKey0_gt(EnumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1498,24 +1498,12 @@ static PyObject *EnumKey0_next(EnumKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *EnumKey0_le(EnumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *EnumKey0_ge(EnumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *EnumKey0_lt(EnumKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1534,24 +1522,36 @@ static PyObject *EnumKey0_equal(EnumKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *EnumKey0_ge(EnumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *EnumKey0_last(EnumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *EnumKey0_prev(EnumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *EnumKey0_lt(EnumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *EnumKey0_le(EnumKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1598,78 +1598,6 @@ static PyObject *EnumKey0_iter_gt(EnumKey0* self, PyObject *args, PyObject *kwds
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_enum_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *EnumKey0_iter_last(EnumKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    enum_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = EnumKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_enum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *EnumKey0_iter_le(EnumKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    enum_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = EnumKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_enum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -1750,6 +1678,42 @@ static PyObject *EnumKey0_iter_equal(EnumKey0* self, PyObject *args, PyObject *k
     return retval;
 }
 
+static PyObject *EnumKey0_iter_last(EnumKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    enum_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = EnumKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_enum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *EnumKey0_iter_lt(EnumKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -1765,6 +1729,42 @@ static PyObject *EnumKey0_iter_lt(EnumKey0* self, PyObject *args, PyObject *kwds
     }
     do_cpy(key_cmp, *self->priv);
     status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = EnumKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_enum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *EnumKey0_iter_le(EnumKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    enum_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_enum_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -1996,35 +1996,35 @@ static PyMethodDef EnumKey0_methods[] = {
 
     {"set_name", (PyCFunction)EnumKey0_set_name, METH_VARARGS|METH_KEYWORDS, "EnumKey0_set_name"},
 
-    {"get_gt", (PyCFunction)EnumKey0_gt, METH_VARARGS|METH_KEYWORDS, "EnumKey0_gt"},
+    {"get_prev", (PyCFunction)EnumKey0_prev, METH_VARARGS|METH_KEYWORDS, "EnumKey0_prev"},
 
-    {"get_last", (PyCFunction)EnumKey0_last, METH_VARARGS|METH_KEYWORDS, "EnumKey0_last"},
+    {"get_gt", (PyCFunction)EnumKey0_gt, METH_VARARGS|METH_KEYWORDS, "EnumKey0_gt"},
 
     {"get_next", (PyCFunction)EnumKey0_next, METH_VARARGS|METH_KEYWORDS, "EnumKey0_next"},
 
-    {"get_le", (PyCFunction)EnumKey0_le, METH_VARARGS|METH_KEYWORDS, "EnumKey0_le"},
-
-    {"get_lt", (PyCFunction)EnumKey0_lt, METH_VARARGS|METH_KEYWORDS, "EnumKey0_lt"},
+    {"get_ge", (PyCFunction)EnumKey0_ge, METH_VARARGS|METH_KEYWORDS, "EnumKey0_ge"},
 
     {"get_equal", (PyCFunction)EnumKey0_equal, METH_VARARGS|METH_KEYWORDS, "EnumKey0_equal"},
 
-    {"get_ge", (PyCFunction)EnumKey0_ge, METH_VARARGS|METH_KEYWORDS, "EnumKey0_ge"},
+    {"get_last", (PyCFunction)EnumKey0_last, METH_VARARGS|METH_KEYWORDS, "EnumKey0_last"},
 
-    {"get_prev", (PyCFunction)EnumKey0_prev, METH_VARARGS|METH_KEYWORDS, "EnumKey0_prev"},
+    {"get_lt", (PyCFunction)EnumKey0_lt, METH_VARARGS|METH_KEYWORDS, "EnumKey0_lt"},
+
+    {"get_le", (PyCFunction)EnumKey0_le, METH_VARARGS|METH_KEYWORDS, "EnumKey0_le"},
 
     {"get_first", (PyCFunction)EnumKey0_first, METH_VARARGS|METH_KEYWORDS, "EnumKey0_first"},
 
     {"gets_gt", (PyCFunction)EnumKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)EnumKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)EnumKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)EnumKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)EnumKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)EnumKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)EnumKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)EnumKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_le"},
 
     {"gets_first", (PyCFunction)EnumKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "EnumKey0_iter_first"},
 

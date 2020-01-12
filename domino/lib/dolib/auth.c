@@ -259,21 +259,20 @@ static int pw_check(const char *clear, const char* hash)
 
 static char *passwd_name = NULL;
 
-#define passwd_filename passwd_name_default()
-
-static char *passwd_name_default()
-{
-   if ( passwd_name ) 
-      return  passwd_name;
-   passwd_name=do_malloc(strlen(DOMINO_PATH)+strlen(DOMINO_PASSWD_FILE)+5);
-   sprintf(passwd_name, "%s/%s", DOMINO_PATH, DOMINO_PASSWD_FILE);
-   return passwd_name;
-}
+//static char *passwd_name_default()
+//{
+//   if ( passwd_name ) 
+//      return  passwd_name;
+//   passwd_name=do_malloc(strlen(DOMINO_PATH)+strlen(DOMINO_PASSWD_FILE)+5);
+//   sprintf(passwd_name, "%s/%s", DOMINO_PATH, DOMINO_PASSWD_FILE);
+//   return passwd_name;
+//}
 
 DO_EXPORT void do_set_passwd_filename(const char *filename)
 {
     if ( passwd_name )
        do_free(passwd_name);
+
     passwd_name = do_malloc(strlen(filename) + 1);
     strcpy(passwd_name, filename);
 }
@@ -283,8 +282,12 @@ DO_EXPORT int do_authenticate(const char *name, const char *password, int *userl
     *userlevel = -1;
     FILE *fp;
     char buff[1024], *ch, *head, hash[128];;
-    if ((fp = fopen(passwd_filename, "r")) == NULL)  {
-        do_log(LOG_ERR, "Error opening passwd file (%s): %s", passwd_filename, strerror(errno));
+    if ( !passwd_name ) {
+        passwd_name = do_get_config_filename(DOMINO_PASSWD_LOCAL_FILE,DOMINO_PASSWD_FILE);
+    }
+    
+    if ((fp = fopen(passwd_name, "r")) == NULL)  {
+        do_log(LOG_ERR, "Error opening passwd file (%s): %s", passwd_name, strerror(errno));
         return 0;
     }
     while (!feof(fp))  {
@@ -323,17 +326,20 @@ DO_EXPORT int do_useradd(const char *name, const char *password, int userlevel)
     int exist;
     char buff[1024];
     exist = 1;
-    if ((fp = fopen(passwd_filename, "r")) == NULL)  {
+    if ( !passwd_name )
+        passwd_name = do_get_config_filename(DOMINO_PASSWD_LOCAL_FILE,DOMINO_PASSWD_FILE);
+    
+    if ((fp = fopen(passwd_name, "r")) == NULL)  {
         if (errno != 2) {
-            do_log(LOG_ERR, "Error opening passwd file (%s): %s\n", passwd_filename, strerror(errno));
+            do_log(LOG_ERR, "Error opening passwd file (%s): %s\n", passwd_name, strerror(errno));
             return 0;
         }
         exist = 0;
     }
     if (exist) {
         char *newname, *ch;
-        newname = (char*) malloc (strlen(passwd_filename) + 2);
-        sprintf(newname, "%s+", passwd_filename);
+        newname = (char*) malloc (strlen(passwd_name) + 2);
+        sprintf(newname, "%s+", passwd_name);
         if ((fr = fopen(newname, "w")) == NULL)  {
             do_log(LOG_ERR, "Error create passwd file (%s): %s\n", newname, strerror(errno));
             fclose(fp);
@@ -365,26 +371,26 @@ DO_EXPORT int do_useradd(const char *name, const char *password, int userlevel)
             }
         }
         fclose(fr);
-        sprintf(newname, "%s-", passwd_filename);
+        sprintf(newname, "%s-", passwd_name);
         remove(newname);
-        if (rename (passwd_filename, newname) == -1 ) {
-             do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", passwd_filename, newname, strerror(errno));
+        if (rename (passwd_name, newname) == -1 ) {
+             do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", passwd_name, newname, strerror(errno));
              return 0;
         }
-        sprintf(newname, "%s+", passwd_filename);
-        if (rename (newname, passwd_filename) == -1 ) {
-            do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", newname, passwd_filename, strerror(errno));
+        sprintf(newname, "%s+", passwd_name);
+        if (rename (newname, passwd_name) == -1 ) {
+            do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", newname, passwd_name, strerror(errno));
             return 0;
         }
     }
     else {
-        if ((fr = fopen(passwd_filename, "w")) == NULL)  {
-            do_log(LOG_ERR, "Error create passwd file (%s): %s\n", passwd_filename, strerror(errno));
+        if ((fr = fopen(passwd_name, "w")) == NULL)  {
+            do_log(LOG_ERR, "Error create passwd file (%s): %s\n", passwd_name, strerror(errno));
             return 0;
         }
         sprintf(buff, "%s:%d:%s\n", name, userlevel, hash);
         if (fprintf(fr, "%s", buff) <= 0) {
-            do_log(LOG_ERR, "Error write passwd file (%s): %s\n", passwd_filename, strerror(errno));
+            do_log(LOG_ERR, "Error write passwd file (%s): %s\n", passwd_name, strerror(errno));
             fclose(fr);
             return 0;
         }
@@ -398,16 +404,19 @@ DO_EXPORT int do_userdel(const char *name, const char *password, int userlevel)
 
     FILE *fp, *fr;
     char buff[1024];
-    if ((fp = fopen(passwd_filename, "r")) == NULL)  {
+    if ( !passwd_name )
+        passwd_name = do_get_config_filename(DOMINO_PASSWD_LOCAL_FILE,DOMINO_PASSWD_FILE);
+
+    if ((fp = fopen(passwd_name, "r")) == NULL)  {
         if (errno != 2) {
-            do_log(LOG_ERR, "Error opening passwd file (%s): %s\n", passwd_filename, strerror(errno));
+            do_log(LOG_ERR, "Error opening passwd file (%s): %s\n", passwd_name, strerror(errno));
             return 0;
         }
         return 1;
     }
     char *newname, *ch;
-    newname = (char*) malloc (strlen(passwd_filename) + 2);
-    sprintf(newname, "%s+", passwd_filename);
+    newname = (char*) malloc (strlen(passwd_name) + 2);
+    sprintf(newname, "%s+", passwd_name);
     if ((fr = fopen(newname, "w")) == NULL)  {
         do_log(LOG_ERR, "Error create passwd file (%s): %s\n", newname, strerror(errno));
         fclose(fp);
@@ -428,15 +437,15 @@ DO_EXPORT int do_userdel(const char *name, const char *password, int userlevel)
     }
     fclose(fr);
     fclose(fp);
-    sprintf(newname, "%s-", passwd_filename);
+    sprintf(newname, "%s-", passwd_name);
     remove(newname);
-    if (rename (passwd_filename, newname) == -1 ) {
-         do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", passwd_filename, newname, strerror(errno));
+    if (rename (passwd_name, newname) == -1 ) {
+         do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", passwd_name, newname, strerror(errno));
          return 0;
     }
-    sprintf(newname, "%s+", passwd_filename);
-    if (rename (newname, passwd_filename) == -1 ) {
-         do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", newname, passwd_filename, strerror(errno));
+    sprintf(newname, "%s+", passwd_name);
+    if (rename (newname, passwd_name) == -1 ) {
+         do_log(LOG_ERR, "Error rename file (%s->%s): %s\n", newname, passwd_name, strerror(errno));
          return 0;
     }
     return 1;

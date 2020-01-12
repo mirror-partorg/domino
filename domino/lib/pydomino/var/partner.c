@@ -572,6 +572,42 @@ static PyObject *Partner_get_params(Partner* self, void *unused)
     return res;
 }
 
+static PyObject *Partner_prev(Partner* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getPartnerKey0Type() )
+        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey1Type() )
+        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey2Type() )
+        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey3Type() )
+        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Partner_gt(Partner* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -596,42 +632,6 @@ static PyObject *Partner_gt(Partner* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getPartnerKey3Type() )
         status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_GT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Partner_last(Partner* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getPartnerKey0Type() )
-        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey1Type() )
-        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey2Type() )
-        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey3Type() )
-        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -680,7 +680,7 @@ static PyObject *Partner_next(Partner* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Partner_le(Partner* self, PyObject *args, PyObject *kwds)
+static PyObject *Partner_ge(Partner* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -691,55 +691,19 @@ static PyObject *Partner_le(Partner* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getPartnerKey0Type() )
-        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LE);
+        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getPartnerKey1Type() )
-        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LE);
+        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getPartnerKey2Type() )
-        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LE);
+        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getPartnerKey3Type() )
-        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Partner_lt(Partner* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getPartnerKey0Type() )
-        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey1Type() )
-        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey2Type() )
-        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey3Type() )
-        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LT);
+        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -788,7 +752,7 @@ static PyObject *Partner_equal(Partner* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Partner_ge(Partner* self, PyObject *args, PyObject *kwds)
+static PyObject *Partner_last(Partner* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -799,19 +763,19 @@ static PyObject *Partner_ge(Partner* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getPartnerKey0Type() )
-        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_GE);
+        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getPartnerKey1Type() )
-        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_GE);
+        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getPartnerKey2Type() )
-        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_GE);
+        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getPartnerKey3Type() )
-        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_GE);
+        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -824,7 +788,7 @@ static PyObject *Partner_ge(Partner* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Partner_prev(Partner* self, PyObject *args, PyObject *kwds)
+static PyObject *Partner_lt(Partner* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -835,19 +799,55 @@ static PyObject *Partner_prev(Partner* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getPartnerKey0Type() )
-        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getPartnerKey1Type() )
-        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getPartnerKey2Type() )
-        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_PREVIOUS);
+        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getPartnerKey3Type() )
-        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_PREVIOUS);
+        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Partner_le(Partner* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getPartnerKey0Type() )
+        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey1Type() )
+        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey2Type() )
+        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey3Type() )
+        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -1030,312 +1030,6 @@ static PyObject *Partner_iter_gt(Partner* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getPartnerKey3Type() ) {
             status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Partner_iter_last(Partner* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getPartnerKey0Type() ) {
-        key_cmp = (partner_key0_t*)do_malloc(sizeof(partner_key0_t));
-        memcpy(key_cmp, ((PartnerKey0*)key)->priv, sizeof(partner_key0_t));
-        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey1Type() ) {
-        key_cmp = (partner_key1_t*)do_malloc(sizeof(partner_key1_t));
-        memcpy(key_cmp, ((PartnerKey1*)key)->priv, sizeof(partner_key1_t));
-        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey2Type() ) {
-        key_cmp = (partner_key2_t*)do_malloc(sizeof(partner_key2_t));
-        memcpy(key_cmp, ((PartnerKey2*)key)->priv, sizeof(partner_key2_t));
-        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey3Type() ) {
-        key_cmp = (partner_key3_t*)do_malloc(sizeof(partner_key3_t));
-        memcpy(key_cmp, ((PartnerKey3*)key)->priv, sizeof(partner_key3_t));
-        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key0_t*)key_cmp)->g_code, 
-                    ((PartnerKey0*)key)->priv->g_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((partner_key0_t*)key_cmp)->code, 
-                    ((PartnerKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key1_t*)key_cmp)->g_code, 
-                    ((PartnerKey1*)key)->priv->g_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((partner_key1_t*)key_cmp)->name, 
-                    ((PartnerKey1*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key2_t*)key_cmp)->name, 
-                    ((PartnerKey2*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key3_t*)key_cmp)->code, 
-                    ((PartnerKey3*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Partner_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
-            status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
-            status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
-            status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
-            status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Partner_iter_le(Partner* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getPartnerKey0Type() ) {
-        key_cmp = (partner_key0_t*)do_malloc(sizeof(partner_key0_t));
-        memcpy(key_cmp, ((PartnerKey0*)key)->priv, sizeof(partner_key0_t));
-        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey1Type() ) {
-        key_cmp = (partner_key1_t*)do_malloc(sizeof(partner_key1_t));
-        memcpy(key_cmp, ((PartnerKey1*)key)->priv, sizeof(partner_key1_t));
-        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey2Type() ) {
-        key_cmp = (partner_key2_t*)do_malloc(sizeof(partner_key2_t));
-        memcpy(key_cmp, ((PartnerKey2*)key)->priv, sizeof(partner_key2_t));
-        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getPartnerKey3Type() ) {
-        key_cmp = (partner_key3_t*)do_malloc(sizeof(partner_key3_t));
-        memcpy(key_cmp, ((PartnerKey3*)key)->priv, sizeof(partner_key3_t));
-        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key0_t*)key_cmp)->g_code, 
-                    ((PartnerKey0*)key)->priv->g_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((partner_key0_t*)key_cmp)->code, 
-                    ((PartnerKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key1_t*)key_cmp)->g_code, 
-                    ((PartnerKey1*)key)->priv->g_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((partner_key1_t*)key_cmp)->name, 
-                    ((PartnerKey1*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key2_t*)key_cmp)->name, 
-                    ((PartnerKey2*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((partner_key3_t*)key_cmp)->code, 
-                    ((PartnerKey3*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Partner_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
-            status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
-            status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
-            status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
-            status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1661,6 +1355,159 @@ static PyObject *Partner_iter_equal(Partner* self, PyObject *args, PyObject *kwd
     return retval;
 }
 
+static PyObject *Partner_iter_last(Partner* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getPartnerKey0Type() ) {
+        key_cmp = (partner_key0_t*)do_malloc(sizeof(partner_key0_t));
+        memcpy(key_cmp, ((PartnerKey0*)key)->priv, sizeof(partner_key0_t));
+        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey1Type() ) {
+        key_cmp = (partner_key1_t*)do_malloc(sizeof(partner_key1_t));
+        memcpy(key_cmp, ((PartnerKey1*)key)->priv, sizeof(partner_key1_t));
+        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey2Type() ) {
+        key_cmp = (partner_key2_t*)do_malloc(sizeof(partner_key2_t));
+        memcpy(key_cmp, ((PartnerKey2*)key)->priv, sizeof(partner_key2_t));
+        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey3Type() ) {
+        key_cmp = (partner_key3_t*)do_malloc(sizeof(partner_key3_t));
+        memcpy(key_cmp, ((PartnerKey3*)key)->priv, sizeof(partner_key3_t));
+        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key0_t*)key_cmp)->g_code, 
+                    ((PartnerKey0*)key)->priv->g_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((partner_key0_t*)key_cmp)->code, 
+                    ((PartnerKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key1_t*)key_cmp)->g_code, 
+                    ((PartnerKey1*)key)->priv->g_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((partner_key1_t*)key_cmp)->name, 
+                    ((PartnerKey1*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key2_t*)key_cmp)->name, 
+                    ((PartnerKey2*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key3_t*)key_cmp)->code, 
+                    ((PartnerKey3*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Partner_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
+            status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
+            status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
+            status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
+            status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Partner_iter_lt(Partner* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -1702,6 +1549,159 @@ static PyObject *Partner_iter_lt(Partner* self, PyObject *args, PyObject *kwds)
         key_cmp = (partner_key3_t*)do_malloc(sizeof(partner_key3_t));
         memcpy(key_cmp, ((PartnerKey3*)key)->priv, sizeof(partner_key3_t));
         status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key0_t*)key_cmp)->g_code, 
+                    ((PartnerKey0*)key)->priv->g_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((partner_key0_t*)key_cmp)->code, 
+                    ((PartnerKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key1_t*)key_cmp)->g_code, 
+                    ((PartnerKey1*)key)->priv->g_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((partner_key1_t*)key_cmp)->name, 
+                    ((PartnerKey1*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key2_t*)key_cmp)->name, 
+                    ((PartnerKey2*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((partner_key3_t*)key_cmp)->code, 
+                    ((PartnerKey3*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Partner_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getPartnerKey0Type() ) {
+            status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey1Type() ) {
+            status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey2Type() ) {
+            status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getPartnerKey3Type() ) {
+            status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Partner_iter_le(Partner* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getPartnerKey0Type() ) {
+        key_cmp = (partner_key0_t*)do_malloc(sizeof(partner_key0_t));
+        memcpy(key_cmp, ((PartnerKey0*)key)->priv, sizeof(partner_key0_t));
+        status = do_partner_get0(self->alias->alias, self->priv, ((PartnerKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey1Type() ) {
+        key_cmp = (partner_key1_t*)do_malloc(sizeof(partner_key1_t));
+        memcpy(key_cmp, ((PartnerKey1*)key)->priv, sizeof(partner_key1_t));
+        status = do_partner_get1(self->alias->alias, self->priv, ((PartnerKey1*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey2Type() ) {
+        key_cmp = (partner_key2_t*)do_malloc(sizeof(partner_key2_t));
+        memcpy(key_cmp, ((PartnerKey2*)key)->priv, sizeof(partner_key2_t));
+        status = do_partner_get2(self->alias->alias, self->priv, ((PartnerKey2*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getPartnerKey3Type() ) {
+        key_cmp = (partner_key3_t*)do_malloc(sizeof(partner_key3_t));
+        memcpy(key_cmp, ((PartnerKey3*)key)->priv, sizeof(partner_key3_t));
+        status = do_partner_get3(self->alias->alias, self->priv, ((PartnerKey3*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -1967,19 +1967,19 @@ static PyObject *Partner_iter_first(Partner* self, PyObject *args, PyObject *kwd
     return retval;
 }
 
-static PyObject *Partner_insert(Partner* self)
+static PyObject *Partner_update(Partner* self)
 {
     int status;
-    status = do_partner_insert(self->alias->alias, self->priv);
+    status = do_partner_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Partner_update(Partner* self)
+static PyObject *Partner_insert(Partner* self)
 {
     int status;
-    status = do_partner_update(self->alias->alias, self->priv);
+    status = do_partner_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -2081,6 +2081,11 @@ static PyObject *Partner_set(Partner* self, PyObject *args, PyObject *kwds)
         do_cpy(self->priv->data.g_code, ((PartnerDataKey1*)obj)->priv->g_code);
 
         do_cpy(self->priv->data.code, ((PartnerDataKey1*)obj)->priv->code);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getPartnerDataKey2Type() ) {
 
     }
 
@@ -2415,41 +2420,41 @@ static PyMethodDef Partner_methods[] = {
     {"clear_params", (PyCFunction)Partner_params_clear, METH_NOARGS, "do_Partner_param_clear"},
     {"set_params", (PyCFunction)Partner_set_params, METH_VARARGS|METH_KEYWORDS, "do_Partner_set_params"},
 
-    {"get_gt", (PyCFunction)Partner_gt, METH_VARARGS|METH_KEYWORDS, "Partner_gt"},
+    {"get_prev", (PyCFunction)Partner_prev, METH_VARARGS|METH_KEYWORDS, "Partner_prev"},
 
-    {"get_last", (PyCFunction)Partner_last, METH_VARARGS|METH_KEYWORDS, "Partner_last"},
+    {"get_gt", (PyCFunction)Partner_gt, METH_VARARGS|METH_KEYWORDS, "Partner_gt"},
 
     {"get_next", (PyCFunction)Partner_next, METH_VARARGS|METH_KEYWORDS, "Partner_next"},
 
-    {"get_le", (PyCFunction)Partner_le, METH_VARARGS|METH_KEYWORDS, "Partner_le"},
-
-    {"get_lt", (PyCFunction)Partner_lt, METH_VARARGS|METH_KEYWORDS, "Partner_lt"},
+    {"get_ge", (PyCFunction)Partner_ge, METH_VARARGS|METH_KEYWORDS, "Partner_ge"},
 
     {"get_equal", (PyCFunction)Partner_equal, METH_VARARGS|METH_KEYWORDS, "Partner_equal"},
 
-    {"get_ge", (PyCFunction)Partner_ge, METH_VARARGS|METH_KEYWORDS, "Partner_ge"},
+    {"get_last", (PyCFunction)Partner_last, METH_VARARGS|METH_KEYWORDS, "Partner_last"},
 
-    {"get_prev", (PyCFunction)Partner_prev, METH_VARARGS|METH_KEYWORDS, "Partner_prev"},
+    {"get_lt", (PyCFunction)Partner_lt, METH_VARARGS|METH_KEYWORDS, "Partner_lt"},
+
+    {"get_le", (PyCFunction)Partner_le, METH_VARARGS|METH_KEYWORDS, "Partner_le"},
 
     {"get_first", (PyCFunction)Partner_first, METH_VARARGS|METH_KEYWORDS, "Partner_first"},
 
     {"gets_gt", (PyCFunction)Partner_iter_gt, METH_VARARGS|METH_KEYWORDS, "Partner_iter_gt"},
 
-    {"gets_last", (PyCFunction)Partner_iter_last, METH_VARARGS|METH_KEYWORDS, "Partner_iter_last"},
-
-    {"gets_le", (PyCFunction)Partner_iter_le, METH_VARARGS|METH_KEYWORDS, "Partner_iter_le"},
-
     {"gets_ge", (PyCFunction)Partner_iter_ge, METH_VARARGS|METH_KEYWORDS, "Partner_iter_ge"},
 
     {"gets_equal", (PyCFunction)Partner_iter_equal, METH_VARARGS|METH_KEYWORDS, "Partner_iter_equal"},
 
+    {"gets_last", (PyCFunction)Partner_iter_last, METH_VARARGS|METH_KEYWORDS, "Partner_iter_last"},
+
     {"gets_lt", (PyCFunction)Partner_iter_lt, METH_VARARGS|METH_KEYWORDS, "Partner_iter_lt"},
+
+    {"gets_le", (PyCFunction)Partner_iter_le, METH_VARARGS|METH_KEYWORDS, "Partner_iter_le"},
 
     {"gets_first", (PyCFunction)Partner_iter_first, METH_VARARGS|METH_KEYWORDS, "Partner_iter_first"},
 
-    {"insert", (PyCFunction)Partner_insert, METH_VARARGS|METH_KEYWORDS, "Partner_insert"},
-
     {"update", (PyCFunction)Partner_update, METH_VARARGS|METH_KEYWORDS, "Partner_update"},
+
+    {"insert", (PyCFunction)Partner_insert, METH_VARARGS|METH_KEYWORDS, "Partner_insert"},
 
     {"delete", (PyCFunction)Partner_delete, METH_VARARGS|METH_KEYWORDS, "Partner_delete"},
 
@@ -2599,24 +2604,24 @@ static PyObject *PartnerKey0_set_code(PartnerKey0* self, PyObject *args, PyObjec
 //    return result;
 }
 
-static PyObject *PartnerKey0_gt(PartnerKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey0_prev(PartnerKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey0_last(PartnerKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey0_gt(PartnerKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2635,24 +2640,12 @@ static PyObject *PartnerKey0_next(PartnerKey0* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey0_le(PartnerKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey0_ge(PartnerKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *PartnerKey0_lt(PartnerKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2671,24 +2664,36 @@ static PyObject *PartnerKey0_equal(PartnerKey0* self, PyObject *args, PyObject *
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey0_ge(PartnerKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey0_last(PartnerKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey0_prev(PartnerKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey0_lt(PartnerKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *PartnerKey0_le(PartnerKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2741,90 +2746,6 @@ static PyObject *PartnerKey0_iter_gt(PartnerKey0* self, PyObject *args, PyObject
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_partner_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey0_iter_last(PartnerKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.g_code, 
-                 self->priv->g_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = PartnerKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey0_iter_le(PartnerKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.g_code, 
-                 self->priv->g_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = PartnerKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2917,6 +2838,48 @@ static PyObject *PartnerKey0_iter_equal(PartnerKey0* self, PyObject *args, PyObj
     return retval;
 }
 
+static PyObject *PartnerKey0_iter_last(PartnerKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.g_code, 
+                 self->priv->g_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = PartnerKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *PartnerKey0_iter_lt(PartnerKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -2932,6 +2895,48 @@ static PyObject *PartnerKey0_iter_lt(PartnerKey0* self, PyObject *args, PyObject
     }
     do_cpy(key_cmp, *self->priv);
     status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.g_code, 
+                 self->priv->g_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = PartnerKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *PartnerKey0_iter_le(PartnerKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3127,6 +3132,11 @@ static PyObject *PartnerKey0_set(PartnerKey0* self, PyObject *args, PyObject *kw
     }
 
     else 
+    if ( Py_TYPE(obj) == getPartnerDataKey2Type() ) {
+
+    }
+
+    else 
     if ( PyDict_Check(obj) ) {
         PyObject *fields;
         int i;
@@ -3235,35 +3245,35 @@ static PyMethodDef PartnerKey0_methods[] = {
 
     {"set_code", (PyCFunction)PartnerKey0_set_code, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_set_code"},
 
-    {"get_gt", (PyCFunction)PartnerKey0_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_gt"},
+    {"get_prev", (PyCFunction)PartnerKey0_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_prev"},
 
-    {"get_last", (PyCFunction)PartnerKey0_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_last"},
+    {"get_gt", (PyCFunction)PartnerKey0_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_gt"},
 
     {"get_next", (PyCFunction)PartnerKey0_next, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_next"},
 
-    {"get_le", (PyCFunction)PartnerKey0_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_le"},
-
-    {"get_lt", (PyCFunction)PartnerKey0_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_lt"},
+    {"get_ge", (PyCFunction)PartnerKey0_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_ge"},
 
     {"get_equal", (PyCFunction)PartnerKey0_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_equal"},
 
-    {"get_ge", (PyCFunction)PartnerKey0_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_ge"},
+    {"get_last", (PyCFunction)PartnerKey0_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_last"},
 
-    {"get_prev", (PyCFunction)PartnerKey0_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_prev"},
+    {"get_lt", (PyCFunction)PartnerKey0_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_lt"},
+
+    {"get_le", (PyCFunction)PartnerKey0_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_le"},
 
     {"get_first", (PyCFunction)PartnerKey0_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_first"},
 
     {"gets_gt", (PyCFunction)PartnerKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)PartnerKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)PartnerKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)PartnerKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)PartnerKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)PartnerKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)PartnerKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)PartnerKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_le"},
 
     {"gets_first", (PyCFunction)PartnerKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey0_iter_first"},
 
@@ -3411,24 +3421,24 @@ static PyObject *PartnerKey1_set_name(PartnerKey1* self, PyObject *args, PyObjec
 //    return result;
 }
 
-static PyObject *PartnerKey1_gt(PartnerKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey1_prev(PartnerKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey1_last(PartnerKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey1_gt(PartnerKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3447,24 +3457,12 @@ static PyObject *PartnerKey1_next(PartnerKey1* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey1_le(PartnerKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey1_ge(PartnerKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *PartnerKey1_lt(PartnerKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3483,24 +3481,36 @@ static PyObject *PartnerKey1_equal(PartnerKey1* self, PyObject *args, PyObject *
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey1_ge(PartnerKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey1_last(PartnerKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey1_prev(PartnerKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey1_lt(PartnerKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *PartnerKey1_le(PartnerKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3553,90 +3563,6 @@ static PyObject *PartnerKey1_iter_gt(PartnerKey1* self, PyObject *args, PyObject
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_partner_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey1_iter_last(PartnerKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.g_code, 
-                 self->priv->g_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = PartnerKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey1_iter_le(PartnerKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.g_code, 
-                 self->priv->g_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = PartnerKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3729,6 +3655,48 @@ static PyObject *PartnerKey1_iter_equal(PartnerKey1* self, PyObject *args, PyObj
     return retval;
 }
 
+static PyObject *PartnerKey1_iter_last(PartnerKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.g_code, 
+                 self->priv->g_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = PartnerKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *PartnerKey1_iter_lt(PartnerKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3744,6 +3712,48 @@ static PyObject *PartnerKey1_iter_lt(PartnerKey1* self, PyObject *args, PyObject
     }
     do_cpy(key_cmp, *self->priv);
     status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.g_code, 
+                 self->priv->g_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = PartnerKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *PartnerKey1_iter_le(PartnerKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3933,6 +3943,11 @@ static PyObject *PartnerKey1_set(PartnerKey1* self, PyObject *args, PyObject *kw
     }
 
     else 
+    if ( Py_TYPE(obj) == getPartnerDataKey2Type() ) {
+
+    }
+
+    else 
     if ( PyDict_Check(obj) ) {
         PyObject *fields;
         int i;
@@ -4041,35 +4056,35 @@ static PyMethodDef PartnerKey1_methods[] = {
 
     {"set_name", (PyCFunction)PartnerKey1_set_name, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_set_name"},
 
-    {"get_gt", (PyCFunction)PartnerKey1_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_gt"},
+    {"get_prev", (PyCFunction)PartnerKey1_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_prev"},
 
-    {"get_last", (PyCFunction)PartnerKey1_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_last"},
+    {"get_gt", (PyCFunction)PartnerKey1_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_gt"},
 
     {"get_next", (PyCFunction)PartnerKey1_next, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_next"},
 
-    {"get_le", (PyCFunction)PartnerKey1_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_le"},
-
-    {"get_lt", (PyCFunction)PartnerKey1_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_lt"},
+    {"get_ge", (PyCFunction)PartnerKey1_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_ge"},
 
     {"get_equal", (PyCFunction)PartnerKey1_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_equal"},
 
-    {"get_ge", (PyCFunction)PartnerKey1_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_ge"},
+    {"get_last", (PyCFunction)PartnerKey1_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_last"},
 
-    {"get_prev", (PyCFunction)PartnerKey1_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_prev"},
+    {"get_lt", (PyCFunction)PartnerKey1_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_lt"},
+
+    {"get_le", (PyCFunction)PartnerKey1_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_le"},
 
     {"get_first", (PyCFunction)PartnerKey1_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_first"},
 
     {"gets_gt", (PyCFunction)PartnerKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)PartnerKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)PartnerKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)PartnerKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)PartnerKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)PartnerKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)PartnerKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)PartnerKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_le"},
 
     {"gets_first", (PyCFunction)PartnerKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey1_iter_first"},
 
@@ -4181,24 +4196,24 @@ static PyObject *PartnerKey2_set_name(PartnerKey2* self, PyObject *args, PyObjec
 //    return result;
 }
 
-static PyObject *PartnerKey2_gt(PartnerKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey2_prev(PartnerKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey2_last(PartnerKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey2_gt(PartnerKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4217,24 +4232,12 @@ static PyObject *PartnerKey2_next(PartnerKey2* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey2_le(PartnerKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey2_ge(PartnerKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *PartnerKey2_lt(PartnerKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4253,24 +4256,36 @@ static PyObject *PartnerKey2_equal(PartnerKey2* self, PyObject *args, PyObject *
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey2_ge(PartnerKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey2_last(PartnerKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey2_prev(PartnerKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey2_lt(PartnerKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *PartnerKey2_le(PartnerKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4317,78 +4332,6 @@ static PyObject *PartnerKey2_iter_gt(PartnerKey2* self, PyObject *args, PyObject
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_partner_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey2_iter_last(PartnerKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = PartnerKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey2_iter_le(PartnerKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = PartnerKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4469,6 +4412,42 @@ static PyObject *PartnerKey2_iter_equal(PartnerKey2* self, PyObject *args, PyObj
     return retval;
 }
 
+static PyObject *PartnerKey2_iter_last(PartnerKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = PartnerKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *PartnerKey2_iter_lt(PartnerKey2* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -4484,6 +4463,42 @@ static PyObject *PartnerKey2_iter_lt(PartnerKey2* self, PyObject *args, PyObject
     }
     do_cpy(key_cmp, *self->priv);
     status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = PartnerKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *PartnerKey2_iter_le(PartnerKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key2(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -4644,6 +4659,11 @@ static PyObject *PartnerKey2_set(PartnerKey2* self, PyObject *args, PyObject *kw
     }
 
     else 
+    if ( Py_TYPE(obj) == getPartnerDataKey2Type() ) {
+
+    }
+
+    else 
     if ( PyDict_Check(obj) ) {
         PyObject *fields;
         int i;
@@ -4730,35 +4750,35 @@ static PyMethodDef PartnerKey2_methods[] = {
 
     {"set_name", (PyCFunction)PartnerKey2_set_name, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_set_name"},
 
-    {"get_gt", (PyCFunction)PartnerKey2_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_gt"},
+    {"get_prev", (PyCFunction)PartnerKey2_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_prev"},
 
-    {"get_last", (PyCFunction)PartnerKey2_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_last"},
+    {"get_gt", (PyCFunction)PartnerKey2_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_gt"},
 
     {"get_next", (PyCFunction)PartnerKey2_next, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_next"},
 
-    {"get_le", (PyCFunction)PartnerKey2_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_le"},
-
-    {"get_lt", (PyCFunction)PartnerKey2_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_lt"},
+    {"get_ge", (PyCFunction)PartnerKey2_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_ge"},
 
     {"get_equal", (PyCFunction)PartnerKey2_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_equal"},
 
-    {"get_ge", (PyCFunction)PartnerKey2_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_ge"},
+    {"get_last", (PyCFunction)PartnerKey2_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_last"},
 
-    {"get_prev", (PyCFunction)PartnerKey2_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_prev"},
+    {"get_lt", (PyCFunction)PartnerKey2_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_lt"},
+
+    {"get_le", (PyCFunction)PartnerKey2_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_le"},
 
     {"get_first", (PyCFunction)PartnerKey2_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_first"},
 
     {"gets_gt", (PyCFunction)PartnerKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_gt"},
 
-    {"gets_last", (PyCFunction)PartnerKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_last"},
-
-    {"gets_le", (PyCFunction)PartnerKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_le"},
-
     {"gets_ge", (PyCFunction)PartnerKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_ge"},
 
     {"gets_equal", (PyCFunction)PartnerKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_equal"},
 
+    {"gets_last", (PyCFunction)PartnerKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_last"},
+
     {"gets_lt", (PyCFunction)PartnerKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_lt"},
+
+    {"gets_le", (PyCFunction)PartnerKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_le"},
 
     {"gets_first", (PyCFunction)PartnerKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey2_iter_first"},
 
@@ -4872,24 +4892,24 @@ static PyObject *PartnerKey3_set_code(PartnerKey3* self, PyObject *args, PyObjec
 //    return result;
 }
 
-static PyObject *PartnerKey3_gt(PartnerKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey3_prev(PartnerKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey3_last(PartnerKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey3_gt(PartnerKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4908,24 +4928,12 @@ static PyObject *PartnerKey3_next(PartnerKey3* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey3_le(PartnerKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey3_ge(PartnerKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *PartnerKey3_lt(PartnerKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4944,24 +4952,36 @@ static PyObject *PartnerKey3_equal(PartnerKey3* self, PyObject *args, PyObject *
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey3_ge(PartnerKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey3_last(PartnerKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *PartnerKey3_prev(PartnerKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *PartnerKey3_lt(PartnerKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *PartnerKey3_le(PartnerKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5008,78 +5028,6 @@ static PyObject *PartnerKey3_iter_gt(PartnerKey3* self, PyObject *args, PyObject
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_partner_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey3_iter_last(PartnerKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = PartnerKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *PartnerKey3_iter_le(PartnerKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    partner_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = PartnerKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_partner_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -5160,6 +5108,42 @@ static PyObject *PartnerKey3_iter_equal(PartnerKey3* self, PyObject *args, PyObj
     return retval;
 }
 
+static PyObject *PartnerKey3_iter_last(PartnerKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = PartnerKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *PartnerKey3_iter_lt(PartnerKey3* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -5175,6 +5159,42 @@ static PyObject *PartnerKey3_iter_lt(PartnerKey3* self, PyObject *args, PyObject
     }
     do_cpy(key_cmp, *self->priv);
     status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = PartnerKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_partner_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *PartnerKey3_iter_le(PartnerKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    partner_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_partner_key3(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -5341,6 +5361,11 @@ static PyObject *PartnerKey3_set(PartnerKey3* self, PyObject *args, PyObject *kw
     }
 
     else 
+    if ( Py_TYPE(obj) == getPartnerDataKey2Type() ) {
+
+    }
+
+    else 
     if ( PyDict_Check(obj) ) {
         PyObject *fields;
         int i;
@@ -5427,35 +5452,35 @@ static PyMethodDef PartnerKey3_methods[] = {
 
     {"set_code", (PyCFunction)PartnerKey3_set_code, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_set_code"},
 
-    {"get_gt", (PyCFunction)PartnerKey3_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_gt"},
+    {"get_prev", (PyCFunction)PartnerKey3_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_prev"},
 
-    {"get_last", (PyCFunction)PartnerKey3_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_last"},
+    {"get_gt", (PyCFunction)PartnerKey3_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_gt"},
 
     {"get_next", (PyCFunction)PartnerKey3_next, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_next"},
 
-    {"get_le", (PyCFunction)PartnerKey3_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_le"},
-
-    {"get_lt", (PyCFunction)PartnerKey3_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_lt"},
+    {"get_ge", (PyCFunction)PartnerKey3_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_ge"},
 
     {"get_equal", (PyCFunction)PartnerKey3_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_equal"},
 
-    {"get_ge", (PyCFunction)PartnerKey3_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_ge"},
+    {"get_last", (PyCFunction)PartnerKey3_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_last"},
 
-    {"get_prev", (PyCFunction)PartnerKey3_prev, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_prev"},
+    {"get_lt", (PyCFunction)PartnerKey3_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_lt"},
+
+    {"get_le", (PyCFunction)PartnerKey3_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_le"},
 
     {"get_first", (PyCFunction)PartnerKey3_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_first"},
 
     {"gets_gt", (PyCFunction)PartnerKey3_iter_gt, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_gt"},
 
-    {"gets_last", (PyCFunction)PartnerKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_last"},
-
-    {"gets_le", (PyCFunction)PartnerKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_le"},
-
     {"gets_ge", (PyCFunction)PartnerKey3_iter_ge, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_ge"},
 
     {"gets_equal", (PyCFunction)PartnerKey3_iter_equal, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_equal"},
 
+    {"gets_last", (PyCFunction)PartnerKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_last"},
+
     {"gets_lt", (PyCFunction)PartnerKey3_iter_lt, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_lt"},
+
+    {"gets_le", (PyCFunction)PartnerKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_le"},
 
     {"gets_first", (PyCFunction)PartnerKey3_iter_first, METH_VARARGS|METH_KEYWORDS, "PartnerKey3_iter_first"},
 

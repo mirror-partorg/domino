@@ -27,4 +27,11 @@ typedef struct {
 } PartnerDataKey1;
 PyTypeObject *getPartnerDataKey1Type();
 
+typedef struct {
+    PyObject_HEAD
+    partner_data_key2_t *priv;
+    Alias *alias;
+} PartnerDataKey2;
+PyTypeObject *getPartnerDataKey2Type();
+
 #endif // PartnerData_H_INCLUDED

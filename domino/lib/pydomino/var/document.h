@@ -41,4 +41,11 @@ typedef struct {
 } DocumentKey3;
 PyTypeObject *getDocumentKey3Type();
 
+typedef struct {
+    PyObject_HEAD
+    document_key4_t *priv;
+    Alias *alias;
+} DocumentKey4;
+PyTypeObject *getDocumentKey4Type();
+
 #endif // Document_H_INCLUDED

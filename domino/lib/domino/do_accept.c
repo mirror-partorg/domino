@@ -5,6 +5,7 @@
 
 #define RUNNING_ (!break_func || !break_func(NULL))
 
+
 static int do_accept_calc_stock(do_alias_t *alias, document_order_rec_t *document_order, do_doctype_t *doctype, int accept, do_extended_break_func break_func)
 {
     int i, flag = 0;
@@ -601,7 +602,6 @@ DO_EXPORT int do_accept_make_prowod(do_alias_t *alias, document_rec_t *document,
     }
     return res;
 }
-
 DO_EXPORT int do_accept_order(do_alias_t *alias, document_rec_t *document, document_order_rec_t *document_order, do_accept_t accept, do_accept_param_t *param)
 {
     if ( document_order->data.accepted ) {

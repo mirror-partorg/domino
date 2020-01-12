@@ -352,6 +352,34 @@ static PyObject *Subgroup_get_params(Subgroup* self, void *unused)
     return res;
 }
 
+static PyObject *Subgroup_prev(Subgroup* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getSubgroupKey0Type() )
+        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getSubgroupKey1Type() )
+        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Subgroup_gt(Subgroup* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -368,34 +396,6 @@ static PyObject *Subgroup_gt(Subgroup* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getSubgroupKey1Type() )
         status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_GT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Subgroup_last(Subgroup* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getSubgroupKey0Type() )
-        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getSubgroupKey1Type() )
-        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -436,7 +436,7 @@ static PyObject *Subgroup_next(Subgroup* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Subgroup_le(Subgroup* self, PyObject *args, PyObject *kwds)
+static PyObject *Subgroup_ge(Subgroup* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -447,39 +447,11 @@ static PyObject *Subgroup_le(Subgroup* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getSubgroupKey0Type() )
-        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LE);
+        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getSubgroupKey1Type() )
-        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Subgroup_lt(Subgroup* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getSubgroupKey0Type() )
-        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getSubgroupKey1Type() )
-        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LT);
+        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -520,7 +492,7 @@ static PyObject *Subgroup_equal(Subgroup* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Subgroup_ge(Subgroup* self, PyObject *args, PyObject *kwds)
+static PyObject *Subgroup_last(Subgroup* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -531,11 +503,11 @@ static PyObject *Subgroup_ge(Subgroup* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getSubgroupKey0Type() )
-        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_GE);
+        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getSubgroupKey1Type() )
-        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_GE);
+        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -548,7 +520,7 @@ static PyObject *Subgroup_ge(Subgroup* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Subgroup_prev(Subgroup* self, PyObject *args, PyObject *kwds)
+static PyObject *Subgroup_lt(Subgroup* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -559,11 +531,39 @@ static PyObject *Subgroup_prev(Subgroup* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getSubgroupKey0Type() )
-        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getSubgroupKey1Type() )
-        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Subgroup_le(Subgroup* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getSubgroupKey0Type() )
+        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getSubgroupKey1Type() )
+        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -704,244 +704,6 @@ static PyObject *Subgroup_iter_gt(Subgroup* self, PyObject *args, PyObject *kwds
 
         if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
             status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Subgroup_iter_last(Subgroup* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
-        key_cmp = (subgroup_key0_t*)do_malloc(sizeof(subgroup_key0_t));
-        memcpy(key_cmp, ((SubgroupKey0*)key)->priv, sizeof(subgroup_key0_t));
-        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
-        key_cmp = (subgroup_key1_t*)do_malloc(sizeof(subgroup_key1_t));
-        memcpy(key_cmp, ((SubgroupKey1*)key)->priv, sizeof(subgroup_key1_t));
-        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((subgroup_key0_t*)key_cmp)->class_id, 
-                    ((SubgroupKey0*)key)->priv->class_id))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((subgroup_key0_t*)key_cmp)->group_id, 
-                    ((SubgroupKey0*)key)->priv->group_id))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((subgroup_key0_t*)key_cmp)->subgroup_id, 
-                    ((SubgroupKey0*)key)->priv->subgroup_id))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((subgroup_key1_t*)key_cmp)->class_id, 
-                    ((SubgroupKey1*)key)->priv->class_id))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((subgroup_key1_t*)key_cmp)->group_id, 
-                    ((SubgroupKey1*)key)->priv->group_id))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((subgroup_key1_t*)key_cmp)->name, 
-                    ((SubgroupKey1*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Subgroup_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
-            status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
-            status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Subgroup_iter_le(Subgroup* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
-        key_cmp = (subgroup_key0_t*)do_malloc(sizeof(subgroup_key0_t));
-        memcpy(key_cmp, ((SubgroupKey0*)key)->priv, sizeof(subgroup_key0_t));
-        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
-        key_cmp = (subgroup_key1_t*)do_malloc(sizeof(subgroup_key1_t));
-        memcpy(key_cmp, ((SubgroupKey1*)key)->priv, sizeof(subgroup_key1_t));
-        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((subgroup_key0_t*)key_cmp)->class_id, 
-                    ((SubgroupKey0*)key)->priv->class_id))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((subgroup_key0_t*)key_cmp)->group_id, 
-                    ((SubgroupKey0*)key)->priv->group_id))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((subgroup_key0_t*)key_cmp)->subgroup_id, 
-                    ((SubgroupKey0*)key)->priv->subgroup_id))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((subgroup_key1_t*)key_cmp)->class_id, 
-                    ((SubgroupKey1*)key)->priv->class_id))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((subgroup_key1_t*)key_cmp)->group_id, 
-                    ((SubgroupKey1*)key)->priv->group_id))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((subgroup_key1_t*)key_cmp)->name, 
-                    ((SubgroupKey1*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Subgroup_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
-            status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
-            status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1199,6 +961,125 @@ static PyObject *Subgroup_iter_equal(Subgroup* self, PyObject *args, PyObject *k
     return retval;
 }
 
+static PyObject *Subgroup_iter_last(Subgroup* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
+        key_cmp = (subgroup_key0_t*)do_malloc(sizeof(subgroup_key0_t));
+        memcpy(key_cmp, ((SubgroupKey0*)key)->priv, sizeof(subgroup_key0_t));
+        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
+        key_cmp = (subgroup_key1_t*)do_malloc(sizeof(subgroup_key1_t));
+        memcpy(key_cmp, ((SubgroupKey1*)key)->priv, sizeof(subgroup_key1_t));
+        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((subgroup_key0_t*)key_cmp)->class_id, 
+                    ((SubgroupKey0*)key)->priv->class_id))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((subgroup_key0_t*)key_cmp)->group_id, 
+                    ((SubgroupKey0*)key)->priv->group_id))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((subgroup_key0_t*)key_cmp)->subgroup_id, 
+                    ((SubgroupKey0*)key)->priv->subgroup_id))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((subgroup_key1_t*)key_cmp)->class_id, 
+                    ((SubgroupKey1*)key)->priv->class_id))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((subgroup_key1_t*)key_cmp)->group_id, 
+                    ((SubgroupKey1*)key)->priv->group_id))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((subgroup_key1_t*)key_cmp)->name, 
+                    ((SubgroupKey1*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Subgroup_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
+            status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
+            status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Subgroup_iter_lt(Subgroup* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -1226,6 +1107,125 @@ static PyObject *Subgroup_iter_lt(Subgroup* self, PyObject *args, PyObject *kwds
         key_cmp = (subgroup_key1_t*)do_malloc(sizeof(subgroup_key1_t));
         memcpy(key_cmp, ((SubgroupKey1*)key)->priv, sizeof(subgroup_key1_t));
         status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((subgroup_key0_t*)key_cmp)->class_id, 
+                    ((SubgroupKey0*)key)->priv->class_id))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((subgroup_key0_t*)key_cmp)->group_id, 
+                    ((SubgroupKey0*)key)->priv->group_id))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((subgroup_key0_t*)key_cmp)->subgroup_id, 
+                    ((SubgroupKey0*)key)->priv->subgroup_id))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((subgroup_key1_t*)key_cmp)->class_id, 
+                    ((SubgroupKey1*)key)->priv->class_id))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((subgroup_key1_t*)key_cmp)->group_id, 
+                    ((SubgroupKey1*)key)->priv->group_id))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((subgroup_key1_t*)key_cmp)->name, 
+                    ((SubgroupKey1*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Subgroup_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
+            status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
+            status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Subgroup_iter_le(Subgroup* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getSubgroupKey0Type() ) {
+        key_cmp = (subgroup_key0_t*)do_malloc(sizeof(subgroup_key0_t));
+        memcpy(key_cmp, ((SubgroupKey0*)key)->priv, sizeof(subgroup_key0_t));
+        status = do_subgroup_get0(self->alias->alias, self->priv, ((SubgroupKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getSubgroupKey1Type() ) {
+        key_cmp = (subgroup_key1_t*)do_malloc(sizeof(subgroup_key1_t));
+        memcpy(key_cmp, ((SubgroupKey1*)key)->priv, sizeof(subgroup_key1_t));
+        status = do_subgroup_get1(self->alias->alias, self->priv, ((SubgroupKey1*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -1437,19 +1437,19 @@ static PyObject *Subgroup_iter_first(Subgroup* self, PyObject *args, PyObject *k
     return retval;
 }
 
-static PyObject *Subgroup_insert(Subgroup* self)
+static PyObject *Subgroup_update(Subgroup* self)
 {
     int status;
-    status = do_subgroup_insert(self->alias->alias, self->priv);
+    status = do_subgroup_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Subgroup_update(Subgroup* self)
+static PyObject *Subgroup_insert(Subgroup* self)
 {
     int status;
-    status = do_subgroup_update(self->alias->alias, self->priv);
+    status = do_subgroup_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1755,41 +1755,41 @@ static PyMethodDef Subgroup_methods[] = {
     {"clear_params", (PyCFunction)Subgroup_params_clear, METH_NOARGS, "do_Subgroup_param_clear"},
     {"set_params", (PyCFunction)Subgroup_set_params, METH_VARARGS|METH_KEYWORDS, "do_Subgroup_set_params"},
 
-    {"get_gt", (PyCFunction)Subgroup_gt, METH_VARARGS|METH_KEYWORDS, "Subgroup_gt"},
+    {"get_prev", (PyCFunction)Subgroup_prev, METH_VARARGS|METH_KEYWORDS, "Subgroup_prev"},
 
-    {"get_last", (PyCFunction)Subgroup_last, METH_VARARGS|METH_KEYWORDS, "Subgroup_last"},
+    {"get_gt", (PyCFunction)Subgroup_gt, METH_VARARGS|METH_KEYWORDS, "Subgroup_gt"},
 
     {"get_next", (PyCFunction)Subgroup_next, METH_VARARGS|METH_KEYWORDS, "Subgroup_next"},
 
-    {"get_le", (PyCFunction)Subgroup_le, METH_VARARGS|METH_KEYWORDS, "Subgroup_le"},
-
-    {"get_lt", (PyCFunction)Subgroup_lt, METH_VARARGS|METH_KEYWORDS, "Subgroup_lt"},
+    {"get_ge", (PyCFunction)Subgroup_ge, METH_VARARGS|METH_KEYWORDS, "Subgroup_ge"},
 
     {"get_equal", (PyCFunction)Subgroup_equal, METH_VARARGS|METH_KEYWORDS, "Subgroup_equal"},
 
-    {"get_ge", (PyCFunction)Subgroup_ge, METH_VARARGS|METH_KEYWORDS, "Subgroup_ge"},
+    {"get_last", (PyCFunction)Subgroup_last, METH_VARARGS|METH_KEYWORDS, "Subgroup_last"},
 
-    {"get_prev", (PyCFunction)Subgroup_prev, METH_VARARGS|METH_KEYWORDS, "Subgroup_prev"},
+    {"get_lt", (PyCFunction)Subgroup_lt, METH_VARARGS|METH_KEYWORDS, "Subgroup_lt"},
+
+    {"get_le", (PyCFunction)Subgroup_le, METH_VARARGS|METH_KEYWORDS, "Subgroup_le"},
 
     {"get_first", (PyCFunction)Subgroup_first, METH_VARARGS|METH_KEYWORDS, "Subgroup_first"},
 
     {"gets_gt", (PyCFunction)Subgroup_iter_gt, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_gt"},
 
-    {"gets_last", (PyCFunction)Subgroup_iter_last, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_last"},
-
-    {"gets_le", (PyCFunction)Subgroup_iter_le, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_le"},
-
     {"gets_ge", (PyCFunction)Subgroup_iter_ge, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_ge"},
 
     {"gets_equal", (PyCFunction)Subgroup_iter_equal, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_equal"},
 
+    {"gets_last", (PyCFunction)Subgroup_iter_last, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_last"},
+
     {"gets_lt", (PyCFunction)Subgroup_iter_lt, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_lt"},
+
+    {"gets_le", (PyCFunction)Subgroup_iter_le, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_le"},
 
     {"gets_first", (PyCFunction)Subgroup_iter_first, METH_VARARGS|METH_KEYWORDS, "Subgroup_iter_first"},
 
-    {"insert", (PyCFunction)Subgroup_insert, METH_VARARGS|METH_KEYWORDS, "Subgroup_insert"},
-
     {"update", (PyCFunction)Subgroup_update, METH_VARARGS|METH_KEYWORDS, "Subgroup_update"},
+
+    {"insert", (PyCFunction)Subgroup_insert, METH_VARARGS|METH_KEYWORDS, "Subgroup_insert"},
 
     {"delete", (PyCFunction)Subgroup_delete, METH_VARARGS|METH_KEYWORDS, "Subgroup_delete"},
 
@@ -1973,24 +1973,24 @@ static PyObject *SubgroupKey0_set_subgroup_id(SubgroupKey0* self, PyObject *args
 //    return result;
 }
 
-static PyObject *SubgroupKey0_gt(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey0_prev(SubgroupKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey0_last(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey0_gt(SubgroupKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2009,24 +2009,12 @@ static PyObject *SubgroupKey0_next(SubgroupKey0* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey0_le(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey0_ge(SubgroupKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *SubgroupKey0_lt(SubgroupKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2045,24 +2033,36 @@ static PyObject *SubgroupKey0_equal(SubgroupKey0* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey0_ge(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey0_last(SubgroupKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey0_prev(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey0_lt(SubgroupKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *SubgroupKey0_le(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2121,102 +2121,6 @@ static PyObject *SubgroupKey0_iter_gt(SubgroupKey0* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *SubgroupKey0_iter_last(SubgroupKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    subgroup_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.class_id, 
-                 self->priv->class_id))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.group_id, 
-                 self->priv->group_id))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.subgroup_id, 
-                 self->priv->subgroup_id))
-               break;
-       }
-
- 
-        item = SubgroupKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *SubgroupKey0_iter_le(SubgroupKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    subgroup_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.class_id, 
-                 self->priv->class_id))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.group_id, 
-                 self->priv->group_id))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.subgroup_id, 
-                 self->priv->subgroup_id))
-               break;
-       }
-
- 
-        item = SubgroupKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2321,6 +2225,54 @@ static PyObject *SubgroupKey0_iter_equal(SubgroupKey0* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *SubgroupKey0_iter_last(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    subgroup_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.class_id, 
+                 self->priv->class_id))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.group_id, 
+                 self->priv->group_id))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.subgroup_id, 
+                 self->priv->subgroup_id))
+               break;
+       }
+
+ 
+        item = SubgroupKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *SubgroupKey0_iter_lt(SubgroupKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -2336,6 +2288,54 @@ static PyObject *SubgroupKey0_iter_lt(SubgroupKey0* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.class_id, 
+                 self->priv->class_id))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.group_id, 
+                 self->priv->group_id))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.subgroup_id, 
+                 self->priv->subgroup_id))
+               break;
+       }
+
+ 
+        item = SubgroupKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *SubgroupKey0_iter_le(SubgroupKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    subgroup_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_subgroup_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -2696,35 +2696,35 @@ static PyMethodDef SubgroupKey0_methods[] = {
 
     {"set_subgroup_id", (PyCFunction)SubgroupKey0_set_subgroup_id, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_set_subgroup_id"},
 
-    {"get_gt", (PyCFunction)SubgroupKey0_gt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_gt"},
+    {"get_prev", (PyCFunction)SubgroupKey0_prev, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_prev"},
 
-    {"get_last", (PyCFunction)SubgroupKey0_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_last"},
+    {"get_gt", (PyCFunction)SubgroupKey0_gt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_gt"},
 
     {"get_next", (PyCFunction)SubgroupKey0_next, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_next"},
 
-    {"get_le", (PyCFunction)SubgroupKey0_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_le"},
-
-    {"get_lt", (PyCFunction)SubgroupKey0_lt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_lt"},
+    {"get_ge", (PyCFunction)SubgroupKey0_ge, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_ge"},
 
     {"get_equal", (PyCFunction)SubgroupKey0_equal, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_equal"},
 
-    {"get_ge", (PyCFunction)SubgroupKey0_ge, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_ge"},
+    {"get_last", (PyCFunction)SubgroupKey0_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_last"},
 
-    {"get_prev", (PyCFunction)SubgroupKey0_prev, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_prev"},
+    {"get_lt", (PyCFunction)SubgroupKey0_lt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_lt"},
+
+    {"get_le", (PyCFunction)SubgroupKey0_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_le"},
 
     {"get_first", (PyCFunction)SubgroupKey0_first, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_first"},
 
     {"gets_gt", (PyCFunction)SubgroupKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)SubgroupKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)SubgroupKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)SubgroupKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)SubgroupKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)SubgroupKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)SubgroupKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)SubgroupKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_le"},
 
     {"gets_first", (PyCFunction)SubgroupKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "SubgroupKey0_iter_first"},
 
@@ -2908,24 +2908,24 @@ static PyObject *SubgroupKey1_set_name(SubgroupKey1* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *SubgroupKey1_gt(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey1_prev(SubgroupKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey1_last(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey1_gt(SubgroupKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2944,24 +2944,12 @@ static PyObject *SubgroupKey1_next(SubgroupKey1* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey1_le(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey1_ge(SubgroupKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *SubgroupKey1_lt(SubgroupKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2980,24 +2968,36 @@ static PyObject *SubgroupKey1_equal(SubgroupKey1* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey1_ge(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey1_last(SubgroupKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SubgroupKey1_prev(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *SubgroupKey1_lt(SubgroupKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *SubgroupKey1_le(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3056,102 +3056,6 @@ static PyObject *SubgroupKey1_iter_gt(SubgroupKey1* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *SubgroupKey1_iter_last(SubgroupKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    subgroup_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.class_id, 
-                 self->priv->class_id))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.group_id, 
-                 self->priv->group_id))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = SubgroupKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *SubgroupKey1_iter_le(SubgroupKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    subgroup_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.class_id, 
-                 self->priv->class_id))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.group_id, 
-                 self->priv->group_id))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = SubgroupKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3256,6 +3160,54 @@ static PyObject *SubgroupKey1_iter_equal(SubgroupKey1* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *SubgroupKey1_iter_last(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    subgroup_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.class_id, 
+                 self->priv->class_id))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.group_id, 
+                 self->priv->group_id))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = SubgroupKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *SubgroupKey1_iter_lt(SubgroupKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3271,6 +3223,54 @@ static PyObject *SubgroupKey1_iter_lt(SubgroupKey1* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.class_id, 
+                 self->priv->class_id))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.group_id, 
+                 self->priv->group_id))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = SubgroupKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *SubgroupKey1_iter_le(SubgroupKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    subgroup_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_subgroup_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3631,35 +3631,35 @@ static PyMethodDef SubgroupKey1_methods[] = {
 
     {"set_name", (PyCFunction)SubgroupKey1_set_name, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_set_name"},
 
-    {"get_gt", (PyCFunction)SubgroupKey1_gt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_gt"},
+    {"get_prev", (PyCFunction)SubgroupKey1_prev, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_prev"},
 
-    {"get_last", (PyCFunction)SubgroupKey1_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_last"},
+    {"get_gt", (PyCFunction)SubgroupKey1_gt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_gt"},
 
     {"get_next", (PyCFunction)SubgroupKey1_next, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_next"},
 
-    {"get_le", (PyCFunction)SubgroupKey1_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_le"},
-
-    {"get_lt", (PyCFunction)SubgroupKey1_lt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_lt"},
+    {"get_ge", (PyCFunction)SubgroupKey1_ge, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_ge"},
 
     {"get_equal", (PyCFunction)SubgroupKey1_equal, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_equal"},
 
-    {"get_ge", (PyCFunction)SubgroupKey1_ge, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_ge"},
+    {"get_last", (PyCFunction)SubgroupKey1_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_last"},
 
-    {"get_prev", (PyCFunction)SubgroupKey1_prev, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_prev"},
+    {"get_lt", (PyCFunction)SubgroupKey1_lt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_lt"},
+
+    {"get_le", (PyCFunction)SubgroupKey1_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_le"},
 
     {"get_first", (PyCFunction)SubgroupKey1_first, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_first"},
 
     {"gets_gt", (PyCFunction)SubgroupKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)SubgroupKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)SubgroupKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)SubgroupKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)SubgroupKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)SubgroupKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)SubgroupKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)SubgroupKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_le"},
 
     {"gets_first", (PyCFunction)SubgroupKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "SubgroupKey1_iter_first"},
 

@@ -2,7 +2,7 @@
 include ../../common.mak
 
 LDFLAGS = $(LIBPTHEAD) $(LIBZ) $(LIBWINSOCK) $(LIBICONV) $(LIBGCRYPT) $(LIBPTHREAD) -lm
-CFLAGS = -D_REENTRANT 
+CFLAGS = -D_REENTRANT -DDEBUG1
 #$(PYTHONFLAGS)
 
 SRCS = log.c auth.c list.c mem.c data.c socket_io.c rpc_client.c rpc.c scanner.c thread.c \

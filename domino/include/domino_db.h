@@ -73,6 +73,15 @@ typedef int64_t BTI_CURRENCY;
     BTI_LONG date;
     BTI_LONG time;
   } document_key3_t;
+#ifdef DOMINO78
+  typedef struct PACK_STRUCT {
+    BTI_CHAR dtype[2];
+    BTI_CHAR p_g_code[3];
+    BTI_LONG p_code;
+    BTI_LONG date;
+    BTI_LONG time;
+  } document_key4_t;
+#endif
   typedef struct {
     BTI_WORD size;
     document_struct_t data;
@@ -217,6 +226,9 @@ typedef int64_t BTI_CURRENCY;
     BTI_CHAR document[10];
     BTI_LONG type;
     BTI_LONG number;
+#ifdef DOMINO78
+    BTI_CHAR analitics[32];
+#endif
     BTI_CHAR params[2048];
   } document_data_struct_t;
   typedef struct PACK_STRUCT {
@@ -226,6 +238,19 @@ typedef int64_t BTI_CURRENCY;
     BTI_LONG type;
     BTI_LONG number;
   } document_data_key0_t;
+#ifdef DOMINO78
+  typedef struct PACK_STRUCT {
+    BTI_CHAR dtype[2];
+    BTI_CHAR sklad[10];
+    BTI_CHAR document[10];
+    BTI_LONG type;
+    BTI_CHAR analitics[32];
+  } document_data_key1_t;
+  typedef struct PACK_STRUCT {
+    BTI_LONG type;
+    BTI_CHAR analitics[32];
+  } document_data_key2_t;
+#endif
   typedef struct {
     BTI_WORD size;
     document_data_struct_t data;
@@ -352,6 +377,9 @@ typedef int64_t BTI_CURRENCY;
 	BTI_CHAR code[DOMINO_FIELD_CODE_SIZE];
 	BTI_LONG type;
 	BTI_LONG number;
+#ifdef DOMINO78
+        BTI_CHAR analitics[32];
+#endif
 	BTI_CHAR params[2048];
   } product_data_struct_t;
   typedef struct PACK_STRUCT {
@@ -359,6 +387,17 @@ typedef int64_t BTI_CURRENCY;
 	BTI_LONG type;
 	BTI_LONG number;
   } product_data_key0_t;
+#ifdef DOMINO78
+  typedef struct PACK_STRUCT {
+	BTI_CHAR code[DOMINO_FIELD_CODE_SIZE];
+	BTI_LONG type;
+        BTI_CHAR analitics[32];
+  } product_data_key1_t;
+  typedef struct PACK_STRUCT {
+	BTI_LONG type;
+        BTI_CHAR analitics[32];
+  } product_data_key2_t;
+#endif
   typedef struct {
     BTI_WORD size;
     product_data_struct_t data;
@@ -393,7 +432,11 @@ typedef int64_t BTI_CURRENCY;
   typedef struct PACK_STRUCT {
 	BTI_CHAR account[6];
 	BTI_CHAR ticacc[3];
+#ifdef DOMINO78
+	BTI_CHAR name[128];
+#else
 	BTI_CHAR name[30];
+#endif
 	BTI_BYTE debit;
 	BTI_BYTE credit;
 	BTI_BYTE positivesaldo;
@@ -419,7 +462,11 @@ typedef int64_t BTI_CURRENCY;
 	BTI_CHAR account[6];
 	BTI_CHAR subaccount[20];
 	BTI_CHAR ticacc[3];
+#ifdef DOMINO78
+	BTI_CHAR name[128];
+#else
 	BTI_CHAR name[30];
+#endif
 	BTI_BYTE debit;
 	BTI_BYTE credit;
 	BTI_BYTE positivesaldo;
@@ -440,7 +487,11 @@ typedef int64_t BTI_CURRENCY;
 ****************************************************************************/
   typedef struct PACK_STRUCT {
 	BTI_CHAR class_id[2];
+#ifdef DOMINO78
+	BTI_CHAR name[128];
+#else
 	BTI_CHAR name[30];
+#endif
   }class_struct_t;
   typedef struct PACK_STRUCT {
 	BTI_CHAR class_id[2];
@@ -454,7 +505,11 @@ typedef int64_t BTI_CURRENCY;
 ****************************************************************************/
   typedef struct PACK_STRUCT {
     BTI_CHAR group_id[2];
+#ifdef DOMINO78
+	BTI_CHAR name[128];
+#else
     BTI_CHAR name[30];
+#endif
     BTI_CHAR class_id[2];
   } group_struct_t;
   typedef struct PACK_STRUCT {
@@ -475,7 +530,11 @@ typedef int64_t BTI_CURRENCY;
   typedef struct PACK_STRUCT {
 	BTI_CHAR group_id[2];
 	BTI_CHAR subgroup_id[2];
+#ifdef DOMINO78
+	BTI_CHAR name[128];
+#else
 	BTI_CHAR name[30];
+#endif
 	BTI_CHAR class_id[2];
 	BTI_LONG stat;
 	BTI_CHAR params[1024];
@@ -585,8 +644,12 @@ typedef int64_t BTI_CURRENCY;
     BTI_LONG code;
     BTI_SINT type;
     BTI_LONG number;
+#ifndef DOMINO78
     BTI_LONG date;
     BTI_LONG time;
+#else
+    BTI_CHAR analitics[32];
+#endif
     BTI_CHAR params[8192];
   } partner_data_struct_t;
   typedef struct PACK_STRUCT {
@@ -595,11 +658,24 @@ typedef int64_t BTI_CURRENCY;
     BTI_SINT type;
     BTI_LONG number;
   } partner_data_key0_t;
+#ifdef DOMINO78
+  typedef struct PACK_STRUCT {
+    BTI_CHAR g_code[3];
+    BTI_LONG code;
+    BTI_SINT type;
+    BTI_CHAR analitics[32];
+  } partner_data_key1_t;
+  typedef struct PACK_STRUCT {
+    BTI_SINT type;
+    BTI_CHAR analitics[32];
+  } partner_data_key2_t;
+#else
   typedef struct PACK_STRUCT {
     BTI_SINT type;
     BTI_CHAR g_code[3];
     BTI_LONG code;
   } partner_data_key1_t;
+#endif
   typedef struct {
     BTI_WORD size;
     partner_data_struct_t data;
@@ -725,12 +801,23 @@ typedef int64_t BTI_CURRENCY;
 /***************************************************************************
   Definition of record from 'stock.dat' //
 ****************************************************************************/
-  typedef struct PACK_STRUCT {
+#ifdef DOMINO78
+ typedef struct PACK_STRUCT {
+    BTI_CHAR sklad[10];
+    BTI_CHAR code[DOMINO_FIELD_CODE_SIZE];
+    BTI_CHAR code0[DOMINO_FIELD_CODE_SIZE];
+    BTI_CHAR sklad0[10];
+    BTI_BYTE quant[6][8];
+    BTI_SINT nquant[6];
+  } stock_struct_t;
+#else
+ typedef struct PACK_STRUCT {
     BTI_CHAR sklad[10];
     BTI_CHAR code[DOMINO_FIELD_CODE_SIZE];
     BTI_BYTE quant[6][8];
     BTI_SINT nquant[6];
   } stock_struct_t;
+#endif
   typedef struct PACK_STRUCT {
     BTI_CHAR sklad[10];
     BTI_CHAR code[DOMINO_FIELD_CODE_SIZE];
@@ -738,6 +825,15 @@ typedef int64_t BTI_CURRENCY;
   typedef struct PACK_STRUCT {
     BTI_CHAR code[DOMINO_FIELD_CODE_SIZE];
   } stock_key1_t;
+#ifdef DOMINO78
+  typedef struct PACK_STRUCT {
+    BTI_CHAR sklad0[10];
+    BTI_CHAR code0[DOMINO_FIELD_CODE_SIZE];
+  } stock_key2_t;
+  typedef struct PACK_STRUCT {
+    BTI_CHAR code0[DOMINO_FIELD_CODE_SIZE];
+  } stock_key3_t;
+#endif 
   typedef struct {
     BTI_WORD size;
     stock_struct_t data;
@@ -901,14 +997,23 @@ typedef int64_t BTI_CURRENCY;
   Definition of record from 'protocol.dat' //
 ****************************************************************************/
   typedef struct PACK_STRUCT {
+#ifdef DOMINO78
+    BTI_CHAR objectName[64];
+#else
     BTI_CHAR objectName[24];
+#endif
+
     BTI_CHAR userName[20];
     BTI_LONG date;
     BTI_LONG time;
     BTI_CHAR action[32];
   } protocol_struct_t;
   typedef struct PACK_STRUCT {
+#ifdef DOMINO78
+    BTI_CHAR objectName[64];
+#else
     BTI_CHAR objectName[24];
+#endif
     BTI_LONG date;
     BTI_LONG time;
   } protocol_key0_t;
@@ -951,6 +1056,7 @@ typedef int64_t BTI_CURRENCY;
     BTI_WORD size;
     user_struct_t data;
   } user_rec_t;
+
 /***************************************************************************
   Definition of record from 'ushift.dat' //
 ****************************************************************************/

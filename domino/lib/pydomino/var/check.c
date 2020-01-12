@@ -565,6 +565,38 @@ static PyObject *Check_set_operation(Check* self, PyObject *args, PyObject *kwds
 //    return result;
 }
 
+static PyObject *Check_prev(Check* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getCheckKey0Type() )
+        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getCheckKey1Type() )
+        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getCheckKey2Type() )
+        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Check_gt(Check* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -585,38 +617,6 @@ static PyObject *Check_gt(Check* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getCheckKey2Type() )
         status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_GT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Check_last(Check* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getCheckKey0Type() )
-        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getCheckKey1Type() )
-        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getCheckKey2Type() )
-        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -661,7 +661,7 @@ static PyObject *Check_next(Check* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Check_le(Check* self, PyObject *args, PyObject *kwds)
+static PyObject *Check_ge(Check* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -672,47 +672,15 @@ static PyObject *Check_le(Check* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getCheckKey0Type() )
-        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LE);
+        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getCheckKey1Type() )
-        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LE);
+        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getCheckKey2Type() )
-        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Check_lt(Check* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getCheckKey0Type() )
-        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getCheckKey1Type() )
-        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getCheckKey2Type() )
-        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LT);
+        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -757,7 +725,7 @@ static PyObject *Check_equal(Check* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Check_ge(Check* self, PyObject *args, PyObject *kwds)
+static PyObject *Check_last(Check* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -768,15 +736,15 @@ static PyObject *Check_ge(Check* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getCheckKey0Type() )
-        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_GE);
+        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getCheckKey1Type() )
-        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_GE);
+        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getCheckKey2Type() )
-        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_GE);
+        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -789,7 +757,7 @@ static PyObject *Check_ge(Check* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Check_prev(Check* self, PyObject *args, PyObject *kwds)
+static PyObject *Check_lt(Check* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -800,15 +768,47 @@ static PyObject *Check_prev(Check* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getCheckKey0Type() )
-        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getCheckKey1Type() )
-        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getCheckKey2Type() )
-        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_PREVIOUS);
+        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Check_le(Check* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getCheckKey0Type() )
+        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getCheckKey1Type() )
+        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getCheckKey2Type() )
+        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -1018,374 +1018,6 @@ static PyObject *Check_iter_gt(Check* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getCheckKey2Type() ) {
             status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Check_iter_last(Check* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getCheckKey0Type() ) {
-        key_cmp = (check_key0_t*)do_malloc(sizeof(check_key0_t));
-        memcpy(key_cmp, ((CheckKey0*)key)->priv, sizeof(check_key0_t));
-        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getCheckKey1Type() ) {
-        key_cmp = (check_key1_t*)do_malloc(sizeof(check_key1_t));
-        memcpy(key_cmp, ((CheckKey1*)key)->priv, sizeof(check_key1_t));
-        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getCheckKey2Type() ) {
-        key_cmp = (check_key2_t*)do_malloc(sizeof(check_key2_t));
-        memcpy(key_cmp, ((CheckKey2*)key)->priv, sizeof(check_key2_t));
-        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getCheckKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->cash, 
-                    ((CheckKey0*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->shift, 
-                    ((CheckKey0*)key)->priv->shift))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->check, 
-                    ((CheckKey0*)key)->priv->check))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->position, 
-                    ((CheckKey0*)key)->priv->position))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->date, 
-                    ((CheckKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->time, 
-                    ((CheckKey0*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((check_key1_t*)key_cmp)->date, 
-                    ((CheckKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((check_key1_t*)key_cmp)->time, 
-                    ((CheckKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->product_code, 
-                    ((CheckKey2*)key)->priv->product_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->date, 
-                    ((CheckKey2*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->time, 
-                    ((CheckKey2*)key)->priv->time))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->cash, 
-                    ((CheckKey2*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->shift, 
-                    ((CheckKey2*)key)->priv->shift))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->check, 
-                    ((CheckKey2*)key)->priv->check))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Check_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getCheckKey0Type() ) {
-            status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey1Type() ) {
-            status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey2Type() ) {
-            status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Check_iter_le(Check* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getCheckKey0Type() ) {
-        key_cmp = (check_key0_t*)do_malloc(sizeof(check_key0_t));
-        memcpy(key_cmp, ((CheckKey0*)key)->priv, sizeof(check_key0_t));
-        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getCheckKey1Type() ) {
-        key_cmp = (check_key1_t*)do_malloc(sizeof(check_key1_t));
-        memcpy(key_cmp, ((CheckKey1*)key)->priv, sizeof(check_key1_t));
-        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getCheckKey2Type() ) {
-        key_cmp = (check_key2_t*)do_malloc(sizeof(check_key2_t));
-        memcpy(key_cmp, ((CheckKey2*)key)->priv, sizeof(check_key2_t));
-        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getCheckKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->cash, 
-                    ((CheckKey0*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->shift, 
-                    ((CheckKey0*)key)->priv->shift))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->check, 
-                    ((CheckKey0*)key)->priv->check))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->position, 
-                    ((CheckKey0*)key)->priv->position))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->date, 
-                    ((CheckKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((check_key0_t*)key_cmp)->time, 
-                    ((CheckKey0*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((check_key1_t*)key_cmp)->date, 
-                    ((CheckKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((check_key1_t*)key_cmp)->time, 
-                    ((CheckKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->product_code, 
-                    ((CheckKey2*)key)->priv->product_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->date, 
-                    ((CheckKey2*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->time, 
-                    ((CheckKey2*)key)->priv->time))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->cash, 
-                    ((CheckKey2*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->shift, 
-                    ((CheckKey2*)key)->priv->shift))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((check_key2_t*)key_cmp)->check, 
-                    ((CheckKey2*)key)->priv->check))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Check_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getCheckKey0Type() ) {
-            status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey1Type() ) {
-            status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckKey2Type() ) {
-            status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1773,6 +1405,190 @@ static PyObject *Check_iter_equal(Check* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
+static PyObject *Check_iter_last(Check* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getCheckKey0Type() ) {
+        key_cmp = (check_key0_t*)do_malloc(sizeof(check_key0_t));
+        memcpy(key_cmp, ((CheckKey0*)key)->priv, sizeof(check_key0_t));
+        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getCheckKey1Type() ) {
+        key_cmp = (check_key1_t*)do_malloc(sizeof(check_key1_t));
+        memcpy(key_cmp, ((CheckKey1*)key)->priv, sizeof(check_key1_t));
+        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getCheckKey2Type() ) {
+        key_cmp = (check_key2_t*)do_malloc(sizeof(check_key2_t));
+        memcpy(key_cmp, ((CheckKey2*)key)->priv, sizeof(check_key2_t));
+        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getCheckKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->cash, 
+                    ((CheckKey0*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->shift, 
+                    ((CheckKey0*)key)->priv->shift))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->check, 
+                    ((CheckKey0*)key)->priv->check))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->position, 
+                    ((CheckKey0*)key)->priv->position))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->date, 
+                    ((CheckKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->time, 
+                    ((CheckKey0*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((check_key1_t*)key_cmp)->date, 
+                    ((CheckKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((check_key1_t*)key_cmp)->time, 
+                    ((CheckKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->product_code, 
+                    ((CheckKey2*)key)->priv->product_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->date, 
+                    ((CheckKey2*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->time, 
+                    ((CheckKey2*)key)->priv->time))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->cash, 
+                    ((CheckKey2*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->shift, 
+                    ((CheckKey2*)key)->priv->shift))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->check, 
+                    ((CheckKey2*)key)->priv->check))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Check_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getCheckKey0Type() ) {
+            status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey1Type() ) {
+            status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey2Type() ) {
+            status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Check_iter_lt(Check* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -1807,6 +1623,190 @@ static PyObject *Check_iter_lt(Check* self, PyObject *args, PyObject *kwds)
         key_cmp = (check_key2_t*)do_malloc(sizeof(check_key2_t));
         memcpy(key_cmp, ((CheckKey2*)key)->priv, sizeof(check_key2_t));
         status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getCheckKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->cash, 
+                    ((CheckKey0*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->shift, 
+                    ((CheckKey0*)key)->priv->shift))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->check, 
+                    ((CheckKey0*)key)->priv->check))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->position, 
+                    ((CheckKey0*)key)->priv->position))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->date, 
+                    ((CheckKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((check_key0_t*)key_cmp)->time, 
+                    ((CheckKey0*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((check_key1_t*)key_cmp)->date, 
+                    ((CheckKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((check_key1_t*)key_cmp)->time, 
+                    ((CheckKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->product_code, 
+                    ((CheckKey2*)key)->priv->product_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->date, 
+                    ((CheckKey2*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->time, 
+                    ((CheckKey2*)key)->priv->time))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->cash, 
+                    ((CheckKey2*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->shift, 
+                    ((CheckKey2*)key)->priv->shift))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((check_key2_t*)key_cmp)->check, 
+                    ((CheckKey2*)key)->priv->check))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Check_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getCheckKey0Type() ) {
+            status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey1Type() ) {
+            status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckKey2Type() ) {
+            status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Check_iter_le(Check* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getCheckKey0Type() ) {
+        key_cmp = (check_key0_t*)do_malloc(sizeof(check_key0_t));
+        memcpy(key_cmp, ((CheckKey0*)key)->priv, sizeof(check_key0_t));
+        status = do_check_get0(self->alias->alias, self->priv, ((CheckKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getCheckKey1Type() ) {
+        key_cmp = (check_key1_t*)do_malloc(sizeof(check_key1_t));
+        memcpy(key_cmp, ((CheckKey1*)key)->priv, sizeof(check_key1_t));
+        status = do_check_get1(self->alias->alias, self->priv, ((CheckKey1*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getCheckKey2Type() ) {
+        key_cmp = (check_key2_t*)do_malloc(sizeof(check_key2_t));
+        memcpy(key_cmp, ((CheckKey2*)key)->priv, sizeof(check_key2_t));
+        status = do_check_get2(self->alias->alias, self->priv, ((CheckKey2*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -2141,19 +2141,19 @@ static PyObject *Check_iter_first(Check* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Check_insert(Check* self)
+static PyObject *Check_update(Check* self)
 {
     int status;
-    status = do_check_insert(self->alias->alias, self->priv);
+    status = do_check_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Check_update(Check* self)
+static PyObject *Check_insert(Check* self)
 {
     int status;
-    status = do_check_update(self->alias->alias, self->priv);
+    status = do_check_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -2595,41 +2595,41 @@ static PyMethodDef Check_methods[] = {
 
     {"set_operation", (PyCFunction)Check_set_operation, METH_VARARGS|METH_KEYWORDS, "Check_set_operation"},
 
-    {"get_gt", (PyCFunction)Check_gt, METH_VARARGS|METH_KEYWORDS, "Check_gt"},
+    {"get_prev", (PyCFunction)Check_prev, METH_VARARGS|METH_KEYWORDS, "Check_prev"},
 
-    {"get_last", (PyCFunction)Check_last, METH_VARARGS|METH_KEYWORDS, "Check_last"},
+    {"get_gt", (PyCFunction)Check_gt, METH_VARARGS|METH_KEYWORDS, "Check_gt"},
 
     {"get_next", (PyCFunction)Check_next, METH_VARARGS|METH_KEYWORDS, "Check_next"},
 
-    {"get_le", (PyCFunction)Check_le, METH_VARARGS|METH_KEYWORDS, "Check_le"},
-
-    {"get_lt", (PyCFunction)Check_lt, METH_VARARGS|METH_KEYWORDS, "Check_lt"},
+    {"get_ge", (PyCFunction)Check_ge, METH_VARARGS|METH_KEYWORDS, "Check_ge"},
 
     {"get_equal", (PyCFunction)Check_equal, METH_VARARGS|METH_KEYWORDS, "Check_equal"},
 
-    {"get_ge", (PyCFunction)Check_ge, METH_VARARGS|METH_KEYWORDS, "Check_ge"},
+    {"get_last", (PyCFunction)Check_last, METH_VARARGS|METH_KEYWORDS, "Check_last"},
 
-    {"get_prev", (PyCFunction)Check_prev, METH_VARARGS|METH_KEYWORDS, "Check_prev"},
+    {"get_lt", (PyCFunction)Check_lt, METH_VARARGS|METH_KEYWORDS, "Check_lt"},
+
+    {"get_le", (PyCFunction)Check_le, METH_VARARGS|METH_KEYWORDS, "Check_le"},
 
     {"get_first", (PyCFunction)Check_first, METH_VARARGS|METH_KEYWORDS, "Check_first"},
 
     {"gets_gt", (PyCFunction)Check_iter_gt, METH_VARARGS|METH_KEYWORDS, "Check_iter_gt"},
 
-    {"gets_last", (PyCFunction)Check_iter_last, METH_VARARGS|METH_KEYWORDS, "Check_iter_last"},
-
-    {"gets_le", (PyCFunction)Check_iter_le, METH_VARARGS|METH_KEYWORDS, "Check_iter_le"},
-
     {"gets_ge", (PyCFunction)Check_iter_ge, METH_VARARGS|METH_KEYWORDS, "Check_iter_ge"},
 
     {"gets_equal", (PyCFunction)Check_iter_equal, METH_VARARGS|METH_KEYWORDS, "Check_iter_equal"},
 
+    {"gets_last", (PyCFunction)Check_iter_last, METH_VARARGS|METH_KEYWORDS, "Check_iter_last"},
+
     {"gets_lt", (PyCFunction)Check_iter_lt, METH_VARARGS|METH_KEYWORDS, "Check_iter_lt"},
+
+    {"gets_le", (PyCFunction)Check_iter_le, METH_VARARGS|METH_KEYWORDS, "Check_iter_le"},
 
     {"gets_first", (PyCFunction)Check_iter_first, METH_VARARGS|METH_KEYWORDS, "Check_iter_first"},
 
-    {"insert", (PyCFunction)Check_insert, METH_VARARGS|METH_KEYWORDS, "Check_insert"},
-
     {"update", (PyCFunction)Check_update, METH_VARARGS|METH_KEYWORDS, "Check_update"},
+
+    {"insert", (PyCFunction)Check_insert, METH_VARARGS|METH_KEYWORDS, "Check_insert"},
 
     {"delete", (PyCFunction)Check_delete, METH_VARARGS|METH_KEYWORDS, "Check_delete"},
 
@@ -2958,24 +2958,24 @@ static PyObject *CheckKey0_set_time(CheckKey0* self, PyObject *args, PyObject *k
 //    return result;
 }
 
-static PyObject *CheckKey0_gt(CheckKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey0_prev(CheckKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey0_last(CheckKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey0_gt(CheckKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2994,24 +2994,12 @@ static PyObject *CheckKey0_next(CheckKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey0_le(CheckKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey0_ge(CheckKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *CheckKey0_lt(CheckKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3030,24 +3018,36 @@ static PyObject *CheckKey0_equal(CheckKey0* self, PyObject *args, PyObject *kwds
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey0_ge(CheckKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey0_last(CheckKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey0_prev(CheckKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey0_lt(CheckKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *CheckKey0_le(CheckKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3124,138 +3124,6 @@ static PyObject *CheckKey0_iter_gt(CheckKey0* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_check_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckKey0_iter_last(CheckKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    check_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.check, 
-                 self->priv->check))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.position, 
-                 self->priv->position))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = CheckKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_check_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckKey0_iter_le(CheckKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    check_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.check, 
-                 self->priv->check))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.position, 
-                 self->priv->position))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = CheckKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_check_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3396,6 +3264,72 @@ static PyObject *CheckKey0_iter_equal(CheckKey0* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *CheckKey0_iter_last(CheckKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    check_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.check, 
+                 self->priv->check))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.position, 
+                 self->priv->position))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = CheckKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_check_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *CheckKey0_iter_lt(CheckKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3411,6 +3345,72 @@ static PyObject *CheckKey0_iter_lt(CheckKey0* self, PyObject *args, PyObject *kw
     }
     do_cpy(key_cmp, *self->priv);
     status = do_check_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.check, 
+                 self->priv->check))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.position, 
+                 self->priv->position))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = CheckKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_check_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *CheckKey0_iter_le(CheckKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    check_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_check_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3871,35 +3871,35 @@ static PyMethodDef CheckKey0_methods[] = {
 
     {"set_time", (PyCFunction)CheckKey0_set_time, METH_VARARGS|METH_KEYWORDS, "CheckKey0_set_time"},
 
-    {"get_gt", (PyCFunction)CheckKey0_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey0_gt"},
+    {"get_prev", (PyCFunction)CheckKey0_prev, METH_VARARGS|METH_KEYWORDS, "CheckKey0_prev"},
 
-    {"get_last", (PyCFunction)CheckKey0_last, METH_VARARGS|METH_KEYWORDS, "CheckKey0_last"},
+    {"get_gt", (PyCFunction)CheckKey0_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey0_gt"},
 
     {"get_next", (PyCFunction)CheckKey0_next, METH_VARARGS|METH_KEYWORDS, "CheckKey0_next"},
 
-    {"get_le", (PyCFunction)CheckKey0_le, METH_VARARGS|METH_KEYWORDS, "CheckKey0_le"},
-
-    {"get_lt", (PyCFunction)CheckKey0_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey0_lt"},
+    {"get_ge", (PyCFunction)CheckKey0_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey0_ge"},
 
     {"get_equal", (PyCFunction)CheckKey0_equal, METH_VARARGS|METH_KEYWORDS, "CheckKey0_equal"},
 
-    {"get_ge", (PyCFunction)CheckKey0_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey0_ge"},
+    {"get_last", (PyCFunction)CheckKey0_last, METH_VARARGS|METH_KEYWORDS, "CheckKey0_last"},
 
-    {"get_prev", (PyCFunction)CheckKey0_prev, METH_VARARGS|METH_KEYWORDS, "CheckKey0_prev"},
+    {"get_lt", (PyCFunction)CheckKey0_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey0_lt"},
+
+    {"get_le", (PyCFunction)CheckKey0_le, METH_VARARGS|METH_KEYWORDS, "CheckKey0_le"},
 
     {"get_first", (PyCFunction)CheckKey0_first, METH_VARARGS|METH_KEYWORDS, "CheckKey0_first"},
 
     {"gets_gt", (PyCFunction)CheckKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)CheckKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)CheckKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)CheckKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)CheckKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)CheckKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)CheckKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)CheckKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_le"},
 
     {"gets_first", (PyCFunction)CheckKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "CheckKey0_iter_first"},
 
@@ -4076,24 +4076,24 @@ static PyObject *CheckKey1_set_time(CheckKey1* self, PyObject *args, PyObject *k
 //    return result;
 }
 
-static PyObject *CheckKey1_gt(CheckKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey1_prev(CheckKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey1_last(CheckKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey1_gt(CheckKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4112,24 +4112,12 @@ static PyObject *CheckKey1_next(CheckKey1* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey1_le(CheckKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey1_ge(CheckKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *CheckKey1_lt(CheckKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4148,24 +4136,36 @@ static PyObject *CheckKey1_equal(CheckKey1* self, PyObject *args, PyObject *kwds
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey1_ge(CheckKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey1_last(CheckKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey1_prev(CheckKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey1_lt(CheckKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *CheckKey1_le(CheckKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4218,90 +4218,6 @@ static PyObject *CheckKey1_iter_gt(CheckKey1* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_check_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckKey1_iter_last(CheckKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    check_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = CheckKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_check_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckKey1_iter_le(CheckKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    check_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = CheckKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_check_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4394,6 +4310,48 @@ static PyObject *CheckKey1_iter_equal(CheckKey1* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *CheckKey1_iter_last(CheckKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    check_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = CheckKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_check_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *CheckKey1_iter_lt(CheckKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -4409,6 +4367,48 @@ static PyObject *CheckKey1_iter_lt(CheckKey1* self, PyObject *args, PyObject *kw
     }
     do_cpy(key_cmp, *self->priv);
     status = do_check_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = CheckKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_check_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *CheckKey1_iter_le(CheckKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    check_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_check_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -4689,35 +4689,35 @@ static PyMethodDef CheckKey1_methods[] = {
 
     {"set_time", (PyCFunction)CheckKey1_set_time, METH_VARARGS|METH_KEYWORDS, "CheckKey1_set_time"},
 
-    {"get_gt", (PyCFunction)CheckKey1_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey1_gt"},
+    {"get_prev", (PyCFunction)CheckKey1_prev, METH_VARARGS|METH_KEYWORDS, "CheckKey1_prev"},
 
-    {"get_last", (PyCFunction)CheckKey1_last, METH_VARARGS|METH_KEYWORDS, "CheckKey1_last"},
+    {"get_gt", (PyCFunction)CheckKey1_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey1_gt"},
 
     {"get_next", (PyCFunction)CheckKey1_next, METH_VARARGS|METH_KEYWORDS, "CheckKey1_next"},
 
-    {"get_le", (PyCFunction)CheckKey1_le, METH_VARARGS|METH_KEYWORDS, "CheckKey1_le"},
-
-    {"get_lt", (PyCFunction)CheckKey1_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey1_lt"},
+    {"get_ge", (PyCFunction)CheckKey1_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey1_ge"},
 
     {"get_equal", (PyCFunction)CheckKey1_equal, METH_VARARGS|METH_KEYWORDS, "CheckKey1_equal"},
 
-    {"get_ge", (PyCFunction)CheckKey1_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey1_ge"},
+    {"get_last", (PyCFunction)CheckKey1_last, METH_VARARGS|METH_KEYWORDS, "CheckKey1_last"},
 
-    {"get_prev", (PyCFunction)CheckKey1_prev, METH_VARARGS|METH_KEYWORDS, "CheckKey1_prev"},
+    {"get_lt", (PyCFunction)CheckKey1_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey1_lt"},
+
+    {"get_le", (PyCFunction)CheckKey1_le, METH_VARARGS|METH_KEYWORDS, "CheckKey1_le"},
 
     {"get_first", (PyCFunction)CheckKey1_first, METH_VARARGS|METH_KEYWORDS, "CheckKey1_first"},
 
     {"gets_gt", (PyCFunction)CheckKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)CheckKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)CheckKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)CheckKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)CheckKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)CheckKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)CheckKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)CheckKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_le"},
 
     {"gets_first", (PyCFunction)CheckKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "CheckKey1_iter_first"},
 
@@ -5044,24 +5044,24 @@ static PyObject *CheckKey2_set_check(CheckKey2* self, PyObject *args, PyObject *
 //    return result;
 }
 
-static PyObject *CheckKey2_gt(CheckKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey2_prev(CheckKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey2_last(CheckKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey2_gt(CheckKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5080,24 +5080,12 @@ static PyObject *CheckKey2_next(CheckKey2* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey2_le(CheckKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey2_ge(CheckKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *CheckKey2_lt(CheckKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5116,24 +5104,36 @@ static PyObject *CheckKey2_equal(CheckKey2* self, PyObject *args, PyObject *kwds
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey2_ge(CheckKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey2_last(CheckKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckKey2_prev(CheckKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckKey2_lt(CheckKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *CheckKey2_le(CheckKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5210,138 +5210,6 @@ static PyObject *CheckKey2_iter_gt(CheckKey2* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_check_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckKey2_iter_last(CheckKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    check_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.product_code, 
-                 self->priv->product_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.check, 
-                 self->priv->check))
-               break;
-       }
-
- 
-        item = CheckKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_check_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckKey2_iter_le(CheckKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    check_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.product_code, 
-                 self->priv->product_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.check, 
-                 self->priv->check))
-               break;
-       }
-
- 
-        item = CheckKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_check_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -5482,6 +5350,72 @@ static PyObject *CheckKey2_iter_equal(CheckKey2* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *CheckKey2_iter_last(CheckKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    check_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.product_code, 
+                 self->priv->product_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.check, 
+                 self->priv->check))
+               break;
+       }
+
+ 
+        item = CheckKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_check_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *CheckKey2_iter_lt(CheckKey2* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -5497,6 +5431,72 @@ static PyObject *CheckKey2_iter_lt(CheckKey2* self, PyObject *args, PyObject *kw
     }
     do_cpy(key_cmp, *self->priv);
     status = do_check_key2(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.product_code, 
+                 self->priv->product_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.check, 
+                 self->priv->check))
+               break;
+       }
+
+ 
+        item = CheckKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_check_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *CheckKey2_iter_le(CheckKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    check_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_check_key2(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -5957,35 +5957,35 @@ static PyMethodDef CheckKey2_methods[] = {
 
     {"set_check", (PyCFunction)CheckKey2_set_check, METH_VARARGS|METH_KEYWORDS, "CheckKey2_set_check"},
 
-    {"get_gt", (PyCFunction)CheckKey2_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey2_gt"},
+    {"get_prev", (PyCFunction)CheckKey2_prev, METH_VARARGS|METH_KEYWORDS, "CheckKey2_prev"},
 
-    {"get_last", (PyCFunction)CheckKey2_last, METH_VARARGS|METH_KEYWORDS, "CheckKey2_last"},
+    {"get_gt", (PyCFunction)CheckKey2_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey2_gt"},
 
     {"get_next", (PyCFunction)CheckKey2_next, METH_VARARGS|METH_KEYWORDS, "CheckKey2_next"},
 
-    {"get_le", (PyCFunction)CheckKey2_le, METH_VARARGS|METH_KEYWORDS, "CheckKey2_le"},
-
-    {"get_lt", (PyCFunction)CheckKey2_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey2_lt"},
+    {"get_ge", (PyCFunction)CheckKey2_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey2_ge"},
 
     {"get_equal", (PyCFunction)CheckKey2_equal, METH_VARARGS|METH_KEYWORDS, "CheckKey2_equal"},
 
-    {"get_ge", (PyCFunction)CheckKey2_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey2_ge"},
+    {"get_last", (PyCFunction)CheckKey2_last, METH_VARARGS|METH_KEYWORDS, "CheckKey2_last"},
 
-    {"get_prev", (PyCFunction)CheckKey2_prev, METH_VARARGS|METH_KEYWORDS, "CheckKey2_prev"},
+    {"get_lt", (PyCFunction)CheckKey2_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey2_lt"},
+
+    {"get_le", (PyCFunction)CheckKey2_le, METH_VARARGS|METH_KEYWORDS, "CheckKey2_le"},
 
     {"get_first", (PyCFunction)CheckKey2_first, METH_VARARGS|METH_KEYWORDS, "CheckKey2_first"},
 
     {"gets_gt", (PyCFunction)CheckKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_gt"},
 
-    {"gets_last", (PyCFunction)CheckKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_last"},
-
-    {"gets_le", (PyCFunction)CheckKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_le"},
-
     {"gets_ge", (PyCFunction)CheckKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_ge"},
 
     {"gets_equal", (PyCFunction)CheckKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_equal"},
 
+    {"gets_last", (PyCFunction)CheckKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_last"},
+
     {"gets_lt", (PyCFunction)CheckKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_lt"},
+
+    {"gets_le", (PyCFunction)CheckKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_le"},
 
     {"gets_first", (PyCFunction)CheckKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "CheckKey2_iter_first"},
 

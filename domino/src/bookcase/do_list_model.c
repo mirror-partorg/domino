@@ -519,7 +519,7 @@ static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
 	if ( obj ) {
         gint i;
 		array = json_object_get_array_member(obj, "items");
-		priv->n_records = json_array_get_length(array);
+		priv->n_records = 50;//fix mejson_array_get_length(array);
 		priv->records = (DoListModelRecord**) g_new0(gpointer, priv->n_records);
 		for ( i = 0; i < priv->n_records; i++ ) {
             DoListModelRecord *record;

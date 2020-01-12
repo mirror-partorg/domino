@@ -455,6 +455,34 @@ static PyObject *CheckSum_set_total(CheckSum* self, PyObject *args, PyObject *kw
 //    return result;
 }
 
+static PyObject *CheckSum_prev(CheckSum* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getCheckSumKey0Type() )
+        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getCheckSumKey1Type() )
+        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *CheckSum_gt(CheckSum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -471,34 +499,6 @@ static PyObject *CheckSum_gt(CheckSum* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getCheckSumKey1Type() )
         status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_GT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *CheckSum_last(CheckSum* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getCheckSumKey0Type() )
-        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getCheckSumKey1Type() )
-        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -539,7 +539,7 @@ static PyObject *CheckSum_next(CheckSum* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSum_le(CheckSum* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSum_ge(CheckSum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -550,39 +550,11 @@ static PyObject *CheckSum_le(CheckSum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getCheckSumKey0Type() )
-        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LE);
+        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getCheckSumKey1Type() )
-        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *CheckSum_lt(CheckSum* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getCheckSumKey0Type() )
-        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getCheckSumKey1Type() )
-        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LT);
+        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -623,7 +595,7 @@ static PyObject *CheckSum_equal(CheckSum* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSum_ge(CheckSum* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSum_last(CheckSum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -634,11 +606,11 @@ static PyObject *CheckSum_ge(CheckSum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getCheckSumKey0Type() )
-        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_GE);
+        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getCheckSumKey1Type() )
-        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_GE);
+        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -651,7 +623,7 @@ static PyObject *CheckSum_ge(CheckSum* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSum_prev(CheckSum* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSum_lt(CheckSum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -662,11 +634,39 @@ static PyObject *CheckSum_prev(CheckSum* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getCheckSumKey0Type() )
-        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getCheckSumKey1Type() )
-        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *CheckSum_le(CheckSum* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getCheckSumKey0Type() )
+        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getCheckSumKey1Type() )
+        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -819,268 +819,6 @@ static PyObject *CheckSum_iter_gt(CheckSum* self, PyObject *args, PyObject *kwds
 
         if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
             status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *CheckSum_iter_last(CheckSum* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
-        key_cmp = (checksum_key0_t*)do_malloc(sizeof(checksum_key0_t));
-        memcpy(key_cmp, ((CheckSumKey0*)key)->priv, sizeof(checksum_key0_t));
-        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
-        key_cmp = (checksum_key1_t*)do_malloc(sizeof(checksum_key1_t));
-        memcpy(key_cmp, ((CheckSumKey1*)key)->priv, sizeof(checksum_key1_t));
-        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->cash, 
-                    ((CheckSumKey0*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->shift, 
-                    ((CheckSumKey0*)key)->priv->shift))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->date, 
-                    ((CheckSumKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->time, 
-                    ((CheckSumKey0*)key)->priv->time))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->check, 
-                    ((CheckSumKey0*)key)->priv->check))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((checksum_key1_t*)key_cmp)->date, 
-                    ((CheckSumKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((checksum_key1_t*)key_cmp)->time, 
-                    ((CheckSumKey1*)key)->priv->time))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((checksum_key1_t*)key_cmp)->cash, 
-                    ((CheckSumKey1*)key)->priv->cash))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = CheckSum_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
-            status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
-            status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *CheckSum_iter_le(CheckSum* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
-        key_cmp = (checksum_key0_t*)do_malloc(sizeof(checksum_key0_t));
-        memcpy(key_cmp, ((CheckSumKey0*)key)->priv, sizeof(checksum_key0_t));
-        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
-        key_cmp = (checksum_key1_t*)do_malloc(sizeof(checksum_key1_t));
-        memcpy(key_cmp, ((CheckSumKey1*)key)->priv, sizeof(checksum_key1_t));
-        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->cash, 
-                    ((CheckSumKey0*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->shift, 
-                    ((CheckSumKey0*)key)->priv->shift))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->date, 
-                    ((CheckSumKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->time, 
-                    ((CheckSumKey0*)key)->priv->time))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((checksum_key0_t*)key_cmp)->check, 
-                    ((CheckSumKey0*)key)->priv->check))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((checksum_key1_t*)key_cmp)->date, 
-                    ((CheckSumKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((checksum_key1_t*)key_cmp)->time, 
-                    ((CheckSumKey1*)key)->priv->time))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((checksum_key1_t*)key_cmp)->cash, 
-                    ((CheckSumKey1*)key)->priv->cash))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = CheckSum_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
-            status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
-            status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1362,6 +1100,137 @@ static PyObject *CheckSum_iter_equal(CheckSum* self, PyObject *args, PyObject *k
     return retval;
 }
 
+static PyObject *CheckSum_iter_last(CheckSum* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
+        key_cmp = (checksum_key0_t*)do_malloc(sizeof(checksum_key0_t));
+        memcpy(key_cmp, ((CheckSumKey0*)key)->priv, sizeof(checksum_key0_t));
+        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
+        key_cmp = (checksum_key1_t*)do_malloc(sizeof(checksum_key1_t));
+        memcpy(key_cmp, ((CheckSumKey1*)key)->priv, sizeof(checksum_key1_t));
+        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->cash, 
+                    ((CheckSumKey0*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->shift, 
+                    ((CheckSumKey0*)key)->priv->shift))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->date, 
+                    ((CheckSumKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->time, 
+                    ((CheckSumKey0*)key)->priv->time))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->check, 
+                    ((CheckSumKey0*)key)->priv->check))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((checksum_key1_t*)key_cmp)->date, 
+                    ((CheckSumKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((checksum_key1_t*)key_cmp)->time, 
+                    ((CheckSumKey1*)key)->priv->time))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((checksum_key1_t*)key_cmp)->cash, 
+                    ((CheckSumKey1*)key)->priv->cash))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = CheckSum_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
+            status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
+            status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *CheckSum_iter_lt(CheckSum* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -1389,6 +1258,137 @@ static PyObject *CheckSum_iter_lt(CheckSum* self, PyObject *args, PyObject *kwds
         key_cmp = (checksum_key1_t*)do_malloc(sizeof(checksum_key1_t));
         memcpy(key_cmp, ((CheckSumKey1*)key)->priv, sizeof(checksum_key1_t));
         status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->cash, 
+                    ((CheckSumKey0*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->shift, 
+                    ((CheckSumKey0*)key)->priv->shift))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->date, 
+                    ((CheckSumKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->time, 
+                    ((CheckSumKey0*)key)->priv->time))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((checksum_key0_t*)key_cmp)->check, 
+                    ((CheckSumKey0*)key)->priv->check))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((checksum_key1_t*)key_cmp)->date, 
+                    ((CheckSumKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((checksum_key1_t*)key_cmp)->time, 
+                    ((CheckSumKey1*)key)->priv->time))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((checksum_key1_t*)key_cmp)->cash, 
+                    ((CheckSumKey1*)key)->priv->cash))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = CheckSum_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
+            status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
+            status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *CheckSum_iter_le(CheckSum* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getCheckSumKey0Type() ) {
+        key_cmp = (checksum_key0_t*)do_malloc(sizeof(checksum_key0_t));
+        memcpy(key_cmp, ((CheckSumKey0*)key)->priv, sizeof(checksum_key0_t));
+        status = do_checksum_get0(self->alias->alias, self->priv, ((CheckSumKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getCheckSumKey1Type() ) {
+        key_cmp = (checksum_key1_t*)do_malloc(sizeof(checksum_key1_t));
+        memcpy(key_cmp, ((CheckSumKey1*)key)->priv, sizeof(checksum_key1_t));
+        status = do_checksum_get1(self->alias->alias, self->priv, ((CheckSumKey1*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -1624,19 +1624,19 @@ static PyObject *CheckSum_iter_first(CheckSum* self, PyObject *args, PyObject *k
     return retval;
 }
 
-static PyObject *CheckSum_insert(CheckSum* self)
+static PyObject *CheckSum_update(CheckSum* self)
 {
     int status;
-    status = do_checksum_insert(self->alias->alias, self->priv);
+    status = do_checksum_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSum_update(CheckSum* self)
+static PyObject *CheckSum_insert(CheckSum* self)
 {
     int status;
-    status = do_checksum_update(self->alias->alias, self->priv);
+    status = do_checksum_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1995,41 +1995,41 @@ static PyMethodDef CheckSum_methods[] = {
 
     {"set_total", (PyCFunction)CheckSum_set_total, METH_VARARGS|METH_KEYWORDS, "CheckSum_set_total"},
 
-    {"get_gt", (PyCFunction)CheckSum_gt, METH_VARARGS|METH_KEYWORDS, "CheckSum_gt"},
+    {"get_prev", (PyCFunction)CheckSum_prev, METH_VARARGS|METH_KEYWORDS, "CheckSum_prev"},
 
-    {"get_last", (PyCFunction)CheckSum_last, METH_VARARGS|METH_KEYWORDS, "CheckSum_last"},
+    {"get_gt", (PyCFunction)CheckSum_gt, METH_VARARGS|METH_KEYWORDS, "CheckSum_gt"},
 
     {"get_next", (PyCFunction)CheckSum_next, METH_VARARGS|METH_KEYWORDS, "CheckSum_next"},
 
-    {"get_le", (PyCFunction)CheckSum_le, METH_VARARGS|METH_KEYWORDS, "CheckSum_le"},
-
-    {"get_lt", (PyCFunction)CheckSum_lt, METH_VARARGS|METH_KEYWORDS, "CheckSum_lt"},
+    {"get_ge", (PyCFunction)CheckSum_ge, METH_VARARGS|METH_KEYWORDS, "CheckSum_ge"},
 
     {"get_equal", (PyCFunction)CheckSum_equal, METH_VARARGS|METH_KEYWORDS, "CheckSum_equal"},
 
-    {"get_ge", (PyCFunction)CheckSum_ge, METH_VARARGS|METH_KEYWORDS, "CheckSum_ge"},
+    {"get_last", (PyCFunction)CheckSum_last, METH_VARARGS|METH_KEYWORDS, "CheckSum_last"},
 
-    {"get_prev", (PyCFunction)CheckSum_prev, METH_VARARGS|METH_KEYWORDS, "CheckSum_prev"},
+    {"get_lt", (PyCFunction)CheckSum_lt, METH_VARARGS|METH_KEYWORDS, "CheckSum_lt"},
+
+    {"get_le", (PyCFunction)CheckSum_le, METH_VARARGS|METH_KEYWORDS, "CheckSum_le"},
 
     {"get_first", (PyCFunction)CheckSum_first, METH_VARARGS|METH_KEYWORDS, "CheckSum_first"},
 
     {"gets_gt", (PyCFunction)CheckSum_iter_gt, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_gt"},
 
-    {"gets_last", (PyCFunction)CheckSum_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_last"},
-
-    {"gets_le", (PyCFunction)CheckSum_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_le"},
-
     {"gets_ge", (PyCFunction)CheckSum_iter_ge, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_ge"},
 
     {"gets_equal", (PyCFunction)CheckSum_iter_equal, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_equal"},
 
+    {"gets_last", (PyCFunction)CheckSum_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_last"},
+
     {"gets_lt", (PyCFunction)CheckSum_iter_lt, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_lt"},
+
+    {"gets_le", (PyCFunction)CheckSum_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_le"},
 
     {"gets_first", (PyCFunction)CheckSum_iter_first, METH_VARARGS|METH_KEYWORDS, "CheckSum_iter_first"},
 
-    {"insert", (PyCFunction)CheckSum_insert, METH_VARARGS|METH_KEYWORDS, "CheckSum_insert"},
-
     {"update", (PyCFunction)CheckSum_update, METH_VARARGS|METH_KEYWORDS, "CheckSum_update"},
+
+    {"insert", (PyCFunction)CheckSum_insert, METH_VARARGS|METH_KEYWORDS, "CheckSum_insert"},
 
     {"delete", (PyCFunction)CheckSum_delete, METH_VARARGS|METH_KEYWORDS, "CheckSum_delete"},
 
@@ -2320,24 +2320,24 @@ static PyObject *CheckSumKey0_set_check(CheckSumKey0* self, PyObject *args, PyOb
 //    return result;
 }
 
-static PyObject *CheckSumKey0_gt(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey0_prev(CheckSumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey0_last(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey0_gt(CheckSumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2356,24 +2356,12 @@ static PyObject *CheckSumKey0_next(CheckSumKey0* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey0_le(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey0_ge(CheckSumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *CheckSumKey0_lt(CheckSumKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2392,24 +2380,36 @@ static PyObject *CheckSumKey0_equal(CheckSumKey0* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey0_ge(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey0_last(CheckSumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey0_prev(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey0_lt(CheckSumKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *CheckSumKey0_le(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2480,126 +2480,6 @@ static PyObject *CheckSumKey0_iter_gt(CheckSumKey0* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckSumKey0_iter_last(CheckSumKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    checksum_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.check, 
-                 self->priv->check))
-               break;
-       }
-
- 
-        item = CheckSumKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckSumKey0_iter_le(CheckSumKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    checksum_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.check, 
-                 self->priv->check))
-               break;
-       }
-
- 
-        item = CheckSumKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2728,6 +2608,66 @@ static PyObject *CheckSumKey0_iter_equal(CheckSumKey0* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *CheckSumKey0_iter_last(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    checksum_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.check, 
+                 self->priv->check))
+               break;
+       }
+
+ 
+        item = CheckSumKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *CheckSumKey0_iter_lt(CheckSumKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -2743,6 +2683,66 @@ static PyObject *CheckSumKey0_iter_lt(CheckSumKey0* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.check, 
+                 self->priv->check))
+               break;
+       }
+
+ 
+        item = CheckSumKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *CheckSumKey0_iter_le(CheckSumKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    checksum_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_checksum_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3158,35 +3158,35 @@ static PyMethodDef CheckSumKey0_methods[] = {
 
     {"set_check", (PyCFunction)CheckSumKey0_set_check, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_set_check"},
 
-    {"get_gt", (PyCFunction)CheckSumKey0_gt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_gt"},
+    {"get_prev", (PyCFunction)CheckSumKey0_prev, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_prev"},
 
-    {"get_last", (PyCFunction)CheckSumKey0_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_last"},
+    {"get_gt", (PyCFunction)CheckSumKey0_gt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_gt"},
 
     {"get_next", (PyCFunction)CheckSumKey0_next, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_next"},
 
-    {"get_le", (PyCFunction)CheckSumKey0_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_le"},
-
-    {"get_lt", (PyCFunction)CheckSumKey0_lt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_lt"},
+    {"get_ge", (PyCFunction)CheckSumKey0_ge, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_ge"},
 
     {"get_equal", (PyCFunction)CheckSumKey0_equal, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_equal"},
 
-    {"get_ge", (PyCFunction)CheckSumKey0_ge, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_ge"},
+    {"get_last", (PyCFunction)CheckSumKey0_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_last"},
 
-    {"get_prev", (PyCFunction)CheckSumKey0_prev, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_prev"},
+    {"get_lt", (PyCFunction)CheckSumKey0_lt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_lt"},
+
+    {"get_le", (PyCFunction)CheckSumKey0_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_le"},
 
     {"get_first", (PyCFunction)CheckSumKey0_first, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_first"},
 
     {"gets_gt", (PyCFunction)CheckSumKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)CheckSumKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)CheckSumKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)CheckSumKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)CheckSumKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)CheckSumKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)CheckSumKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)CheckSumKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_le"},
 
     {"gets_first", (PyCFunction)CheckSumKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "CheckSumKey0_iter_first"},
 
@@ -3401,24 +3401,24 @@ static PyObject *CheckSumKey1_set_cash(CheckSumKey1* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *CheckSumKey1_gt(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey1_prev(CheckSumKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey1_last(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey1_gt(CheckSumKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3437,24 +3437,12 @@ static PyObject *CheckSumKey1_next(CheckSumKey1* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey1_le(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey1_ge(CheckSumKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *CheckSumKey1_lt(CheckSumKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3473,24 +3461,36 @@ static PyObject *CheckSumKey1_equal(CheckSumKey1* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey1_ge(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey1_last(CheckSumKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *CheckSumKey1_prev(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *CheckSumKey1_lt(CheckSumKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *CheckSumKey1_le(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3549,102 +3549,6 @@ static PyObject *CheckSumKey1_iter_gt(CheckSumKey1* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckSumKey1_iter_last(CheckSumKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    checksum_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
- 
-        item = CheckSumKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *CheckSumKey1_iter_le(CheckSumKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    checksum_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
- 
-        item = CheckSumKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3749,6 +3653,54 @@ static PyObject *CheckSumKey1_iter_equal(CheckSumKey1* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *CheckSumKey1_iter_last(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    checksum_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+ 
+        item = CheckSumKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *CheckSumKey1_iter_lt(CheckSumKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3764,6 +3716,54 @@ static PyObject *CheckSumKey1_iter_lt(CheckSumKey1* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+ 
+        item = CheckSumKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *CheckSumKey1_iter_le(CheckSumKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    checksum_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_checksum_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -4089,35 +4089,35 @@ static PyMethodDef CheckSumKey1_methods[] = {
 
     {"set_cash", (PyCFunction)CheckSumKey1_set_cash, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_set_cash"},
 
-    {"get_gt", (PyCFunction)CheckSumKey1_gt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_gt"},
+    {"get_prev", (PyCFunction)CheckSumKey1_prev, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_prev"},
 
-    {"get_last", (PyCFunction)CheckSumKey1_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_last"},
+    {"get_gt", (PyCFunction)CheckSumKey1_gt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_gt"},
 
     {"get_next", (PyCFunction)CheckSumKey1_next, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_next"},
 
-    {"get_le", (PyCFunction)CheckSumKey1_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_le"},
-
-    {"get_lt", (PyCFunction)CheckSumKey1_lt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_lt"},
+    {"get_ge", (PyCFunction)CheckSumKey1_ge, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_ge"},
 
     {"get_equal", (PyCFunction)CheckSumKey1_equal, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_equal"},
 
-    {"get_ge", (PyCFunction)CheckSumKey1_ge, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_ge"},
+    {"get_last", (PyCFunction)CheckSumKey1_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_last"},
 
-    {"get_prev", (PyCFunction)CheckSumKey1_prev, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_prev"},
+    {"get_lt", (PyCFunction)CheckSumKey1_lt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_lt"},
+
+    {"get_le", (PyCFunction)CheckSumKey1_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_le"},
 
     {"get_first", (PyCFunction)CheckSumKey1_first, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_first"},
 
     {"gets_gt", (PyCFunction)CheckSumKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)CheckSumKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)CheckSumKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)CheckSumKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)CheckSumKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)CheckSumKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)CheckSumKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)CheckSumKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_le"},
 
     {"gets_first", (PyCFunction)CheckSumKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "CheckSumKey1_iter_first"},
 

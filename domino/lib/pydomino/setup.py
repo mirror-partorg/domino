@@ -16,8 +16,8 @@ setup(
             files,
             include_dirs = ["../../include","../../var/MINGW64_NT-6.3-9600/x86_64"],
 	    libraries=['dolib', 'domino'],
-            library_dirs=['../../var/MSYS_NT-6.3-9600/x86_64/.libs'],
-            define_macros=[("BTI_WIN_64",None),]
+            library_dirs=['../../var/MSYS_NT-6.3-9600/x86_64/.libs','.'],
+            define_macros=[("BTI_WIN_64",None),("DOMINO78",None)]
         )
     ],
 )

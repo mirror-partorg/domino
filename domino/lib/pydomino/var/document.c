@@ -881,6 +881,46 @@ static PyObject *Document_set_sums(Document* self, PyObject *args, PyObject *kwd
     return Py_None;
 }
 
+static PyObject *Document_prev(Document* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDocumentKey0Type() )
+        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey1Type() )
+        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey2Type() )
+        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey3Type() )
+        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Document_gt(Document* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -906,41 +946,9 @@ static PyObject *Document_gt(Document* self, PyObject *args, PyObject *kwds)
     if ( Py_TYPE(key) == getDocumentKey3Type() )
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_GT);
     else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
 
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Document_last(Document* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDocumentKey0Type() )
-        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey1Type() )
-        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey2Type() )
-        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey3Type() )
-        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LAST);
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_GT);
     else
     
     {
@@ -978,113 +986,9 @@ static PyObject *Document_next(Document* self, PyObject *args, PyObject *kwds)
     if ( Py_TYPE(key) == getDocumentKey3Type() )
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_NEXT);
     else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
 
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Document_le(Document* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDocumentKey0Type() )
-        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LE);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey1Type() )
-        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LE);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey2Type() )
-        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LE);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey3Type() )
-        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Document_lt(Document* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDocumentKey0Type() )
-        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey1Type() )
-        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey2Type() )
-        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey3Type() )
-        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Document_equal(Document* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDocumentKey0Type() )
-        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey1Type() )
-        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey2Type() )
-        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey3Type() )
-        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_EQUAL);
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_NEXT);
     else
     
     {
@@ -1122,6 +1026,10 @@ static PyObject *Document_ge(Document* self, PyObject *args, PyObject *kwds)
     if ( Py_TYPE(key) == getDocumentKey3Type() )
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_GE);
     else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_GE);
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -1133,7 +1041,7 @@ static PyObject *Document_ge(Document* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Document_prev(Document* self, PyObject *args, PyObject *kwds)
+static PyObject *Document_equal(Document* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -1144,19 +1052,143 @@ static PyObject *Document_prev(Document* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getDocumentKey0Type() )
-        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_EQUAL);
     else
 
     if ( Py_TYPE(key) == getDocumentKey1Type() )
-        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_EQUAL);
     else
 
     if ( Py_TYPE(key) == getDocumentKey2Type() )
-        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_PREVIOUS);
+        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_EQUAL);
     else
 
     if ( Py_TYPE(key) == getDocumentKey3Type() )
-        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_PREVIOUS);
+        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Document_last(Document* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDocumentKey0Type() )
+        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey1Type() )
+        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey2Type() )
+        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey3Type() )
+        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Document_lt(Document* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDocumentKey0Type() )
+        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LT);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey1Type() )
+        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LT);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey2Type() )
+        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LT);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey3Type() )
+        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LT);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Document_le(Document* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDocumentKey0Type() )
+        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey1Type() )
+        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey2Type() )
+        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey3Type() )
+        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -1193,6 +1225,10 @@ static PyObject *Document_first(Document* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getDocumentKey3Type() )
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_FIRST);
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() )
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_FIRST);
     else
     
     {
@@ -1248,6 +1284,13 @@ static PyObject *Document_iter_gt(Document* self, PyObject *args, PyObject *kwds
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_GT);
     }
     else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+        key_cmp = (document_key4_t*)do_malloc(sizeof(document_key4_t));
+        memcpy(key_cmp, ((DocumentKey4*)key)->priv, sizeof(document_key4_t));
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_GT);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -1360,6 +1403,41 @@ static PyObject *Document_iter_gt(Document* self, PyObject *args, PyObject *kwds
             if ( depth >= 4 ) {
                 if ( do_cmp(((document_key3_t*)key_cmp)->time, 
                     ((DocumentKey3*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->dtype, 
+                    ((DocumentKey4*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey4*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_code, 
+                    ((DocumentKey4*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->date, 
+                    ((DocumentKey4*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->time, 
+                    ((DocumentKey4*)key)->priv->time))
                    break;
             }
 
@@ -1395,418 +1473,9 @@ static PyObject *Document_iter_gt(Document* self, PyObject *args, PyObject *kwds
             status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_NEXT);
         }
         else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
 
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Document_iter_last(Document* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getDocumentKey0Type() ) {
-        key_cmp = (document_key0_t*)do_malloc(sizeof(document_key0_t));
-        memcpy(key_cmp, ((DocumentKey0*)key)->priv, sizeof(document_key0_t));
-        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey1Type() ) {
-        key_cmp = (document_key1_t*)do_malloc(sizeof(document_key1_t));
-        memcpy(key_cmp, ((DocumentKey1*)key)->priv, sizeof(document_key1_t));
-        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey2Type() ) {
-        key_cmp = (document_key2_t*)do_malloc(sizeof(document_key2_t));
-        memcpy(key_cmp, ((DocumentKey2*)key)->priv, sizeof(document_key2_t));
-        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey3Type() ) {
-        key_cmp = (document_key3_t*)do_malloc(sizeof(document_key3_t));
-        memcpy(key_cmp, ((DocumentKey3*)key)->priv, sizeof(document_key3_t));
-        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key0_t*)key_cmp)->dtype, 
-                    ((DocumentKey0*)key)->priv->dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key0_t*)key_cmp)->sklad, 
-                    ((DocumentKey0*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key0_t*)key_cmp)->document, 
-                    ((DocumentKey0*)key)->priv->document))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key1_t*)key_cmp)->dtype, 
-                    ((DocumentKey1*)key)->priv->dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key1_t*)key_cmp)->date, 
-                    ((DocumentKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key1_t*)key_cmp)->time, 
-                    ((DocumentKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->p_g_code, 
-                    ((DocumentKey2*)key)->priv->p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->p_code, 
-                    ((DocumentKey2*)key)->priv->p_code))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->party, 
-                    ((DocumentKey2*)key)->priv->party))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->date, 
-                    ((DocumentKey2*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->time, 
-                    ((DocumentKey2*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->dtype, 
-                    ((DocumentKey3*)key)->priv->dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->sklad, 
-                    ((DocumentKey3*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->date, 
-                    ((DocumentKey3*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->time, 
-                    ((DocumentKey3*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Document_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
-            status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
-            status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
-            status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
-            status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Document_iter_le(Document* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getDocumentKey0Type() ) {
-        key_cmp = (document_key0_t*)do_malloc(sizeof(document_key0_t));
-        memcpy(key_cmp, ((DocumentKey0*)key)->priv, sizeof(document_key0_t));
-        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey1Type() ) {
-        key_cmp = (document_key1_t*)do_malloc(sizeof(document_key1_t));
-        memcpy(key_cmp, ((DocumentKey1*)key)->priv, sizeof(document_key1_t));
-        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey2Type() ) {
-        key_cmp = (document_key2_t*)do_malloc(sizeof(document_key2_t));
-        memcpy(key_cmp, ((DocumentKey2*)key)->priv, sizeof(document_key2_t));
-        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentKey3Type() ) {
-        key_cmp = (document_key3_t*)do_malloc(sizeof(document_key3_t));
-        memcpy(key_cmp, ((DocumentKey3*)key)->priv, sizeof(document_key3_t));
-        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key0_t*)key_cmp)->dtype, 
-                    ((DocumentKey0*)key)->priv->dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key0_t*)key_cmp)->sklad, 
-                    ((DocumentKey0*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key0_t*)key_cmp)->document, 
-                    ((DocumentKey0*)key)->priv->document))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key1_t*)key_cmp)->dtype, 
-                    ((DocumentKey1*)key)->priv->dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key1_t*)key_cmp)->date, 
-                    ((DocumentKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key1_t*)key_cmp)->time, 
-                    ((DocumentKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->p_g_code, 
-                    ((DocumentKey2*)key)->priv->p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->p_code, 
-                    ((DocumentKey2*)key)->priv->p_code))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->party, 
-                    ((DocumentKey2*)key)->priv->party))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->date, 
-                    ((DocumentKey2*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((document_key2_t*)key_cmp)->time, 
-                    ((DocumentKey2*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->dtype, 
-                    ((DocumentKey3*)key)->priv->dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->sklad, 
-                    ((DocumentKey3*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->date, 
-                    ((DocumentKey3*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_key3_t*)key_cmp)->time, 
-                    ((DocumentKey3*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Document_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
-            status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
-            status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
-            status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
-            status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_PREVIOUS);
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+            status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_NEXT);
         }
         else
     
@@ -1869,6 +1538,13 @@ static PyObject *Document_iter_ge(Document* self, PyObject *args, PyObject *kwds
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_GE);
     }
     else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+        key_cmp = (document_key4_t*)do_malloc(sizeof(document_key4_t));
+        memcpy(key_cmp, ((DocumentKey4*)key)->priv, sizeof(document_key4_t));
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_GE);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -1986,6 +1662,41 @@ static PyObject *Document_iter_ge(Document* self, PyObject *args, PyObject *kwds
 
         }
         else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->dtype, 
+                    ((DocumentKey4*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey4*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_code, 
+                    ((DocumentKey4*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->date, 
+                    ((DocumentKey4*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->time, 
+                    ((DocumentKey4*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2014,6 +1725,11 @@ static PyObject *Document_iter_ge(Document* self, PyObject *args, PyObject *kwds
 
         if ( Py_TYPE(key) == getDocumentKey3Type() ) {
             status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+            status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_NEXT);
         }
         else
     
@@ -2076,6 +1792,13 @@ static PyObject *Document_iter_equal(Document* self, PyObject *args, PyObject *k
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_EQUAL);
     }
     else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+        key_cmp = (document_key4_t*)do_malloc(sizeof(document_key4_t));
+        memcpy(key_cmp, ((DocumentKey4*)key)->priv, sizeof(document_key4_t));
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_EQUAL);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2193,6 +1916,41 @@ static PyObject *Document_iter_equal(Document* self, PyObject *args, PyObject *k
 
         }
         else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->dtype, 
+                    ((DocumentKey4*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey4*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_code, 
+                    ((DocumentKey4*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->date, 
+                    ((DocumentKey4*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->time, 
+                    ((DocumentKey4*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2221,6 +1979,265 @@ static PyObject *Document_iter_equal(Document* self, PyObject *args, PyObject *k
 
         if ( Py_TYPE(key) == getDocumentKey3Type() ) {
             status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+            status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Document_iter_last(Document* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getDocumentKey0Type() ) {
+        key_cmp = (document_key0_t*)do_malloc(sizeof(document_key0_t));
+        memcpy(key_cmp, ((DocumentKey0*)key)->priv, sizeof(document_key0_t));
+        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey1Type() ) {
+        key_cmp = (document_key1_t*)do_malloc(sizeof(document_key1_t));
+        memcpy(key_cmp, ((DocumentKey1*)key)->priv, sizeof(document_key1_t));
+        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey2Type() ) {
+        key_cmp = (document_key2_t*)do_malloc(sizeof(document_key2_t));
+        memcpy(key_cmp, ((DocumentKey2*)key)->priv, sizeof(document_key2_t));
+        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey3Type() ) {
+        key_cmp = (document_key3_t*)do_malloc(sizeof(document_key3_t));
+        memcpy(key_cmp, ((DocumentKey3*)key)->priv, sizeof(document_key3_t));
+        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+        key_cmp = (document_key4_t*)do_malloc(sizeof(document_key4_t));
+        memcpy(key_cmp, ((DocumentKey4*)key)->priv, sizeof(document_key4_t));
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key0_t*)key_cmp)->dtype, 
+                    ((DocumentKey0*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key0_t*)key_cmp)->sklad, 
+                    ((DocumentKey0*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key0_t*)key_cmp)->document, 
+                    ((DocumentKey0*)key)->priv->document))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key1_t*)key_cmp)->dtype, 
+                    ((DocumentKey1*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key1_t*)key_cmp)->date, 
+                    ((DocumentKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key1_t*)key_cmp)->time, 
+                    ((DocumentKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey2*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->p_code, 
+                    ((DocumentKey2*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->party, 
+                    ((DocumentKey2*)key)->priv->party))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->date, 
+                    ((DocumentKey2*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->time, 
+                    ((DocumentKey2*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->dtype, 
+                    ((DocumentKey3*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->sklad, 
+                    ((DocumentKey3*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->date, 
+                    ((DocumentKey3*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->time, 
+                    ((DocumentKey3*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->dtype, 
+                    ((DocumentKey4*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey4*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_code, 
+                    ((DocumentKey4*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->date, 
+                    ((DocumentKey4*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->time, 
+                    ((DocumentKey4*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Document_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
+            status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
+            status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
+            status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
+            status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+            status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -2283,6 +2300,13 @@ static PyObject *Document_iter_lt(Document* self, PyObject *args, PyObject *kwds
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LT);
     }
     else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+        key_cmp = (document_key4_t*)do_malloc(sizeof(document_key4_t));
+        memcpy(key_cmp, ((DocumentKey4*)key)->priv, sizeof(document_key4_t));
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_LT);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2400,6 +2424,41 @@ static PyObject *Document_iter_lt(Document* self, PyObject *args, PyObject *kwds
 
         }
         else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->dtype, 
+                    ((DocumentKey4*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey4*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_code, 
+                    ((DocumentKey4*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->date, 
+                    ((DocumentKey4*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->time, 
+                    ((DocumentKey4*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2428,6 +2487,265 @@ static PyObject *Document_iter_lt(Document* self, PyObject *args, PyObject *kwds
 
         if ( Py_TYPE(key) == getDocumentKey3Type() ) {
             status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+            status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Document_iter_le(Document* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getDocumentKey0Type() ) {
+        key_cmp = (document_key0_t*)do_malloc(sizeof(document_key0_t));
+        memcpy(key_cmp, ((DocumentKey0*)key)->priv, sizeof(document_key0_t));
+        status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey1Type() ) {
+        key_cmp = (document_key1_t*)do_malloc(sizeof(document_key1_t));
+        memcpy(key_cmp, ((DocumentKey1*)key)->priv, sizeof(document_key1_t));
+        status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey2Type() ) {
+        key_cmp = (document_key2_t*)do_malloc(sizeof(document_key2_t));
+        memcpy(key_cmp, ((DocumentKey2*)key)->priv, sizeof(document_key2_t));
+        status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey3Type() ) {
+        key_cmp = (document_key3_t*)do_malloc(sizeof(document_key3_t));
+        memcpy(key_cmp, ((DocumentKey3*)key)->priv, sizeof(document_key3_t));
+        status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+        key_cmp = (document_key4_t*)do_malloc(sizeof(document_key4_t));
+        memcpy(key_cmp, ((DocumentKey4*)key)->priv, sizeof(document_key4_t));
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_LE);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key0_t*)key_cmp)->dtype, 
+                    ((DocumentKey0*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key0_t*)key_cmp)->sklad, 
+                    ((DocumentKey0*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key0_t*)key_cmp)->document, 
+                    ((DocumentKey0*)key)->priv->document))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key1_t*)key_cmp)->dtype, 
+                    ((DocumentKey1*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key1_t*)key_cmp)->date, 
+                    ((DocumentKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key1_t*)key_cmp)->time, 
+                    ((DocumentKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey2*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->p_code, 
+                    ((DocumentKey2*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->party, 
+                    ((DocumentKey2*)key)->priv->party))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->date, 
+                    ((DocumentKey2*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key2_t*)key_cmp)->time, 
+                    ((DocumentKey2*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->dtype, 
+                    ((DocumentKey3*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->sklad, 
+                    ((DocumentKey3*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->date, 
+                    ((DocumentKey3*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key3_t*)key_cmp)->time, 
+                    ((DocumentKey3*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->dtype, 
+                    ((DocumentKey4*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey4*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_code, 
+                    ((DocumentKey4*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->date, 
+                    ((DocumentKey4*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->time, 
+                    ((DocumentKey4*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Document_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getDocumentKey0Type() ) {
+            status = do_document_get0(self->alias->alias, self->priv, ((DocumentKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey1Type() ) {
+            status = do_document_get1(self->alias->alias, self->priv, ((DocumentKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey2Type() ) {
+            status = do_document_get2(self->alias->alias, self->priv, ((DocumentKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey3Type() ) {
+            status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+            status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -2490,6 +2808,13 @@ static PyObject *Document_iter_first(Document* self, PyObject *args, PyObject *k
         status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_FIRST);
     }
     else
+
+    if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+        key_cmp = (document_key4_t*)do_malloc(sizeof(document_key4_t));
+        memcpy(key_cmp, ((DocumentKey4*)key)->priv, sizeof(document_key4_t));
+        status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_FIRST);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2607,6 +2932,41 @@ static PyObject *Document_iter_first(Document* self, PyObject *args, PyObject *k
 
         }
         else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->dtype, 
+                    ((DocumentKey4*)key)->priv->dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_g_code, 
+                    ((DocumentKey4*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->p_code, 
+                    ((DocumentKey4*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->date, 
+                    ((DocumentKey4*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_key4_t*)key_cmp)->time, 
+                    ((DocumentKey4*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2637,6 +2997,11 @@ static PyObject *Document_iter_first(Document* self, PyObject *args, PyObject *k
             status = do_document_get3(self->alias->alias, self->priv, ((DocumentKey3*)key)->priv, DO_GET_NEXT);
         }
         else
+
+        if ( Py_TYPE(key) == getDocumentKey4Type() ) {
+            status = do_document_get4(self->alias->alias, self->priv, ((DocumentKey4*)key)->priv, DO_GET_NEXT);
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -2654,19 +3019,19 @@ static PyObject *Document_iter_first(Document* self, PyObject *args, PyObject *k
     return retval;
 }
 
-static PyObject *Document_insert(Document* self)
+static PyObject *Document_update(Document* self)
 {
     int status;
-    status = do_document_insert(self->alias->alias, self->priv);
+    status = do_document_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Document_update(Document* self)
+static PyObject *Document_insert(Document* self)
 {
     int status;
-    status = do_document_update(self->alias->alias, self->priv);
+    status = do_document_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -2763,6 +3128,21 @@ static PyObject *Document_set(Document* self, PyObject *args, PyObject *kwds)
     }
 
     else 
+    if ( Py_TYPE(obj) == getDocumentKey4Type() ) {
+
+        do_cpy(self->priv->data.dtype, ((DocumentKey4*)obj)->priv->dtype);
+
+        do_cpy(self->priv->data.date, ((DocumentKey4*)obj)->priv->date);
+
+        do_cpy(self->priv->data.time, ((DocumentKey4*)obj)->priv->time);
+
+        do_cpy(self->priv->data.p_g_code, ((DocumentKey4*)obj)->priv->p_g_code);
+
+        do_cpy(self->priv->data.p_code, ((DocumentKey4*)obj)->priv->p_code);
+
+    }
+
+    else 
     if ( Py_TYPE(obj) == getDocumentOrderType() ) {
 
         do_cpy(self->priv->data.dtype, ((DocumentOrder*)obj)->priv->data.dtype);
@@ -2839,6 +3219,22 @@ static PyObject *Document_set(Document* self, PyObject *args, PyObject *kwds)
         do_cpy(self->priv->data.sklad, ((DocumentDataKey0*)obj)->priv->sklad);
 
         do_cpy(self->priv->data.document, ((DocumentDataKey0*)obj)->priv->document);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey1Type() ) {
+
+        do_cpy(self->priv->data.dtype, ((DocumentDataKey1*)obj)->priv->dtype);
+
+        do_cpy(self->priv->data.sklad, ((DocumentDataKey1*)obj)->priv->sklad);
+
+        do_cpy(self->priv->data.document, ((DocumentDataKey1*)obj)->priv->document);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey2Type() ) {
 
     }
 
@@ -3296,41 +3692,41 @@ static PyMethodDef Document_methods[] = {
     {"clear_params", (PyCFunction)Document_params_clear, METH_NOARGS, "do_Document_param_clear"},
     {"set_params", (PyCFunction)Document_set_params, METH_VARARGS|METH_KEYWORDS, "do_Document_set_params"},
 
-    {"get_gt", (PyCFunction)Document_gt, METH_VARARGS|METH_KEYWORDS, "Document_gt"},
+    {"get_prev", (PyCFunction)Document_prev, METH_VARARGS|METH_KEYWORDS, "Document_prev"},
 
-    {"get_last", (PyCFunction)Document_last, METH_VARARGS|METH_KEYWORDS, "Document_last"},
+    {"get_gt", (PyCFunction)Document_gt, METH_VARARGS|METH_KEYWORDS, "Document_gt"},
 
     {"get_next", (PyCFunction)Document_next, METH_VARARGS|METH_KEYWORDS, "Document_next"},
 
-    {"get_le", (PyCFunction)Document_le, METH_VARARGS|METH_KEYWORDS, "Document_le"},
-
-    {"get_lt", (PyCFunction)Document_lt, METH_VARARGS|METH_KEYWORDS, "Document_lt"},
+    {"get_ge", (PyCFunction)Document_ge, METH_VARARGS|METH_KEYWORDS, "Document_ge"},
 
     {"get_equal", (PyCFunction)Document_equal, METH_VARARGS|METH_KEYWORDS, "Document_equal"},
 
-    {"get_ge", (PyCFunction)Document_ge, METH_VARARGS|METH_KEYWORDS, "Document_ge"},
+    {"get_last", (PyCFunction)Document_last, METH_VARARGS|METH_KEYWORDS, "Document_last"},
 
-    {"get_prev", (PyCFunction)Document_prev, METH_VARARGS|METH_KEYWORDS, "Document_prev"},
+    {"get_lt", (PyCFunction)Document_lt, METH_VARARGS|METH_KEYWORDS, "Document_lt"},
+
+    {"get_le", (PyCFunction)Document_le, METH_VARARGS|METH_KEYWORDS, "Document_le"},
 
     {"get_first", (PyCFunction)Document_first, METH_VARARGS|METH_KEYWORDS, "Document_first"},
 
     {"gets_gt", (PyCFunction)Document_iter_gt, METH_VARARGS|METH_KEYWORDS, "Document_iter_gt"},
 
-    {"gets_last", (PyCFunction)Document_iter_last, METH_VARARGS|METH_KEYWORDS, "Document_iter_last"},
-
-    {"gets_le", (PyCFunction)Document_iter_le, METH_VARARGS|METH_KEYWORDS, "Document_iter_le"},
-
     {"gets_ge", (PyCFunction)Document_iter_ge, METH_VARARGS|METH_KEYWORDS, "Document_iter_ge"},
 
     {"gets_equal", (PyCFunction)Document_iter_equal, METH_VARARGS|METH_KEYWORDS, "Document_iter_equal"},
 
+    {"gets_last", (PyCFunction)Document_iter_last, METH_VARARGS|METH_KEYWORDS, "Document_iter_last"},
+
     {"gets_lt", (PyCFunction)Document_iter_lt, METH_VARARGS|METH_KEYWORDS, "Document_iter_lt"},
+
+    {"gets_le", (PyCFunction)Document_iter_le, METH_VARARGS|METH_KEYWORDS, "Document_iter_le"},
 
     {"gets_first", (PyCFunction)Document_iter_first, METH_VARARGS|METH_KEYWORDS, "Document_iter_first"},
 
-    {"insert", (PyCFunction)Document_insert, METH_VARARGS|METH_KEYWORDS, "Document_insert"},
-
     {"update", (PyCFunction)Document_update, METH_VARARGS|METH_KEYWORDS, "Document_update"},
+
+    {"insert", (PyCFunction)Document_insert, METH_VARARGS|METH_KEYWORDS, "Document_insert"},
 
     {"delete", (PyCFunction)Document_delete, METH_VARARGS|METH_KEYWORDS, "Document_delete"},
 
@@ -3514,24 +3910,24 @@ static PyObject *DocumentKey0_set_document(DocumentKey0* self, PyObject *args, P
 //    return result;
 }
 
-static PyObject *DocumentKey0_gt(DocumentKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey0_prev(DocumentKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey0_last(DocumentKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey0_gt(DocumentKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3550,24 +3946,12 @@ static PyObject *DocumentKey0_next(DocumentKey0* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey0_le(DocumentKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey0_ge(DocumentKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentKey0_lt(DocumentKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3586,24 +3970,36 @@ static PyObject *DocumentKey0_equal(DocumentKey0* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey0_ge(DocumentKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey0_last(DocumentKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey0_prev(DocumentKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey0_lt(DocumentKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey0_le(DocumentKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3662,102 +4058,6 @@ static PyObject *DocumentKey0_iter_gt(DocumentKey0* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey0_iter_last(DocumentKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.dtype, 
-                 self->priv->dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
- 
-        item = DocumentKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey0_iter_le(DocumentKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.dtype, 
-                 self->priv->dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
- 
-        item = DocumentKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3862,6 +4162,54 @@ static PyObject *DocumentKey0_iter_equal(DocumentKey0* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *DocumentKey0_iter_last(DocumentKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+ 
+        item = DocumentKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *DocumentKey0_iter_lt(DocumentKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3877,6 +4225,54 @@ static PyObject *DocumentKey0_iter_lt(DocumentKey0* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_document_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+ 
+        item = DocumentKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey0_iter_le(DocumentKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -4200,6 +4596,22 @@ static PyObject *DocumentKey0_set(DocumentKey0* self, PyObject *args, PyObject *
     }
 
     else 
+    if ( Py_TYPE(obj) == getDocumentDataKey1Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentDataKey1*)obj)->priv->dtype);
+
+        do_cpy(self->priv->sklad, ((DocumentDataKey1*)obj)->priv->sklad);
+
+        do_cpy(self->priv->document, ((DocumentDataKey1*)obj)->priv->document);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey2Type() ) {
+
+    }
+
+    else 
     if ( Py_TYPE(obj) == getDocumentViewType() ) {
 
         do_cpy(self->priv->dtype, ((DocumentView*)obj)->priv->data.dtype);
@@ -4363,35 +4775,35 @@ static PyMethodDef DocumentKey0_methods[] = {
 
     {"set_document", (PyCFunction)DocumentKey0_set_document, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_set_document"},
 
-    {"get_gt", (PyCFunction)DocumentKey0_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_gt"},
+    {"get_prev", (PyCFunction)DocumentKey0_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_prev"},
 
-    {"get_last", (PyCFunction)DocumentKey0_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_last"},
+    {"get_gt", (PyCFunction)DocumentKey0_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_gt"},
 
     {"get_next", (PyCFunction)DocumentKey0_next, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_next"},
 
-    {"get_le", (PyCFunction)DocumentKey0_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_le"},
-
-    {"get_lt", (PyCFunction)DocumentKey0_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_lt"},
+    {"get_ge", (PyCFunction)DocumentKey0_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_ge"},
 
     {"get_equal", (PyCFunction)DocumentKey0_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_equal"},
 
-    {"get_ge", (PyCFunction)DocumentKey0_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_ge"},
+    {"get_last", (PyCFunction)DocumentKey0_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_last"},
 
-    {"get_prev", (PyCFunction)DocumentKey0_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_prev"},
+    {"get_lt", (PyCFunction)DocumentKey0_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_lt"},
+
+    {"get_le", (PyCFunction)DocumentKey0_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_le"},
 
     {"get_first", (PyCFunction)DocumentKey0_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_first"},
 
     {"gets_gt", (PyCFunction)DocumentKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)DocumentKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)DocumentKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)DocumentKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)DocumentKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)DocumentKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)DocumentKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)DocumentKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_le"},
 
     {"gets_first", (PyCFunction)DocumentKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey0_iter_first"},
 
@@ -4612,24 +5024,24 @@ static PyObject *DocumentKey1_set_time(DocumentKey1* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *DocumentKey1_gt(DocumentKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey1_prev(DocumentKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey1_last(DocumentKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey1_gt(DocumentKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4648,24 +5060,12 @@ static PyObject *DocumentKey1_next(DocumentKey1* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey1_le(DocumentKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey1_ge(DocumentKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentKey1_lt(DocumentKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4684,24 +5084,36 @@ static PyObject *DocumentKey1_equal(DocumentKey1* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey1_ge(DocumentKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey1_last(DocumentKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey1_prev(DocumentKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey1_lt(DocumentKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey1_le(DocumentKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4760,102 +5172,6 @@ static PyObject *DocumentKey1_iter_gt(DocumentKey1* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey1_iter_last(DocumentKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.dtype, 
-                 self->priv->dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = DocumentKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey1_iter_le(DocumentKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.dtype, 
-                 self->priv->dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = DocumentKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4960,6 +5276,54 @@ static PyObject *DocumentKey1_iter_equal(DocumentKey1* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *DocumentKey1_iter_last(DocumentKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *DocumentKey1_iter_lt(DocumentKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -4975,6 +5339,54 @@ static PyObject *DocumentKey1_iter_lt(DocumentKey1* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_document_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey1_iter_le(DocumentKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -5218,6 +5630,18 @@ static PyObject *DocumentKey1_set(DocumentKey1* self, PyObject *args, PyObject *
     }
 
     else 
+    if ( Py_TYPE(obj) == getDocumentDataKey1Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentDataKey1*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey2Type() ) {
+
+    }
+
+    else 
     if ( Py_TYPE(obj) == getDocumentViewType() ) {
 
         do_cpy(self->priv->dtype, ((DocumentView*)obj)->priv->data.dtype);
@@ -5373,35 +5797,35 @@ static PyMethodDef DocumentKey1_methods[] = {
 
     {"set_time", (PyCFunction)DocumentKey1_set_time, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_set_time"},
 
-    {"get_gt", (PyCFunction)DocumentKey1_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_gt"},
+    {"get_prev", (PyCFunction)DocumentKey1_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_prev"},
 
-    {"get_last", (PyCFunction)DocumentKey1_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_last"},
+    {"get_gt", (PyCFunction)DocumentKey1_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_gt"},
 
     {"get_next", (PyCFunction)DocumentKey1_next, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_next"},
 
-    {"get_le", (PyCFunction)DocumentKey1_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_le"},
-
-    {"get_lt", (PyCFunction)DocumentKey1_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_lt"},
+    {"get_ge", (PyCFunction)DocumentKey1_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_ge"},
 
     {"get_equal", (PyCFunction)DocumentKey1_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_equal"},
 
-    {"get_ge", (PyCFunction)DocumentKey1_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_ge"},
+    {"get_last", (PyCFunction)DocumentKey1_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_last"},
 
-    {"get_prev", (PyCFunction)DocumentKey1_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_prev"},
+    {"get_lt", (PyCFunction)DocumentKey1_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_lt"},
+
+    {"get_le", (PyCFunction)DocumentKey1_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_le"},
 
     {"get_first", (PyCFunction)DocumentKey1_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_first"},
 
     {"gets_gt", (PyCFunction)DocumentKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)DocumentKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)DocumentKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)DocumentKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)DocumentKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)DocumentKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)DocumentKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)DocumentKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_le"},
 
     {"gets_first", (PyCFunction)DocumentKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey1_iter_first"},
 
@@ -5696,24 +6120,24 @@ static PyObject *DocumentKey2_set_time(DocumentKey2* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *DocumentKey2_gt(DocumentKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey2_prev(DocumentKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey2_last(DocumentKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey2_gt(DocumentKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5732,24 +6156,12 @@ static PyObject *DocumentKey2_next(DocumentKey2* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey2_le(DocumentKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey2_ge(DocumentKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentKey2_lt(DocumentKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5768,24 +6180,36 @@ static PyObject *DocumentKey2_equal(DocumentKey2* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey2_ge(DocumentKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey2_last(DocumentKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey2_prev(DocumentKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey2_lt(DocumentKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey2_le(DocumentKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5856,126 +6280,6 @@ static PyObject *DocumentKey2_iter_gt(DocumentKey2* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey2_iter_last(DocumentKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.p_g_code, 
-                 self->priv->p_g_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.p_code, 
-                 self->priv->p_code))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.party, 
-                 self->priv->party))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = DocumentKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey2_iter_le(DocumentKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.p_g_code, 
-                 self->priv->p_g_code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.p_code, 
-                 self->priv->p_code))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.party, 
-                 self->priv->party))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = DocumentKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -6104,6 +6408,66 @@ static PyObject *DocumentKey2_iter_equal(DocumentKey2* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *DocumentKey2_iter_last(DocumentKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.party, 
+                 self->priv->party))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *DocumentKey2_iter_lt(DocumentKey2* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -6119,6 +6483,66 @@ static PyObject *DocumentKey2_iter_lt(DocumentKey2* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_document_key2(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.party, 
+                 self->priv->party))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey2_iter_le(DocumentKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key2(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -6396,6 +6820,16 @@ static PyObject *DocumentKey2_set(DocumentKey2* self, PyObject *args, PyObject *
     }
 
     else 
+    if ( Py_TYPE(obj) == getDocumentDataKey1Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey2Type() ) {
+
+    }
+
+    else 
     if ( Py_TYPE(obj) == getDocumentViewType() ) {
 
     }
@@ -6589,35 +7023,35 @@ static PyMethodDef DocumentKey2_methods[] = {
 
     {"set_time", (PyCFunction)DocumentKey2_set_time, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_set_time"},
 
-    {"get_gt", (PyCFunction)DocumentKey2_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_gt"},
+    {"get_prev", (PyCFunction)DocumentKey2_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_prev"},
 
-    {"get_last", (PyCFunction)DocumentKey2_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_last"},
+    {"get_gt", (PyCFunction)DocumentKey2_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_gt"},
 
     {"get_next", (PyCFunction)DocumentKey2_next, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_next"},
 
-    {"get_le", (PyCFunction)DocumentKey2_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_le"},
-
-    {"get_lt", (PyCFunction)DocumentKey2_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_lt"},
+    {"get_ge", (PyCFunction)DocumentKey2_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_ge"},
 
     {"get_equal", (PyCFunction)DocumentKey2_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_equal"},
 
-    {"get_ge", (PyCFunction)DocumentKey2_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_ge"},
+    {"get_last", (PyCFunction)DocumentKey2_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_last"},
 
-    {"get_prev", (PyCFunction)DocumentKey2_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_prev"},
+    {"get_lt", (PyCFunction)DocumentKey2_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_lt"},
+
+    {"get_le", (PyCFunction)DocumentKey2_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_le"},
 
     {"get_first", (PyCFunction)DocumentKey2_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_first"},
 
     {"gets_gt", (PyCFunction)DocumentKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_gt"},
 
-    {"gets_last", (PyCFunction)DocumentKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_last"},
-
-    {"gets_le", (PyCFunction)DocumentKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_le"},
-
     {"gets_ge", (PyCFunction)DocumentKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_ge"},
 
     {"gets_equal", (PyCFunction)DocumentKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_equal"},
 
+    {"gets_last", (PyCFunction)DocumentKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_last"},
+
     {"gets_lt", (PyCFunction)DocumentKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_lt"},
+
+    {"gets_le", (PyCFunction)DocumentKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_le"},
 
     {"gets_first", (PyCFunction)DocumentKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey2_iter_first"},
 
@@ -6874,24 +7308,24 @@ static PyObject *DocumentKey3_set_time(DocumentKey3* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *DocumentKey3_gt(DocumentKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey3_prev(DocumentKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey3_last(DocumentKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey3_gt(DocumentKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6910,24 +7344,12 @@ static PyObject *DocumentKey3_next(DocumentKey3* self, PyObject *args, PyObject 
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey3_le(DocumentKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey3_ge(DocumentKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentKey3_lt(DocumentKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6946,24 +7368,36 @@ static PyObject *DocumentKey3_equal(DocumentKey3* self, PyObject *args, PyObject
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey3_ge(DocumentKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey3_last(DocumentKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentKey3_prev(DocumentKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *DocumentKey3_lt(DocumentKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey3_le(DocumentKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -7028,114 +7462,6 @@ static PyObject *DocumentKey3_iter_gt(DocumentKey3* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey3_iter_last(DocumentKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.dtype, 
-                 self->priv->dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = DocumentKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentKey3_iter_le(DocumentKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.dtype, 
-                 self->priv->dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = DocumentKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -7252,6 +7578,60 @@ static PyObject *DocumentKey3_iter_equal(DocumentKey3* self, PyObject *args, PyO
     return retval;
 }
 
+static PyObject *DocumentKey3_iter_last(DocumentKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *DocumentKey3_iter_lt(DocumentKey3* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -7267,6 +7647,60 @@ static PyObject *DocumentKey3_iter_lt(DocumentKey3* self, PyObject *args, PyObje
     }
     do_cpy(key_cmp, *self->priv);
     status = do_document_key3(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey3_iter_le(DocumentKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key3(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -7547,6 +7981,20 @@ static PyObject *DocumentKey3_set(DocumentKey3* self, PyObject *args, PyObject *
     }
 
     else 
+    if ( Py_TYPE(obj) == getDocumentDataKey1Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentDataKey1*)obj)->priv->dtype);
+
+        do_cpy(self->priv->sklad, ((DocumentDataKey1*)obj)->priv->sklad);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey2Type() ) {
+
+    }
+
+    else 
     if ( Py_TYPE(obj) == getDocumentViewType() ) {
 
         do_cpy(self->priv->dtype, ((DocumentView*)obj)->priv->data.dtype);
@@ -7730,35 +8178,35 @@ static PyMethodDef DocumentKey3_methods[] = {
 
     {"set_time", (PyCFunction)DocumentKey3_set_time, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_set_time"},
 
-    {"get_gt", (PyCFunction)DocumentKey3_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_gt"},
+    {"get_prev", (PyCFunction)DocumentKey3_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_prev"},
 
-    {"get_last", (PyCFunction)DocumentKey3_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_last"},
+    {"get_gt", (PyCFunction)DocumentKey3_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_gt"},
 
     {"get_next", (PyCFunction)DocumentKey3_next, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_next"},
 
-    {"get_le", (PyCFunction)DocumentKey3_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_le"},
-
-    {"get_lt", (PyCFunction)DocumentKey3_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_lt"},
+    {"get_ge", (PyCFunction)DocumentKey3_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_ge"},
 
     {"get_equal", (PyCFunction)DocumentKey3_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_equal"},
 
-    {"get_ge", (PyCFunction)DocumentKey3_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_ge"},
+    {"get_last", (PyCFunction)DocumentKey3_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_last"},
 
-    {"get_prev", (PyCFunction)DocumentKey3_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_prev"},
+    {"get_lt", (PyCFunction)DocumentKey3_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_lt"},
+
+    {"get_le", (PyCFunction)DocumentKey3_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_le"},
 
     {"get_first", (PyCFunction)DocumentKey3_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_first"},
 
     {"gets_gt", (PyCFunction)DocumentKey3_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_gt"},
 
-    {"gets_last", (PyCFunction)DocumentKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_last"},
-
-    {"gets_le", (PyCFunction)DocumentKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_le"},
-
     {"gets_ge", (PyCFunction)DocumentKey3_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_ge"},
 
     {"gets_equal", (PyCFunction)DocumentKey3_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_equal"},
 
+    {"gets_last", (PyCFunction)DocumentKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_last"},
+
     {"gets_lt", (PyCFunction)DocumentKey3_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_lt"},
+
+    {"gets_le", (PyCFunction)DocumentKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_le"},
 
     {"gets_first", (PyCFunction)DocumentKey3_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey3_iter_first"},
 
@@ -7787,4 +8235,1250 @@ static PyTypeObject DocumentKey3Type_ = {
 PyTypeObject *getDocumentKey3Type()
 {
     return &DocumentKey3Type_;
+}
+
+static void DocumentKey4_dealloc(PyObject* self)
+{
+    do_free(((DocumentKey4*)self)->priv);
+    Py_DECREF(((DocumentKey4*)self)->alias);
+    self->ob_type->tp_free((PyObject*)self);
+    LOG("DocumentKey4 free\n");
+}
+static PyObject *DocumentKey4_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    LOG("DocumentKey4 new\n");
+    DocumentKey4 *self;
+    self = PyObject_NEW(DocumentKey4, type);
+    //self = (DocumentKey4 *)type->tp_alloc(type, 0);
+    if ( self == NULL )
+        return NULL;
+    self->priv = do_malloc0(sizeof(document_key4_t));
+    return (PyObject *)self;
+}
+static int DocumentKey4_init(DocumentKey4 *self, PyObject *args, PyObject *kwds)
+{
+    //LOG("DocumentKey4 init\n");
+    static char *kwlist[] = {"alias", NULL};
+    PyObject *alias;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &alias) ) {
+        do_log(LOG_ERR, "no param \"alias\"");
+        return -1;
+    }
+
+    Py_INCREF(alias);
+    self->alias = (Alias*)alias;
+    
+    do_text_set_empty(self->priv->dtype);
+
+    do_text_set_empty(self->priv->p_g_code);
+
+    PyDateTime_IMPORT;
+    return 0;
+}
+
+static PyObject *DocumentKey4_clone(DocumentKey4 *self)
+{
+    DocumentKey4 *result;
+    result = (DocumentKey4*)PyObject_CallFunction((PyObject*)getDocumentKey4Type(),
+                                    "O", self->alias);
+    memcpy(result->priv, self->priv, sizeof(*self->priv));
+    return (PyObject*)result;
+}
+
+static PyObject *DocumentKey4_document_type(DocumentKey4* self, void *unused)
+{
+    PyObject *result;
+
+    char *res=do_text(self->alias->alias, self->priv->dtype);
+    result = MyString_FromString(res);
+    do_free(res);
+
+    return result;
+}
+
+static PyObject *DocumentKey4_set_document_type(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    char *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set dtype");
+        return NULL;
+    }
+    if ( value )
+        do_text_set(self->alias->alias, self->priv->dtype, value);
+        
+    /*char *res=do_text(self->alias->alias, self->priv->dtype);
+    result = MyString_FromString(res);
+    do_free(res);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *DocumentKey4_partner_region_code(DocumentKey4* self, void *unused)
+{
+    PyObject *result;
+
+    char *res=do_text(self->alias->alias, self->priv->p_g_code);
+    result = MyString_FromString(res);
+    do_free(res);
+
+    return result;
+}
+
+static PyObject *DocumentKey4_set_partner_region_code(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    char *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set p_g_code");
+        return NULL;
+    }
+    if ( value )
+        do_text_set(self->alias->alias, self->priv->p_g_code, value);
+        
+    /*char *res=do_text(self->alias->alias, self->priv->p_g_code);
+    result = MyString_FromString(res);
+    do_free(res);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *DocumentKey4_partner_code(DocumentKey4* self, void *unused)
+{
+    PyObject *result;
+
+    result = MyLong_FromLong(self->priv->p_code);
+
+    return result;
+}
+
+static PyObject *DocumentKey4_set_partner_code(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    PyObject *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set p_code");
+        return NULL;
+    }
+    if ( value ) {
+        if ( MyLong_Check(value) )
+             self->priv->p_code = MyLong_AsLong(value);
+        else
+        if ( PyFloat_Check(value) )
+             self->priv->p_code = PyFloat_AsDouble(value);
+        else {
+            do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set p_code");
+            return NULL;
+        }
+    }
+    //result = MyLong_FromLong(self->priv->p_code);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *DocumentKey4_date(DocumentKey4* self, void *unused)
+{
+    PyObject *result;
+
+    struct tm tm;
+    do_date(self->priv->date, &tm);
+    result = PyDate_FromDate(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday);
+
+    return result;
+}
+
+static PyObject *DocumentKey4_date_raw(DocumentKey4* self, void *unused)
+{
+    PyObject *result;
+
+    result = MyLong_FromLong(self->priv->date);
+
+    return result;
+}
+
+static PyObject *DocumentKey4_set_date(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    PyObject *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set date");
+        return NULL;
+    }
+    struct tm tm;
+    if ( value ) {
+        if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
+            do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set date");
+            return NULL;
+        }
+        if ( MyLong_Check(value) ) {
+            self->priv->date = MyLong_AsLong(value);
+        } else {
+            do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
+            do_date_set(&self->priv->date, tm);
+        }
+    }
+    /*do_date(self->priv->date, &tm);
+    result = PyDate_FromDate(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *DocumentKey4_time(DocumentKey4* self, void *unused)
+{
+    PyObject *result;
+
+    struct tm tm;
+    do_time(self->priv->time, &tm);
+    result = PyTime_FromTime(tm.tm_hour,tm.tm_min,tm.tm_sec,0);
+
+    return result;
+}
+
+static PyObject *DocumentKey4_time_raw(DocumentKey4* self, void *unused)
+{
+    PyObject *result;
+
+    result = MyLong_FromLong(self->priv->time);
+
+    return result;
+}
+
+static PyObject *DocumentKey4_set_time(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    PyObject *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set time");
+        return NULL;
+    }
+    struct tm tm;
+    if ( value ) {
+        if ( !PyTime_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
+            do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set time");
+            return NULL;
+        }
+        if ( MyLong_Check(value) ) {
+            self->priv->time = MyLong_AsLong(value);
+        } else {
+            if ( PyTime_Check(value) ) {
+                tm.tm_hour = PyDateTime_TIME_GET_HOUR(value);tm.tm_min=PyDateTime_TIME_GET_MINUTE(value);tm.tm_sec=PyDateTime_TIME_GET_SECOND(value);
+             }
+             else {
+                 tm.tm_hour = PyDateTime_DATE_GET_HOUR(value);tm.tm_min=PyDateTime_DATE_GET_MINUTE(value);tm.tm_sec=PyDateTime_DATE_GET_SECOND(value);
+             }
+             do_time_set(&self->priv->time, tm);
+        }
+    }
+    /*do_time(self->priv->time, &tm);
+    result = PyTime_FromTime(tm.tm_hour,tm.tm_min,tm.tm_sec,0);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *DocumentKey4_prev(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_gt(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_GT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_next(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_ge(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_GE);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_equal(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_last(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_lt(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_le(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_LE);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_first(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_FIRST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentKey4_iter_gt(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_GT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key4(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey4_iter_ge(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_GE);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key4(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey4_iter_equal(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key4(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey4_iter_last(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey4_iter_lt(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey4_iter_le(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_LE);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey4_iter_first(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_key4(self->alias->alias, self->priv, DO_GET_FIRST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.dtype, 
+                 self->priv->dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = DocumentKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_key4(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentKey4_cmp(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+    int depth;
+    int res = 0;
+
+    static char *kwlist[] = {"object", "depth", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &obj, &depth) ) {
+        do_log(LOG_ERR, "Invalid params");
+        return NULL;
+    }
+        
+    if ( Py_TYPE(obj) == getDocumentKey4Type() ) {
+    
+
+       if ( !res && depth >= 1 ) {
+           res = do_cmp(self->priv->dtype, ((DocumentKey4*)obj)->priv->dtype);
+       }
+
+       if ( !res && depth >= 2 ) {
+           res = do_cmp(self->priv->p_g_code, ((DocumentKey4*)obj)->priv->p_g_code);
+       }
+
+       if ( !res && depth >= 3 ) {
+           res = self->priv->p_code - ((DocumentKey4*)obj)->priv->p_code;
+       }
+
+       if ( !res && depth >= 4 ) {
+           res = self->priv->date - ((DocumentKey4*)obj)->priv->date;
+       }
+
+       if ( !res && depth >= 5 ) {
+           res = self->priv->time - ((DocumentKey4*)obj)->priv->time;
+       }
+
+       return MyLong_FromLong(res);
+    }
+
+    do_log(LOG_ERR, "Invalid argument \"object\": wrong type");
+    return NULL;
+}
+
+static PyObject *DocumentKey4_set_alias(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+
+    static char *kwlist[] = {"object", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &obj) )
+        return NULL;
+    if ( Py_TYPE(obj) != getAliasType() ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set alias");
+        return NULL;
+    }
+    Py_DECREF(((DocumentKey4*)self)->alias);
+    Py_INCREF(obj);
+    ((DocumentKey4*)self)->alias = (Alias*)obj;
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *DocumentKey4_set(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+
+    static char *kwlist[] = {"object", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &obj) )
+        return NULL;
+    if ( Py_TYPE(obj) == getDocumentKey4Type() ) {
+        memcpy(self->priv, ((DocumentKey4*)obj)->priv, sizeof(*self->priv));
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentType() ) {
+
+        do_cpy(self->priv->dtype, ((Document*)obj)->priv->data.dtype);
+
+        do_cpy(self->priv->p_g_code, ((Document*)obj)->priv->data.p_g_code);
+
+        do_cpy(self->priv->p_code, ((Document*)obj)->priv->data.p_code);
+
+        do_cpy(self->priv->date, ((Document*)obj)->priv->data.date);
+
+        do_cpy(self->priv->time, ((Document*)obj)->priv->data.time);
+
+    }
+
+    else 
+    if ( PyList_Check(obj) ||  PyTuple_Check(obj) ) {
+        int i;
+        int size;
+        size = PyList_Check(obj) ? PyList_Size(obj) : PyTuple_Size(obj);
+        for ( i = 0; i < size; i++ ) {
+            PyObject *value;
+            value =  PyList_Check(obj) ? PyList_GetItem(obj, i) : PyTuple_GetItem(obj, i);
+            switch (i) {
+
+                case 0:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_document_type", "O", value) )
+                        return NULL;
+                    break;
+
+                case 1:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_partner_region_code", "O", value) )
+                        return NULL;
+                    break;
+
+                case 2:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_partner_code", "O", value) )
+                        return NULL;
+                    break;
+
+                case 3:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_date", "O", value) )
+                        return NULL;
+                    break;
+
+                case 4:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_time", "O", value) )
+                        return NULL;
+                    break;
+
+                default:
+                    do_log(LOG_ERR, "%s size larger than the number of fields", PyList_Check(obj) ? "List":"Tuple");
+                    return NULL;
+            }
+        }
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentOrderType() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentOrder*)obj)->priv->data.dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentOrderKey0Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentOrderKey0*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentOrderKey1Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentOrderKey1*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentOrderKey2Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentOrderKey2*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentOrderKey3Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentOrderKey4Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataType() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentData*)obj)->priv->data.dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey0Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentDataKey0*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey1Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentDataKey1*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentDataKey2Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentViewType() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentView*)obj)->priv->data.dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentViewKey0Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentViewKey0*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getDocumentViewKey1Type() ) {
+
+        do_cpy(self->priv->dtype, ((DocumentViewKey1*)obj)->priv->dtype);
+
+    }
+
+    else 
+    if ( PyDict_Check(obj) ) {
+        PyObject *fields;
+        int i;
+        
+        fields = PyDict_Keys(obj);
+        for ( i = 0; i < PyList_Size(fields); i++ ) {
+            PyObject *name;
+            PyObject *value;
+            char *field_name;
+            
+            name = PyList_GetItem(fields, i);
+            value = PyDict_GetItem(obj, name); 
+            field_name = MyString_AsString(name);
+            if ( field_name[0] == '\0' ) {
+                do_log(LOG_ERR, "Dictionary key is not a string");
+                return NULL;
+            } 
+
+
+            else
+            if ( !strcmp("document_type", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_document_type", "O", value) )
+                    return NULL;
+            }
+
+            else
+            if ( !strcmp("partner_region_code", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_partner_region_code", "O", value) )
+                    return NULL;
+            }
+
+            else
+            if ( !strcmp("partner_code", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_partner_code", "O", value) )
+                    return NULL;
+            }
+
+            else
+            if ( !strcmp("date", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_date", "O", value) )
+                    return NULL;
+            }
+
+            else
+            if ( !strcmp("time", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_time", "O", value) )
+                    return NULL;
+            }
+
+            else {
+                do_log(LOG_ERR, "Class \"DocumentKey4\"does not contain \"%s\"", field_name);
+                return NULL;
+            }
+            do_free(field_name);
+        }
+    }
+    
+    else
+    {
+        do_log(LOG_ERR, "Invalid argument \"object\": wrong type");
+        return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *DocumentKey4_fields(DocumentKey4* self, PyObject *args, PyObject *kwds)
+{
+    char *str=do_strdup("Class DocumentKey4");
+    char *buf;
+    char *buf1;
+    PyObject *value = NULL;
+    PyObject *retval;
+
+
+    value =  DocumentKey4_document_type(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("document_type", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
+    value =  DocumentKey4_partner_region_code(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("partner_region_code", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
+    value =  DocumentKey4_partner_code(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("partner_code", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
+    value =  DocumentKey4_date(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("date", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
+    value =  DocumentKey4_time(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("time", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+    
+    buf = do_strdup_printf("%s\n",str);
+    retval = MyString_FromString(buf);
+    do_free(str);
+    do_free(buf);
+    return retval;
+}
+
+static PyGetSetDef DocumentKey4_getset[] = {
+
+    {"document_type",(getter)DocumentKey4_document_type},
+
+    {"partner_region_code",(getter)DocumentKey4_partner_region_code},
+
+    {"partner_code",(getter)DocumentKey4_partner_code},
+
+    {"date",(getter)DocumentKey4_date},
+
+    {"date_raw",(getter)DocumentKey4_date_raw},
+
+    {"time",(getter)DocumentKey4_time},
+
+    {"time_raw",(getter)DocumentKey4_time_raw},
+
+    {NULL}
+};
+
+static PyMethodDef DocumentKey4_methods[] = {
+    {"set", (PyCFunction)DocumentKey4_set, METH_VARARGS|METH_KEYWORDS, "set"},
+    {"set_alias", (PyCFunction)DocumentKey4_set_alias, METH_VARARGS|METH_KEYWORDS, "set_alias"},
+    {"clone", (PyCFunction)DocumentKey4_clone, METH_NOARGS, "clone"},
+
+    {"cmp", (PyCFunction)DocumentKey4_cmp, METH_VARARGS|METH_KEYWORDS, "cmp"},
+
+    {"set_document_type", (PyCFunction)DocumentKey4_set_document_type, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_set_document_type"},
+
+    {"set_partner_region_code", (PyCFunction)DocumentKey4_set_partner_region_code, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_set_partner_region_code"},
+
+    {"set_partner_code", (PyCFunction)DocumentKey4_set_partner_code, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_set_partner_code"},
+
+    {"set_date", (PyCFunction)DocumentKey4_set_date, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_set_date"},
+
+    {"set_time", (PyCFunction)DocumentKey4_set_time, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_set_time"},
+
+    {"get_prev", (PyCFunction)DocumentKey4_prev, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_prev"},
+
+    {"get_gt", (PyCFunction)DocumentKey4_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_gt"},
+
+    {"get_next", (PyCFunction)DocumentKey4_next, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_next"},
+
+    {"get_ge", (PyCFunction)DocumentKey4_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_ge"},
+
+    {"get_equal", (PyCFunction)DocumentKey4_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_equal"},
+
+    {"get_last", (PyCFunction)DocumentKey4_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_last"},
+
+    {"get_lt", (PyCFunction)DocumentKey4_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_lt"},
+
+    {"get_le", (PyCFunction)DocumentKey4_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_le"},
+
+    {"get_first", (PyCFunction)DocumentKey4_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_first"},
+
+    {"gets_gt", (PyCFunction)DocumentKey4_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_iter_gt"},
+
+    {"gets_ge", (PyCFunction)DocumentKey4_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_iter_ge"},
+
+    {"gets_equal", (PyCFunction)DocumentKey4_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_iter_equal"},
+
+    {"gets_last", (PyCFunction)DocumentKey4_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_iter_last"},
+
+    {"gets_lt", (PyCFunction)DocumentKey4_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_iter_lt"},
+
+    {"gets_le", (PyCFunction)DocumentKey4_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_iter_le"},
+
+    {"gets_first", (PyCFunction)DocumentKey4_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentKey4_iter_first"},
+
+    {NULL}
+};
+
+static PyTypeObject DocumentKey4Type_ = {
+    PyVarObject_HEAD_INIT(NULL,0)
+    //0,                         /*ob_size*/
+    "pydomino.DocumentKey4",             /*tp_name*/
+    sizeof(DocumentKey4),             /*tp_basicsize*/
+    0,                         /*tp_itemsize*/
+    (destructor)DocumentKey4_dealloc, /*tp_dealloc*/
+    0,0,0,0,0,0,0,0,0,0,(reprfunc)DocumentKey4_fields,0,0,0,
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
+    "DocumentKey4 objects",           /* tp_doc */
+    0,0,0,0,0,0,               /* tp_iternext */
+    DocumentKey4_methods,             /* tp_methods */
+    0,
+    DocumentKey4_getset
+    ,0,0,0,0, 0,                         /* tp_dictoffset */
+    (initproc)DocumentKey4_init,      /* tp_init */
+    0,                         /* tp_alloc */
+    DocumentKey4_new,                 /* tp_new */
+};
+PyTypeObject *getDocumentKey4Type()
+{
+    return &DocumentKey4Type_;
 }

@@ -21,18 +21,6 @@ static PyObject *Alias_clear(PyObject* self)
     Py_INCREF(Py_None);
     return Py_None;
 }
-static PyObject *Alias_dublicate_allow(PyObject* self)
-{
-    do_alias_set_dublicate_allow( ((Alias*)self)->alias, TRUE);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-static PyObject *Alias_dublicate_not_allow(PyObject* self)
-{
-    do_alias_set_dublicate_allow( ((Alias*)self)->alias, FALSE);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
 static PyObject *Alias_start_tran(PyObject* self)
 {
     LOG("Alias clear\n");
@@ -59,28 +47,39 @@ static PyObject *Alias_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     LOG("Alias new %d\n",self);
     if ( self == NULL )
         return NULL;
-    self->alias = NULL;
+        self->alias = NULL;
     return (PyObject *)self;
 }
 
 static int Alias_init(Alias *self, PyObject *args, PyObject *kwds)
 {
-    //LOG("Alias init\n");
+    //do_log(LOG_ERR,"Alias init\n");
 
-    static char *kwlist[] = {"name", NULL};
+    static char *kwlist[] = {"name", "store", "hostname", "dbname", "alias", NULL};
     char *name = NULL;
+    int store = 0; 
+    char *hostname = NULL;
+    char *dbname = NULL;
+    PyObject *other = NULL;
 
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist,
-                                      &name) )
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|sissO", kwlist,
+                                      &name, &store, &hostname, &dbname, &other) )
         return -1;
     product_struct_t product;
     if ( sizeof(product) != 2470 ) {
 	do_log(LOG_ERR, "The library is compiled without __attribute__((packed)) sizeof product struct %d", sizeof(product));
 	return -1;
     }
-    self->alias = domino_alias_new(name);
-    if ( !self->alias )
-        return -1;
+    if ( other ) {
+       self->alias = do_alias_clone(((Alias*)other)->alias);
+    } 
+    else {
+        self->alias = domino_alias_new(name);
+        if ( !self->alias )
+           return -1;
+        if ( store > 0 || hostname || dbname )
+   	   domino_alias_set_store_number(self->alias, store, hostname, dbname);
+    }	
     if ( !do_alias_open(self->alias, TRUE) ) 
         return -1;
     return 0;
@@ -130,81 +129,135 @@ static PyObject *Alias_connected(Alias* self)
     return result;
 }
 
-static PyObject *Alias_Prowod2(Alias* self)
+static PyObject *Alias_Partner(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProwod2Type(),
+    return PyObject_CallFunction((PyObject*)getPartnerType(),
                                     "O", self);
 }   
 
-static PyObject *Alias_Prowod2Key0(Alias* self)
+static PyObject *Alias_PartnerKey0(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProwod2Key0Type(),
+    return PyObject_CallFunction((PyObject*)getPartnerKey0Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_Prowod2Key1(Alias* self)
+static PyObject *Alias_PartnerKey1(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProwod2Key1Type(),
+    return PyObject_CallFunction((PyObject*)getPartnerKey1Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_Prowod2Key2(Alias* self)
+static PyObject *Alias_PartnerKey2(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProwod2Key2Type(),
+    return PyObject_CallFunction((PyObject*)getPartnerKey2Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_Prowod2Key3(Alias* self)
+static PyObject *Alias_PartnerKey3(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProwod2Key3Type(),
+    return PyObject_CallFunction((PyObject*)getPartnerKey3Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_DocumentLink(Alias* self)
+static PyObject *Alias_DocumentType(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getDocumentLinkType(),
+    return PyObject_CallFunction((PyObject*)getDocumentTypeType(),
                                     "O", self);
 }   
 
-static PyObject *Alias_DocumentLinkKey0(Alias* self)
+static PyObject *Alias_DocumentTypeKey0(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getDocumentLinkKey0Type(),
+    return PyObject_CallFunction((PyObject*)getDocumentTypeKey0Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_DocumentLinkKey1(Alias* self)
+static PyObject *Alias_Stock(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getDocumentLinkKey1Type(),
+    return PyObject_CallFunction((PyObject*)getStockType(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductLink(Alias* self)
+static PyObject *Alias_StockKey0(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductLinkType(),
+    return PyObject_CallFunction((PyObject*)getStockKey0Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductLinkKey0(Alias* self)
+static PyObject *Alias_StockKey1(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductLinkKey0Type(),
+    return PyObject_CallFunction((PyObject*)getStockKey1Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductLinkKey1(Alias* self)
+static PyObject *Alias_StockKey2(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductLinkKey1Type(),
+    return PyObject_CallFunction((PyObject*)getStockKey2Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductData(Alias* self)
+static PyObject *Alias_StockKey3(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductDataType(),
+    return PyObject_CallFunction((PyObject*)getStockKey3Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductDataKey0(Alias* self)
+static PyObject *Alias_Subaccount(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductDataKey0Type(),
+    return PyObject_CallFunction((PyObject*)getSubaccountType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_SubaccountKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getSubaccountKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Saldo(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getSaldoType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_SaldoKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getSaldoKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductView(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductViewType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductViewKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductViewKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductViewKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductViewKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Group(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getGroupType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_GroupKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getGroupKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_GroupKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getGroupKey1Type(),
                                     "O", self);
 }   
 
@@ -217,36 +270,6 @@ static PyObject *Alias_User(Alias* self)
 static PyObject *Alias_UserKey0(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getUserKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Class(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getClassType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ClassKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getClassKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_PartnerData(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerDataType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_PartnerDataKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerDataKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_PartnerDataKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerDataKey1Type(),
                                     "O", self);
 }   
 
@@ -286,21 +309,183 @@ static PyObject *Alias_RealizationKey4(Alias* self)
                                     "O", self);
 }   
 
-static PyObject *Alias_Subgroup(Alias* self)
+static PyObject *Alias_Store(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getSubgroupType(),
+    return PyObject_CallFunction((PyObject*)getStoreType(),
                                     "O", self);
 }   
 
-static PyObject *Alias_SubgroupKey0(Alias* self)
+static PyObject *Alias_StoreKey0(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getSubgroupKey0Type(),
+    return PyObject_CallFunction((PyObject*)getStoreKey0Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_SubgroupKey1(Alias* self)
+static PyObject *Alias_Enum(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getSubgroupKey1Type(),
+    return PyObject_CallFunction((PyObject*)getEnumType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_EnumKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getEnumKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentProw(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentProwType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentProwKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentProwKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Barcode(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getBarcodeType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_BarcodeKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getBarcodeKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_BarcodeKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getBarcodeKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Prowod2(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProwod2Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Prowod2Key0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProwod2Key0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Prowod2Key1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProwod2Key1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Prowod2Key2(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProwod2Key2Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Prowod2Key3(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProwod2Key3Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentData(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentDataType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentDataKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentDataKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentDataKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentDataKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentDataKey2(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentDataKey2Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Shift(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getShiftType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ShiftKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getShiftKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ShiftKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getShiftKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ShiftKey2(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getShiftKey2Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ShiftKey3(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getShiftKey3Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentLink(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentLinkType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentLinkKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentLinkKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentLinkKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentLinkKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_PartnerData(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getPartnerDataType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_PartnerDataKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getPartnerDataKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_PartnerDataKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getPartnerDataKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_PartnerDataKey2(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getPartnerDataKey2Type(),
                                     "O", self);
 }   
 
@@ -328,162 +513,6 @@ static PyObject *Alias_ProtocolKey2(Alias* self)
                                     "O", self);
 }   
 
-static PyObject *Alias_Group(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getGroupType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_GroupKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getGroupKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_GroupKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getGroupKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentData(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentDataType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentDataKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentDataKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Subaccount(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getSubaccountType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_SubaccountKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getSubaccountKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Barcode(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getBarcodeType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_BarcodeKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getBarcodeKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_BarcodeKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getBarcodeKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_CheckSum(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getCheckSumType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_CheckSumKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getCheckSumKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_CheckSumKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getCheckSumKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Partner(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_PartnerKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_PartnerKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_PartnerKey2(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerKey2Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_PartnerKey3(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getPartnerKey3Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentProw(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentProwType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentProwKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentProwKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Prowod(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProwodType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProwodKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProwodKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProwodKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProwodKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProwodKey2(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProwodKey2Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProwodKey3(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProwodKey3Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProwodKey4(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProwodKey4Type(),
-                                    "O", self);
-}   
-
 static PyObject *Alias_Division(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getDivisionType(),
@@ -493,78 +522,6 @@ static PyObject *Alias_Division(Alias* self)
 static PyObject *Alias_DivisionKey0(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getDivisionKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Enum(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getEnumType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_EnumKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getEnumKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Account(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getAccountType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_AccountKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getAccountKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_Region(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getRegionType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_RegionKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getRegionKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_RegionKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getRegionKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentType(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentTypeType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentTypeKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentTypeKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProductView(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProductViewType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProductViewKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProductViewKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_ProductViewKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getProductViewKey1Type(),
                                     "O", self);
 }   
 
@@ -598,39 +555,153 @@ static PyObject *Alias_DocumentKey3(Alias* self)
                                     "O", self);
 }   
 
-static PyObject *Alias_Product(Alias* self)
+static PyObject *Alias_DocumentKey4(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductType(),
+    return PyObject_CallFunction((PyObject*)getDocumentKey4Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductKey0(Alias* self)
+static PyObject *Alias_DocumentOrder(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductKey0Type(),
+    return PyObject_CallFunction((PyObject*)getDocumentOrderType(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductKey1(Alias* self)
+static PyObject *Alias_DocumentOrderKey0(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductKey1Type(),
+    return PyObject_CallFunction((PyObject*)getDocumentOrderKey0Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductKey2(Alias* self)
+static PyObject *Alias_DocumentOrderKey1(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductKey2Type(),
+    return PyObject_CallFunction((PyObject*)getDocumentOrderKey1Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductKey3(Alias* self)
+static PyObject *Alias_DocumentOrderKey2(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductKey3Type(),
+    return PyObject_CallFunction((PyObject*)getDocumentOrderKey2Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ProductKey4(Alias* self)
+static PyObject *Alias_DocumentOrderKey3(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getProductKey4Type(),
+    return PyObject_CallFunction((PyObject*)getDocumentOrderKey3Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_DocumentOrderKey4(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getDocumentOrderKey4Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductLink(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductLinkType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductLinkKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductLinkKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductLinkKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductLinkKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Class(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getClassType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ClassKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getClassKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Region(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getRegionType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_RegionKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getRegionKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_RegionKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getRegionKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Subgroup(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getSubgroupType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_SubgroupKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getSubgroupKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_SubgroupKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getSubgroupKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductData(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductDataType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductDataKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductDataKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_Account(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getAccountType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_AccountKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getAccountKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_CheckSum(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getCheckSumType(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_CheckSumKey0(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getCheckSumKey0Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_CheckSumKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getCheckSumKey1Type(),
                                     "O", self);
 }   
 
@@ -676,111 +747,75 @@ static PyObject *Alias_DocumentViewKey1(Alias* self)
                                     "O", self);
 }   
 
-static PyObject *Alias_Shift(Alias* self)
+static PyObject *Alias_Prowod(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getShiftType(),
+    return PyObject_CallFunction((PyObject*)getProwodType(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ShiftKey0(Alias* self)
+static PyObject *Alias_ProwodKey0(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getShiftKey0Type(),
+    return PyObject_CallFunction((PyObject*)getProwodKey0Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ShiftKey1(Alias* self)
+static PyObject *Alias_ProwodKey1(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getShiftKey1Type(),
+    return PyObject_CallFunction((PyObject*)getProwodKey1Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ShiftKey2(Alias* self)
+static PyObject *Alias_ProwodKey2(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getShiftKey2Type(),
+    return PyObject_CallFunction((PyObject*)getProwodKey2Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_ShiftKey3(Alias* self)
+static PyObject *Alias_ProwodKey3(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getShiftKey3Type(),
+    return PyObject_CallFunction((PyObject*)getProwodKey3Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_Store(Alias* self)
+static PyObject *Alias_ProwodKey4(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getStoreType(),
+    return PyObject_CallFunction((PyObject*)getProwodKey4Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_StoreKey0(Alias* self)
+static PyObject *Alias_Product(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getStoreKey0Type(),
+    return PyObject_CallFunction((PyObject*)getProductType(),
                                     "O", self);
 }   
 
-static PyObject *Alias_Saldo(Alias* self)
+static PyObject *Alias_ProductKey0(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getSaldoType(),
+    return PyObject_CallFunction((PyObject*)getProductKey0Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_SaldoKey0(Alias* self)
+static PyObject *Alias_ProductKey1(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getSaldoKey0Type(),
+    return PyObject_CallFunction((PyObject*)getProductKey1Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_Stock(Alias* self)
+static PyObject *Alias_ProductKey2(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getStockType(),
+    return PyObject_CallFunction((PyObject*)getProductKey2Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_StockKey0(Alias* self)
+static PyObject *Alias_ProductKey3(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getStockKey0Type(),
+    return PyObject_CallFunction((PyObject*)getProductKey3Type(),
                                     "O", self);
 }   
 
-static PyObject *Alias_StockKey1(Alias* self)
+static PyObject *Alias_ProductKey4(Alias* self)
 {
-    return PyObject_CallFunction((PyObject*)getStockKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentOrder(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentOrderType(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentOrderKey0(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentOrderKey0Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentOrderKey1(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentOrderKey1Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentOrderKey2(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentOrderKey2Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentOrderKey3(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentOrderKey3Type(),
-                                    "O", self);
-}   
-
-static PyObject *Alias_DocumentOrderKey4(Alias* self)
-{
-    return PyObject_CallFunction((PyObject*)getDocumentOrderKey4Type(),
+    return PyObject_CallFunction((PyObject*)getProductKey4Type(),
                                     "O", self);
 }   
 
@@ -793,13 +828,6 @@ static PyMethodDef Alias_methods[] = {
     },
     {"utf8", (PyCFunction)Alias_utf8, METH_NOARGS,
      "do_alias_utf8"
-    },
-    
-    {"dublicate_allow", (PyCFunction)Alias_dublicate_allow, METH_NOARGS,// METH_VARARGS|METH_KEYWORDS,
-     "dublicate allow"
-    },
-    {"dublicate_not_allow", (PyCFunction)Alias_dublicate_not_allow, METH_NOARGS,// METH_VARARGS|METH_KEYWORDS,
-     "dublicate not allow"
     },
     {"transaction_start", (PyCFunction)Alias_start_tran, METH_NOARGS,// METH_VARARGS|METH_KEYWORDS,
      "transactiob start"
@@ -820,45 +848,53 @@ static PyMethodDef Alias_methods[] = {
      "do_alias_connected"
     },
 
-    {"Prowod2", (PyCFunction)Alias_Prowod2,  METH_NOARGS, "Alias_Prowod2"},
+    {"Partner", (PyCFunction)Alias_Partner,  METH_NOARGS, "Alias_Partner"},
 
-    {"Prowod2Key0", (PyCFunction)Alias_Prowod2Key0,  METH_NOARGS, "Alias_Prowod2Key0"},
+    {"PartnerKey0", (PyCFunction)Alias_PartnerKey0,  METH_NOARGS, "Alias_PartnerKey0"},
 
-    {"Prowod2Key1", (PyCFunction)Alias_Prowod2Key1,  METH_NOARGS, "Alias_Prowod2Key1"},
+    {"PartnerKey1", (PyCFunction)Alias_PartnerKey1,  METH_NOARGS, "Alias_PartnerKey1"},
 
-    {"Prowod2Key2", (PyCFunction)Alias_Prowod2Key2,  METH_NOARGS, "Alias_Prowod2Key2"},
+    {"PartnerKey2", (PyCFunction)Alias_PartnerKey2,  METH_NOARGS, "Alias_PartnerKey2"},
 
-    {"Prowod2Key3", (PyCFunction)Alias_Prowod2Key3,  METH_NOARGS, "Alias_Prowod2Key3"},
+    {"PartnerKey3", (PyCFunction)Alias_PartnerKey3,  METH_NOARGS, "Alias_PartnerKey3"},
 
-    {"DocumentLink", (PyCFunction)Alias_DocumentLink,  METH_NOARGS, "Alias_DocumentLink"},
+    {"DocumentType", (PyCFunction)Alias_DocumentType,  METH_NOARGS, "Alias_DocumentType"},
 
-    {"DocumentLinkKey0", (PyCFunction)Alias_DocumentLinkKey0,  METH_NOARGS, "Alias_DocumentLinkKey0"},
+    {"DocumentTypeKey0", (PyCFunction)Alias_DocumentTypeKey0,  METH_NOARGS, "Alias_DocumentTypeKey0"},
 
-    {"DocumentLinkKey1", (PyCFunction)Alias_DocumentLinkKey1,  METH_NOARGS, "Alias_DocumentLinkKey1"},
+    {"Stock", (PyCFunction)Alias_Stock,  METH_NOARGS, "Alias_Stock"},
 
-    {"ProductLink", (PyCFunction)Alias_ProductLink,  METH_NOARGS, "Alias_ProductLink"},
+    {"StockKey0", (PyCFunction)Alias_StockKey0,  METH_NOARGS, "Alias_StockKey0"},
 
-    {"ProductLinkKey0", (PyCFunction)Alias_ProductLinkKey0,  METH_NOARGS, "Alias_ProductLinkKey0"},
+    {"StockKey1", (PyCFunction)Alias_StockKey1,  METH_NOARGS, "Alias_StockKey1"},
 
-    {"ProductLinkKey1", (PyCFunction)Alias_ProductLinkKey1,  METH_NOARGS, "Alias_ProductLinkKey1"},
+    {"StockKey2", (PyCFunction)Alias_StockKey2,  METH_NOARGS, "Alias_StockKey2"},
 
-    {"ProductData", (PyCFunction)Alias_ProductData,  METH_NOARGS, "Alias_ProductData"},
+    {"StockKey3", (PyCFunction)Alias_StockKey3,  METH_NOARGS, "Alias_StockKey3"},
 
-    {"ProductDataKey0", (PyCFunction)Alias_ProductDataKey0,  METH_NOARGS, "Alias_ProductDataKey0"},
+    {"Subaccount", (PyCFunction)Alias_Subaccount,  METH_NOARGS, "Alias_Subaccount"},
+
+    {"SubaccountKey0", (PyCFunction)Alias_SubaccountKey0,  METH_NOARGS, "Alias_SubaccountKey0"},
+
+    {"Saldo", (PyCFunction)Alias_Saldo,  METH_NOARGS, "Alias_Saldo"},
+
+    {"SaldoKey0", (PyCFunction)Alias_SaldoKey0,  METH_NOARGS, "Alias_SaldoKey0"},
+
+    {"ProductView", (PyCFunction)Alias_ProductView,  METH_NOARGS, "Alias_ProductView"},
+
+    {"ProductViewKey0", (PyCFunction)Alias_ProductViewKey0,  METH_NOARGS, "Alias_ProductViewKey0"},
+
+    {"ProductViewKey1", (PyCFunction)Alias_ProductViewKey1,  METH_NOARGS, "Alias_ProductViewKey1"},
+
+    {"Group", (PyCFunction)Alias_Group,  METH_NOARGS, "Alias_Group"},
+
+    {"GroupKey0", (PyCFunction)Alias_GroupKey0,  METH_NOARGS, "Alias_GroupKey0"},
+
+    {"GroupKey1", (PyCFunction)Alias_GroupKey1,  METH_NOARGS, "Alias_GroupKey1"},
 
     {"User", (PyCFunction)Alias_User,  METH_NOARGS, "Alias_User"},
 
     {"UserKey0", (PyCFunction)Alias_UserKey0,  METH_NOARGS, "Alias_UserKey0"},
-
-    {"Class", (PyCFunction)Alias_Class,  METH_NOARGS, "Alias_Class"},
-
-    {"ClassKey0", (PyCFunction)Alias_ClassKey0,  METH_NOARGS, "Alias_ClassKey0"},
-
-    {"PartnerData", (PyCFunction)Alias_PartnerData,  METH_NOARGS, "Alias_PartnerData"},
-
-    {"PartnerDataKey0", (PyCFunction)Alias_PartnerDataKey0,  METH_NOARGS, "Alias_PartnerDataKey0"},
-
-    {"PartnerDataKey1", (PyCFunction)Alias_PartnerDataKey1,  METH_NOARGS, "Alias_PartnerDataKey1"},
 
     {"Realization", (PyCFunction)Alias_Realization,  METH_NOARGS, "Alias_Realization"},
 
@@ -872,11 +908,65 @@ static PyMethodDef Alias_methods[] = {
 
     {"RealizationKey4", (PyCFunction)Alias_RealizationKey4,  METH_NOARGS, "Alias_RealizationKey4"},
 
-    {"Subgroup", (PyCFunction)Alias_Subgroup,  METH_NOARGS, "Alias_Subgroup"},
+    {"Store", (PyCFunction)Alias_Store,  METH_NOARGS, "Alias_Store"},
 
-    {"SubgroupKey0", (PyCFunction)Alias_SubgroupKey0,  METH_NOARGS, "Alias_SubgroupKey0"},
+    {"StoreKey0", (PyCFunction)Alias_StoreKey0,  METH_NOARGS, "Alias_StoreKey0"},
 
-    {"SubgroupKey1", (PyCFunction)Alias_SubgroupKey1,  METH_NOARGS, "Alias_SubgroupKey1"},
+    {"Enum", (PyCFunction)Alias_Enum,  METH_NOARGS, "Alias_Enum"},
+
+    {"EnumKey0", (PyCFunction)Alias_EnumKey0,  METH_NOARGS, "Alias_EnumKey0"},
+
+    {"DocumentProw", (PyCFunction)Alias_DocumentProw,  METH_NOARGS, "Alias_DocumentProw"},
+
+    {"DocumentProwKey0", (PyCFunction)Alias_DocumentProwKey0,  METH_NOARGS, "Alias_DocumentProwKey0"},
+
+    {"Barcode", (PyCFunction)Alias_Barcode,  METH_NOARGS, "Alias_Barcode"},
+
+    {"BarcodeKey0", (PyCFunction)Alias_BarcodeKey0,  METH_NOARGS, "Alias_BarcodeKey0"},
+
+    {"BarcodeKey1", (PyCFunction)Alias_BarcodeKey1,  METH_NOARGS, "Alias_BarcodeKey1"},
+
+    {"Prowod2", (PyCFunction)Alias_Prowod2,  METH_NOARGS, "Alias_Prowod2"},
+
+    {"Prowod2Key0", (PyCFunction)Alias_Prowod2Key0,  METH_NOARGS, "Alias_Prowod2Key0"},
+
+    {"Prowod2Key1", (PyCFunction)Alias_Prowod2Key1,  METH_NOARGS, "Alias_Prowod2Key1"},
+
+    {"Prowod2Key2", (PyCFunction)Alias_Prowod2Key2,  METH_NOARGS, "Alias_Prowod2Key2"},
+
+    {"Prowod2Key3", (PyCFunction)Alias_Prowod2Key3,  METH_NOARGS, "Alias_Prowod2Key3"},
+
+    {"DocumentData", (PyCFunction)Alias_DocumentData,  METH_NOARGS, "Alias_DocumentData"},
+
+    {"DocumentDataKey0", (PyCFunction)Alias_DocumentDataKey0,  METH_NOARGS, "Alias_DocumentDataKey0"},
+
+    {"DocumentDataKey1", (PyCFunction)Alias_DocumentDataKey1,  METH_NOARGS, "Alias_DocumentDataKey1"},
+
+    {"DocumentDataKey2", (PyCFunction)Alias_DocumentDataKey2,  METH_NOARGS, "Alias_DocumentDataKey2"},
+
+    {"Shift", (PyCFunction)Alias_Shift,  METH_NOARGS, "Alias_Shift"},
+
+    {"ShiftKey0", (PyCFunction)Alias_ShiftKey0,  METH_NOARGS, "Alias_ShiftKey0"},
+
+    {"ShiftKey1", (PyCFunction)Alias_ShiftKey1,  METH_NOARGS, "Alias_ShiftKey1"},
+
+    {"ShiftKey2", (PyCFunction)Alias_ShiftKey2,  METH_NOARGS, "Alias_ShiftKey2"},
+
+    {"ShiftKey3", (PyCFunction)Alias_ShiftKey3,  METH_NOARGS, "Alias_ShiftKey3"},
+
+    {"DocumentLink", (PyCFunction)Alias_DocumentLink,  METH_NOARGS, "Alias_DocumentLink"},
+
+    {"DocumentLinkKey0", (PyCFunction)Alias_DocumentLinkKey0,  METH_NOARGS, "Alias_DocumentLinkKey0"},
+
+    {"DocumentLinkKey1", (PyCFunction)Alias_DocumentLinkKey1,  METH_NOARGS, "Alias_DocumentLinkKey1"},
+
+    {"PartnerData", (PyCFunction)Alias_PartnerData,  METH_NOARGS, "Alias_PartnerData"},
+
+    {"PartnerDataKey0", (PyCFunction)Alias_PartnerDataKey0,  METH_NOARGS, "Alias_PartnerDataKey0"},
+
+    {"PartnerDataKey1", (PyCFunction)Alias_PartnerDataKey1,  METH_NOARGS, "Alias_PartnerDataKey1"},
+
+    {"PartnerDataKey2", (PyCFunction)Alias_PartnerDataKey2,  METH_NOARGS, "Alias_PartnerDataKey2"},
 
     {"Protocol", (PyCFunction)Alias_Protocol,  METH_NOARGS, "Alias_Protocol"},
 
@@ -886,85 +976,9 @@ static PyMethodDef Alias_methods[] = {
 
     {"ProtocolKey2", (PyCFunction)Alias_ProtocolKey2,  METH_NOARGS, "Alias_ProtocolKey2"},
 
-    {"Group", (PyCFunction)Alias_Group,  METH_NOARGS, "Alias_Group"},
-
-    {"GroupKey0", (PyCFunction)Alias_GroupKey0,  METH_NOARGS, "Alias_GroupKey0"},
-
-    {"GroupKey1", (PyCFunction)Alias_GroupKey1,  METH_NOARGS, "Alias_GroupKey1"},
-
-    {"DocumentData", (PyCFunction)Alias_DocumentData,  METH_NOARGS, "Alias_DocumentData"},
-
-    {"DocumentDataKey0", (PyCFunction)Alias_DocumentDataKey0,  METH_NOARGS, "Alias_DocumentDataKey0"},
-
-    {"Subaccount", (PyCFunction)Alias_Subaccount,  METH_NOARGS, "Alias_Subaccount"},
-
-    {"SubaccountKey0", (PyCFunction)Alias_SubaccountKey0,  METH_NOARGS, "Alias_SubaccountKey0"},
-
-    {"Barcode", (PyCFunction)Alias_Barcode,  METH_NOARGS, "Alias_Barcode"},
-
-    {"BarcodeKey0", (PyCFunction)Alias_BarcodeKey0,  METH_NOARGS, "Alias_BarcodeKey0"},
-
-    {"BarcodeKey1", (PyCFunction)Alias_BarcodeKey1,  METH_NOARGS, "Alias_BarcodeKey1"},
-
-    {"CheckSum", (PyCFunction)Alias_CheckSum,  METH_NOARGS, "Alias_CheckSum"},
-
-    {"CheckSumKey0", (PyCFunction)Alias_CheckSumKey0,  METH_NOARGS, "Alias_CheckSumKey0"},
-
-    {"CheckSumKey1", (PyCFunction)Alias_CheckSumKey1,  METH_NOARGS, "Alias_CheckSumKey1"},
-
-    {"Partner", (PyCFunction)Alias_Partner,  METH_NOARGS, "Alias_Partner"},
-
-    {"PartnerKey0", (PyCFunction)Alias_PartnerKey0,  METH_NOARGS, "Alias_PartnerKey0"},
-
-    {"PartnerKey1", (PyCFunction)Alias_PartnerKey1,  METH_NOARGS, "Alias_PartnerKey1"},
-
-    {"PartnerKey2", (PyCFunction)Alias_PartnerKey2,  METH_NOARGS, "Alias_PartnerKey2"},
-
-    {"PartnerKey3", (PyCFunction)Alias_PartnerKey3,  METH_NOARGS, "Alias_PartnerKey3"},
-
-    {"DocumentProw", (PyCFunction)Alias_DocumentProw,  METH_NOARGS, "Alias_DocumentProw"},
-
-    {"DocumentProwKey0", (PyCFunction)Alias_DocumentProwKey0,  METH_NOARGS, "Alias_DocumentProwKey0"},
-
-    {"Prowod", (PyCFunction)Alias_Prowod,  METH_NOARGS, "Alias_Prowod"},
-
-    {"ProwodKey0", (PyCFunction)Alias_ProwodKey0,  METH_NOARGS, "Alias_ProwodKey0"},
-
-    {"ProwodKey1", (PyCFunction)Alias_ProwodKey1,  METH_NOARGS, "Alias_ProwodKey1"},
-
-    {"ProwodKey2", (PyCFunction)Alias_ProwodKey2,  METH_NOARGS, "Alias_ProwodKey2"},
-
-    {"ProwodKey3", (PyCFunction)Alias_ProwodKey3,  METH_NOARGS, "Alias_ProwodKey3"},
-
-    {"ProwodKey4", (PyCFunction)Alias_ProwodKey4,  METH_NOARGS, "Alias_ProwodKey4"},
-
     {"Division", (PyCFunction)Alias_Division,  METH_NOARGS, "Alias_Division"},
 
     {"DivisionKey0", (PyCFunction)Alias_DivisionKey0,  METH_NOARGS, "Alias_DivisionKey0"},
-
-    {"Enum", (PyCFunction)Alias_Enum,  METH_NOARGS, "Alias_Enum"},
-
-    {"EnumKey0", (PyCFunction)Alias_EnumKey0,  METH_NOARGS, "Alias_EnumKey0"},
-
-    {"Account", (PyCFunction)Alias_Account,  METH_NOARGS, "Alias_Account"},
-
-    {"AccountKey0", (PyCFunction)Alias_AccountKey0,  METH_NOARGS, "Alias_AccountKey0"},
-
-    {"Region", (PyCFunction)Alias_Region,  METH_NOARGS, "Alias_Region"},
-
-    {"RegionKey0", (PyCFunction)Alias_RegionKey0,  METH_NOARGS, "Alias_RegionKey0"},
-
-    {"RegionKey1", (PyCFunction)Alias_RegionKey1,  METH_NOARGS, "Alias_RegionKey1"},
-
-    {"DocumentType", (PyCFunction)Alias_DocumentType,  METH_NOARGS, "Alias_DocumentType"},
-
-    {"DocumentTypeKey0", (PyCFunction)Alias_DocumentTypeKey0,  METH_NOARGS, "Alias_DocumentTypeKey0"},
-
-    {"ProductView", (PyCFunction)Alias_ProductView,  METH_NOARGS, "Alias_ProductView"},
-
-    {"ProductViewKey0", (PyCFunction)Alias_ProductViewKey0,  METH_NOARGS, "Alias_ProductViewKey0"},
-
-    {"ProductViewKey1", (PyCFunction)Alias_ProductViewKey1,  METH_NOARGS, "Alias_ProductViewKey1"},
 
     {"Document", (PyCFunction)Alias_Document,  METH_NOARGS, "Alias_Document"},
 
@@ -976,17 +990,55 @@ static PyMethodDef Alias_methods[] = {
 
     {"DocumentKey3", (PyCFunction)Alias_DocumentKey3,  METH_NOARGS, "Alias_DocumentKey3"},
 
-    {"Product", (PyCFunction)Alias_Product,  METH_NOARGS, "Alias_Product"},
+    {"DocumentKey4", (PyCFunction)Alias_DocumentKey4,  METH_NOARGS, "Alias_DocumentKey4"},
 
-    {"ProductKey0", (PyCFunction)Alias_ProductKey0,  METH_NOARGS, "Alias_ProductKey0"},
+    {"DocumentOrder", (PyCFunction)Alias_DocumentOrder,  METH_NOARGS, "Alias_DocumentOrder"},
 
-    {"ProductKey1", (PyCFunction)Alias_ProductKey1,  METH_NOARGS, "Alias_ProductKey1"},
+    {"DocumentOrderKey0", (PyCFunction)Alias_DocumentOrderKey0,  METH_NOARGS, "Alias_DocumentOrderKey0"},
 
-    {"ProductKey2", (PyCFunction)Alias_ProductKey2,  METH_NOARGS, "Alias_ProductKey2"},
+    {"DocumentOrderKey1", (PyCFunction)Alias_DocumentOrderKey1,  METH_NOARGS, "Alias_DocumentOrderKey1"},
 
-    {"ProductKey3", (PyCFunction)Alias_ProductKey3,  METH_NOARGS, "Alias_ProductKey3"},
+    {"DocumentOrderKey2", (PyCFunction)Alias_DocumentOrderKey2,  METH_NOARGS, "Alias_DocumentOrderKey2"},
 
-    {"ProductKey4", (PyCFunction)Alias_ProductKey4,  METH_NOARGS, "Alias_ProductKey4"},
+    {"DocumentOrderKey3", (PyCFunction)Alias_DocumentOrderKey3,  METH_NOARGS, "Alias_DocumentOrderKey3"},
+
+    {"DocumentOrderKey4", (PyCFunction)Alias_DocumentOrderKey4,  METH_NOARGS, "Alias_DocumentOrderKey4"},
+
+    {"ProductLink", (PyCFunction)Alias_ProductLink,  METH_NOARGS, "Alias_ProductLink"},
+
+    {"ProductLinkKey0", (PyCFunction)Alias_ProductLinkKey0,  METH_NOARGS, "Alias_ProductLinkKey0"},
+
+    {"ProductLinkKey1", (PyCFunction)Alias_ProductLinkKey1,  METH_NOARGS, "Alias_ProductLinkKey1"},
+
+    {"Class", (PyCFunction)Alias_Class,  METH_NOARGS, "Alias_Class"},
+
+    {"ClassKey0", (PyCFunction)Alias_ClassKey0,  METH_NOARGS, "Alias_ClassKey0"},
+
+    {"Region", (PyCFunction)Alias_Region,  METH_NOARGS, "Alias_Region"},
+
+    {"RegionKey0", (PyCFunction)Alias_RegionKey0,  METH_NOARGS, "Alias_RegionKey0"},
+
+    {"RegionKey1", (PyCFunction)Alias_RegionKey1,  METH_NOARGS, "Alias_RegionKey1"},
+
+    {"Subgroup", (PyCFunction)Alias_Subgroup,  METH_NOARGS, "Alias_Subgroup"},
+
+    {"SubgroupKey0", (PyCFunction)Alias_SubgroupKey0,  METH_NOARGS, "Alias_SubgroupKey0"},
+
+    {"SubgroupKey1", (PyCFunction)Alias_SubgroupKey1,  METH_NOARGS, "Alias_SubgroupKey1"},
+
+    {"ProductData", (PyCFunction)Alias_ProductData,  METH_NOARGS, "Alias_ProductData"},
+
+    {"ProductDataKey0", (PyCFunction)Alias_ProductDataKey0,  METH_NOARGS, "Alias_ProductDataKey0"},
+
+    {"Account", (PyCFunction)Alias_Account,  METH_NOARGS, "Alias_Account"},
+
+    {"AccountKey0", (PyCFunction)Alias_AccountKey0,  METH_NOARGS, "Alias_AccountKey0"},
+
+    {"CheckSum", (PyCFunction)Alias_CheckSum,  METH_NOARGS, "Alias_CheckSum"},
+
+    {"CheckSumKey0", (PyCFunction)Alias_CheckSumKey0,  METH_NOARGS, "Alias_CheckSumKey0"},
+
+    {"CheckSumKey1", (PyCFunction)Alias_CheckSumKey1,  METH_NOARGS, "Alias_CheckSumKey1"},
 
     {"Check", (PyCFunction)Alias_Check,  METH_NOARGS, "Alias_Check"},
 
@@ -1002,41 +1054,29 @@ static PyMethodDef Alias_methods[] = {
 
     {"DocumentViewKey1", (PyCFunction)Alias_DocumentViewKey1,  METH_NOARGS, "Alias_DocumentViewKey1"},
 
-    {"Shift", (PyCFunction)Alias_Shift,  METH_NOARGS, "Alias_Shift"},
+    {"Prowod", (PyCFunction)Alias_Prowod,  METH_NOARGS, "Alias_Prowod"},
 
-    {"ShiftKey0", (PyCFunction)Alias_ShiftKey0,  METH_NOARGS, "Alias_ShiftKey0"},
+    {"ProwodKey0", (PyCFunction)Alias_ProwodKey0,  METH_NOARGS, "Alias_ProwodKey0"},
 
-    {"ShiftKey1", (PyCFunction)Alias_ShiftKey1,  METH_NOARGS, "Alias_ShiftKey1"},
+    {"ProwodKey1", (PyCFunction)Alias_ProwodKey1,  METH_NOARGS, "Alias_ProwodKey1"},
 
-    {"ShiftKey2", (PyCFunction)Alias_ShiftKey2,  METH_NOARGS, "Alias_ShiftKey2"},
+    {"ProwodKey2", (PyCFunction)Alias_ProwodKey2,  METH_NOARGS, "Alias_ProwodKey2"},
 
-    {"ShiftKey3", (PyCFunction)Alias_ShiftKey3,  METH_NOARGS, "Alias_ShiftKey3"},
+    {"ProwodKey3", (PyCFunction)Alias_ProwodKey3,  METH_NOARGS, "Alias_ProwodKey3"},
 
-    {"Store", (PyCFunction)Alias_Store,  METH_NOARGS, "Alias_Store"},
+    {"ProwodKey4", (PyCFunction)Alias_ProwodKey4,  METH_NOARGS, "Alias_ProwodKey4"},
 
-    {"StoreKey0", (PyCFunction)Alias_StoreKey0,  METH_NOARGS, "Alias_StoreKey0"},
+    {"Product", (PyCFunction)Alias_Product,  METH_NOARGS, "Alias_Product"},
 
-    {"Saldo", (PyCFunction)Alias_Saldo,  METH_NOARGS, "Alias_Saldo"},
+    {"ProductKey0", (PyCFunction)Alias_ProductKey0,  METH_NOARGS, "Alias_ProductKey0"},
 
-    {"SaldoKey0", (PyCFunction)Alias_SaldoKey0,  METH_NOARGS, "Alias_SaldoKey0"},
+    {"ProductKey1", (PyCFunction)Alias_ProductKey1,  METH_NOARGS, "Alias_ProductKey1"},
 
-    {"Stock", (PyCFunction)Alias_Stock,  METH_NOARGS, "Alias_Stock"},
+    {"ProductKey2", (PyCFunction)Alias_ProductKey2,  METH_NOARGS, "Alias_ProductKey2"},
 
-    {"StockKey0", (PyCFunction)Alias_StockKey0,  METH_NOARGS, "Alias_StockKey0"},
+    {"ProductKey3", (PyCFunction)Alias_ProductKey3,  METH_NOARGS, "Alias_ProductKey3"},
 
-    {"StockKey1", (PyCFunction)Alias_StockKey1,  METH_NOARGS, "Alias_StockKey1"},
-
-    {"DocumentOrder", (PyCFunction)Alias_DocumentOrder,  METH_NOARGS, "Alias_DocumentOrder"},
-
-    {"DocumentOrderKey0", (PyCFunction)Alias_DocumentOrderKey0,  METH_NOARGS, "Alias_DocumentOrderKey0"},
-
-    {"DocumentOrderKey1", (PyCFunction)Alias_DocumentOrderKey1,  METH_NOARGS, "Alias_DocumentOrderKey1"},
-
-    {"DocumentOrderKey2", (PyCFunction)Alias_DocumentOrderKey2,  METH_NOARGS, "Alias_DocumentOrderKey2"},
-
-    {"DocumentOrderKey3", (PyCFunction)Alias_DocumentOrderKey3,  METH_NOARGS, "Alias_DocumentOrderKey3"},
-
-    {"DocumentOrderKey4", (PyCFunction)Alias_DocumentOrderKey4,  METH_NOARGS, "Alias_DocumentOrderKey4"},
+    {"ProductKey4", (PyCFunction)Alias_ProductKey4,  METH_NOARGS, "Alias_ProductKey4"},
 
     {NULL}  /* Sentinel */
 };

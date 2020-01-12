@@ -20,4 +20,18 @@ typedef struct {
 } DocumentDataKey0;
 PyTypeObject *getDocumentDataKey0Type();
 
+typedef struct {
+    PyObject_HEAD
+    document_data_key1_t *priv;
+    Alias *alias;
+} DocumentDataKey1;
+PyTypeObject *getDocumentDataKey1Type();
+
+typedef struct {
+    PyObject_HEAD
+    document_data_key2_t *priv;
+    Alias *alias;
+} DocumentDataKey2;
+PyTypeObject *getDocumentDataKey2Type();
+
 #endif // DocumentData_H_INCLUDED

@@ -469,9 +469,11 @@ static void do_rpc_run(do_rpc_t *ctrl
         return;
     }
 
-    do_log_debug(ZONE,"setsockopt(SO_REUSEADDR)");
-	sockaddr_in_t srvaddr, cltaddr;
-	socklen_t clt_len;
+#ifdef DEBUG        
+    do_log(LOG_INFO,"setsockopt(SO_REUSEADDR)");
+#endif    
+    sockaddr_in_t srvaddr, cltaddr;
+    socklen_t clt_len;
 
     srvaddr.sin_family      = AF_INET;
     srvaddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -487,19 +489,26 @@ static void do_rpc_run(do_rpc_t *ctrl
 	    do_log(LOG_ERR, "bind() failed with error: " SOCKERROR_SUFFIX);
         return;
     }
-    do_log_debug(ZONE, "bind()");
+#ifdef DEBUG    
+    do_log(LOG_INFO, "bind()");
+#endif    
     if( listen(sock, MAX_CLIENTS) )
     {
-	    do_log(LOG_ERR, "listen() failed with error: " SOCKERROR_SUFFIX);
+	do_log(LOG_ERR, "listen() failed with error: " SOCKERROR_SUFFIX);
         return;
     }
-    do_log_debug(ZONE, "listen()");
+#ifdef DEBUG    
+    do_log(LOG_INFO, "listen()");
+#endif    
     while ( 1 )
     {
         if (do_proc_state_get_state(ctrl->info.proc_state) == DO_STATE_STOP ||
             do_proc_state_get_state(ctrl->info.proc_state) == DO_STATE_STOPING)  break;
 
         clt_len = sizeof(cltaddr);
+#ifdef DEBUG    
+       do_log(LOG_INFO, "accept()");
+#endif    
         srvsock = accept(sock, (struct sockaddr *) &cltaddr, &clt_len);
         if (do_proc_state_get_state(ctrl->info.proc_state) == DO_STATE_STOP || do_proc_state_get_state(ctrl->info.proc_state) == DO_STATE_STOPING)  break;
 
@@ -510,10 +519,15 @@ static void do_rpc_run(do_rpc_t *ctrl
         sockaddr_t  peer;
         socklen_t peerlen;
         peerlen = sizeof(peer);
+#ifdef DEBUG    
+       do_log(LOG_INFO, "accepted");
+#endif    
         if (0 == getpeername(srvsock, &peer, &peerlen))    {
-            do_log_debug(ZONE, "Try connect from %s:%i",
+//!!#ifdef DEBUG        
+            do_log(LOG_INFO, "Try connect from %s:%i",
                 inet_ntoa(((sockaddr_in_t *)&peer)->sin_addr),
                 ntohs(((sockaddr_in_t *)&peer)->sin_port));
+//#endif                
         }
         int indx, i;
         indx = -1;
@@ -1023,7 +1037,7 @@ static int do_rpc_exec_command(do_rpc_user_t *client, char *cmd)
     while (1) {
         if (!do_rpc_cmd_parser(client, cmd, &command, do_data_out))
             break;
-
+        do_log(LOG_INFO, "execute command \"%s\"", cmd);//!!
         if (command.cmd->level > client->userlevel) {
             do_data_set_err(do_data_out, "Permission denied");
             break;

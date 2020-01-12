@@ -128,7 +128,7 @@ DO_EXPORT int do_util_str_to_document_key0(do_alias_t *alias, const char *str, d
     do_text_set(alias, key0->sklad, head);
     ch++;
     do_text_set(alias, key0->document, ch);
-    return ch != '\0';
+    return *ch != '\0';
 }
 DO_EXPORT char *do_util_document_order_key0_to_str(do_alias_t *alias, document_order_key0_t *key0)
 {
@@ -609,12 +609,12 @@ DO_EXPORT do_list_t *do_city_get_cities(do_alias_t *alias)
     do_text_set(alias, partner_key0.g_code, CITY_REGION);
     do_cpy(key.g_code, partner_key0.g_code);
     partner_key0.code = 0;
-    retval = do_list_new(FALSE);
+    retval = do_list_new(TRUE);
 
     status = do_partner_key0(alias, &partner_key0, DO_GET_GE);
     while ( status == DO_OK ) {
         if ( do_cmp(key.g_code, partner_key0.g_code) ) break;
-        do_list_add(retval, DOINT_TO_POINTER(partner_key0.code));
+        do_list_add_alloc(retval, &partner_key0.code, sizeof(partner_key0.code));
         status = do_partner_key0(alias, &partner_key0, DO_GET_NEXT);
     }
     if ( status == DO_ERROR ) {
@@ -734,7 +734,7 @@ DO_EXPORT do_list_t *do_firm_get_firms(do_alias_t *alias)
     do_cpy(key.g_code, partner_key0.g_code);
     partner_key0.code = 0;
 
-    retval = do_list_new(FALSE);
+    retval = do_list_new(TRUE);
 
     status = do_partner_get0(alias, &partner, &partner_key0, DO_GET_GE);
     while ( status == DO_OK ) {
@@ -744,14 +744,15 @@ DO_EXPORT do_list_t *do_firm_get_firms(do_alias_t *alias)
         ch = strchr(value, '.');
         if ( ch ) {
             int firm = atoi(ch+1), flag = FALSE;
+	   
 
             for ( i = 0; i < retval->count; i++ )
-                if ( firm == DOPOINTER_TO_INT(retval->list[i]) ) {
+                if ( firm == *((int*)(retval->list[i])) ) {
                     flag = TRUE;
                     break;
                 }
             if ( !flag )
-                do_list_add(retval, DOINT_TO_POINTER(firm));
+                do_list_add_alloc(retval, &firm, sizeof(firm));
         }
         do_free(value);
         status = do_partner_get0(alias, &partner, &partner_key0, DO_GET_NEXT);

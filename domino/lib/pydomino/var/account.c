@@ -468,7 +468,7 @@ static PyObject *Account_set_sum_include(Account* self, PyObject *args, PyObject
 //    return result;
 }
 
-static PyObject *Account_gt(Account* self, PyObject *args, PyObject *kwds)
+static PyObject *Account_prev(Account* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -479,7 +479,7 @@ static PyObject *Account_gt(Account* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getAccountKey0Type() )
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_GT);
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_PREVIOUS);
     else
     
     {
@@ -492,7 +492,7 @@ static PyObject *Account_gt(Account* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Account_last(Account* self, PyObject *args, PyObject *kwds)
+static PyObject *Account_gt(Account* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -503,7 +503,7 @@ static PyObject *Account_last(Account* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getAccountKey0Type() )
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LAST);
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_GT);
     else
     
     {
@@ -540,7 +540,7 @@ static PyObject *Account_next(Account* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Account_le(Account* self, PyObject *args, PyObject *kwds)
+static PyObject *Account_ge(Account* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -551,31 +551,7 @@ static PyObject *Account_le(Account* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getAccountKey0Type() )
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Account_lt(Account* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getAccountKey0Type() )
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LT);
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -612,7 +588,7 @@ static PyObject *Account_equal(Account* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Account_ge(Account* self, PyObject *args, PyObject *kwds)
+static PyObject *Account_last(Account* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -623,7 +599,7 @@ static PyObject *Account_ge(Account* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getAccountKey0Type() )
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_GE);
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -636,7 +612,7 @@ static PyObject *Account_ge(Account* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Account_prev(Account* self, PyObject *args, PyObject *kwds)
+static PyObject *Account_lt(Account* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -647,7 +623,31 @@ static PyObject *Account_prev(Account* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getAccountKey0Type() )
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Account_le(Account* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getAccountKey0Type() )
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -743,162 +743,6 @@ static PyObject *Account_iter_gt(Account* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getAccountKey0Type() ) {
             status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Account_iter_last(Account* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getAccountKey0Type() ) {
-        key_cmp = (account_key0_t*)do_malloc(sizeof(account_key0_t));
-        memcpy(key_cmp, ((AccountKey0*)key)->priv, sizeof(account_key0_t));
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getAccountKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((account_key0_t*)key_cmp)->account, 
-                    ((AccountKey0*)key)->priv->account))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((account_key0_t*)key_cmp)->itog, 
-                    ((AccountKey0*)key)->priv->itog))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Account_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getAccountKey0Type() ) {
-            status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Account_iter_le(Account* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getAccountKey0Type() ) {
-        key_cmp = (account_key0_t*)do_malloc(sizeof(account_key0_t));
-        memcpy(key_cmp, ((AccountKey0*)key)->priv, sizeof(account_key0_t));
-        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getAccountKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((account_key0_t*)key_cmp)->account, 
-                    ((AccountKey0*)key)->priv->account))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((account_key0_t*)key_cmp)->itog, 
-                    ((AccountKey0*)key)->priv->itog))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Account_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getAccountKey0Type() ) {
-            status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1074,6 +918,84 @@ static PyObject *Account_iter_equal(Account* self, PyObject *args, PyObject *kwd
     return retval;
 }
 
+static PyObject *Account_iter_last(Account* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getAccountKey0Type() ) {
+        key_cmp = (account_key0_t*)do_malloc(sizeof(account_key0_t));
+        memcpy(key_cmp, ((AccountKey0*)key)->priv, sizeof(account_key0_t));
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getAccountKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((account_key0_t*)key_cmp)->account, 
+                    ((AccountKey0*)key)->priv->account))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((account_key0_t*)key_cmp)->itog, 
+                    ((AccountKey0*)key)->priv->itog))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Account_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getAccountKey0Type() ) {
+            status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Account_iter_lt(Account* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -1094,6 +1016,84 @@ static PyObject *Account_iter_lt(Account* self, PyObject *args, PyObject *kwds)
         key_cmp = (account_key0_t*)do_malloc(sizeof(account_key0_t));
         memcpy(key_cmp, ((AccountKey0*)key)->priv, sizeof(account_key0_t));
         status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getAccountKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((account_key0_t*)key_cmp)->account, 
+                    ((AccountKey0*)key)->priv->account))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((account_key0_t*)key_cmp)->itog, 
+                    ((AccountKey0*)key)->priv->itog))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Account_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getAccountKey0Type() ) {
+            status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Account_iter_le(Account* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getAccountKey0Type() ) {
+        key_cmp = (account_key0_t*)do_malloc(sizeof(account_key0_t));
+        memcpy(key_cmp, ((AccountKey0*)key)->priv, sizeof(account_key0_t));
+        status = do_account_get0(self->alias->alias, self->priv, ((AccountKey0*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -1230,19 +1230,19 @@ static PyObject *Account_iter_first(Account* self, PyObject *args, PyObject *kwd
     return retval;
 }
 
-static PyObject *Account_insert(Account* self)
+static PyObject *Account_update(Account* self)
 {
     int status;
-    status = do_account_insert(self->alias->alias, self->priv);
+    status = do_account_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Account_update(Account* self)
+static PyObject *Account_insert(Account* self)
 {
     int status;
-    status = do_account_update(self->alias->alias, self->priv);
+    status = do_account_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1597,41 +1597,41 @@ static PyMethodDef Account_methods[] = {
 
     {"set_sum_include", (PyCFunction)Account_set_sum_include, METH_VARARGS|METH_KEYWORDS, "Account_set_sum_include"},
 
-    {"get_gt", (PyCFunction)Account_gt, METH_VARARGS|METH_KEYWORDS, "Account_gt"},
+    {"get_prev", (PyCFunction)Account_prev, METH_VARARGS|METH_KEYWORDS, "Account_prev"},
 
-    {"get_last", (PyCFunction)Account_last, METH_VARARGS|METH_KEYWORDS, "Account_last"},
+    {"get_gt", (PyCFunction)Account_gt, METH_VARARGS|METH_KEYWORDS, "Account_gt"},
 
     {"get_next", (PyCFunction)Account_next, METH_VARARGS|METH_KEYWORDS, "Account_next"},
 
-    {"get_le", (PyCFunction)Account_le, METH_VARARGS|METH_KEYWORDS, "Account_le"},
-
-    {"get_lt", (PyCFunction)Account_lt, METH_VARARGS|METH_KEYWORDS, "Account_lt"},
+    {"get_ge", (PyCFunction)Account_ge, METH_VARARGS|METH_KEYWORDS, "Account_ge"},
 
     {"get_equal", (PyCFunction)Account_equal, METH_VARARGS|METH_KEYWORDS, "Account_equal"},
 
-    {"get_ge", (PyCFunction)Account_ge, METH_VARARGS|METH_KEYWORDS, "Account_ge"},
+    {"get_last", (PyCFunction)Account_last, METH_VARARGS|METH_KEYWORDS, "Account_last"},
 
-    {"get_prev", (PyCFunction)Account_prev, METH_VARARGS|METH_KEYWORDS, "Account_prev"},
+    {"get_lt", (PyCFunction)Account_lt, METH_VARARGS|METH_KEYWORDS, "Account_lt"},
+
+    {"get_le", (PyCFunction)Account_le, METH_VARARGS|METH_KEYWORDS, "Account_le"},
 
     {"get_first", (PyCFunction)Account_first, METH_VARARGS|METH_KEYWORDS, "Account_first"},
 
     {"gets_gt", (PyCFunction)Account_iter_gt, METH_VARARGS|METH_KEYWORDS, "Account_iter_gt"},
 
-    {"gets_last", (PyCFunction)Account_iter_last, METH_VARARGS|METH_KEYWORDS, "Account_iter_last"},
-
-    {"gets_le", (PyCFunction)Account_iter_le, METH_VARARGS|METH_KEYWORDS, "Account_iter_le"},
-
     {"gets_ge", (PyCFunction)Account_iter_ge, METH_VARARGS|METH_KEYWORDS, "Account_iter_ge"},
 
     {"gets_equal", (PyCFunction)Account_iter_equal, METH_VARARGS|METH_KEYWORDS, "Account_iter_equal"},
 
+    {"gets_last", (PyCFunction)Account_iter_last, METH_VARARGS|METH_KEYWORDS, "Account_iter_last"},
+
     {"gets_lt", (PyCFunction)Account_iter_lt, METH_VARARGS|METH_KEYWORDS, "Account_iter_lt"},
+
+    {"gets_le", (PyCFunction)Account_iter_le, METH_VARARGS|METH_KEYWORDS, "Account_iter_le"},
 
     {"gets_first", (PyCFunction)Account_iter_first, METH_VARARGS|METH_KEYWORDS, "Account_iter_first"},
 
-    {"insert", (PyCFunction)Account_insert, METH_VARARGS|METH_KEYWORDS, "Account_insert"},
-
     {"update", (PyCFunction)Account_update, METH_VARARGS|METH_KEYWORDS, "Account_update"},
+
+    {"insert", (PyCFunction)Account_insert, METH_VARARGS|METH_KEYWORDS, "Account_insert"},
 
     {"delete", (PyCFunction)Account_delete, METH_VARARGS|METH_KEYWORDS, "Account_delete"},
 
@@ -1781,24 +1781,24 @@ static PyObject *AccountKey0_set_total(AccountKey0* self, PyObject *args, PyObje
 //    return result;
 }
 
-static PyObject *AccountKey0_gt(AccountKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *AccountKey0_prev(AccountKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *AccountKey0_last(AccountKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *AccountKey0_gt(AccountKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1817,24 +1817,12 @@ static PyObject *AccountKey0_next(AccountKey0* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *AccountKey0_le(AccountKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *AccountKey0_ge(AccountKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *AccountKey0_lt(AccountKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1853,24 +1841,36 @@ static PyObject *AccountKey0_equal(AccountKey0* self, PyObject *args, PyObject *
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *AccountKey0_ge(AccountKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *AccountKey0_last(AccountKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *AccountKey0_prev(AccountKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *AccountKey0_lt(AccountKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *AccountKey0_le(AccountKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1923,90 +1923,6 @@ static PyObject *AccountKey0_iter_gt(AccountKey0* self, PyObject *args, PyObject
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_account_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *AccountKey0_iter_last(AccountKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    account_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.account, 
-                 self->priv->account))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.itog, 
-                 self->priv->itog))
-               break;
-       }
-
- 
-        item = AccountKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_account_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *AccountKey0_iter_le(AccountKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    account_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.account, 
-                 self->priv->account))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.itog, 
-                 self->priv->itog))
-               break;
-       }
-
- 
-        item = AccountKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_account_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2099,6 +2015,48 @@ static PyObject *AccountKey0_iter_equal(AccountKey0* self, PyObject *args, PyObj
     return retval;
 }
 
+static PyObject *AccountKey0_iter_last(AccountKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    account_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.account, 
+                 self->priv->account))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.itog, 
+                 self->priv->itog))
+               break;
+       }
+
+ 
+        item = AccountKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_account_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *AccountKey0_iter_lt(AccountKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -2114,6 +2072,48 @@ static PyObject *AccountKey0_iter_lt(AccountKey0* self, PyObject *args, PyObject
     }
     do_cpy(key_cmp, *self->priv);
     status = do_account_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.account, 
+                 self->priv->account))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.itog, 
+                 self->priv->itog))
+               break;
+       }
+
+ 
+        item = AccountKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_account_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *AccountKey0_iter_le(AccountKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    account_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_account_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -2390,35 +2390,35 @@ static PyMethodDef AccountKey0_methods[] = {
 
     {"set_total", (PyCFunction)AccountKey0_set_total, METH_VARARGS|METH_KEYWORDS, "AccountKey0_set_total"},
 
-    {"get_gt", (PyCFunction)AccountKey0_gt, METH_VARARGS|METH_KEYWORDS, "AccountKey0_gt"},
+    {"get_prev", (PyCFunction)AccountKey0_prev, METH_VARARGS|METH_KEYWORDS, "AccountKey0_prev"},
 
-    {"get_last", (PyCFunction)AccountKey0_last, METH_VARARGS|METH_KEYWORDS, "AccountKey0_last"},
+    {"get_gt", (PyCFunction)AccountKey0_gt, METH_VARARGS|METH_KEYWORDS, "AccountKey0_gt"},
 
     {"get_next", (PyCFunction)AccountKey0_next, METH_VARARGS|METH_KEYWORDS, "AccountKey0_next"},
 
-    {"get_le", (PyCFunction)AccountKey0_le, METH_VARARGS|METH_KEYWORDS, "AccountKey0_le"},
-
-    {"get_lt", (PyCFunction)AccountKey0_lt, METH_VARARGS|METH_KEYWORDS, "AccountKey0_lt"},
+    {"get_ge", (PyCFunction)AccountKey0_ge, METH_VARARGS|METH_KEYWORDS, "AccountKey0_ge"},
 
     {"get_equal", (PyCFunction)AccountKey0_equal, METH_VARARGS|METH_KEYWORDS, "AccountKey0_equal"},
 
-    {"get_ge", (PyCFunction)AccountKey0_ge, METH_VARARGS|METH_KEYWORDS, "AccountKey0_ge"},
+    {"get_last", (PyCFunction)AccountKey0_last, METH_VARARGS|METH_KEYWORDS, "AccountKey0_last"},
 
-    {"get_prev", (PyCFunction)AccountKey0_prev, METH_VARARGS|METH_KEYWORDS, "AccountKey0_prev"},
+    {"get_lt", (PyCFunction)AccountKey0_lt, METH_VARARGS|METH_KEYWORDS, "AccountKey0_lt"},
+
+    {"get_le", (PyCFunction)AccountKey0_le, METH_VARARGS|METH_KEYWORDS, "AccountKey0_le"},
 
     {"get_first", (PyCFunction)AccountKey0_first, METH_VARARGS|METH_KEYWORDS, "AccountKey0_first"},
 
     {"gets_gt", (PyCFunction)AccountKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)AccountKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)AccountKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)AccountKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)AccountKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)AccountKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)AccountKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)AccountKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_le"},
 
     {"gets_first", (PyCFunction)AccountKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "AccountKey0_iter_first"},
 

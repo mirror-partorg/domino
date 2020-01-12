@@ -960,6 +960,46 @@ static PyObject *Prowod_set_sums(Prowod* self, PyObject *args, PyObject *kwds)
     return Py_None;
 }
 
+static PyObject *Prowod_prev(Prowod* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProwodKey0Type() )
+        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey1Type() )
+        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey2Type() )
+        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey3Type() )
+        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey4Type() )
+        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Prowod_gt(Prowod* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -988,46 +1028,6 @@ static PyObject *Prowod_gt(Prowod* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getProwodKey4Type() )
         status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_GT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Prowod_last(Prowod* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProwodKey0Type() )
-        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey1Type() )
-        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey2Type() )
-        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey3Type() )
-        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey4Type() )
-        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -1080,7 +1080,7 @@ static PyObject *Prowod_next(Prowod* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Prowod_le(Prowod* self, PyObject *args, PyObject *kwds)
+static PyObject *Prowod_ge(Prowod* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -1091,63 +1091,23 @@ static PyObject *Prowod_le(Prowod* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getProwodKey0Type() )
-        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LE);
+        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getProwodKey1Type() )
-        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LE);
+        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getProwodKey2Type() )
-        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LE);
+        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getProwodKey3Type() )
-        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LE);
+        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getProwodKey4Type() )
-        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Prowod_lt(Prowod* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProwodKey0Type() )
-        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey1Type() )
-        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey2Type() )
-        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey3Type() )
-        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getProwodKey4Type() )
-        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LT);
+        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -1200,7 +1160,7 @@ static PyObject *Prowod_equal(Prowod* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Prowod_ge(Prowod* self, PyObject *args, PyObject *kwds)
+static PyObject *Prowod_last(Prowod* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -1211,23 +1171,23 @@ static PyObject *Prowod_ge(Prowod* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getProwodKey0Type() )
-        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_GE);
+        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getProwodKey1Type() )
-        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_GE);
+        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getProwodKey2Type() )
-        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_GE);
+        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getProwodKey3Type() )
-        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_GE);
+        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getProwodKey4Type() )
-        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_GE);
+        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -1240,7 +1200,7 @@ static PyObject *Prowod_ge(Prowod* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Prowod_prev(Prowod* self, PyObject *args, PyObject *kwds)
+static PyObject *Prowod_lt(Prowod* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -1251,23 +1211,63 @@ static PyObject *Prowod_prev(Prowod* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getProwodKey0Type() )
-        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getProwodKey1Type() )
-        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getProwodKey2Type() )
-        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_PREVIOUS);
+        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getProwodKey3Type() )
-        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_PREVIOUS);
+        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getProwodKey4Type() )
-        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_PREVIOUS);
+        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Prowod_le(Prowod* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProwodKey0Type() )
+        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey1Type() )
+        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey2Type() )
+        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey3Type() )
+        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getProwodKey4Type() )
+        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -1585,574 +1585,6 @@ static PyObject *Prowod_iter_gt(Prowod* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getProwodKey4Type() ) {
             status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Prowod_iter_last(Prowod* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getProwodKey0Type() ) {
-        key_cmp = (prowod_key0_t*)do_malloc(sizeof(prowod_key0_t));
-        memcpy(key_cmp, ((ProwodKey0*)key)->priv, sizeof(prowod_key0_t));
-        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey1Type() ) {
-        key_cmp = (prowod_key1_t*)do_malloc(sizeof(prowod_key1_t));
-        memcpy(key_cmp, ((ProwodKey1*)key)->priv, sizeof(prowod_key1_t));
-        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey2Type() ) {
-        key_cmp = (prowod_key2_t*)do_malloc(sizeof(prowod_key2_t));
-        memcpy(key_cmp, ((ProwodKey2*)key)->priv, sizeof(prowod_key2_t));
-        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey3Type() ) {
-        key_cmp = (prowod_key3_t*)do_malloc(sizeof(prowod_key3_t));
-        memcpy(key_cmp, ((ProwodKey3*)key)->priv, sizeof(prowod_key3_t));
-        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey4Type() ) {
-        key_cmp = (prowod_key4_t*)do_malloc(sizeof(prowod_key4_t));
-        memcpy(key_cmp, ((ProwodKey4*)key)->priv, sizeof(prowod_key4_t));
-        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getProwodKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->division, 
-                    ((ProwodKey0*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->date, 
-                    ((ProwodKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->type_doc, 
-                    ((ProwodKey0*)key)->priv->type_doc))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->document, 
-                    ((ProwodKey0*)key)->priv->document))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->division, 
-                    ((ProwodKey1*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->type_doc, 
-                    ((ProwodKey1*)key)->priv->type_doc))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->date, 
-                    ((ProwodKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->document, 
-                    ((ProwodKey1*)key)->priv->document))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->division, 
-                    ((ProwodKey2*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_account, 
-                    ((ProwodKey2*)key)->priv->debit_account))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_subaccount, 
-                    ((ProwodKey2*)key)->priv->debit_subaccount))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_g_code, 
-                    ((ProwodKey2*)key)->priv->debit_p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_code, 
-                    ((ProwodKey2*)key)->priv->debit_p_code))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_other, 
-                    ((ProwodKey2*)key)->priv->debit_other))
-                   break;
-            }
-       
-            if ( depth >= 7 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->date, 
-                    ((ProwodKey2*)key)->priv->date))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->division, 
-                    ((ProwodKey3*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_account, 
-                    ((ProwodKey3*)key)->priv->credit_account))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_subaccount, 
-                    ((ProwodKey3*)key)->priv->credit_subaccount))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_g_code, 
-                    ((ProwodKey3*)key)->priv->credit_p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_code, 
-                    ((ProwodKey3*)key)->priv->credit_p_code))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_other, 
-                    ((ProwodKey3*)key)->priv->credit_other))
-                   break;
-            }
-       
-            if ( depth >= 7 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->date, 
-                    ((ProwodKey3*)key)->priv->date))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey4Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key4_t*)key_cmp)->division, 
-                    ((ProwodKey4*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key4_t*)key_cmp)->document, 
-                    ((ProwodKey4*)key)->priv->document))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key4_t*)key_cmp)->date, 
-                    ((ProwodKey4*)key)->priv->date))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Prowod_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getProwodKey0Type() ) {
-            status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey1Type() ) {
-            status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey2Type() ) {
-            status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey3Type() ) {
-            status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey4Type() ) {
-            status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Prowod_iter_le(Prowod* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getProwodKey0Type() ) {
-        key_cmp = (prowod_key0_t*)do_malloc(sizeof(prowod_key0_t));
-        memcpy(key_cmp, ((ProwodKey0*)key)->priv, sizeof(prowod_key0_t));
-        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey1Type() ) {
-        key_cmp = (prowod_key1_t*)do_malloc(sizeof(prowod_key1_t));
-        memcpy(key_cmp, ((ProwodKey1*)key)->priv, sizeof(prowod_key1_t));
-        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey2Type() ) {
-        key_cmp = (prowod_key2_t*)do_malloc(sizeof(prowod_key2_t));
-        memcpy(key_cmp, ((ProwodKey2*)key)->priv, sizeof(prowod_key2_t));
-        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey3Type() ) {
-        key_cmp = (prowod_key3_t*)do_malloc(sizeof(prowod_key3_t));
-        memcpy(key_cmp, ((ProwodKey3*)key)->priv, sizeof(prowod_key3_t));
-        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProwodKey4Type() ) {
-        key_cmp = (prowod_key4_t*)do_malloc(sizeof(prowod_key4_t));
-        memcpy(key_cmp, ((ProwodKey4*)key)->priv, sizeof(prowod_key4_t));
-        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getProwodKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->division, 
-                    ((ProwodKey0*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->date, 
-                    ((ProwodKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->type_doc, 
-                    ((ProwodKey0*)key)->priv->type_doc))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key0_t*)key_cmp)->document, 
-                    ((ProwodKey0*)key)->priv->document))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->division, 
-                    ((ProwodKey1*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->type_doc, 
-                    ((ProwodKey1*)key)->priv->type_doc))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->date, 
-                    ((ProwodKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key1_t*)key_cmp)->document, 
-                    ((ProwodKey1*)key)->priv->document))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->division, 
-                    ((ProwodKey2*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_account, 
-                    ((ProwodKey2*)key)->priv->debit_account))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_subaccount, 
-                    ((ProwodKey2*)key)->priv->debit_subaccount))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_g_code, 
-                    ((ProwodKey2*)key)->priv->debit_p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_code, 
-                    ((ProwodKey2*)key)->priv->debit_p_code))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_other, 
-                    ((ProwodKey2*)key)->priv->debit_other))
-                   break;
-            }
-       
-            if ( depth >= 7 ) {
-                if ( do_cmp(((prowod_key2_t*)key_cmp)->date, 
-                    ((ProwodKey2*)key)->priv->date))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->division, 
-                    ((ProwodKey3*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_account, 
-                    ((ProwodKey3*)key)->priv->credit_account))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_subaccount, 
-                    ((ProwodKey3*)key)->priv->credit_subaccount))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_g_code, 
-                    ((ProwodKey3*)key)->priv->credit_p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_code, 
-                    ((ProwodKey3*)key)->priv->credit_p_code))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_other, 
-                    ((ProwodKey3*)key)->priv->credit_other))
-                   break;
-            }
-       
-            if ( depth >= 7 ) {
-                if ( do_cmp(((prowod_key3_t*)key_cmp)->date, 
-                    ((ProwodKey3*)key)->priv->date))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey4Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((prowod_key4_t*)key_cmp)->division, 
-                    ((ProwodKey4*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((prowod_key4_t*)key_cmp)->document, 
-                    ((ProwodKey4*)key)->priv->document))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((prowod_key4_t*)key_cmp)->date, 
-                    ((ProwodKey4*)key)->priv->date))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Prowod_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getProwodKey0Type() ) {
-            status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey1Type() ) {
-            status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey2Type() ) {
-            status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey3Type() ) {
-            status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProwodKey4Type() ) {
-            status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -2740,6 +2172,290 @@ static PyObject *Prowod_iter_equal(Prowod* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
+static PyObject *Prowod_iter_last(Prowod* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getProwodKey0Type() ) {
+        key_cmp = (prowod_key0_t*)do_malloc(sizeof(prowod_key0_t));
+        memcpy(key_cmp, ((ProwodKey0*)key)->priv, sizeof(prowod_key0_t));
+        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey1Type() ) {
+        key_cmp = (prowod_key1_t*)do_malloc(sizeof(prowod_key1_t));
+        memcpy(key_cmp, ((ProwodKey1*)key)->priv, sizeof(prowod_key1_t));
+        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey2Type() ) {
+        key_cmp = (prowod_key2_t*)do_malloc(sizeof(prowod_key2_t));
+        memcpy(key_cmp, ((ProwodKey2*)key)->priv, sizeof(prowod_key2_t));
+        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey3Type() ) {
+        key_cmp = (prowod_key3_t*)do_malloc(sizeof(prowod_key3_t));
+        memcpy(key_cmp, ((ProwodKey3*)key)->priv, sizeof(prowod_key3_t));
+        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey4Type() ) {
+        key_cmp = (prowod_key4_t*)do_malloc(sizeof(prowod_key4_t));
+        memcpy(key_cmp, ((ProwodKey4*)key)->priv, sizeof(prowod_key4_t));
+        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getProwodKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->division, 
+                    ((ProwodKey0*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->date, 
+                    ((ProwodKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->type_doc, 
+                    ((ProwodKey0*)key)->priv->type_doc))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->document, 
+                    ((ProwodKey0*)key)->priv->document))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->division, 
+                    ((ProwodKey1*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->type_doc, 
+                    ((ProwodKey1*)key)->priv->type_doc))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->date, 
+                    ((ProwodKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->document, 
+                    ((ProwodKey1*)key)->priv->document))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->division, 
+                    ((ProwodKey2*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_account, 
+                    ((ProwodKey2*)key)->priv->debit_account))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_subaccount, 
+                    ((ProwodKey2*)key)->priv->debit_subaccount))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_g_code, 
+                    ((ProwodKey2*)key)->priv->debit_p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_code, 
+                    ((ProwodKey2*)key)->priv->debit_p_code))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_other, 
+                    ((ProwodKey2*)key)->priv->debit_other))
+                   break;
+            }
+       
+            if ( depth >= 7 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->date, 
+                    ((ProwodKey2*)key)->priv->date))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->division, 
+                    ((ProwodKey3*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_account, 
+                    ((ProwodKey3*)key)->priv->credit_account))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_subaccount, 
+                    ((ProwodKey3*)key)->priv->credit_subaccount))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_g_code, 
+                    ((ProwodKey3*)key)->priv->credit_p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_code, 
+                    ((ProwodKey3*)key)->priv->credit_p_code))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_other, 
+                    ((ProwodKey3*)key)->priv->credit_other))
+                   break;
+            }
+       
+            if ( depth >= 7 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->date, 
+                    ((ProwodKey3*)key)->priv->date))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key4_t*)key_cmp)->division, 
+                    ((ProwodKey4*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key4_t*)key_cmp)->document, 
+                    ((ProwodKey4*)key)->priv->document))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key4_t*)key_cmp)->date, 
+                    ((ProwodKey4*)key)->priv->date))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Prowod_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getProwodKey0Type() ) {
+            status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey1Type() ) {
+            status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey2Type() ) {
+            status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey3Type() ) {
+            status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey4Type() ) {
+            status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Prowod_iter_lt(Prowod* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -2788,6 +2504,290 @@ static PyObject *Prowod_iter_lt(Prowod* self, PyObject *args, PyObject *kwds)
         key_cmp = (prowod_key4_t*)do_malloc(sizeof(prowod_key4_t));
         memcpy(key_cmp, ((ProwodKey4*)key)->priv, sizeof(prowod_key4_t));
         status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getProwodKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->division, 
+                    ((ProwodKey0*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->date, 
+                    ((ProwodKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->type_doc, 
+                    ((ProwodKey0*)key)->priv->type_doc))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key0_t*)key_cmp)->document, 
+                    ((ProwodKey0*)key)->priv->document))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->division, 
+                    ((ProwodKey1*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->type_doc, 
+                    ((ProwodKey1*)key)->priv->type_doc))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->date, 
+                    ((ProwodKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key1_t*)key_cmp)->document, 
+                    ((ProwodKey1*)key)->priv->document))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->division, 
+                    ((ProwodKey2*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_account, 
+                    ((ProwodKey2*)key)->priv->debit_account))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_subaccount, 
+                    ((ProwodKey2*)key)->priv->debit_subaccount))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_g_code, 
+                    ((ProwodKey2*)key)->priv->debit_p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_p_code, 
+                    ((ProwodKey2*)key)->priv->debit_p_code))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->debit_other, 
+                    ((ProwodKey2*)key)->priv->debit_other))
+                   break;
+            }
+       
+            if ( depth >= 7 ) {
+                if ( do_cmp(((prowod_key2_t*)key_cmp)->date, 
+                    ((ProwodKey2*)key)->priv->date))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->division, 
+                    ((ProwodKey3*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_account, 
+                    ((ProwodKey3*)key)->priv->credit_account))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_subaccount, 
+                    ((ProwodKey3*)key)->priv->credit_subaccount))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_g_code, 
+                    ((ProwodKey3*)key)->priv->credit_p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_p_code, 
+                    ((ProwodKey3*)key)->priv->credit_p_code))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->credit_other, 
+                    ((ProwodKey3*)key)->priv->credit_other))
+                   break;
+            }
+       
+            if ( depth >= 7 ) {
+                if ( do_cmp(((prowod_key3_t*)key_cmp)->date, 
+                    ((ProwodKey3*)key)->priv->date))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((prowod_key4_t*)key_cmp)->division, 
+                    ((ProwodKey4*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((prowod_key4_t*)key_cmp)->document, 
+                    ((ProwodKey4*)key)->priv->document))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((prowod_key4_t*)key_cmp)->date, 
+                    ((ProwodKey4*)key)->priv->date))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Prowod_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getProwodKey0Type() ) {
+            status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey1Type() ) {
+            status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey2Type() ) {
+            status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey3Type() ) {
+            status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProwodKey4Type() ) {
+            status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Prowod_iter_le(Prowod* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getProwodKey0Type() ) {
+        key_cmp = (prowod_key0_t*)do_malloc(sizeof(prowod_key0_t));
+        memcpy(key_cmp, ((ProwodKey0*)key)->priv, sizeof(prowod_key0_t));
+        status = do_prowod_get0(self->alias->alias, self->priv, ((ProwodKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey1Type() ) {
+        key_cmp = (prowod_key1_t*)do_malloc(sizeof(prowod_key1_t));
+        memcpy(key_cmp, ((ProwodKey1*)key)->priv, sizeof(prowod_key1_t));
+        status = do_prowod_get1(self->alias->alias, self->priv, ((ProwodKey1*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey2Type() ) {
+        key_cmp = (prowod_key2_t*)do_malloc(sizeof(prowod_key2_t));
+        memcpy(key_cmp, ((ProwodKey2*)key)->priv, sizeof(prowod_key2_t));
+        status = do_prowod_get2(self->alias->alias, self->priv, ((ProwodKey2*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey3Type() ) {
+        key_cmp = (prowod_key3_t*)do_malloc(sizeof(prowod_key3_t));
+        memcpy(key_cmp, ((ProwodKey3*)key)->priv, sizeof(prowod_key3_t));
+        status = do_prowod_get3(self->alias->alias, self->priv, ((ProwodKey3*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProwodKey4Type() ) {
+        key_cmp = (prowod_key4_t*)do_malloc(sizeof(prowod_key4_t));
+        memcpy(key_cmp, ((ProwodKey4*)key)->priv, sizeof(prowod_key4_t));
+        status = do_prowod_get4(self->alias->alias, self->priv, ((ProwodKey4*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -3308,19 +3308,19 @@ static PyObject *Prowod_iter_first(Prowod* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Prowod_insert(Prowod* self)
+static PyObject *Prowod_update(Prowod* self)
 {
     int status;
-    status = do_prowod_insert(self->alias->alias, self->priv);
+    status = do_prowod_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Prowod_update(Prowod* self)
+static PyObject *Prowod_insert(Prowod* self)
 {
     int status;
-    status = do_prowod_update(self->alias->alias, self->priv);
+    status = do_prowod_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -3955,41 +3955,41 @@ static PyMethodDef Prowod_methods[] = {
     {"clear_params", (PyCFunction)Prowod_params_clear, METH_NOARGS, "do_Prowod_param_clear"},
     {"set_params", (PyCFunction)Prowod_set_params, METH_VARARGS|METH_KEYWORDS, "do_Prowod_set_params"},
 
-    {"get_gt", (PyCFunction)Prowod_gt, METH_VARARGS|METH_KEYWORDS, "Prowod_gt"},
+    {"get_prev", (PyCFunction)Prowod_prev, METH_VARARGS|METH_KEYWORDS, "Prowod_prev"},
 
-    {"get_last", (PyCFunction)Prowod_last, METH_VARARGS|METH_KEYWORDS, "Prowod_last"},
+    {"get_gt", (PyCFunction)Prowod_gt, METH_VARARGS|METH_KEYWORDS, "Prowod_gt"},
 
     {"get_next", (PyCFunction)Prowod_next, METH_VARARGS|METH_KEYWORDS, "Prowod_next"},
 
-    {"get_le", (PyCFunction)Prowod_le, METH_VARARGS|METH_KEYWORDS, "Prowod_le"},
-
-    {"get_lt", (PyCFunction)Prowod_lt, METH_VARARGS|METH_KEYWORDS, "Prowod_lt"},
+    {"get_ge", (PyCFunction)Prowod_ge, METH_VARARGS|METH_KEYWORDS, "Prowod_ge"},
 
     {"get_equal", (PyCFunction)Prowod_equal, METH_VARARGS|METH_KEYWORDS, "Prowod_equal"},
 
-    {"get_ge", (PyCFunction)Prowod_ge, METH_VARARGS|METH_KEYWORDS, "Prowod_ge"},
+    {"get_last", (PyCFunction)Prowod_last, METH_VARARGS|METH_KEYWORDS, "Prowod_last"},
 
-    {"get_prev", (PyCFunction)Prowod_prev, METH_VARARGS|METH_KEYWORDS, "Prowod_prev"},
+    {"get_lt", (PyCFunction)Prowod_lt, METH_VARARGS|METH_KEYWORDS, "Prowod_lt"},
+
+    {"get_le", (PyCFunction)Prowod_le, METH_VARARGS|METH_KEYWORDS, "Prowod_le"},
 
     {"get_first", (PyCFunction)Prowod_first, METH_VARARGS|METH_KEYWORDS, "Prowod_first"},
 
     {"gets_gt", (PyCFunction)Prowod_iter_gt, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_gt"},
 
-    {"gets_last", (PyCFunction)Prowod_iter_last, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_last"},
-
-    {"gets_le", (PyCFunction)Prowod_iter_le, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_le"},
-
     {"gets_ge", (PyCFunction)Prowod_iter_ge, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_ge"},
 
     {"gets_equal", (PyCFunction)Prowod_iter_equal, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_equal"},
 
+    {"gets_last", (PyCFunction)Prowod_iter_last, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_last"},
+
     {"gets_lt", (PyCFunction)Prowod_iter_lt, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_lt"},
+
+    {"gets_le", (PyCFunction)Prowod_iter_le, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_le"},
 
     {"gets_first", (PyCFunction)Prowod_iter_first, METH_VARARGS|METH_KEYWORDS, "Prowod_iter_first"},
 
-    {"insert", (PyCFunction)Prowod_insert, METH_VARARGS|METH_KEYWORDS, "Prowod_insert"},
-
     {"update", (PyCFunction)Prowod_update, METH_VARARGS|METH_KEYWORDS, "Prowod_update"},
+
+    {"insert", (PyCFunction)Prowod_insert, METH_VARARGS|METH_KEYWORDS, "Prowod_insert"},
 
     {"delete", (PyCFunction)Prowod_delete, METH_VARARGS|METH_KEYWORDS, "Prowod_delete"},
 
@@ -4225,24 +4225,24 @@ static PyObject *ProwodKey0_set_document(ProwodKey0* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *ProwodKey0_gt(ProwodKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey0_prev(ProwodKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey0_last(ProwodKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey0_gt(ProwodKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4261,24 +4261,12 @@ static PyObject *ProwodKey0_next(ProwodKey0* self, PyObject *args, PyObject *kwd
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey0_le(ProwodKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey0_ge(ProwodKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProwodKey0_lt(ProwodKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4297,24 +4285,36 @@ static PyObject *ProwodKey0_equal(ProwodKey0* self, PyObject *args, PyObject *kw
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey0_ge(ProwodKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey0_last(ProwodKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey0_prev(ProwodKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey0_lt(ProwodKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProwodKey0_le(ProwodKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4379,114 +4379,6 @@ static PyObject *ProwodKey0_iter_gt(ProwodKey0* self, PyObject *args, PyObject *
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey0_iter_last(ProwodKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.type_doc, 
-                 self->priv->type_doc))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
- 
-        item = ProwodKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey0_iter_le(ProwodKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.type_doc, 
-                 self->priv->type_doc))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
- 
-        item = ProwodKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4603,6 +4495,60 @@ static PyObject *ProwodKey0_iter_equal(ProwodKey0* self, PyObject *args, PyObjec
     return retval;
 }
 
+static PyObject *ProwodKey0_iter_last(ProwodKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.type_doc, 
+                 self->priv->type_doc))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+ 
+        item = ProwodKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ProwodKey0_iter_lt(ProwodKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -4618,6 +4564,60 @@ static PyObject *ProwodKey0_iter_lt(ProwodKey0* self, PyObject *args, PyObject *
     }
     do_cpy(key_cmp, *self->priv);
     status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.type_doc, 
+                 self->priv->type_doc))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+ 
+        item = ProwodKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProwodKey0_iter_le(ProwodKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -4986,35 +4986,35 @@ static PyMethodDef ProwodKey0_methods[] = {
 
     {"set_document", (PyCFunction)ProwodKey0_set_document, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_set_document"},
 
-    {"get_gt", (PyCFunction)ProwodKey0_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_gt"},
+    {"get_prev", (PyCFunction)ProwodKey0_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_prev"},
 
-    {"get_last", (PyCFunction)ProwodKey0_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_last"},
+    {"get_gt", (PyCFunction)ProwodKey0_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_gt"},
 
     {"get_next", (PyCFunction)ProwodKey0_next, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_next"},
 
-    {"get_le", (PyCFunction)ProwodKey0_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_le"},
-
-    {"get_lt", (PyCFunction)ProwodKey0_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_lt"},
+    {"get_ge", (PyCFunction)ProwodKey0_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_ge"},
 
     {"get_equal", (PyCFunction)ProwodKey0_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_equal"},
 
-    {"get_ge", (PyCFunction)ProwodKey0_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_ge"},
+    {"get_last", (PyCFunction)ProwodKey0_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_last"},
 
-    {"get_prev", (PyCFunction)ProwodKey0_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_prev"},
+    {"get_lt", (PyCFunction)ProwodKey0_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_lt"},
+
+    {"get_le", (PyCFunction)ProwodKey0_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_le"},
 
     {"get_first", (PyCFunction)ProwodKey0_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_first"},
 
     {"gets_gt", (PyCFunction)ProwodKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)ProwodKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)ProwodKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)ProwodKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)ProwodKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)ProwodKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)ProwodKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)ProwodKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_le"},
 
     {"gets_first", (PyCFunction)ProwodKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey0_iter_first"},
 
@@ -5250,24 +5250,24 @@ static PyObject *ProwodKey1_set_document(ProwodKey1* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *ProwodKey1_gt(ProwodKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey1_prev(ProwodKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey1_last(ProwodKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey1_gt(ProwodKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5286,24 +5286,12 @@ static PyObject *ProwodKey1_next(ProwodKey1* self, PyObject *args, PyObject *kwd
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey1_le(ProwodKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey1_ge(ProwodKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProwodKey1_lt(ProwodKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5322,24 +5310,36 @@ static PyObject *ProwodKey1_equal(ProwodKey1* self, PyObject *args, PyObject *kw
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey1_ge(ProwodKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey1_last(ProwodKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey1_prev(ProwodKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey1_lt(ProwodKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProwodKey1_le(ProwodKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5404,114 +5404,6 @@ static PyObject *ProwodKey1_iter_gt(ProwodKey1* self, PyObject *args, PyObject *
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey1_iter_last(ProwodKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.type_doc, 
-                 self->priv->type_doc))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
- 
-        item = ProwodKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey1_iter_le(ProwodKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.type_doc, 
-                 self->priv->type_doc))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
- 
-        item = ProwodKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -5628,6 +5520,60 @@ static PyObject *ProwodKey1_iter_equal(ProwodKey1* self, PyObject *args, PyObjec
     return retval;
 }
 
+static PyObject *ProwodKey1_iter_last(ProwodKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type_doc, 
+                 self->priv->type_doc))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+ 
+        item = ProwodKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ProwodKey1_iter_lt(ProwodKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -5643,6 +5589,60 @@ static PyObject *ProwodKey1_iter_lt(ProwodKey1* self, PyObject *args, PyObject *
     }
     do_cpy(key_cmp, *self->priv);
     status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type_doc, 
+                 self->priv->type_doc))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+ 
+        item = ProwodKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProwodKey1_iter_le(ProwodKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -6011,35 +6011,35 @@ static PyMethodDef ProwodKey1_methods[] = {
 
     {"set_document", (PyCFunction)ProwodKey1_set_document, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_set_document"},
 
-    {"get_gt", (PyCFunction)ProwodKey1_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_gt"},
+    {"get_prev", (PyCFunction)ProwodKey1_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_prev"},
 
-    {"get_last", (PyCFunction)ProwodKey1_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_last"},
+    {"get_gt", (PyCFunction)ProwodKey1_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_gt"},
 
     {"get_next", (PyCFunction)ProwodKey1_next, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_next"},
 
-    {"get_le", (PyCFunction)ProwodKey1_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_le"},
-
-    {"get_lt", (PyCFunction)ProwodKey1_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_lt"},
+    {"get_ge", (PyCFunction)ProwodKey1_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_ge"},
 
     {"get_equal", (PyCFunction)ProwodKey1_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_equal"},
 
-    {"get_ge", (PyCFunction)ProwodKey1_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_ge"},
+    {"get_last", (PyCFunction)ProwodKey1_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_last"},
 
-    {"get_prev", (PyCFunction)ProwodKey1_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_prev"},
+    {"get_lt", (PyCFunction)ProwodKey1_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_lt"},
+
+    {"get_le", (PyCFunction)ProwodKey1_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_le"},
 
     {"get_first", (PyCFunction)ProwodKey1_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_first"},
 
     {"gets_gt", (PyCFunction)ProwodKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)ProwodKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)ProwodKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)ProwodKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)ProwodKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)ProwodKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)ProwodKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)ProwodKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_le"},
 
     {"gets_first", (PyCFunction)ProwodKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey1_iter_first"},
 
@@ -6385,24 +6385,24 @@ static PyObject *ProwodKey2_set_date(ProwodKey2* self, PyObject *args, PyObject 
 //    return result;
 }
 
-static PyObject *ProwodKey2_gt(ProwodKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey2_prev(ProwodKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey2_last(ProwodKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey2_gt(ProwodKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6421,24 +6421,12 @@ static PyObject *ProwodKey2_next(ProwodKey2* self, PyObject *args, PyObject *kwd
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey2_le(ProwodKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey2_ge(ProwodKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProwodKey2_lt(ProwodKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6457,24 +6445,36 @@ static PyObject *ProwodKey2_equal(ProwodKey2* self, PyObject *args, PyObject *kw
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey2_ge(ProwodKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey2_last(ProwodKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey2_prev(ProwodKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey2_lt(ProwodKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProwodKey2_le(ProwodKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6557,150 +6557,6 @@ static PyObject *ProwodKey2_iter_gt(ProwodKey2* self, PyObject *args, PyObject *
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey2_iter_last(ProwodKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.debit_account, 
-                 self->priv->debit_account))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.debit_subaccount, 
-                 self->priv->debit_subaccount))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.debit_p_g_code, 
-                 self->priv->debit_p_g_code))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.debit_p_code, 
-                 self->priv->debit_p_code))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.debit_other, 
-                 self->priv->debit_other))
-               break;
-       }
-
-       if ( depth >= 7 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
- 
-        item = ProwodKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey2_iter_le(ProwodKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.debit_account, 
-                 self->priv->debit_account))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.debit_subaccount, 
-                 self->priv->debit_subaccount))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.debit_p_g_code, 
-                 self->priv->debit_p_g_code))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.debit_p_code, 
-                 self->priv->debit_p_code))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.debit_other, 
-                 self->priv->debit_other))
-               break;
-       }
-
-       if ( depth >= 7 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
- 
-        item = ProwodKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -6853,6 +6709,78 @@ static PyObject *ProwodKey2_iter_equal(ProwodKey2* self, PyObject *args, PyObjec
     return retval;
 }
 
+static PyObject *ProwodKey2_iter_last(ProwodKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.debit_account, 
+                 self->priv->debit_account))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.debit_subaccount, 
+                 self->priv->debit_subaccount))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.debit_p_g_code, 
+                 self->priv->debit_p_g_code))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.debit_p_code, 
+                 self->priv->debit_p_code))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.debit_other, 
+                 self->priv->debit_other))
+               break;
+       }
+
+       if ( depth >= 7 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+ 
+        item = ProwodKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ProwodKey2_iter_lt(ProwodKey2* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -6868,6 +6796,78 @@ static PyObject *ProwodKey2_iter_lt(ProwodKey2* self, PyObject *args, PyObject *
     }
     do_cpy(key_cmp, *self->priv);
     status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.debit_account, 
+                 self->priv->debit_account))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.debit_subaccount, 
+                 self->priv->debit_subaccount))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.debit_p_g_code, 
+                 self->priv->debit_p_g_code))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.debit_p_code, 
+                 self->priv->debit_p_code))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.debit_other, 
+                 self->priv->debit_other))
+               break;
+       }
+
+       if ( depth >= 7 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+ 
+        item = ProwodKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProwodKey2_iter_le(ProwodKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key2(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -7371,35 +7371,35 @@ static PyMethodDef ProwodKey2_methods[] = {
 
     {"set_date", (PyCFunction)ProwodKey2_set_date, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_set_date"},
 
-    {"get_gt", (PyCFunction)ProwodKey2_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_gt"},
+    {"get_prev", (PyCFunction)ProwodKey2_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_prev"},
 
-    {"get_last", (PyCFunction)ProwodKey2_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_last"},
+    {"get_gt", (PyCFunction)ProwodKey2_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_gt"},
 
     {"get_next", (PyCFunction)ProwodKey2_next, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_next"},
 
-    {"get_le", (PyCFunction)ProwodKey2_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_le"},
-
-    {"get_lt", (PyCFunction)ProwodKey2_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_lt"},
+    {"get_ge", (PyCFunction)ProwodKey2_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_ge"},
 
     {"get_equal", (PyCFunction)ProwodKey2_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_equal"},
 
-    {"get_ge", (PyCFunction)ProwodKey2_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_ge"},
+    {"get_last", (PyCFunction)ProwodKey2_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_last"},
 
-    {"get_prev", (PyCFunction)ProwodKey2_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_prev"},
+    {"get_lt", (PyCFunction)ProwodKey2_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_lt"},
+
+    {"get_le", (PyCFunction)ProwodKey2_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_le"},
 
     {"get_first", (PyCFunction)ProwodKey2_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_first"},
 
     {"gets_gt", (PyCFunction)ProwodKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_gt"},
 
-    {"gets_last", (PyCFunction)ProwodKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_last"},
-
-    {"gets_le", (PyCFunction)ProwodKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_le"},
-
     {"gets_ge", (PyCFunction)ProwodKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_ge"},
 
     {"gets_equal", (PyCFunction)ProwodKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_equal"},
 
+    {"gets_last", (PyCFunction)ProwodKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_last"},
+
     {"gets_lt", (PyCFunction)ProwodKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_lt"},
+
+    {"gets_le", (PyCFunction)ProwodKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_le"},
 
     {"gets_first", (PyCFunction)ProwodKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey2_iter_first"},
 
@@ -7745,24 +7745,24 @@ static PyObject *ProwodKey3_set_date(ProwodKey3* self, PyObject *args, PyObject 
 //    return result;
 }
 
-static PyObject *ProwodKey3_gt(ProwodKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey3_prev(ProwodKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey3_last(ProwodKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey3_gt(ProwodKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -7781,24 +7781,12 @@ static PyObject *ProwodKey3_next(ProwodKey3* self, PyObject *args, PyObject *kwd
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey3_le(ProwodKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey3_ge(ProwodKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProwodKey3_lt(ProwodKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -7817,24 +7805,36 @@ static PyObject *ProwodKey3_equal(ProwodKey3* self, PyObject *args, PyObject *kw
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey3_ge(ProwodKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey3_last(ProwodKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey3_prev(ProwodKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey3_lt(ProwodKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProwodKey3_le(ProwodKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -7917,150 +7917,6 @@ static PyObject *ProwodKey3_iter_gt(ProwodKey3* self, PyObject *args, PyObject *
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey3_iter_last(ProwodKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.credit_account, 
-                 self->priv->credit_account))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.credit_subaccount, 
-                 self->priv->credit_subaccount))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.credit_p_g_code, 
-                 self->priv->credit_p_g_code))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.credit_p_code, 
-                 self->priv->credit_p_code))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.credit_other, 
-                 self->priv->credit_other))
-               break;
-       }
-
-       if ( depth >= 7 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
- 
-        item = ProwodKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey3_iter_le(ProwodKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.credit_account, 
-                 self->priv->credit_account))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.credit_subaccount, 
-                 self->priv->credit_subaccount))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.credit_p_g_code, 
-                 self->priv->credit_p_g_code))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.credit_p_code, 
-                 self->priv->credit_p_code))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.credit_other, 
-                 self->priv->credit_other))
-               break;
-       }
-
-       if ( depth >= 7 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
- 
-        item = ProwodKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -8213,6 +8069,78 @@ static PyObject *ProwodKey3_iter_equal(ProwodKey3* self, PyObject *args, PyObjec
     return retval;
 }
 
+static PyObject *ProwodKey3_iter_last(ProwodKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.credit_account, 
+                 self->priv->credit_account))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.credit_subaccount, 
+                 self->priv->credit_subaccount))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.credit_p_g_code, 
+                 self->priv->credit_p_g_code))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.credit_p_code, 
+                 self->priv->credit_p_code))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.credit_other, 
+                 self->priv->credit_other))
+               break;
+       }
+
+       if ( depth >= 7 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+ 
+        item = ProwodKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ProwodKey3_iter_lt(ProwodKey3* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -8228,6 +8156,78 @@ static PyObject *ProwodKey3_iter_lt(ProwodKey3* self, PyObject *args, PyObject *
     }
     do_cpy(key_cmp, *self->priv);
     status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.credit_account, 
+                 self->priv->credit_account))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.credit_subaccount, 
+                 self->priv->credit_subaccount))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.credit_p_g_code, 
+                 self->priv->credit_p_g_code))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.credit_p_code, 
+                 self->priv->credit_p_code))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.credit_other, 
+                 self->priv->credit_other))
+               break;
+       }
+
+       if ( depth >= 7 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+ 
+        item = ProwodKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProwodKey3_iter_le(ProwodKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key3(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -8731,35 +8731,35 @@ static PyMethodDef ProwodKey3_methods[] = {
 
     {"set_date", (PyCFunction)ProwodKey3_set_date, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_set_date"},
 
-    {"get_gt", (PyCFunction)ProwodKey3_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_gt"},
+    {"get_prev", (PyCFunction)ProwodKey3_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_prev"},
 
-    {"get_last", (PyCFunction)ProwodKey3_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_last"},
+    {"get_gt", (PyCFunction)ProwodKey3_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_gt"},
 
     {"get_next", (PyCFunction)ProwodKey3_next, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_next"},
 
-    {"get_le", (PyCFunction)ProwodKey3_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_le"},
-
-    {"get_lt", (PyCFunction)ProwodKey3_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_lt"},
+    {"get_ge", (PyCFunction)ProwodKey3_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_ge"},
 
     {"get_equal", (PyCFunction)ProwodKey3_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_equal"},
 
-    {"get_ge", (PyCFunction)ProwodKey3_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_ge"},
+    {"get_last", (PyCFunction)ProwodKey3_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_last"},
 
-    {"get_prev", (PyCFunction)ProwodKey3_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_prev"},
+    {"get_lt", (PyCFunction)ProwodKey3_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_lt"},
+
+    {"get_le", (PyCFunction)ProwodKey3_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_le"},
 
     {"get_first", (PyCFunction)ProwodKey3_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_first"},
 
     {"gets_gt", (PyCFunction)ProwodKey3_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_gt"},
 
-    {"gets_last", (PyCFunction)ProwodKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_last"},
-
-    {"gets_le", (PyCFunction)ProwodKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_le"},
-
     {"gets_ge", (PyCFunction)ProwodKey3_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_ge"},
 
     {"gets_equal", (PyCFunction)ProwodKey3_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_equal"},
 
+    {"gets_last", (PyCFunction)ProwodKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_last"},
+
     {"gets_lt", (PyCFunction)ProwodKey3_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_lt"},
+
+    {"gets_le", (PyCFunction)ProwodKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_le"},
 
     {"gets_first", (PyCFunction)ProwodKey3_iter_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey3_iter_first"},
 
@@ -8959,24 +8959,24 @@ static PyObject *ProwodKey4_set_date(ProwodKey4* self, PyObject *args, PyObject 
 //    return result;
 }
 
-static PyObject *ProwodKey4_gt(ProwodKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey4_prev(ProwodKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey4_last(ProwodKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey4_gt(ProwodKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -8995,24 +8995,12 @@ static PyObject *ProwodKey4_next(ProwodKey4* self, PyObject *args, PyObject *kwd
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey4_le(ProwodKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey4_ge(ProwodKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProwodKey4_lt(ProwodKey4* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -9031,24 +9019,36 @@ static PyObject *ProwodKey4_equal(ProwodKey4* self, PyObject *args, PyObject *kw
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey4_ge(ProwodKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey4_last(ProwodKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProwodKey4_prev(ProwodKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *ProwodKey4_lt(ProwodKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProwodKey4_le(ProwodKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -9107,102 +9107,6 @@ static PyObject *ProwodKey4_iter_gt(ProwodKey4* self, PyObject *args, PyObject *
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey4_iter_last(ProwodKey4* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key4_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
- 
-        item = ProwodKey4_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProwodKey4_iter_le(ProwodKey4* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    prowod_key4_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.document, 
-                 self->priv->document))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
- 
-        item = ProwodKey4_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -9307,6 +9211,54 @@ static PyObject *ProwodKey4_iter_equal(ProwodKey4* self, PyObject *args, PyObjec
     return retval;
 }
 
+static PyObject *ProwodKey4_iter_last(ProwodKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+ 
+        item = ProwodKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ProwodKey4_iter_lt(ProwodKey4* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -9322,6 +9274,54 @@ static PyObject *ProwodKey4_iter_lt(ProwodKey4* self, PyObject *args, PyObject *
     }
     do_cpy(key_cmp, *self->priv);
     status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.document, 
+                 self->priv->document))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+ 
+        item = ProwodKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProwodKey4_iter_le(ProwodKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    prowod_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_prowod_key4(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -9645,35 +9645,35 @@ static PyMethodDef ProwodKey4_methods[] = {
 
     {"set_date", (PyCFunction)ProwodKey4_set_date, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_set_date"},
 
-    {"get_gt", (PyCFunction)ProwodKey4_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_gt"},
+    {"get_prev", (PyCFunction)ProwodKey4_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_prev"},
 
-    {"get_last", (PyCFunction)ProwodKey4_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_last"},
+    {"get_gt", (PyCFunction)ProwodKey4_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_gt"},
 
     {"get_next", (PyCFunction)ProwodKey4_next, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_next"},
 
-    {"get_le", (PyCFunction)ProwodKey4_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_le"},
-
-    {"get_lt", (PyCFunction)ProwodKey4_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_lt"},
+    {"get_ge", (PyCFunction)ProwodKey4_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_ge"},
 
     {"get_equal", (PyCFunction)ProwodKey4_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_equal"},
 
-    {"get_ge", (PyCFunction)ProwodKey4_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_ge"},
+    {"get_last", (PyCFunction)ProwodKey4_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_last"},
 
-    {"get_prev", (PyCFunction)ProwodKey4_prev, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_prev"},
+    {"get_lt", (PyCFunction)ProwodKey4_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_lt"},
+
+    {"get_le", (PyCFunction)ProwodKey4_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_le"},
 
     {"get_first", (PyCFunction)ProwodKey4_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_first"},
 
     {"gets_gt", (PyCFunction)ProwodKey4_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_gt"},
 
-    {"gets_last", (PyCFunction)ProwodKey4_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_last"},
-
-    {"gets_le", (PyCFunction)ProwodKey4_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_le"},
-
     {"gets_ge", (PyCFunction)ProwodKey4_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_ge"},
 
     {"gets_equal", (PyCFunction)ProwodKey4_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_equal"},
 
+    {"gets_last", (PyCFunction)ProwodKey4_iter_last, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_last"},
+
     {"gets_lt", (PyCFunction)ProwodKey4_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_lt"},
+
+    {"gets_le", (PyCFunction)ProwodKey4_iter_le, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_le"},
 
     {"gets_first", (PyCFunction)ProwodKey4_iter_first, METH_VARARGS|METH_KEYWORDS, "ProwodKey4_iter_first"},
 

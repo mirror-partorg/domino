@@ -1,5 +1,6 @@
 #include <domino.h>
 #include <errno.h>
+#include <string.h>
 #include "../../misc/define.h"
 #include "../../misc/csv_util.h"
 #include "../../misc/iconv_.h"
@@ -672,7 +673,6 @@ static int do_action_doc_set_info(do_alias_t *alias, shift_t *shift, sale_t *sal
     }
     return res;
 }
-
 static int do_action_doc_create_order(do_alias_t *alias, document_rec_t *document, sale_t *sale, do_accept_param_t *param, do_extended_break_func break_func)
 {
     int i, res;
@@ -862,7 +862,6 @@ static int do_action_shift_document_create(do_alias_t *alias, shift_t *shift, do
 
     return res;
 }
-
 DO_EXPORT int do_action_receive_cl(do_alias_t *alias, const char *filename, do_extended_break_func break_func)
 {
     shift_t *shift;

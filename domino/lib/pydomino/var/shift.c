@@ -424,6 +424,42 @@ static PyObject *Shift_set_store(Shift* self, PyObject *args, PyObject *kwds)
 //    return result;
 }
 
+static PyObject *Shift_prev(Shift* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getShiftKey0Type() )
+        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getShiftKey1Type() )
+        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getShiftKey2Type() )
+        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getShiftKey3Type() )
+        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Shift_gt(Shift* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -448,42 +484,6 @@ static PyObject *Shift_gt(Shift* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getShiftKey3Type() )
         status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_GT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Shift_last(Shift* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getShiftKey0Type() )
-        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getShiftKey1Type() )
-        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getShiftKey2Type() )
-        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getShiftKey3Type() )
-        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -532,7 +532,7 @@ static PyObject *Shift_next(Shift* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Shift_le(Shift* self, PyObject *args, PyObject *kwds)
+static PyObject *Shift_ge(Shift* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -543,55 +543,19 @@ static PyObject *Shift_le(Shift* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getShiftKey0Type() )
-        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LE);
+        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getShiftKey1Type() )
-        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LE);
+        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getShiftKey2Type() )
-        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LE);
+        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getShiftKey3Type() )
-        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Shift_lt(Shift* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getShiftKey0Type() )
-        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getShiftKey1Type() )
-        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getShiftKey2Type() )
-        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getShiftKey3Type() )
-        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LT);
+        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -640,7 +604,7 @@ static PyObject *Shift_equal(Shift* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Shift_ge(Shift* self, PyObject *args, PyObject *kwds)
+static PyObject *Shift_last(Shift* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -651,19 +615,19 @@ static PyObject *Shift_ge(Shift* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getShiftKey0Type() )
-        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_GE);
+        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getShiftKey1Type() )
-        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_GE);
+        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getShiftKey2Type() )
-        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_GE);
+        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getShiftKey3Type() )
-        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_GE);
+        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -676,7 +640,7 @@ static PyObject *Shift_ge(Shift* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Shift_prev(Shift* self, PyObject *args, PyObject *kwds)
+static PyObject *Shift_lt(Shift* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -687,19 +651,55 @@ static PyObject *Shift_prev(Shift* self, PyObject *args, PyObject *kwds)
         return NULL;
 
     if ( Py_TYPE(key) == getShiftKey0Type() )
-        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getShiftKey1Type() )
-        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getShiftKey2Type() )
-        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_PREVIOUS);
+        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getShiftKey3Type() )
-        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_PREVIOUS);
+        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Shift_le(Shift* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getShiftKey0Type() )
+        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getShiftKey1Type() )
+        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getShiftKey2Type() )
+        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getShiftKey3Type() )
+        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -900,348 +900,6 @@ static PyObject *Shift_iter_gt(Shift* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getShiftKey3Type() ) {
             status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Shift_iter_last(Shift* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getShiftKey0Type() ) {
-        key_cmp = (shift_key0_t*)do_malloc(sizeof(shift_key0_t));
-        memcpy(key_cmp, ((ShiftKey0*)key)->priv, sizeof(shift_key0_t));
-        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getShiftKey1Type() ) {
-        key_cmp = (shift_key1_t*)do_malloc(sizeof(shift_key1_t));
-        memcpy(key_cmp, ((ShiftKey1*)key)->priv, sizeof(shift_key1_t));
-        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getShiftKey2Type() ) {
-        key_cmp = (shift_key2_t*)do_malloc(sizeof(shift_key2_t));
-        memcpy(key_cmp, ((ShiftKey2*)key)->priv, sizeof(shift_key2_t));
-        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getShiftKey3Type() ) {
-        key_cmp = (shift_key3_t*)do_malloc(sizeof(shift_key3_t));
-        memcpy(key_cmp, ((ShiftKey3*)key)->priv, sizeof(shift_key3_t));
-        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getShiftKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key0_t*)key_cmp)->cash, 
-                    ((ShiftKey0*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key0_t*)key_cmp)->shift, 
-                    ((ShiftKey0*)key)->priv->shift))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key1_t*)key_cmp)->date, 
-                    ((ShiftKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key1_t*)key_cmp)->time, 
-                    ((ShiftKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key2_t*)key_cmp)->date_b, 
-                    ((ShiftKey2*)key)->priv->date_b))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key2_t*)key_cmp)->time_b, 
-                    ((ShiftKey2*)key)->priv->time_b))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key3_t*)key_cmp)->sklad, 
-                    ((ShiftKey3*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key3_t*)key_cmp)->date, 
-                    ((ShiftKey3*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((shift_key3_t*)key_cmp)->time, 
-                    ((ShiftKey3*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Shift_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getShiftKey0Type() ) {
-            status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey1Type() ) {
-            status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey2Type() ) {
-            status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey3Type() ) {
-            status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Shift_iter_le(Shift* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getShiftKey0Type() ) {
-        key_cmp = (shift_key0_t*)do_malloc(sizeof(shift_key0_t));
-        memcpy(key_cmp, ((ShiftKey0*)key)->priv, sizeof(shift_key0_t));
-        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getShiftKey1Type() ) {
-        key_cmp = (shift_key1_t*)do_malloc(sizeof(shift_key1_t));
-        memcpy(key_cmp, ((ShiftKey1*)key)->priv, sizeof(shift_key1_t));
-        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getShiftKey2Type() ) {
-        key_cmp = (shift_key2_t*)do_malloc(sizeof(shift_key2_t));
-        memcpy(key_cmp, ((ShiftKey2*)key)->priv, sizeof(shift_key2_t));
-        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getShiftKey3Type() ) {
-        key_cmp = (shift_key3_t*)do_malloc(sizeof(shift_key3_t));
-        memcpy(key_cmp, ((ShiftKey3*)key)->priv, sizeof(shift_key3_t));
-        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getShiftKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key0_t*)key_cmp)->cash, 
-                    ((ShiftKey0*)key)->priv->cash))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key0_t*)key_cmp)->shift, 
-                    ((ShiftKey0*)key)->priv->shift))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key1_t*)key_cmp)->date, 
-                    ((ShiftKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key1_t*)key_cmp)->time, 
-                    ((ShiftKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key2_t*)key_cmp)->date_b, 
-                    ((ShiftKey2*)key)->priv->date_b))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key2_t*)key_cmp)->time_b, 
-                    ((ShiftKey2*)key)->priv->time_b))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((shift_key3_t*)key_cmp)->sklad, 
-                    ((ShiftKey3*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((shift_key3_t*)key_cmp)->date, 
-                    ((ShiftKey3*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((shift_key3_t*)key_cmp)->time, 
-                    ((ShiftKey3*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Shift_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getShiftKey0Type() ) {
-            status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey1Type() ) {
-            status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey2Type() ) {
-            status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getShiftKey3Type() ) {
-            status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1603,6 +1261,177 @@ static PyObject *Shift_iter_equal(Shift* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
+static PyObject *Shift_iter_last(Shift* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getShiftKey0Type() ) {
+        key_cmp = (shift_key0_t*)do_malloc(sizeof(shift_key0_t));
+        memcpy(key_cmp, ((ShiftKey0*)key)->priv, sizeof(shift_key0_t));
+        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getShiftKey1Type() ) {
+        key_cmp = (shift_key1_t*)do_malloc(sizeof(shift_key1_t));
+        memcpy(key_cmp, ((ShiftKey1*)key)->priv, sizeof(shift_key1_t));
+        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getShiftKey2Type() ) {
+        key_cmp = (shift_key2_t*)do_malloc(sizeof(shift_key2_t));
+        memcpy(key_cmp, ((ShiftKey2*)key)->priv, sizeof(shift_key2_t));
+        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getShiftKey3Type() ) {
+        key_cmp = (shift_key3_t*)do_malloc(sizeof(shift_key3_t));
+        memcpy(key_cmp, ((ShiftKey3*)key)->priv, sizeof(shift_key3_t));
+        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getShiftKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key0_t*)key_cmp)->cash, 
+                    ((ShiftKey0*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key0_t*)key_cmp)->shift, 
+                    ((ShiftKey0*)key)->priv->shift))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key1_t*)key_cmp)->date, 
+                    ((ShiftKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key1_t*)key_cmp)->time, 
+                    ((ShiftKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key2_t*)key_cmp)->date_b, 
+                    ((ShiftKey2*)key)->priv->date_b))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key2_t*)key_cmp)->time_b, 
+                    ((ShiftKey2*)key)->priv->time_b))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key3_t*)key_cmp)->sklad, 
+                    ((ShiftKey3*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key3_t*)key_cmp)->date, 
+                    ((ShiftKey3*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((shift_key3_t*)key_cmp)->time, 
+                    ((ShiftKey3*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Shift_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getShiftKey0Type() ) {
+            status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey1Type() ) {
+            status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey2Type() ) {
+            status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey3Type() ) {
+            status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Shift_iter_lt(Shift* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -1644,6 +1473,177 @@ static PyObject *Shift_iter_lt(Shift* self, PyObject *args, PyObject *kwds)
         key_cmp = (shift_key3_t*)do_malloc(sizeof(shift_key3_t));
         memcpy(key_cmp, ((ShiftKey3*)key)->priv, sizeof(shift_key3_t));
         status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getShiftKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key0_t*)key_cmp)->cash, 
+                    ((ShiftKey0*)key)->priv->cash))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key0_t*)key_cmp)->shift, 
+                    ((ShiftKey0*)key)->priv->shift))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key1_t*)key_cmp)->date, 
+                    ((ShiftKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key1_t*)key_cmp)->time, 
+                    ((ShiftKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key2_t*)key_cmp)->date_b, 
+                    ((ShiftKey2*)key)->priv->date_b))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key2_t*)key_cmp)->time_b, 
+                    ((ShiftKey2*)key)->priv->time_b))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((shift_key3_t*)key_cmp)->sklad, 
+                    ((ShiftKey3*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((shift_key3_t*)key_cmp)->date, 
+                    ((ShiftKey3*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((shift_key3_t*)key_cmp)->time, 
+                    ((ShiftKey3*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Shift_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getShiftKey0Type() ) {
+            status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey1Type() ) {
+            status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey2Type() ) {
+            status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getShiftKey3Type() ) {
+            status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Shift_iter_le(Shift* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getShiftKey0Type() ) {
+        key_cmp = (shift_key0_t*)do_malloc(sizeof(shift_key0_t));
+        memcpy(key_cmp, ((ShiftKey0*)key)->priv, sizeof(shift_key0_t));
+        status = do_shift_get0(self->alias->alias, self->priv, ((ShiftKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getShiftKey1Type() ) {
+        key_cmp = (shift_key1_t*)do_malloc(sizeof(shift_key1_t));
+        memcpy(key_cmp, ((ShiftKey1*)key)->priv, sizeof(shift_key1_t));
+        status = do_shift_get1(self->alias->alias, self->priv, ((ShiftKey1*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getShiftKey2Type() ) {
+        key_cmp = (shift_key2_t*)do_malloc(sizeof(shift_key2_t));
+        memcpy(key_cmp, ((ShiftKey2*)key)->priv, sizeof(shift_key2_t));
+        status = do_shift_get2(self->alias->alias, self->priv, ((ShiftKey2*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getShiftKey3Type() ) {
+        key_cmp = (shift_key3_t*)do_malloc(sizeof(shift_key3_t));
+        memcpy(key_cmp, ((ShiftKey3*)key)->priv, sizeof(shift_key3_t));
+        status = do_shift_get3(self->alias->alias, self->priv, ((ShiftKey3*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -1945,19 +1945,19 @@ static PyObject *Shift_iter_first(Shift* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Shift_insert(Shift* self)
+static PyObject *Shift_update(Shift* self)
 {
     int status;
-    status = do_shift_insert(self->alias->alias, self->priv);
+    status = do_shift_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Shift_update(Shift* self)
+static PyObject *Shift_insert(Shift* self)
 {
     int status;
-    status = do_shift_update(self->alias->alias, self->priv);
+    status = do_shift_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -2306,41 +2306,41 @@ static PyMethodDef Shift_methods[] = {
 
     {"set_store", (PyCFunction)Shift_set_store, METH_VARARGS|METH_KEYWORDS, "Shift_set_store"},
 
-    {"get_gt", (PyCFunction)Shift_gt, METH_VARARGS|METH_KEYWORDS, "Shift_gt"},
+    {"get_prev", (PyCFunction)Shift_prev, METH_VARARGS|METH_KEYWORDS, "Shift_prev"},
 
-    {"get_last", (PyCFunction)Shift_last, METH_VARARGS|METH_KEYWORDS, "Shift_last"},
+    {"get_gt", (PyCFunction)Shift_gt, METH_VARARGS|METH_KEYWORDS, "Shift_gt"},
 
     {"get_next", (PyCFunction)Shift_next, METH_VARARGS|METH_KEYWORDS, "Shift_next"},
 
-    {"get_le", (PyCFunction)Shift_le, METH_VARARGS|METH_KEYWORDS, "Shift_le"},
-
-    {"get_lt", (PyCFunction)Shift_lt, METH_VARARGS|METH_KEYWORDS, "Shift_lt"},
+    {"get_ge", (PyCFunction)Shift_ge, METH_VARARGS|METH_KEYWORDS, "Shift_ge"},
 
     {"get_equal", (PyCFunction)Shift_equal, METH_VARARGS|METH_KEYWORDS, "Shift_equal"},
 
-    {"get_ge", (PyCFunction)Shift_ge, METH_VARARGS|METH_KEYWORDS, "Shift_ge"},
+    {"get_last", (PyCFunction)Shift_last, METH_VARARGS|METH_KEYWORDS, "Shift_last"},
 
-    {"get_prev", (PyCFunction)Shift_prev, METH_VARARGS|METH_KEYWORDS, "Shift_prev"},
+    {"get_lt", (PyCFunction)Shift_lt, METH_VARARGS|METH_KEYWORDS, "Shift_lt"},
+
+    {"get_le", (PyCFunction)Shift_le, METH_VARARGS|METH_KEYWORDS, "Shift_le"},
 
     {"get_first", (PyCFunction)Shift_first, METH_VARARGS|METH_KEYWORDS, "Shift_first"},
 
     {"gets_gt", (PyCFunction)Shift_iter_gt, METH_VARARGS|METH_KEYWORDS, "Shift_iter_gt"},
 
-    {"gets_last", (PyCFunction)Shift_iter_last, METH_VARARGS|METH_KEYWORDS, "Shift_iter_last"},
-
-    {"gets_le", (PyCFunction)Shift_iter_le, METH_VARARGS|METH_KEYWORDS, "Shift_iter_le"},
-
     {"gets_ge", (PyCFunction)Shift_iter_ge, METH_VARARGS|METH_KEYWORDS, "Shift_iter_ge"},
 
     {"gets_equal", (PyCFunction)Shift_iter_equal, METH_VARARGS|METH_KEYWORDS, "Shift_iter_equal"},
 
+    {"gets_last", (PyCFunction)Shift_iter_last, METH_VARARGS|METH_KEYWORDS, "Shift_iter_last"},
+
     {"gets_lt", (PyCFunction)Shift_iter_lt, METH_VARARGS|METH_KEYWORDS, "Shift_iter_lt"},
+
+    {"gets_le", (PyCFunction)Shift_iter_le, METH_VARARGS|METH_KEYWORDS, "Shift_iter_le"},
 
     {"gets_first", (PyCFunction)Shift_iter_first, METH_VARARGS|METH_KEYWORDS, "Shift_iter_first"},
 
-    {"insert", (PyCFunction)Shift_insert, METH_VARARGS|METH_KEYWORDS, "Shift_insert"},
-
     {"update", (PyCFunction)Shift_update, METH_VARARGS|METH_KEYWORDS, "Shift_update"},
+
+    {"insert", (PyCFunction)Shift_insert, METH_VARARGS|METH_KEYWORDS, "Shift_insert"},
 
     {"delete", (PyCFunction)Shift_delete, METH_VARARGS|METH_KEYWORDS, "Shift_delete"},
 
@@ -2492,24 +2492,24 @@ static PyObject *ShiftKey0_set_shift(ShiftKey0* self, PyObject *args, PyObject *
 //    return result;
 }
 
-static PyObject *ShiftKey0_gt(ShiftKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey0_prev(ShiftKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey0_last(ShiftKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey0_gt(ShiftKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2528,24 +2528,12 @@ static PyObject *ShiftKey0_next(ShiftKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey0_le(ShiftKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey0_ge(ShiftKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ShiftKey0_lt(ShiftKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2564,24 +2552,36 @@ static PyObject *ShiftKey0_equal(ShiftKey0* self, PyObject *args, PyObject *kwds
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey0_ge(ShiftKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey0_last(ShiftKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey0_prev(ShiftKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey0_lt(ShiftKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ShiftKey0_le(ShiftKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2634,90 +2634,6 @@ static PyObject *ShiftKey0_iter_gt(ShiftKey0* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_shift_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey0_iter_last(ShiftKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
- 
-        item = ShiftKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey0_iter_le(ShiftKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.cash, 
-                 self->priv->cash))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.shift, 
-                 self->priv->shift))
-               break;
-       }
-
- 
-        item = ShiftKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2810,6 +2726,48 @@ static PyObject *ShiftKey0_iter_equal(ShiftKey0* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *ShiftKey0_iter_last(ShiftKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+ 
+        item = ShiftKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ShiftKey0_iter_lt(ShiftKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -2825,6 +2783,48 @@ static PyObject *ShiftKey0_iter_lt(ShiftKey0* self, PyObject *args, PyObject *kw
     }
     do_cpy(key_cmp, *self->priv);
     status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.cash, 
+                 self->priv->cash))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.shift, 
+                 self->priv->shift))
+               break;
+       }
+
+ 
+        item = ShiftKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ShiftKey0_iter_le(ShiftKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3101,35 +3101,35 @@ static PyMethodDef ShiftKey0_methods[] = {
 
     {"set_shift", (PyCFunction)ShiftKey0_set_shift, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_set_shift"},
 
-    {"get_gt", (PyCFunction)ShiftKey0_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_gt"},
+    {"get_prev", (PyCFunction)ShiftKey0_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_prev"},
 
-    {"get_last", (PyCFunction)ShiftKey0_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_last"},
+    {"get_gt", (PyCFunction)ShiftKey0_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_gt"},
 
     {"get_next", (PyCFunction)ShiftKey0_next, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_next"},
 
-    {"get_le", (PyCFunction)ShiftKey0_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_le"},
-
-    {"get_lt", (PyCFunction)ShiftKey0_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_lt"},
+    {"get_ge", (PyCFunction)ShiftKey0_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_ge"},
 
     {"get_equal", (PyCFunction)ShiftKey0_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_equal"},
 
-    {"get_ge", (PyCFunction)ShiftKey0_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_ge"},
+    {"get_last", (PyCFunction)ShiftKey0_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_last"},
 
-    {"get_prev", (PyCFunction)ShiftKey0_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_prev"},
+    {"get_lt", (PyCFunction)ShiftKey0_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_lt"},
+
+    {"get_le", (PyCFunction)ShiftKey0_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_le"},
 
     {"get_first", (PyCFunction)ShiftKey0_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_first"},
 
     {"gets_gt", (PyCFunction)ShiftKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)ShiftKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)ShiftKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)ShiftKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)ShiftKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)ShiftKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)ShiftKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)ShiftKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_le"},
 
     {"gets_first", (PyCFunction)ShiftKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey0_iter_first"},
 
@@ -3306,24 +3306,24 @@ static PyObject *ShiftKey1_set_time(ShiftKey1* self, PyObject *args, PyObject *k
 //    return result;
 }
 
-static PyObject *ShiftKey1_gt(ShiftKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey1_prev(ShiftKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey1_last(ShiftKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey1_gt(ShiftKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3342,24 +3342,12 @@ static PyObject *ShiftKey1_next(ShiftKey1* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey1_le(ShiftKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey1_ge(ShiftKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ShiftKey1_lt(ShiftKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3378,24 +3366,36 @@ static PyObject *ShiftKey1_equal(ShiftKey1* self, PyObject *args, PyObject *kwds
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey1_ge(ShiftKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey1_last(ShiftKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey1_prev(ShiftKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey1_lt(ShiftKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ShiftKey1_le(ShiftKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3448,90 +3448,6 @@ static PyObject *ShiftKey1_iter_gt(ShiftKey1* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_shift_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey1_iter_last(ShiftKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ShiftKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey1_iter_le(ShiftKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ShiftKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3624,6 +3540,48 @@ static PyObject *ShiftKey1_iter_equal(ShiftKey1* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *ShiftKey1_iter_last(ShiftKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ShiftKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ShiftKey1_iter_lt(ShiftKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3639,6 +3597,48 @@ static PyObject *ShiftKey1_iter_lt(ShiftKey1* self, PyObject *args, PyObject *kw
     }
     do_cpy(key_cmp, *self->priv);
     status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ShiftKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ShiftKey1_iter_le(ShiftKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3919,35 +3919,35 @@ static PyMethodDef ShiftKey1_methods[] = {
 
     {"set_time", (PyCFunction)ShiftKey1_set_time, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_set_time"},
 
-    {"get_gt", (PyCFunction)ShiftKey1_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_gt"},
+    {"get_prev", (PyCFunction)ShiftKey1_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_prev"},
 
-    {"get_last", (PyCFunction)ShiftKey1_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_last"},
+    {"get_gt", (PyCFunction)ShiftKey1_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_gt"},
 
     {"get_next", (PyCFunction)ShiftKey1_next, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_next"},
 
-    {"get_le", (PyCFunction)ShiftKey1_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_le"},
-
-    {"get_lt", (PyCFunction)ShiftKey1_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_lt"},
+    {"get_ge", (PyCFunction)ShiftKey1_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_ge"},
 
     {"get_equal", (PyCFunction)ShiftKey1_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_equal"},
 
-    {"get_ge", (PyCFunction)ShiftKey1_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_ge"},
+    {"get_last", (PyCFunction)ShiftKey1_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_last"},
 
-    {"get_prev", (PyCFunction)ShiftKey1_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_prev"},
+    {"get_lt", (PyCFunction)ShiftKey1_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_lt"},
+
+    {"get_le", (PyCFunction)ShiftKey1_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_le"},
 
     {"get_first", (PyCFunction)ShiftKey1_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_first"},
 
     {"gets_gt", (PyCFunction)ShiftKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)ShiftKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)ShiftKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)ShiftKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)ShiftKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)ShiftKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)ShiftKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)ShiftKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_le"},
 
     {"gets_first", (PyCFunction)ShiftKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey1_iter_first"},
 
@@ -4106,24 +4106,24 @@ static PyObject *ShiftKey2_set_time_start(ShiftKey2* self, PyObject *args, PyObj
 //    return result;
 }
 
-static PyObject *ShiftKey2_gt(ShiftKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey2_prev(ShiftKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey2_last(ShiftKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey2_gt(ShiftKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4142,24 +4142,12 @@ static PyObject *ShiftKey2_next(ShiftKey2* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey2_le(ShiftKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey2_ge(ShiftKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ShiftKey2_lt(ShiftKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4178,24 +4166,36 @@ static PyObject *ShiftKey2_equal(ShiftKey2* self, PyObject *args, PyObject *kwds
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey2_ge(ShiftKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey2_last(ShiftKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey2_prev(ShiftKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey2_lt(ShiftKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ShiftKey2_le(ShiftKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4248,90 +4248,6 @@ static PyObject *ShiftKey2_iter_gt(ShiftKey2* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_shift_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey2_iter_last(ShiftKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date_b, 
-                 self->priv->date_b))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time_b, 
-                 self->priv->time_b))
-               break;
-       }
-
- 
-        item = ShiftKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey2_iter_le(ShiftKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date_b, 
-                 self->priv->date_b))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time_b, 
-                 self->priv->time_b))
-               break;
-       }
-
- 
-        item = ShiftKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4424,6 +4340,48 @@ static PyObject *ShiftKey2_iter_equal(ShiftKey2* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *ShiftKey2_iter_last(ShiftKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date_b, 
+                 self->priv->date_b))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time_b, 
+                 self->priv->time_b))
+               break;
+       }
+
+ 
+        item = ShiftKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ShiftKey2_iter_lt(ShiftKey2* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -4439,6 +4397,48 @@ static PyObject *ShiftKey2_iter_lt(ShiftKey2* self, PyObject *args, PyObject *kw
     }
     do_cpy(key_cmp, *self->priv);
     status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date_b, 
+                 self->priv->date_b))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time_b, 
+                 self->priv->time_b))
+               break;
+       }
+
+ 
+        item = ShiftKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ShiftKey2_iter_le(ShiftKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key2(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -4715,35 +4715,35 @@ static PyMethodDef ShiftKey2_methods[] = {
 
     {"set_time_start", (PyCFunction)ShiftKey2_set_time_start, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_set_time_start"},
 
-    {"get_gt", (PyCFunction)ShiftKey2_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_gt"},
+    {"get_prev", (PyCFunction)ShiftKey2_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_prev"},
 
-    {"get_last", (PyCFunction)ShiftKey2_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_last"},
+    {"get_gt", (PyCFunction)ShiftKey2_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_gt"},
 
     {"get_next", (PyCFunction)ShiftKey2_next, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_next"},
 
-    {"get_le", (PyCFunction)ShiftKey2_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_le"},
-
-    {"get_lt", (PyCFunction)ShiftKey2_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_lt"},
+    {"get_ge", (PyCFunction)ShiftKey2_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_ge"},
 
     {"get_equal", (PyCFunction)ShiftKey2_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_equal"},
 
-    {"get_ge", (PyCFunction)ShiftKey2_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_ge"},
+    {"get_last", (PyCFunction)ShiftKey2_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_last"},
 
-    {"get_prev", (PyCFunction)ShiftKey2_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_prev"},
+    {"get_lt", (PyCFunction)ShiftKey2_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_lt"},
+
+    {"get_le", (PyCFunction)ShiftKey2_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_le"},
 
     {"get_first", (PyCFunction)ShiftKey2_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_first"},
 
     {"gets_gt", (PyCFunction)ShiftKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_gt"},
 
-    {"gets_last", (PyCFunction)ShiftKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_last"},
-
-    {"gets_le", (PyCFunction)ShiftKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_le"},
-
     {"gets_ge", (PyCFunction)ShiftKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_ge"},
 
     {"gets_equal", (PyCFunction)ShiftKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_equal"},
 
+    {"gets_last", (PyCFunction)ShiftKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_last"},
+
     {"gets_lt", (PyCFunction)ShiftKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_lt"},
+
+    {"gets_le", (PyCFunction)ShiftKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_le"},
 
     {"gets_first", (PyCFunction)ShiftKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey2_iter_first"},
 
@@ -4956,24 +4956,24 @@ static PyObject *ShiftKey3_set_time(ShiftKey3* self, PyObject *args, PyObject *k
 //    return result;
 }
 
-static PyObject *ShiftKey3_gt(ShiftKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey3_prev(ShiftKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey3_last(ShiftKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey3_gt(ShiftKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4992,24 +4992,12 @@ static PyObject *ShiftKey3_next(ShiftKey3* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey3_le(ShiftKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey3_ge(ShiftKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ShiftKey3_lt(ShiftKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5028,24 +5016,36 @@ static PyObject *ShiftKey3_equal(ShiftKey3* self, PyObject *args, PyObject *kwds
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey3_ge(ShiftKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey3_last(ShiftKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ShiftKey3_prev(ShiftKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *ShiftKey3_lt(ShiftKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ShiftKey3_le(ShiftKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5104,102 +5104,6 @@ static PyObject *ShiftKey3_iter_gt(ShiftKey3* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_shift_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey3_iter_last(ShiftKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ShiftKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ShiftKey3_iter_le(ShiftKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    shift_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ShiftKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_shift_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -5304,6 +5208,54 @@ static PyObject *ShiftKey3_iter_equal(ShiftKey3* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *ShiftKey3_iter_last(ShiftKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ShiftKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *ShiftKey3_iter_lt(ShiftKey3* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -5319,6 +5271,54 @@ static PyObject *ShiftKey3_iter_lt(ShiftKey3* self, PyObject *args, PyObject *kw
     }
     do_cpy(key_cmp, *self->priv);
     status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ShiftKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_shift_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ShiftKey3_iter_le(ShiftKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    shift_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_shift_key3(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -5644,35 +5644,35 @@ static PyMethodDef ShiftKey3_methods[] = {
 
     {"set_time", (PyCFunction)ShiftKey3_set_time, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_set_time"},
 
-    {"get_gt", (PyCFunction)ShiftKey3_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_gt"},
+    {"get_prev", (PyCFunction)ShiftKey3_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_prev"},
 
-    {"get_last", (PyCFunction)ShiftKey3_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_last"},
+    {"get_gt", (PyCFunction)ShiftKey3_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_gt"},
 
     {"get_next", (PyCFunction)ShiftKey3_next, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_next"},
 
-    {"get_le", (PyCFunction)ShiftKey3_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_le"},
-
-    {"get_lt", (PyCFunction)ShiftKey3_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_lt"},
+    {"get_ge", (PyCFunction)ShiftKey3_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_ge"},
 
     {"get_equal", (PyCFunction)ShiftKey3_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_equal"},
 
-    {"get_ge", (PyCFunction)ShiftKey3_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_ge"},
+    {"get_last", (PyCFunction)ShiftKey3_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_last"},
 
-    {"get_prev", (PyCFunction)ShiftKey3_prev, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_prev"},
+    {"get_lt", (PyCFunction)ShiftKey3_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_lt"},
+
+    {"get_le", (PyCFunction)ShiftKey3_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_le"},
 
     {"get_first", (PyCFunction)ShiftKey3_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_first"},
 
     {"gets_gt", (PyCFunction)ShiftKey3_iter_gt, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_gt"},
 
-    {"gets_last", (PyCFunction)ShiftKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_last"},
-
-    {"gets_le", (PyCFunction)ShiftKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_le"},
-
     {"gets_ge", (PyCFunction)ShiftKey3_iter_ge, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_ge"},
 
     {"gets_equal", (PyCFunction)ShiftKey3_iter_equal, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_equal"},
 
+    {"gets_last", (PyCFunction)ShiftKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_last"},
+
     {"gets_lt", (PyCFunction)ShiftKey3_iter_lt, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_lt"},
+
+    {"gets_le", (PyCFunction)ShiftKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_le"},
 
     {"gets_first", (PyCFunction)ShiftKey3_iter_first, METH_VARARGS|METH_KEYWORDS, "ShiftKey3_iter_first"},
 

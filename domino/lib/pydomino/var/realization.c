@@ -277,6 +277,46 @@ static PyObject *Realization_set_profit(Realization* self, PyObject *args, PyObj
 //    return result;
 }
 
+static PyObject *Realization_prev(Realization* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getRealizationKey0Type() )
+        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey1Type() )
+        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey2Type() )
+        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey3Type() )
+        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey4Type() )
+        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Realization_gt(Realization* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -305,46 +345,6 @@ static PyObject *Realization_gt(Realization* self, PyObject *args, PyObject *kwd
 
     if ( Py_TYPE(key) == getRealizationKey4Type() )
         status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_GT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Realization_last(Realization* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getRealizationKey0Type() )
-        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey1Type() )
-        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey2Type() )
-        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey3Type() )
-        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey4Type() )
-        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -397,7 +397,7 @@ static PyObject *Realization_next(Realization* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Realization_le(Realization* self, PyObject *args, PyObject *kwds)
+static PyObject *Realization_ge(Realization* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -408,63 +408,23 @@ static PyObject *Realization_le(Realization* self, PyObject *args, PyObject *kwd
         return NULL;
 
     if ( Py_TYPE(key) == getRealizationKey0Type() )
-        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LE);
+        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getRealizationKey1Type() )
-        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LE);
+        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getRealizationKey2Type() )
-        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LE);
+        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getRealizationKey3Type() )
-        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LE);
+        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_GE);
     else
 
     if ( Py_TYPE(key) == getRealizationKey4Type() )
-        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Realization_lt(Realization* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getRealizationKey0Type() )
-        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey1Type() )
-        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey2Type() )
-        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey3Type() )
-        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LT);
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey4Type() )
-        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LT);
+        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -517,7 +477,7 @@ static PyObject *Realization_equal(Realization* self, PyObject *args, PyObject *
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Realization_ge(Realization* self, PyObject *args, PyObject *kwds)
+static PyObject *Realization_last(Realization* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -528,23 +488,23 @@ static PyObject *Realization_ge(Realization* self, PyObject *args, PyObject *kwd
         return NULL;
 
     if ( Py_TYPE(key) == getRealizationKey0Type() )
-        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_GE);
+        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getRealizationKey1Type() )
-        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_GE);
+        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getRealizationKey2Type() )
-        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_GE);
+        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getRealizationKey3Type() )
-        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_GE);
+        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LAST);
     else
 
     if ( Py_TYPE(key) == getRealizationKey4Type() )
-        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_GE);
+        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -557,7 +517,7 @@ static PyObject *Realization_ge(Realization* self, PyObject *args, PyObject *kwd
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Realization_prev(Realization* self, PyObject *args, PyObject *kwds)
+static PyObject *Realization_lt(Realization* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -568,23 +528,63 @@ static PyObject *Realization_prev(Realization* self, PyObject *args, PyObject *k
         return NULL;
 
     if ( Py_TYPE(key) == getRealizationKey0Type() )
-        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getRealizationKey1Type() )
-        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_PREVIOUS);
+        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getRealizationKey2Type() )
-        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_PREVIOUS);
+        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getRealizationKey3Type() )
-        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_PREVIOUS);
+        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LT);
     else
 
     if ( Py_TYPE(key) == getRealizationKey4Type() )
-        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_PREVIOUS);
+        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Realization_le(Realization* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getRealizationKey0Type() )
+        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey1Type() )
+        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey2Type() )
+        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey3Type() )
+        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey4Type() )
+        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -842,454 +842,6 @@ static PyObject *Realization_iter_gt(Realization* self, PyObject *args, PyObject
 
         if ( Py_TYPE(key) == getRealizationKey4Type() ) {
             status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Realization_iter_last(Realization* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getRealizationKey0Type() ) {
-        key_cmp = (realization_key0_t*)do_malloc(sizeof(realization_key0_t));
-        memcpy(key_cmp, ((RealizationKey0*)key)->priv, sizeof(realization_key0_t));
-        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey1Type() ) {
-        key_cmp = (realization_key1_t*)do_malloc(sizeof(realization_key1_t));
-        memcpy(key_cmp, ((RealizationKey1*)key)->priv, sizeof(realization_key1_t));
-        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey2Type() ) {
-        key_cmp = (realization_key2_t*)do_malloc(sizeof(realization_key2_t));
-        memcpy(key_cmp, ((RealizationKey2*)key)->priv, sizeof(realization_key2_t));
-        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey3Type() ) {
-        key_cmp = (realization_key3_t*)do_malloc(sizeof(realization_key3_t));
-        memcpy(key_cmp, ((RealizationKey3*)key)->priv, sizeof(realization_key3_t));
-        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey4Type() ) {
-        key_cmp = (realization_key4_t*)do_malloc(sizeof(realization_key4_t));
-        memcpy(key_cmp, ((RealizationKey4*)key)->priv, sizeof(realization_key4_t));
-        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key0_t*)key_cmp)->code, 
-                    ((RealizationKey0*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key0_t*)key_cmp)->month, 
-                    ((RealizationKey0*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key0_t*)key_cmp)->sklad, 
-                    ((RealizationKey0*)key)->priv->sklad))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key1_t*)key_cmp)->sklad, 
-                    ((RealizationKey1*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key1_t*)key_cmp)->month, 
-                    ((RealizationKey1*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key1_t*)key_cmp)->code, 
-                    ((RealizationKey1*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key2_t*)key_cmp)->month, 
-                    ((RealizationKey2*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key2_t*)key_cmp)->code, 
-                    ((RealizationKey2*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key2_t*)key_cmp)->sklad, 
-                    ((RealizationKey2*)key)->priv->sklad))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key3_t*)key_cmp)->month, 
-                    ((RealizationKey3*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key3_t*)key_cmp)->sklad, 
-                    ((RealizationKey3*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key3_t*)key_cmp)->code, 
-                    ((RealizationKey3*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key4_t*)key_cmp)->code, 
-                    ((RealizationKey4*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key4_t*)key_cmp)->sklad, 
-                    ((RealizationKey4*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key4_t*)key_cmp)->month, 
-                    ((RealizationKey4*)key)->priv->month))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Realization_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
-            status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
-            status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
-            status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
-            status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
-            status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Realization_iter_le(Realization* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getRealizationKey0Type() ) {
-        key_cmp = (realization_key0_t*)do_malloc(sizeof(realization_key0_t));
-        memcpy(key_cmp, ((RealizationKey0*)key)->priv, sizeof(realization_key0_t));
-        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey1Type() ) {
-        key_cmp = (realization_key1_t*)do_malloc(sizeof(realization_key1_t));
-        memcpy(key_cmp, ((RealizationKey1*)key)->priv, sizeof(realization_key1_t));
-        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey2Type() ) {
-        key_cmp = (realization_key2_t*)do_malloc(sizeof(realization_key2_t));
-        memcpy(key_cmp, ((RealizationKey2*)key)->priv, sizeof(realization_key2_t));
-        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey3Type() ) {
-        key_cmp = (realization_key3_t*)do_malloc(sizeof(realization_key3_t));
-        memcpy(key_cmp, ((RealizationKey3*)key)->priv, sizeof(realization_key3_t));
-        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LE);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRealizationKey4Type() ) {
-        key_cmp = (realization_key4_t*)do_malloc(sizeof(realization_key4_t));
-        memcpy(key_cmp, ((RealizationKey4*)key)->priv, sizeof(realization_key4_t));
-        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LE);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key0_t*)key_cmp)->code, 
-                    ((RealizationKey0*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key0_t*)key_cmp)->month, 
-                    ((RealizationKey0*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key0_t*)key_cmp)->sklad, 
-                    ((RealizationKey0*)key)->priv->sklad))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key1_t*)key_cmp)->sklad, 
-                    ((RealizationKey1*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key1_t*)key_cmp)->month, 
-                    ((RealizationKey1*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key1_t*)key_cmp)->code, 
-                    ((RealizationKey1*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key2_t*)key_cmp)->month, 
-                    ((RealizationKey2*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key2_t*)key_cmp)->code, 
-                    ((RealizationKey2*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key2_t*)key_cmp)->sklad, 
-                    ((RealizationKey2*)key)->priv->sklad))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key3_t*)key_cmp)->month, 
-                    ((RealizationKey3*)key)->priv->month))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key3_t*)key_cmp)->sklad, 
-                    ((RealizationKey3*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key3_t*)key_cmp)->code, 
-                    ((RealizationKey3*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((realization_key4_t*)key_cmp)->code, 
-                    ((RealizationKey4*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((realization_key4_t*)key_cmp)->sklad, 
-                    ((RealizationKey4*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((realization_key4_t*)key_cmp)->month, 
-                    ((RealizationKey4*)key)->priv->month))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Realization_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
-            status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
-            status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
-            status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
-            status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
-            status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1757,6 +1309,230 @@ static PyObject *Realization_iter_equal(Realization* self, PyObject *args, PyObj
     return retval;
 }
 
+static PyObject *Realization_iter_last(Realization* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getRealizationKey0Type() ) {
+        key_cmp = (realization_key0_t*)do_malloc(sizeof(realization_key0_t));
+        memcpy(key_cmp, ((RealizationKey0*)key)->priv, sizeof(realization_key0_t));
+        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey1Type() ) {
+        key_cmp = (realization_key1_t*)do_malloc(sizeof(realization_key1_t));
+        memcpy(key_cmp, ((RealizationKey1*)key)->priv, sizeof(realization_key1_t));
+        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey2Type() ) {
+        key_cmp = (realization_key2_t*)do_malloc(sizeof(realization_key2_t));
+        memcpy(key_cmp, ((RealizationKey2*)key)->priv, sizeof(realization_key2_t));
+        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey3Type() ) {
+        key_cmp = (realization_key3_t*)do_malloc(sizeof(realization_key3_t));
+        memcpy(key_cmp, ((RealizationKey3*)key)->priv, sizeof(realization_key3_t));
+        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey4Type() ) {
+        key_cmp = (realization_key4_t*)do_malloc(sizeof(realization_key4_t));
+        memcpy(key_cmp, ((RealizationKey4*)key)->priv, sizeof(realization_key4_t));
+        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key0_t*)key_cmp)->code, 
+                    ((RealizationKey0*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key0_t*)key_cmp)->month, 
+                    ((RealizationKey0*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key0_t*)key_cmp)->sklad, 
+                    ((RealizationKey0*)key)->priv->sklad))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key1_t*)key_cmp)->sklad, 
+                    ((RealizationKey1*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key1_t*)key_cmp)->month, 
+                    ((RealizationKey1*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key1_t*)key_cmp)->code, 
+                    ((RealizationKey1*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key2_t*)key_cmp)->month, 
+                    ((RealizationKey2*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key2_t*)key_cmp)->code, 
+                    ((RealizationKey2*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key2_t*)key_cmp)->sklad, 
+                    ((RealizationKey2*)key)->priv->sklad))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key3_t*)key_cmp)->month, 
+                    ((RealizationKey3*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key3_t*)key_cmp)->sklad, 
+                    ((RealizationKey3*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key3_t*)key_cmp)->code, 
+                    ((RealizationKey3*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key4_t*)key_cmp)->code, 
+                    ((RealizationKey4*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key4_t*)key_cmp)->sklad, 
+                    ((RealizationKey4*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key4_t*)key_cmp)->month, 
+                    ((RealizationKey4*)key)->priv->month))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Realization_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
+            status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
+            status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
+            status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
+            status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
+            status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
 static PyObject *Realization_iter_lt(Realization* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -1805,6 +1581,230 @@ static PyObject *Realization_iter_lt(Realization* self, PyObject *args, PyObject
         key_cmp = (realization_key4_t*)do_malloc(sizeof(realization_key4_t));
         memcpy(key_cmp, ((RealizationKey4*)key)->priv, sizeof(realization_key4_t));
         status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key0_t*)key_cmp)->code, 
+                    ((RealizationKey0*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key0_t*)key_cmp)->month, 
+                    ((RealizationKey0*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key0_t*)key_cmp)->sklad, 
+                    ((RealizationKey0*)key)->priv->sklad))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key1_t*)key_cmp)->sklad, 
+                    ((RealizationKey1*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key1_t*)key_cmp)->month, 
+                    ((RealizationKey1*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key1_t*)key_cmp)->code, 
+                    ((RealizationKey1*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key2_t*)key_cmp)->month, 
+                    ((RealizationKey2*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key2_t*)key_cmp)->code, 
+                    ((RealizationKey2*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key2_t*)key_cmp)->sklad, 
+                    ((RealizationKey2*)key)->priv->sklad))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key3_t*)key_cmp)->month, 
+                    ((RealizationKey3*)key)->priv->month))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key3_t*)key_cmp)->sklad, 
+                    ((RealizationKey3*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key3_t*)key_cmp)->code, 
+                    ((RealizationKey3*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((realization_key4_t*)key_cmp)->code, 
+                    ((RealizationKey4*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((realization_key4_t*)key_cmp)->sklad, 
+                    ((RealizationKey4*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((realization_key4_t*)key_cmp)->month, 
+                    ((RealizationKey4*)key)->priv->month))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Realization_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getRealizationKey0Type() ) {
+            status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey1Type() ) {
+            status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey2Type() ) {
+            status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey3Type() ) {
+            status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRealizationKey4Type() ) {
+            status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *Realization_iter_le(Realization* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getRealizationKey0Type() ) {
+        key_cmp = (realization_key0_t*)do_malloc(sizeof(realization_key0_t));
+        memcpy(key_cmp, ((RealizationKey0*)key)->priv, sizeof(realization_key0_t));
+        status = do_realization_get0(self->alias->alias, self->priv, ((RealizationKey0*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey1Type() ) {
+        key_cmp = (realization_key1_t*)do_malloc(sizeof(realization_key1_t));
+        memcpy(key_cmp, ((RealizationKey1*)key)->priv, sizeof(realization_key1_t));
+        status = do_realization_get1(self->alias->alias, self->priv, ((RealizationKey1*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey2Type() ) {
+        key_cmp = (realization_key2_t*)do_malloc(sizeof(realization_key2_t));
+        memcpy(key_cmp, ((RealizationKey2*)key)->priv, sizeof(realization_key2_t));
+        status = do_realization_get2(self->alias->alias, self->priv, ((RealizationKey2*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey3Type() ) {
+        key_cmp = (realization_key3_t*)do_malloc(sizeof(realization_key3_t));
+        memcpy(key_cmp, ((RealizationKey3*)key)->priv, sizeof(realization_key3_t));
+        status = do_realization_get3(self->alias->alias, self->priv, ((RealizationKey3*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRealizationKey4Type() ) {
+        key_cmp = (realization_key4_t*)do_malloc(sizeof(realization_key4_t));
+        memcpy(key_cmp, ((RealizationKey4*)key)->priv, sizeof(realization_key4_t));
+        status = do_realization_get4(self->alias->alias, self->priv, ((RealizationKey4*)key)->priv, DO_GET_LE);
     }
     else
     
@@ -2205,19 +2205,19 @@ static PyObject *Realization_iter_first(Realization* self, PyObject *args, PyObj
     return retval;
 }
 
-static PyObject *Realization_insert(Realization* self)
+static PyObject *Realization_update(Realization* self)
 {
     int status;
-    status = do_realization_insert(self->alias->alias, self->priv);
+    status = do_realization_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Realization_update(Realization* self)
+static PyObject *Realization_insert(Realization* self)
 {
     int status;
-    status = do_realization_update(self->alias->alias, self->priv);
+    status = do_realization_insert(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -2513,41 +2513,41 @@ static PyMethodDef Realization_methods[] = {
 
     {"set_profit", (PyCFunction)Realization_set_profit, METH_VARARGS|METH_KEYWORDS, "Realization_set_profit"},
 
-    {"get_gt", (PyCFunction)Realization_gt, METH_VARARGS|METH_KEYWORDS, "Realization_gt"},
+    {"get_prev", (PyCFunction)Realization_prev, METH_VARARGS|METH_KEYWORDS, "Realization_prev"},
 
-    {"get_last", (PyCFunction)Realization_last, METH_VARARGS|METH_KEYWORDS, "Realization_last"},
+    {"get_gt", (PyCFunction)Realization_gt, METH_VARARGS|METH_KEYWORDS, "Realization_gt"},
 
     {"get_next", (PyCFunction)Realization_next, METH_VARARGS|METH_KEYWORDS, "Realization_next"},
 
-    {"get_le", (PyCFunction)Realization_le, METH_VARARGS|METH_KEYWORDS, "Realization_le"},
-
-    {"get_lt", (PyCFunction)Realization_lt, METH_VARARGS|METH_KEYWORDS, "Realization_lt"},
+    {"get_ge", (PyCFunction)Realization_ge, METH_VARARGS|METH_KEYWORDS, "Realization_ge"},
 
     {"get_equal", (PyCFunction)Realization_equal, METH_VARARGS|METH_KEYWORDS, "Realization_equal"},
 
-    {"get_ge", (PyCFunction)Realization_ge, METH_VARARGS|METH_KEYWORDS, "Realization_ge"},
+    {"get_last", (PyCFunction)Realization_last, METH_VARARGS|METH_KEYWORDS, "Realization_last"},
 
-    {"get_prev", (PyCFunction)Realization_prev, METH_VARARGS|METH_KEYWORDS, "Realization_prev"},
+    {"get_lt", (PyCFunction)Realization_lt, METH_VARARGS|METH_KEYWORDS, "Realization_lt"},
+
+    {"get_le", (PyCFunction)Realization_le, METH_VARARGS|METH_KEYWORDS, "Realization_le"},
 
     {"get_first", (PyCFunction)Realization_first, METH_VARARGS|METH_KEYWORDS, "Realization_first"},
 
     {"gets_gt", (PyCFunction)Realization_iter_gt, METH_VARARGS|METH_KEYWORDS, "Realization_iter_gt"},
 
-    {"gets_last", (PyCFunction)Realization_iter_last, METH_VARARGS|METH_KEYWORDS, "Realization_iter_last"},
-
-    {"gets_le", (PyCFunction)Realization_iter_le, METH_VARARGS|METH_KEYWORDS, "Realization_iter_le"},
-
     {"gets_ge", (PyCFunction)Realization_iter_ge, METH_VARARGS|METH_KEYWORDS, "Realization_iter_ge"},
 
     {"gets_equal", (PyCFunction)Realization_iter_equal, METH_VARARGS|METH_KEYWORDS, "Realization_iter_equal"},
 
+    {"gets_last", (PyCFunction)Realization_iter_last, METH_VARARGS|METH_KEYWORDS, "Realization_iter_last"},
+
     {"gets_lt", (PyCFunction)Realization_iter_lt, METH_VARARGS|METH_KEYWORDS, "Realization_iter_lt"},
+
+    {"gets_le", (PyCFunction)Realization_iter_le, METH_VARARGS|METH_KEYWORDS, "Realization_iter_le"},
 
     {"gets_first", (PyCFunction)Realization_iter_first, METH_VARARGS|METH_KEYWORDS, "Realization_iter_first"},
 
-    {"insert", (PyCFunction)Realization_insert, METH_VARARGS|METH_KEYWORDS, "Realization_insert"},
-
     {"update", (PyCFunction)Realization_update, METH_VARARGS|METH_KEYWORDS, "Realization_update"},
+
+    {"insert", (PyCFunction)Realization_insert, METH_VARARGS|METH_KEYWORDS, "Realization_insert"},
 
     {"delete", (PyCFunction)Realization_delete, METH_VARARGS|METH_KEYWORDS, "Realization_delete"},
 
@@ -2734,24 +2734,24 @@ static PyObject *RealizationKey0_set_store(RealizationKey0* self, PyObject *args
 //    return result;
 }
 
-static PyObject *RealizationKey0_gt(RealizationKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey0_prev(RealizationKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey0_last(RealizationKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey0_gt(RealizationKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2770,24 +2770,12 @@ static PyObject *RealizationKey0_next(RealizationKey0* self, PyObject *args, PyO
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey0_le(RealizationKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey0_ge(RealizationKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RealizationKey0_lt(RealizationKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2806,24 +2794,36 @@ static PyObject *RealizationKey0_equal(RealizationKey0* self, PyObject *args, Py
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey0_ge(RealizationKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey0_last(RealizationKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey0_prev(RealizationKey0* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey0_lt(RealizationKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RealizationKey0_le(RealizationKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2882,102 +2882,6 @@ static PyObject *RealizationKey0_iter_gt(RealizationKey0* self, PyObject *args, 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_realization_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey0_iter_last(RealizationKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
- 
-        item = RealizationKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey0_iter_le(RealizationKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
- 
-        item = RealizationKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3082,6 +2986,54 @@ static PyObject *RealizationKey0_iter_equal(RealizationKey0* self, PyObject *arg
     return retval;
 }
 
+static PyObject *RealizationKey0_iter_last(RealizationKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+ 
+        item = RealizationKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *RealizationKey0_iter_lt(RealizationKey0* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3097,6 +3049,54 @@ static PyObject *RealizationKey0_iter_lt(RealizationKey0* self, PyObject *args, 
     }
     do_cpy(key_cmp, *self->priv);
     status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+ 
+        item = RealizationKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *RealizationKey0_iter_le(RealizationKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key0(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -3418,35 +3418,35 @@ static PyMethodDef RealizationKey0_methods[] = {
 
     {"set_store", (PyCFunction)RealizationKey0_set_store, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_set_store"},
 
-    {"get_gt", (PyCFunction)RealizationKey0_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_gt"},
+    {"get_prev", (PyCFunction)RealizationKey0_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_prev"},
 
-    {"get_last", (PyCFunction)RealizationKey0_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_last"},
+    {"get_gt", (PyCFunction)RealizationKey0_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_gt"},
 
     {"get_next", (PyCFunction)RealizationKey0_next, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_next"},
 
-    {"get_le", (PyCFunction)RealizationKey0_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_le"},
-
-    {"get_lt", (PyCFunction)RealizationKey0_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_lt"},
+    {"get_ge", (PyCFunction)RealizationKey0_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_ge"},
 
     {"get_equal", (PyCFunction)RealizationKey0_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_equal"},
 
-    {"get_ge", (PyCFunction)RealizationKey0_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_ge"},
+    {"get_last", (PyCFunction)RealizationKey0_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_last"},
 
-    {"get_prev", (PyCFunction)RealizationKey0_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_prev"},
+    {"get_lt", (PyCFunction)RealizationKey0_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_lt"},
+
+    {"get_le", (PyCFunction)RealizationKey0_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_le"},
 
     {"get_first", (PyCFunction)RealizationKey0_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_first"},
 
     {"gets_gt", (PyCFunction)RealizationKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_gt"},
 
-    {"gets_last", (PyCFunction)RealizationKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_last"},
-
-    {"gets_le", (PyCFunction)RealizationKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_le"},
-
     {"gets_ge", (PyCFunction)RealizationKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_ge"},
 
     {"gets_equal", (PyCFunction)RealizationKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_equal"},
 
+    {"gets_last", (PyCFunction)RealizationKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_last"},
+
     {"gets_lt", (PyCFunction)RealizationKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_lt"},
+
+    {"gets_le", (PyCFunction)RealizationKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_le"},
 
     {"gets_first", (PyCFunction)RealizationKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey0_iter_first"},
 
@@ -3633,24 +3633,24 @@ static PyObject *RealizationKey1_set_code(RealizationKey1* self, PyObject *args,
 //    return result;
 }
 
-static PyObject *RealizationKey1_gt(RealizationKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey1_prev(RealizationKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey1_last(RealizationKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey1_gt(RealizationKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3669,24 +3669,12 @@ static PyObject *RealizationKey1_next(RealizationKey1* self, PyObject *args, PyO
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey1_le(RealizationKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey1_ge(RealizationKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RealizationKey1_lt(RealizationKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3705,24 +3693,36 @@ static PyObject *RealizationKey1_equal(RealizationKey1* self, PyObject *args, Py
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey1_ge(RealizationKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey1_last(RealizationKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey1_prev(RealizationKey1* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey1_lt(RealizationKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RealizationKey1_le(RealizationKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3781,102 +3781,6 @@ static PyObject *RealizationKey1_iter_gt(RealizationKey1* self, PyObject *args, 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_realization_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey1_iter_last(RealizationKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = RealizationKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey1_iter_le(RealizationKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = RealizationKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3981,6 +3885,54 @@ static PyObject *RealizationKey1_iter_equal(RealizationKey1* self, PyObject *arg
     return retval;
 }
 
+static PyObject *RealizationKey1_iter_last(RealizationKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = RealizationKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *RealizationKey1_iter_lt(RealizationKey1* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -3996,6 +3948,54 @@ static PyObject *RealizationKey1_iter_lt(RealizationKey1* self, PyObject *args, 
     }
     do_cpy(key_cmp, *self->priv);
     status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = RealizationKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *RealizationKey1_iter_le(RealizationKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key1(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -4317,35 +4317,35 @@ static PyMethodDef RealizationKey1_methods[] = {
 
     {"set_code", (PyCFunction)RealizationKey1_set_code, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_set_code"},
 
-    {"get_gt", (PyCFunction)RealizationKey1_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_gt"},
+    {"get_prev", (PyCFunction)RealizationKey1_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_prev"},
 
-    {"get_last", (PyCFunction)RealizationKey1_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_last"},
+    {"get_gt", (PyCFunction)RealizationKey1_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_gt"},
 
     {"get_next", (PyCFunction)RealizationKey1_next, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_next"},
 
-    {"get_le", (PyCFunction)RealizationKey1_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_le"},
-
-    {"get_lt", (PyCFunction)RealizationKey1_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_lt"},
+    {"get_ge", (PyCFunction)RealizationKey1_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_ge"},
 
     {"get_equal", (PyCFunction)RealizationKey1_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_equal"},
 
-    {"get_ge", (PyCFunction)RealizationKey1_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_ge"},
+    {"get_last", (PyCFunction)RealizationKey1_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_last"},
 
-    {"get_prev", (PyCFunction)RealizationKey1_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_prev"},
+    {"get_lt", (PyCFunction)RealizationKey1_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_lt"},
+
+    {"get_le", (PyCFunction)RealizationKey1_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_le"},
 
     {"get_first", (PyCFunction)RealizationKey1_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_first"},
 
     {"gets_gt", (PyCFunction)RealizationKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_gt"},
 
-    {"gets_last", (PyCFunction)RealizationKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_last"},
-
-    {"gets_le", (PyCFunction)RealizationKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_le"},
-
     {"gets_ge", (PyCFunction)RealizationKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_ge"},
 
     {"gets_equal", (PyCFunction)RealizationKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_equal"},
 
+    {"gets_last", (PyCFunction)RealizationKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_last"},
+
     {"gets_lt", (PyCFunction)RealizationKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)RealizationKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_le"},
 
     {"gets_first", (PyCFunction)RealizationKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey1_iter_first"},
 
@@ -4532,24 +4532,24 @@ static PyObject *RealizationKey2_set_store(RealizationKey2* self, PyObject *args
 //    return result;
 }
 
-static PyObject *RealizationKey2_gt(RealizationKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey2_prev(RealizationKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey2_last(RealizationKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey2_gt(RealizationKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4568,24 +4568,12 @@ static PyObject *RealizationKey2_next(RealizationKey2* self, PyObject *args, PyO
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey2_le(RealizationKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey2_ge(RealizationKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RealizationKey2_lt(RealizationKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4604,24 +4592,36 @@ static PyObject *RealizationKey2_equal(RealizationKey2* self, PyObject *args, Py
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey2_ge(RealizationKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey2_last(RealizationKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey2_prev(RealizationKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey2_lt(RealizationKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RealizationKey2_le(RealizationKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4680,102 +4680,6 @@ static PyObject *RealizationKey2_iter_gt(RealizationKey2* self, PyObject *args, 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_realization_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey2_iter_last(RealizationKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
- 
-        item = RealizationKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey2_iter_le(RealizationKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
- 
-        item = RealizationKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4880,6 +4784,54 @@ static PyObject *RealizationKey2_iter_equal(RealizationKey2* self, PyObject *arg
     return retval;
 }
 
+static PyObject *RealizationKey2_iter_last(RealizationKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+ 
+        item = RealizationKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *RealizationKey2_iter_lt(RealizationKey2* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -4895,6 +4847,54 @@ static PyObject *RealizationKey2_iter_lt(RealizationKey2* self, PyObject *args, 
     }
     do_cpy(key_cmp, *self->priv);
     status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+ 
+        item = RealizationKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *RealizationKey2_iter_le(RealizationKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key2(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -5216,35 +5216,35 @@ static PyMethodDef RealizationKey2_methods[] = {
 
     {"set_store", (PyCFunction)RealizationKey2_set_store, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_set_store"},
 
-    {"get_gt", (PyCFunction)RealizationKey2_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_gt"},
+    {"get_prev", (PyCFunction)RealizationKey2_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_prev"},
 
-    {"get_last", (PyCFunction)RealizationKey2_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_last"},
+    {"get_gt", (PyCFunction)RealizationKey2_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_gt"},
 
     {"get_next", (PyCFunction)RealizationKey2_next, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_next"},
 
-    {"get_le", (PyCFunction)RealizationKey2_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_le"},
-
-    {"get_lt", (PyCFunction)RealizationKey2_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_lt"},
+    {"get_ge", (PyCFunction)RealizationKey2_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_ge"},
 
     {"get_equal", (PyCFunction)RealizationKey2_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_equal"},
 
-    {"get_ge", (PyCFunction)RealizationKey2_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_ge"},
+    {"get_last", (PyCFunction)RealizationKey2_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_last"},
 
-    {"get_prev", (PyCFunction)RealizationKey2_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_prev"},
+    {"get_lt", (PyCFunction)RealizationKey2_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_lt"},
+
+    {"get_le", (PyCFunction)RealizationKey2_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_le"},
 
     {"get_first", (PyCFunction)RealizationKey2_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_first"},
 
     {"gets_gt", (PyCFunction)RealizationKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_gt"},
 
-    {"gets_last", (PyCFunction)RealizationKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_last"},
-
-    {"gets_le", (PyCFunction)RealizationKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_le"},
-
     {"gets_ge", (PyCFunction)RealizationKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_ge"},
 
     {"gets_equal", (PyCFunction)RealizationKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_equal"},
 
+    {"gets_last", (PyCFunction)RealizationKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_last"},
+
     {"gets_lt", (PyCFunction)RealizationKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_lt"},
+
+    {"gets_le", (PyCFunction)RealizationKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_le"},
 
     {"gets_first", (PyCFunction)RealizationKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey2_iter_first"},
 
@@ -5431,24 +5431,24 @@ static PyObject *RealizationKey3_set_code(RealizationKey3* self, PyObject *args,
 //    return result;
 }
 
-static PyObject *RealizationKey3_gt(RealizationKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey3_prev(RealizationKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey3_last(RealizationKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey3_gt(RealizationKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5467,24 +5467,12 @@ static PyObject *RealizationKey3_next(RealizationKey3* self, PyObject *args, PyO
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey3_le(RealizationKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey3_ge(RealizationKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RealizationKey3_lt(RealizationKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5503,24 +5491,36 @@ static PyObject *RealizationKey3_equal(RealizationKey3* self, PyObject *args, Py
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey3_ge(RealizationKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey3_last(RealizationKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey3_prev(RealizationKey3* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey3_lt(RealizationKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RealizationKey3_le(RealizationKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -5579,102 +5579,6 @@ static PyObject *RealizationKey3_iter_gt(RealizationKey3* self, PyObject *args, 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_realization_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey3_iter_last(RealizationKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = RealizationKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey3_iter_le(RealizationKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = RealizationKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -5779,6 +5683,54 @@ static PyObject *RealizationKey3_iter_equal(RealizationKey3* self, PyObject *arg
     return retval;
 }
 
+static PyObject *RealizationKey3_iter_last(RealizationKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = RealizationKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *RealizationKey3_iter_lt(RealizationKey3* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -5794,6 +5746,54 @@ static PyObject *RealizationKey3_iter_lt(RealizationKey3* self, PyObject *args, 
     }
     do_cpy(key_cmp, *self->priv);
     status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = RealizationKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *RealizationKey3_iter_le(RealizationKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key3(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -6115,35 +6115,35 @@ static PyMethodDef RealizationKey3_methods[] = {
 
     {"set_code", (PyCFunction)RealizationKey3_set_code, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_set_code"},
 
-    {"get_gt", (PyCFunction)RealizationKey3_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_gt"},
+    {"get_prev", (PyCFunction)RealizationKey3_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_prev"},
 
-    {"get_last", (PyCFunction)RealizationKey3_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_last"},
+    {"get_gt", (PyCFunction)RealizationKey3_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_gt"},
 
     {"get_next", (PyCFunction)RealizationKey3_next, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_next"},
 
-    {"get_le", (PyCFunction)RealizationKey3_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_le"},
-
-    {"get_lt", (PyCFunction)RealizationKey3_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_lt"},
+    {"get_ge", (PyCFunction)RealizationKey3_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_ge"},
 
     {"get_equal", (PyCFunction)RealizationKey3_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_equal"},
 
-    {"get_ge", (PyCFunction)RealizationKey3_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_ge"},
+    {"get_last", (PyCFunction)RealizationKey3_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_last"},
 
-    {"get_prev", (PyCFunction)RealizationKey3_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_prev"},
+    {"get_lt", (PyCFunction)RealizationKey3_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_lt"},
+
+    {"get_le", (PyCFunction)RealizationKey3_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_le"},
 
     {"get_first", (PyCFunction)RealizationKey3_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_first"},
 
     {"gets_gt", (PyCFunction)RealizationKey3_iter_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_gt"},
 
-    {"gets_last", (PyCFunction)RealizationKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_last"},
-
-    {"gets_le", (PyCFunction)RealizationKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_le"},
-
     {"gets_ge", (PyCFunction)RealizationKey3_iter_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_ge"},
 
     {"gets_equal", (PyCFunction)RealizationKey3_iter_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_equal"},
 
+    {"gets_last", (PyCFunction)RealizationKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_last"},
+
     {"gets_lt", (PyCFunction)RealizationKey3_iter_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_lt"},
+
+    {"gets_le", (PyCFunction)RealizationKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_le"},
 
     {"gets_first", (PyCFunction)RealizationKey3_iter_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey3_iter_first"},
 
@@ -6330,24 +6330,24 @@ static PyObject *RealizationKey4_set_month(RealizationKey4* self, PyObject *args
 //    return result;
 }
 
-static PyObject *RealizationKey4_gt(RealizationKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey4_prev(RealizationKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_GT);
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey4_last(RealizationKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey4_gt(RealizationKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LAST);
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_GT);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6366,24 +6366,12 @@ static PyObject *RealizationKey4_next(RealizationKey4* self, PyObject *args, PyO
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey4_le(RealizationKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey4_ge(RealizationKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RealizationKey4_lt(RealizationKey4* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LT);
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_GE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6402,24 +6390,36 @@ static PyObject *RealizationKey4_equal(RealizationKey4* self, PyObject *args, Py
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey4_ge(RealizationKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey4_last(RealizationKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_GE);
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RealizationKey4_prev(RealizationKey4* self, PyObject *args, PyObject *kwds)
+static PyObject *RealizationKey4_lt(RealizationKey4* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RealizationKey4_le(RealizationKey4* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LE);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -6478,102 +6478,6 @@ static PyObject *RealizationKey4_iter_gt(RealizationKey4* self, PyObject *args, 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_realization_key4(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey4_iter_last(RealizationKey4* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key4_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
- 
-        item = RealizationKey4_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RealizationKey4_iter_le(RealizationKey4* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    realization_key4_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LE);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.month, 
-                 self->priv->month))
-               break;
-       }
-
- 
-        item = RealizationKey4_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_realization_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -6678,6 +6582,54 @@ static PyObject *RealizationKey4_iter_equal(RealizationKey4* self, PyObject *arg
     return retval;
 }
 
+static PyObject *RealizationKey4_iter_last(RealizationKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+ 
+        item = RealizationKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *RealizationKey4_iter_lt(RealizationKey4* self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"depth", NULL};
@@ -6693,6 +6645,54 @@ static PyObject *RealizationKey4_iter_lt(RealizationKey4* self, PyObject *args, 
     }
     do_cpy(key_cmp, *self->priv);
     status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.month, 
+                 self->priv->month))
+               break;
+       }
+
+ 
+        item = RealizationKey4_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_realization_key4(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *RealizationKey4_iter_le(RealizationKey4* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    realization_key4_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_realization_key4(self->alias->alias, self->priv, DO_GET_LE);
     while ( status == DO_OK ) {
 
        if ( depth >= 1 ) {
@@ -7014,35 +7014,35 @@ static PyMethodDef RealizationKey4_methods[] = {
 
     {"set_month", (PyCFunction)RealizationKey4_set_month, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_set_month"},
 
-    {"get_gt", (PyCFunction)RealizationKey4_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_gt"},
+    {"get_prev", (PyCFunction)RealizationKey4_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_prev"},
 
-    {"get_last", (PyCFunction)RealizationKey4_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_last"},
+    {"get_gt", (PyCFunction)RealizationKey4_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_gt"},
 
     {"get_next", (PyCFunction)RealizationKey4_next, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_next"},
 
-    {"get_le", (PyCFunction)RealizationKey4_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_le"},
-
-    {"get_lt", (PyCFunction)RealizationKey4_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_lt"},
+    {"get_ge", (PyCFunction)RealizationKey4_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_ge"},
 
     {"get_equal", (PyCFunction)RealizationKey4_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_equal"},
 
-    {"get_ge", (PyCFunction)RealizationKey4_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_ge"},
+    {"get_last", (PyCFunction)RealizationKey4_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_last"},
 
-    {"get_prev", (PyCFunction)RealizationKey4_prev, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_prev"},
+    {"get_lt", (PyCFunction)RealizationKey4_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_lt"},
+
+    {"get_le", (PyCFunction)RealizationKey4_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_le"},
 
     {"get_first", (PyCFunction)RealizationKey4_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_first"},
 
     {"gets_gt", (PyCFunction)RealizationKey4_iter_gt, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_gt"},
 
-    {"gets_last", (PyCFunction)RealizationKey4_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_last"},
-
-    {"gets_le", (PyCFunction)RealizationKey4_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_le"},
-
     {"gets_ge", (PyCFunction)RealizationKey4_iter_ge, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_ge"},
 
     {"gets_equal", (PyCFunction)RealizationKey4_iter_equal, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_equal"},
 
+    {"gets_last", (PyCFunction)RealizationKey4_iter_last, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_last"},
+
     {"gets_lt", (PyCFunction)RealizationKey4_iter_lt, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_lt"},
+
+    {"gets_le", (PyCFunction)RealizationKey4_iter_le, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_le"},
 
     {"gets_first", (PyCFunction)RealizationKey4_iter_first, METH_VARARGS|METH_KEYWORDS, "RealizationKey4_iter_first"},
 

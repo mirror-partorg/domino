@@ -31,13 +31,13 @@
 ./var/subaccount.c
 ./var/subgroup.c
 ./var/user.c
-./src/markup.c
 ./src/grls.c
+./src/markup.c
 ./src/markup_info.c
-./src/traffic.c
-./src/price_limit.c
-./src/view.c
 ./src/misc.c
+./src/price_limit.c
+./src/traffic.c
+./src/view.c
 var/alias.c
 var/pydomino.c
 var/util.c

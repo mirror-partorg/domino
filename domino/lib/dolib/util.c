@@ -1,7 +1,40 @@
 #include <dolib.h>
 #include "../misc/define.h"
+#include "../../config/config.h"
 #include <errno.h>
 #include <time.h>
+
+
+
+DO_EXPORT char *do_get_config_filename(char *localname, char *filename)
+{
+#ifndef _WIN32
+   char *localfilename = NULL;
+   char *config = getenv("XDG_CONFIG_HOME");
+   FILE *file;
+   if ( config && config[0] )
+       localfilename=do_strdup_printf("%s/%s", config, localname);
+   else {
+       config = getenv("HOME");
+       if ( config && config[0] )
+           localfilename=do_strdup_printf("%s/.config/%s", config, localname);
+   }
+   if ( localfilename ) {
+        if ( (file = fopen(localfilename, "r")) == NULL ) {
+            do_free(localfilename);
+            return DOMINO_CONFIG(filename);
+        } 
+        else {
+            fclose(file);
+            return localfilename;
+        }
+   }
+   else 
+#endif
+   {
+        return  DOMINO_CONFIG(filename);
+   }
+}
 
 #ifdef _WIN32
 

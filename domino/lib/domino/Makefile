@@ -1,8 +1,8 @@
 
 include ../../common.mak
 
-LDFLAGS = $(LIBDO) $(LIBPSQL) $(LIBEXPAT) $(LIBICONV) $(LIBWINSOCK)
-CFLAGS = -D_REENTRANT  -DNOCORRECTNDS -DDEBUG_BTI
+LDFLAGS = $(LIBDO) $(LIBPSQL) $(LIBICONV) $(LIBWINSOCK)  
+CFLAGS = -D_REENTRANT  -DNOCORRECTNDS -DDEBUG_BTI -DDEBUG1  
 
 SRCS = domino.c do_accept.c do_action.c do_alias.c do_balance.c do_config.c \
        do_doctype.c do_extended.c do_misc.c do_protocol.c do_rz_info.c r3_expr.c \

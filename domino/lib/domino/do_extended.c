@@ -97,7 +97,8 @@ static const size_t file_record_size[DO_DB_END] = {
     sizeof(prowod2_struct_t),
     sizeof(saldo_struct_t),
     sizeof(protocol_struct_t),
-    sizeof(user_struct_t),
+    sizeof(user_struct_t)
+    ,
     sizeof(shift_struct_t),
     sizeof(checksum_struct_t),
     sizeof(check_struct_t),
@@ -438,6 +439,7 @@ DO_EXPORT do_ret_list_t *do_extended_get(do_extended_t *extended, int  max_recor
     retval = do_ret_list_new();
     if (extended->key_pos == POS_UNDEFINE) {
         dataLen = file_record_size[extended->file_db];
+
         buffer = do_malloc(dataLen);
         status = do_alias_btr(alias, B_GET_GE, extended->file_db, buffer, &dataLen, extended->key_ptr, extended->key_num);
         do_free(buffer);

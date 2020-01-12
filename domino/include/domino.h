@@ -470,10 +470,10 @@ typedef enum {
 
     DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR,
 
-    DO_PARAM_PRODUCT_CODE_FORMAT,
-    DO_PARAM_PRODUCT_BASE_CODE_FORMAT,
-    DO_PARAM_PRODUCT_BASE_CODE_LENGTH,
-    DO_PARAM_PRODUCT_PARCEL_CODE_FORMAT,
+    //DO_PARAM_PRODUCT_CODE_FORMAT_DEPRECATE,
+    //DO_PARAM_PRODUCT_BASE_CODE_FORMAT_DEPRECATE,
+    DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE,
+    //DO_PARAM_PRODUCT_PARCEL_CODE_FORMAT_DEPRECATE,
 
     DP_PARAM_DOCUMENT_P_CASH_FORMAT,
 
@@ -594,12 +594,16 @@ extern "C"
 #endif
 
 int         domino_init(const char *filename, int use_utf, do_param_t end);
+int         domino_init_light(const char* local_unit, int use_utf, do_param_t end);
+
 int         domino_check_configured();
 int         domino_configure(const char* local_host, const char* main_host, const char* local_unit);
 void        domino_finalize();
 do_alias_t *domino_alias_new(const char* name);
+do_alias_t *domino_alias_new_light(const char* local_unit);
 void        domino_set_alias_name(const char* name);
 void        domino_set_unit(const char* code);
+int         domino_alias_set_store_number(do_alias_t *alias, int number, const char *hostname, const char *dbname);
 int         domino_get_unit(do_alias_t *alias, sklad_rec_t *sklad, const char *code);
 char       *domino_get_unit_prefix(do_alias_t *alias, const char *sklad);
 int         domino_nretail_price(do_alias_t *alias, const char* sklad_code);
@@ -622,6 +626,7 @@ int do_alias_auth(const char* dbConfDir, const char* aliasName, const char *name
 
 
 //do_alias_t *do_alias_new(const char* dbConfDir, const char* aliasName, int breakOnError, const char *username, const char* password);
+do_alias_t *do_alias_clone(do_alias_t *alias);
 int        do_alias_utf8(do_alias_t *alias);
 void       do_alias_set_wait_flag(do_alias_t *alias, int wait);
 const char *do_alias_get_name(do_alias_t *alias);
@@ -629,6 +634,7 @@ const char *do_alias_get_host(do_alias_t *alias);
 void       do_alias_free(do_alias_t *alias);
 void       do_alias_set_struct_location(do_alias_t *alias, const char *path);
 int        do_alias_open(do_alias_t *alias, int openAll, ...);
+int        do_alias_open_manual(do_alias_t *alias, ...);
 int        do_alias_conected(do_alias_t *alias);
 int        do_alias_close(do_alias_t *alias);
 void       do_alias_set_dublicate_allow(do_alias_t *alias, int allow);
@@ -674,6 +680,8 @@ int do_struct_file_insert(do_alias_t *alias, struct_file_rec_t *rec);
 int do_struct_file_update(do_alias_t *alias, struct_file_rec_t *rec);
 int do_struct_file_delete(do_alias_t *alias, struct_file_rec_t *rec);
 
+int do_product_get_code_len(char *code, int code_len);
+
 int do_document_get0(do_alias_t *alias, document_rec_t *rec, document_key0_t *key, do_alias_oper_t operation);
 int do_document_key0(do_alias_t *alias, document_key0_t *key, do_alias_oper_t operation);
 int do_document_get1(do_alias_t *alias, document_rec_t *rec, document_key1_t *key, do_alias_oper_t operation);
@@ -682,6 +690,10 @@ int do_document_get2(do_alias_t *alias, document_rec_t *rec, document_key2_t *ke
 int do_document_key2(do_alias_t *alias, document_key2_t *key, do_alias_oper_t operation);
 int do_document_get3(do_alias_t *alias, document_rec_t *rec, document_key3_t *key, do_alias_oper_t operation);
 int do_document_key3(do_alias_t *alias, document_key3_t *key, do_alias_oper_t operation);
+#ifdef DOMINO78
+int do_document_get4(do_alias_t *alias, document_rec_t *rec, document_key4_t *key, do_alias_oper_t operation);
+int do_document_key4(do_alias_t *alias, document_key4_t *key, do_alias_oper_t operation);
+#endif
 int do_document_order_get0(do_alias_t *alias, document_order_rec_t *rec, document_order_key0_t *key, do_alias_oper_t operation);
 int do_document_order_key0(do_alias_t *alias, document_order_key0_t *key, do_alias_oper_t operation);
 int do_document_order_get1(do_alias_t *alias, document_order_rec_t *rec, document_order_key1_t *key, do_alias_oper_t operation);
@@ -704,6 +716,12 @@ int do_document_view_get1(do_alias_t *alias, document_view_rec_t *rec, document_
 int do_document_view_key1(do_alias_t *alias, document_view_key1_t *key, do_alias_oper_t operation);
 int do_document_data_get0(do_alias_t *alias, document_data_rec_t *rec, document_data_key0_t *key, do_alias_oper_t operation);
 int do_document_data_key0(do_alias_t *alias, document_data_key0_t *key, do_alias_oper_t operation);
+#ifdef DOMINO78
+int do_document_data_get1(do_alias_t *alias, document_data_rec_t *rec, document_data_key1_t *key, do_alias_oper_t operation);
+int do_document_data_key1(do_alias_t *alias, document_data_key1_t *key, do_alias_oper_t operation);
+int do_document_data_get2(do_alias_t *alias, document_data_rec_t *rec, document_data_key2_t *key, do_alias_oper_t operation);
+int do_document_data_key2(do_alias_t *alias, document_data_key2_t *key, do_alias_oper_t operation);
+#endif
 int do_product_get0(do_alias_t *alias, product_rec_t *rec, product_key0_t *key, do_alias_oper_t operation);
 int do_product_key0(do_alias_t *alias, product_key0_t *key, do_alias_oper_t operation);
 int do_product_get1(do_alias_t *alias, product_rec_t *rec, product_key1_t *key, do_alias_oper_t operation);
@@ -725,6 +743,10 @@ int do_product_view_key1(do_alias_t *alias, product_view_key1_t *key, do_alias_o
 int do_product_view_number_records(do_alias_t *alias);
 int do_product_data_get0(do_alias_t *alias, product_data_rec_t *rec, product_data_key0_t *key, do_alias_oper_t operation);
 int do_product_data_key0(do_alias_t *alias, product_data_key0_t *key, do_alias_oper_t operation);
+int do_product_data_get1(do_alias_t *alias, product_data_rec_t *rec, product_data_key1_t *key, do_alias_oper_t operation);
+int do_product_data_key1(do_alias_t *alias, product_data_key1_t *key, do_alias_oper_t operation);
+int do_product_data_get2(do_alias_t *alias, product_data_rec_t *rec, product_data_key2_t *key, do_alias_oper_t operation);
+int do_product_data_key2(do_alias_t *alias, product_data_key2_t *key, do_alias_oper_t operation);
 int do_barcode_get0(do_alias_t *alias, barcode_rec_t *rec, barcode_key0_t *key, do_alias_oper_t operation);
 int do_barcode_key0(do_alias_t *alias, barcode_key0_t *key, do_alias_oper_t operation);
 int do_barcode_get1(do_alias_t *alias, barcode_rec_t *rec, barcode_key1_t *key, do_alias_oper_t operation);
@@ -774,6 +796,11 @@ int do_partner_data_get0(do_alias_t *alias, partner_data_rec_t *rec, partner_dat
 int do_partner_data_key0(do_alias_t *alias, partner_data_key0_t *key, do_alias_oper_t operation);
 int do_partner_data_get1(do_alias_t *alias, partner_data_rec_t *rec, partner_data_key1_t *key, do_alias_oper_t operation);
 int do_partner_data_key1(do_alias_t *alias, partner_data_key1_t *key, do_alias_oper_t operation);
+#ifdef DOMINO78
+int do_partner_data_get2(do_alias_t *alias, partner_data_rec_t *rec, partner_data_key2_t *key, do_alias_oper_t operation);
+int do_partner_data_key2(do_alias_t *alias, partner_data_key2_t *key, do_alias_oper_t operation);
+#endif
+
 int do_sklad_get0(do_alias_t *alias, sklad_rec_t *rec, sklad_key0_t *key, do_alias_oper_t operation);
 int do_sklad_key0(do_alias_t *alias, sklad_key0_t *key, do_alias_oper_t operation);
 int do_document_prow_get0(do_alias_t *alias, document_prow_rec_t *rec, document_prow_key0_t *key, do_alias_oper_t operation);
@@ -784,6 +811,12 @@ int do_stock_get0(do_alias_t *alias, stock_rec_t *rec, stock_key0_t *key, do_ali
 int do_stock_key0(do_alias_t *alias, stock_key0_t *key, do_alias_oper_t operation);
 int do_stock_get1(do_alias_t *alias, stock_rec_t *rec, stock_key1_t *key, do_alias_oper_t operation);
 int do_stock_key1(do_alias_t *alias, stock_key1_t *key, do_alias_oper_t operation);
+#ifdef DOMINO78
+int do_stock_get2(do_alias_t *alias, stock_rec_t *rec, stock_key2_t *key, do_alias_oper_t operation);
+int do_stock_key2(do_alias_t *alias, stock_key2_t *key, do_alias_oper_t operation);
+int do_stock_get3(do_alias_t *alias, stock_rec_t *rec, stock_key3_t *key, do_alias_oper_t operation);
+int do_stock_key3(do_alias_t *alias, stock_key3_t *key, do_alias_oper_t operation);
+#endif
 int do_prowod_get0(do_alias_t *alias, prowod_rec_t *rec, prowod_key0_t *key, do_alias_oper_t operation);
 int do_prowod_key0(do_alias_t *alias, prowod_key0_t *key, do_alias_oper_t operation);
 int do_prowod_get1(do_alias_t *alias, prowod_rec_t *rec, prowod_key1_t *key, do_alias_oper_t operation);
@@ -813,6 +846,7 @@ int do_protocol_get2(do_alias_t *alias, protocol_rec_t *rec, protocol_key2_t *ke
 int do_protocol_key2(do_alias_t *alias, protocol_key2_t *key, do_alias_oper_t operation);
 int do_user_get0(do_alias_t *alias, user_rec_t *rec, user_key0_t *key, do_alias_oper_t operation);
 int do_user_key0(do_alias_t *alias, user_key0_t *key, do_alias_oper_t operation);
+
 int do_shift_get0(do_alias_t *alias, shift_rec_t *rec, shift_key0_t *key, do_alias_oper_t operation);
 int do_shift_key0(do_alias_t *alias, shift_key0_t *key, do_alias_oper_t operation);
 int do_shift_get1(do_alias_t *alias, shift_rec_t *rec, shift_key1_t *key, do_alias_oper_t operation);
@@ -955,6 +989,7 @@ int do_realization_delete(do_alias_t *alias);
 //int do_discount_update(do_alias_t *alias, discount_rec_t *rec);
 //int do_discount_delete(do_alias_t *alias);
 int do_alias_discount_create(do_alias_t *alias);
+
 double do_prowod2_sum(do_alias_t *alias, prowod2_rec_t *rec, const int number);
 int    do_prowod2_sum_set(do_alias_t *alias, prowod2_rec_t *rec, const int number, double value);
 void   do_prowod2_sum_clear(do_alias_t *alias, prowod2_rec_t *rec);
@@ -1294,11 +1329,12 @@ int            do_util_product_list_insert_product(do_alias_t *alias, partner_ke
 int   do_deaccept(do_alias_t *alias, document_key0_t *document_key0, do_deaccept_t accept, do_extended_break_func break_func);
 int   do_deaccept_order(do_alias_t *alias, document_order_rec_t *document_order, do_deaccept_t accept, do_extended_break_func break_func);
 
+#ifdef ACCEPT_DOCUMENT
 int   do_accept_order(do_alias_t *alias, document_rec_t *document, document_order_rec_t *document_order, do_accept_t accept, do_accept_param_t *param);
 int   do_accept(do_alias_t *alias, document_key0_t *document_key0, do_accept_t accept, do_extended_break_func break_func);
 int   do_accept_make_sums_prowod(do_alias_t *alias, document_rec_t *document, do_doctype_t *doctype, do_extended_break_func break_func);
 int   do_accept_make_prowod(do_alias_t *alias, document_rec_t *document, do_doctype_t *doctype, do_extended_break_func break_func);
-
+#endif
 
 double do_atof(const char *str);
 char*  do_ftoa(const double value, char *buf);

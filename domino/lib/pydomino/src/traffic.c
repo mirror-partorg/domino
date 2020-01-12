@@ -4,7 +4,6 @@
 #include <datetime.h>
 #include "../var/db.h"
 #include "../var/util.h"
-#include "../../../config/config.h"
 #include "misc.h"
 #include <domino.h>
 #include <domino_action.h>
@@ -34,7 +33,7 @@ static PyObject *Traffic_order(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *Traffic_limit(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *Traffic_rebuild_stocks(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *Traffic_info(Traffic *self, PyObject *args, PyObject *kwds);
-static PyObject *get_product_info(do_alias_t *alias, const char *code, const char *store, struct tm *tm1, struct tm *tm2);
+static PyObject *get_product_info(do_alias_t *alias, const char *code, const char *store);
 static PyObject *Traffic_set_marked(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *Traffic_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
@@ -1126,20 +1125,16 @@ static PyObject *Traffic_rebuild_stocks(Traffic *self, PyObject *args, PyObject 
         do_log(LOG_ERR, "no params \"store\"");
         return NULL;
     }
-    show_message = message ? PyObject_IsTrue(message) : FALSE;
-    do_alias_t *alias = self->priv->alias;
+    show_message = PyObject_IsTrue(message);
 
     if ( !store ) {
-        do_log(LOG_ERR, "Invalid argument \"store\": wrong type");
-        return NULL;
-    }
-    if ( do_alias_tran_begin(alias) != DO_OK ) {
-        do_log(LOG_ERR, "Error start transaction");
+         do_log(LOG_ERR, "Invalid argument \"store\": wrong type");
         return NULL;
     }
 
 
     document_order_key0_t document_order_key0;
+    do_alias_t *alias = self->priv->alias;
     int i,j;
     int indx;
 
@@ -1279,10 +1274,6 @@ static PyObject *Traffic_rebuild_stocks(Traffic *self, PyObject *args, PyObject 
         }
         ret = do_stock_get0(alias, &stock, &stock_key0, DO_GET_NEXT);
     }
-    if ( do_alias_tran_end(alias) != DO_OK ) {
-        do_log(LOG_ERR, "Error end transaction");
-        return NULL;
-    }
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -1374,7 +1365,7 @@ static char *get_store_category(do_alias_t *alias, const char *store)
         return do_strdup("");
     return do_partner_param(alias, &partner, "CATEGORY");
 }
-static char *get_contract(do_alias_t *alias, do_alias_t *main_alias,const char *code, const char *store, int *min_rest)
+static char *get_contract(do_alias_t *alias, const char *code, const char *store, int *min_rest)
 {
     document_key0_t document_key0;
     document_order_key2_t document_order_key2, key;
@@ -1427,7 +1418,7 @@ static char *get_contract(do_alias_t *alias, do_alias_t *main_alias,const char *
                     do_free(val1);
                     if ( quant <= 0 ) {
                         char *category;
-                        category = get_store_category(main_alias, store);
+                        category = get_store_category(alias, store);
                         val1 = do_strdup_printf("QUANT_%s", category);
                         quant = do_document_order_param_int(alias, &document_order, val1);
                         do_free(val1);
@@ -1544,7 +1535,7 @@ static PyObject *Traffic_order(Traffic *self, PyObject *args, PyObject *kwds)
         PyList_Append(result, r);
 
         PyTuple_SET_ITEM(r, 0, MyString_FromString(item->code));
-        PyTuple_SET_ITEM(r, 1, get_product_info(alias, item->code, store, NULL, NULL));
+        PyTuple_SET_ITEM(r, 1, get_product_info(alias, item->code, store));
 
     }
     domino_order_marked_list_free(list);
@@ -1638,8 +1629,8 @@ static do_sort_list_t *get_stock(do_alias_t *alias, struct tm *tm1, struct tm *t
     do_sort_list_t *stocks, *all;
     do_sort_list_t *retval;
 
-    realization_rec_t realization;
-    realization_key4_t realization_key4, key;
+	realization_rec_t realization;
+	realization_key4_t realization_key4, key;
 
     stocks = do_report_get_rest(alias, store);
     if ( !stocks )
@@ -1701,8 +1692,8 @@ static do_sort_list_t *get_stock1(do_alias_t *alias, struct tm *tm1, struct tm *
     do_sort_list_t *stocks;
     do_sort_list_t *retval;
 
-    realization_rec_t realization;
-    realization_key4_t realization_key4, key;
+	realization_rec_t realization;
+	realization_key4_t realization_key4, key;
 
     stocks = do_report_get_rest(alias, store);
     if ( !stocks )
@@ -1730,7 +1721,7 @@ static do_sort_list_t *get_stock1(do_alias_t *alias, struct tm *tm1, struct tm *
             mktime(&tm);
             key.month = do_datetosql(tm);
 
-            if ( do_realization_get4(alias, &realization, &realization_key4, DO_GET_LE) != DO_OK )
+            if ( do_realization_get4(alias, &realization, &realization_key4, DO_GET_LE) == DO_OK )
                 continue;
             if ( do_cmp(key.sklad, realization_key4.sklad) ||
                  do_cmp(key.code, realization_key4.code) ||
@@ -1747,25 +1738,6 @@ static do_sort_list_t *get_stock1(do_alias_t *alias, struct tm *tm1, struct tm *
     do_rest_list_free(stocks);
     return retval;
 }
-static int get_last_stock_replic(do_alias_t *alias, const char *sklad, struct tm *tm)
-{
-    int status;
-    enum_key0_t enum_key0;
-    enum_rec_t enum_;
-    char *name_;
-
-    name_ = do_strdup_printf("SYNCSTOCK.%s", sklad);
-    do_text_set(alias, enum_key0.name, name_);
-
-    status = do_enum_get0(alias, &enum_, &enum_key0, DO_GET_EQUAL);
-
-    if ( status != DO_OK )
-        return FALSE;
-    do_date(enum_.data.step, tm);
-    do_time(enum_.data.lastvalue, tm);
-    return TRUE;
-}
-
 static PyObject *Traffic_limit(Traffic *self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"store","date1","date2", "kind", NULL};
@@ -1850,7 +1822,7 @@ static PyObject *Traffic_limit(Traffic *self, PyObject *args, PyObject *kwds)
     now = time(NULL);
     tm1_ = *localtime(&now);
     tm2_ = tm1_;
-    tm1_.tm_mday -= DOMINO_MARKED_INTERVAL;
+    tm1_.tm_mday-= DOMINO_MARKED_INTERVAL;
     mktime(&tm1_);
 
 
@@ -1878,9 +1850,7 @@ static PyObject *Traffic_limit(Traffic *self, PyObject *args, PyObject *kwds)
 
 
         if ( skip_ordered &&
-            ( marked == DOMINO_MARKED_AND_ACCEPT ||
-              marked == DOMINO_MARKED_AND_REJECT ||
-              marked == DOMINO_MARKED ) ) {
+            ( marked == DOMINO_MARKED_AND_ACCEPT || marked == DOMINO_MARKED_AND_REJECT) ) {
             continue;
         }
 
@@ -1903,7 +1873,7 @@ static PyObject *Traffic_limit(Traffic *self, PyObject *args, PyObject *kwds)
         PyObject *r;
         PyObject *info;
 
-        info = get_product_info(alias, rec->code, store, NULL, NULL);
+        info = get_product_info(alias, rec->code, store);
         r =  PyTuple_New(2);
         PyList_Append(result, r);
 
@@ -2061,39 +2031,7 @@ static PyObject *get_write_off(do_alias_t *alias, const char *code, const char *
 
     return retval;
 }
-static char *get_last_in(do_alias_t *alias, const char *code, const char *store)
-{
-    product_key0_t product_key0;
-    product_rec_t product;
-    int store_int, status;
-    
-    struct tm tm;
-    char *parcel;
-    char *res = NULL;
-    store_int = atoi(store);
-    parcel = do_strdup_printf("%s.%2.2d999", code, store_int);
-
-    do_text_set(alias, product_key0.code, parcel);
-    product_key0.base_parcel = 1;
-
-    status = do_product_get0(alias, &product, &product_key0, DO_GET_LE);
-    while ( status == DO_OK ) {
-       if ( strncmp(product.data.code, parcel, strlen(code)+3 ) )
-           break;
-       if ( product.data.supplier_region[0] == '0' && 
-            product.data.supplier_region[1] == '3' &&
-            product.data.supplier_region[2] == ' ' ) {
-           do_date(product.data.date, &tm);
-           res = do_strdup_printf("%2.2d.%2.2d.%2.2d", tm.tm_mday , tm.tm_mon + 1, tm.tm_year - 100);
-           break;
-       }
-       status = do_product_get0(alias, &product, &product_key0, DO_GET_PREVIOUS);
-    };
-    do_free(parcel);
-    return res != NULL ? res : do_strdup("");
-}
-
-static PyObject *get_product_info(do_alias_t *alias, const char *code, const char *store, struct tm *tm1_sale, struct tm *tm2_sale)
+static PyObject *get_product_info(do_alias_t *alias, const char *code, const char *store)
 {
 
     product_key0_t product_key0;
@@ -2148,7 +2086,8 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
 
     firm = do_firm_get_firm_by_unit(alias, store);
     units = do_firm_get_units(alias, firm);
-    
+
+
     rest = do_get_rest(alias, code, store)/do_product_coef(alias, &product);
 
 
@@ -2199,7 +2138,7 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
             char date[50];
             values = PyList_New(0);
             PyList_Append(purchase_, values);
-            strftime(date, sizeof(date)-1, "%d.%m.%y", &last[i].tm);
+            strftime(date, sizeof(date)-1, "%d/%m/%y", &last[i].tm);
             PyList_Append(values, MyString_FromString(do_strdup(date)));
             PyList_Append(values, PyLong_FromLong((int)last[i].quant));
             PyList_Append(values, MyString_FromString(last[i].name));
@@ -2212,22 +2151,11 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
     int min_rest = 0, indx;
     char *ads_long, *ch;
     char *ads;
-    char *contract = NULL;
+    char *contract;
 
 
     ads = do_product_param(alias, &product, "480");
-
-    if ( strcmp(do_alias_get_name(alias), DOMINO_LOCAL_ALIAS) ) {
-        do_alias_t *local_alias;
-        local_alias = domino_alias_new(DOMINO_LOCAL_ALIAS);
-        if ( local_alias ) {
-            if ( do_alias_open(local_alias, FALSE, DO_DB_DOCUMENT, DO_DB_DOCUMENT_ORDER, DO_DB_PARTNER, DO_DB_END) ) 
-                contract = get_contract(local_alias, alias, code, store, &min_rest);
-            do_alias_free(local_alias);
-        }
-    }
-    else
-        contract = get_contract(alias, alias, code, store, &min_rest);
+    contract = get_contract(alias, code, store, &min_rest);
 
     ads_long = NULL;
     ch = strchr(ads, '-');
@@ -2291,30 +2219,6 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
     PyList_Append(info, r);
     PyTuple_SET_ITEM(r, 0, MyString_FromString("Реализация"));
     PyTuple_SET_ITEM(r, 1, real_);
-
-    if ( tm1_sale && tm2_sale ) {
-        double sale, sum = 0;
-        sale = get_product_sale(alias, &product_key0, store, tm1_sale, tm2_sale, &sum);
-        r =  PyTuple_New(3);
-        PyList_Append(info, r);
-        PyTuple_SET_ITEM(r, 0, MyString_FromString("Продано"));
-        values  = PyList_New(0);
-        PyTuple_SET_ITEM(r, 1, values);
-        /*r = PyList_New(0);
-        PyList_Append(values, r);
-        str = do_strdup_printf("%d/%d/%d", tm1_sale->tm_mday , tm1_sale->tm_mon + 1, tm1_sale->tm_year + 1900);
-        PyList_Append(r, MyString_FromString(str));
-        do_free(str);*/
-
-        r = PyList_New(0);
-        PyList_Append(values, r);
-        str = do_strdup_printf("с %d.%d по %d.%d", tm1_sale->tm_mday , tm1_sale->tm_mon + 1, tm2_sale->tm_mday , tm2_sale->tm_mon + 1);
-        PyList_Append(r,  MyString_FromString(str));
-        do_free(str);
-        str = do_rest_format(sale/do_product_coef(alias, &product));
-        PyList_Append(r,  MyString_FromString(str));
-        do_free(str);
-    }
 
     r =  PyTuple_New(2);
     PyList_Append(info, r);
@@ -2387,7 +2291,7 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
             quant = do_get_rest(alias, code, units->list[i])/do_product_coef(alias, &product);
             if ( quant > 0 ) {
                 indx = atoi(units->list[i]);
-                r =  PyTuple_New(3);
+                r =  PyTuple_New(2);
                 PyList_Append(values, r);
                 if ( indx > 0 && indx < 1000 )
                     val = do_strdup(shorts[indx-1]);
@@ -2397,9 +2301,6 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
                 do_free(val);
                 val = do_rest_format(quant);
                 PyTuple_SET_ITEM(r, 1, MyString_FromString(val));
-                do_free(val);
-                val = get_last_in(alias, code, units->list[i]);
-                PyTuple_SET_ITEM(r, 2, MyString_FromString(val));
                 do_free(val);
             }
         }
@@ -2483,18 +2384,6 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
         }
         do_list_free(order);
     }
-    
-    if ( get_last_stock_replic(alias, store, &tm) ) {
-        r =  PyTuple_New(2);
-        items = PyList_New(0);
-        str = do_strdup_printf("%2.2d:%2.2d %2.2d.%2.2d.%2.2d", tm.tm_hour, tm.tm_min, tm.tm_mday , tm.tm_mon + 1, tm.tm_year - 100);//fix me
-        PyList_Append(info, r);
-        PyTuple_SET_ITEM(r, 0, MyString_FromString("Актуальность"));
-        PyTuple_SET_ITEM(r, 1, MyString_FromString(str));
-        do_free(str);
-        
-    }
-
     return info;
 }
 
@@ -2572,7 +2461,6 @@ static do_list_t *get_product_order(do_alias_t *alias, product_key0_t *key, cons
             }
             item.quant = do_document_order_quant(alias, &document_order, DO_CONST_QUANT_REST)/coef;
             count = 0;
-            //for ( i = 100; i >= 0; i-- ) {
             for ( i = 0; i < 1000; i++ ) {
                 char *param, *value;
                 int empty;
@@ -2583,10 +2471,9 @@ static do_list_t *get_product_order(do_alias_t *alias, product_key0_t *key, cons
                     item.user = do_strdup(value);
                     do_list_add_alloc(ret, &item, sizeof(item));
                     count++;
-                    break;//!!
                 }
                 do_free(param);do_free(value);
-                if ( empty ) break;//!!
+                if ( empty ) break;
             }
             if ( !count ) {
                 char *c;
@@ -2605,15 +2492,11 @@ static do_list_t *get_product_order(do_alias_t *alias, product_key0_t *key, cons
 
 static PyObject *Traffic_info(Traffic *self, PyObject *args, PyObject *kwds)
 {
-    static char *kwlist[] = {"code","store", "date1", "date2", NULL};
+    static char *kwlist[] = {"code","store", NULL};
     char *code = NULL;
     char *store = NULL;
-    PyObject *date1 = NULL;
-    PyObject *date2 = NULL;
-    struct tm tm1;
-    struct tm tm2;
 
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "ss|OO", kwlist, &code, &store, &date1, &date2) ) {
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "ss", kwlist, &code, &store) ) {
         do_log(LOG_ERR, "no params \"code\", \"store\"");
         return NULL;
     }
@@ -2625,30 +2508,8 @@ static PyObject *Traffic_info(Traffic *self, PyObject *args, PyObject *kwds)
          do_log(LOG_ERR, "Invalid argument \"code\": wrong type");
         return NULL;
     }
-    if ( date1 ) {
-        if ( !PyDateTime_Check(date1) && !PyDate_Check(date1) ) {
-            do_log(LOG_ERR, "Invalid argument \"date1\": wrong type");
-            return NULL;
-        }
-        int year, month, day;
-        year = PyDateTime_GET_YEAR(date1);
-        month = PyDateTime_GET_MONTH(date1);
-        day = PyDateTime_GET_DAY(date1);
-        do_date_set_ymd(&tm1, year, month, day);
-    }
-    if ( date2 ) {
-        if ( !PyDateTime_Check(date2) && !PyDate_Check(date2) ) {
-            do_log(LOG_ERR, "Invalid argument \"date2\": wrong type");
-            return NULL;
-        }
-        int year, month, day;
-        year = PyDateTime_GET_YEAR(date2);
-        month = PyDateTime_GET_MONTH(date2);
-        day = PyDateTime_GET_DAY(date2);
-        do_date_set_ymd(&tm2, year, month, day);
-    }
 
-    return get_product_info(self->priv->alias, code, store, date1 ? &tm1 : NULL, date2 ? &tm2 : NULL);
+    return get_product_info(self->priv->alias, code, store);
 }
 #define ISLEAP(year) ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
 static const unsigned short int __mon_yday[2][13] = {
