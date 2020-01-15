@@ -13,6 +13,9 @@
 #define DO_LIST_MODEL_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj),  DO_LIST_MODEL_TYPE, DoListModelClass))
 
 #define DO_LIST_MODEL_N_KEYS 3
+#define DO_LIST_MODEL_COL_CODE 2
+#define DO_LIST_MODEL_COL_SORT 1
+#define DO_LIST_MODEL_COL_KEY 0
 
 
 typedef struct _DoListModel       DoListModel;
@@ -38,5 +41,10 @@ GType do_list_model_get_type (void);
 GtkTreeModel *do_list_model_new(const gchar *name, const gchar *fields, DoClient *client);
 void do_list_model_empty_col_change_depricated(DoListModel *model, gint code_to_col, gint sort_to_col, gint key_to_col);
 
+gboolean do_list_model_find_record_by_sort(DoListModel *model, GtkTreeIter *iter, const gchar *text);
+gboolean do_list_model_find_record_by_code(DoListModel *model, GtkTreeIter *iter, const gchar *text);
+#ifdef SEARCH_BY_BCODE
+gboolean do_list_model_find_record_by_bcode(DoListModel *model, GtkTreeIter *iter, const gchar *text);
+#endif
 
 #endif /* _do_list_model_h_included_ */

@@ -70,6 +70,7 @@ static gboolean do_ads_view_fill_first(DoAdsView *view);
 static void do_ads_view_model_fill_cb(JsonNode *node, GArray *params);
 static void do_ads_view_model_fill(DoAdsView *view, const gchar *id, const gchar *select_id, JsonNode *node);
 static void do_ads_view_set_load_status(DoAdsView *view, const gchar *load_status);
+
 enum
 {
     PROP_0,

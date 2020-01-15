@@ -198,9 +198,9 @@ static GObject *do_window_constructor (GType type,
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     priv->notebook = notebook = GTK_WIDGET(g_object_new(DO_TYPE_NOTEBOOK, NULL));
     gtk_container_add(GTK_CONTAINER(window), vbox);
-#ifdef POS_MINIMAL
+//#ifdef POS_MINIMAL
     do_notebook_set_show_tabs(DO_NOTEBOOK(notebook), FALSE); // to do
-#endif
+//#endif
 	g_signal_connect (priv->notebook, "tab-close-request",  G_CALLBACK (notebook_page_close_request_cb), window);
 	g_signal_connect_after (priv->notebook, "switch-page", G_CALLBACK (notebook_switch_page_cb), window);
 

@@ -5,6 +5,7 @@
 #include "do_application.h"
 #include "do_utilx.h"
 #include "do_common_actions.h"
+#include "do_view_actions.h"
 #include "domino.h"
 
 
@@ -12,6 +13,8 @@
 #define DO_TYPE_LIST_VIEW_FLAGS do_list_view_flags_get_type()
 
 #define ROOT_OBJECT_ "list-%s-view"
+
+#define DO_LIST_VIEW_SEARCH_DIALOG_TIMEOUT 5000
 
 
 typedef struct _DoListViewId		DoListViewId;
@@ -29,6 +32,11 @@ struct _DoListViewField
     PangoAlignment align;
     gchar *title;
     gboolean invisible;
+};
+enum {
+    DO_LIST_VIEW_SEARCH_ITEM_SORT = 0,
+    DO_LIST_VIEW_SEARCH_ITEM_CODE,
+    DO_LIST_VIEW_SEARCH_ITEM_BCODE
 };
 
 static void do_list_view_field_free(DoListViewField *field)
@@ -93,6 +101,10 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
 #ifdef DEBUG
 static void do_list_view_make_key_column(DoListView *view);
 #endif
+
+static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, DoListView *view);
+static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view);
+
 enum
 {
     PROP_0,
@@ -131,6 +143,16 @@ struct _DoListViewPrivate
     GSList        *fields;
     gchar         *userfields;
     gboolean       fields_filled;
+
+    gchar          search_text[1024];
+    gint           search_char_count;
+    gint           search_item;
+    guint          search_flush_timeout;
+    gint           search_sort_col;
+    gint           search_code_col;
+
+    DoView        *receiver;
+
 };
 
 G_DEFINE_TYPE_WITH_CODE (DoListView, do_list_view, GTK_TYPE_SCROLLED_WINDOW, // to do
@@ -234,6 +256,11 @@ static GObject *do_list_view_constructor(GType type, guint n_construct_propertie
 #ifdef DEBUG
     do_list_view_make_key_column(DO_LIST_VIEW(object));
 #endif
+
+
+
+    g_signal_connect (priv->tree_view, "key-press-event", G_CALLBACK (do_list_view_key_press), object);
+
 
     gtk_widget_show_all(GTK_WIDGET(object));
 
@@ -354,6 +381,7 @@ static void do_list_view_do_close(DoView *view)
 	}
     //gtk_widget_destroy(GTK_WIDGET(view));
 }
+static gboolean set_view_cursor(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, DoListView *view);
 
 static gboolean do_list_view_fill_first(DoListView *view)
 {
@@ -394,6 +422,7 @@ static gboolean do_list_view_fill_first(DoListView *view)
     do_list_model_empty_col_change_depricated(DO_LIST_MODEL(model), code_to_col, sort_to_col, key_to_col);
     g_free(fields);
     gtk_tree_view_set_model(priv->tree_view, model);
+	gtk_tree_model_foreach(GTK_TREE_MODEL(priv->model),(GtkTreeModelForeachFunc)set_view_cursor, view);
 	return FALSE;
 }
 /*
@@ -453,24 +482,13 @@ static void model_fill(JsonNode *node, gpointer view)
 	do_list_view_set_load_status(view, NULL);
 }
 */
-/*todo
-static gboolean set_view_cursor(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, DoListViewId *ListId)
+
+static gboolean set_view_cursor(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, DoListView *view)
 {
-	DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (ListId->view);
-	if ((!ListId->id) || ListId->id[0] == '\0' ) {
-		gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
-		return TRUE;
-	}
-	GValue value = {0,};
-	gtk_tree_model_get_value(model,iter,2,&value);
-	const gchar *sad;
-	sad = g_value_get_string(&value);
-	if ( !g_strcmp0(ListId->id, sad) ) {
-		gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
-		return TRUE;
-	}
-	return FALSE;
-}*/
+	DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
+	gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
+	return TRUE;
+}
 /*
 static void do_list_view_model_fill(DoListView *view, JsonNode *node)
 {
@@ -611,7 +629,7 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
         else if ( !g_strcmp0(align, "right") )
             field->align = PANGO_ALIGN_RIGHT;
     }
-    if ( !priv->userfields || strchr(priv->userfields, field->short_) ) {
+    if ( !priv->userfields || strchr(priv->userfields, field->short_) ) { //todo
         priv->fields = g_slist_append(priv->fields, field);
 
         r = gtk_cell_renderer_text_new();
@@ -621,7 +639,12 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
         gtk_tree_view_column_pack_start (col, r, TRUE);
         n = g_slist_length(priv->fields) + DO_LIST_MODEL_N_KEYS - 1;
         gtk_tree_view_column_add_attribute (col, r, "markup", n);
+        if ( !g_strcmp0(field->name, "name") ) {
+            priv->search_sort_col = n;
+            gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_sort_data_func, data, NULL);
+        }
     }
+
 }
 #ifdef DEBUG
 static void do_list_view_make_key_column(DoListView *view)
@@ -636,3 +659,494 @@ static void do_list_view_make_key_column(DoListView *view)
     gtk_tree_view_column_add_attribute (col, r, "text", 0);
 }
 #endif
+static gboolean search_add(DoListView *do_view, gchar *string);
+static void search_back(DoListView *do_view);
+static void search_clear_to_begin_word(DoListView *do_view);
+static void search_refresh_timeout(DoListView *do_view);
+static gboolean search_clear(DoListView *do_view);
+static gboolean search_find(DoListView *do_view, const char *text);
+#ifdef SEARCH_BCODE
+static gboolean search_find_by_bcode(DoListView *do_view, const char *text);
+#endif // SEARCH_BCODE
+static gboolean start_find(GtkTreeView *treeview, gpointer user_data);
+static gboolean search_flush_timeout(DoListView *do_view);
+static gchar *get_sort_from_cursor(DoListView *view);
+
+static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    gchar *str;
+#ifdef ADS_RECOMMEND
+    recommend_refresh_timeout(do_view);
+#endif
+    if ( (str = search_get_text(event->string, event->length, priv->search_char_count)) != NULL ) {
+#ifdef HUMAN_SEARCH
+        if ( !search_add(do_view, str) ) {
+            gchar *buf;
+            buf = g_strdup_printf("%s%s",priv->search_text,str);
+            do_product_view_filter_set_text(do_view, buf);
+            g_free(buf);
+            return TRUE;
+        }
+#else
+        search_add(do_view, str);
+#endif
+        g_free(str);
+        return TRUE;
+    }
+#ifdef FILTER
+    if ( priv->filter_show_timeout ) {
+        g_source_remove(priv->filter_show_timeout);
+        priv->filter_show_timeout = 0;
+    }
+    if ( do_product_model_is_filtered(DO_PRODUCT_MODEL(priv->model)) )
+        priv->filter_show_timeout =
+            gdk_threads_add_timeout (DO_PRODUCT_VIEW_FILTER_SHOW_TIMEOUT,
+                (GSourceFunc)filter_show_timeout, do_view);
+#endif
+    guint mask = gtk_accelerator_get_default_mod_mask ();
+    if ( (event->state & mask) == 0 )
+    {
+    	switch (event->keyval)
+    	{
+    	    //case GDK_space:
+              //  mask = gtk_accelerator_get_default_mod_mask ();
+                //return TRUE;
+    	    case GDK_KEY_BackSpace:
+                search_back(do_view);
+                return TRUE;
+            case GDK_KEY_Escape:
+                if ( !priv->search_char_count &&
+                     priv->receiver ) {
+                    GtkNotebook *nb;
+                    nb = GTK_NOTEBOOK (do_window_get_notebook (
+                        DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view)))));
+                    do_view_do_grab_focus(DO_VIEW(priv->receiver));
+                    if ( gtk_notebook_page_num(nb, GTK_WIDGET(do_view)) !=
+                         gtk_notebook_page_num(nb, GTK_WIDGET(priv->receiver) )
+                        ) {
+                        gtk_notebook_set_current_page(nb, gtk_notebook_page_num(nb, GTK_WIDGET(priv->receiver)));
+                    }
+                }
+#ifdef ADS_RECOMMEND
+                if ( !priv->recommend_empty && !priv->search_char_count && priv->flags & DO_PRODUCT_VIEW_FLAGS_SHOW_RECOMMEND ) {
+                    if ( priv->refill ) {
+                        do_product_view_refill_recommend(do_view);
+                    }
+                    gtk_widget_grab_focus(priv->recommend);
+                    gtk_notebook_set_current_page(GTK_NOTEBOOK(priv->notebook), 1);
+
+                    //gtk_widget_set_visible(GTK_WIDGET(priv->tree_view), FALSE);
+                    //!!do_tree_view_tree_view_set_visible(DO_TREE_VIEW(do_view), FALSE);
+                    //gtk_widget_set_visible(GTK_WIDGET(priv->recommend), TRUE);
+
+                }
+#endif
+                if ( search_clear(do_view) )
+                    return TRUE;
+#ifdef FILTER
+                if ( do_product_model_is_filtered(DO_PRODUCT_MODEL(priv->model)) ) {
+                    char *code;
+                    code = get_code_from_cursor(do_view);
+                    do_product_view_filter_clear(do_view);
+                    if ( code ) {
+                        GtkTreePath *path;
+                        path = do_product_model_get_path_from_code(DO_PRODUCT_MODEL(priv->model), code);
+                        g_free(code);
+                        if ( path ) {
+                            gtk_tree_view_set_cursor(GTK_TREE_VIEW(priv->tree_view), path, NULL, FALSE);
+                            gtk_tree_path_free(path);
+                        }
+                    }
+                    return TRUE;
+                }
+#endif
+                return TRUE;
+            case GDK_KEY_Up:
+            case GDK_KEY_Down:
+            case GDK_KEY_Page_Up:
+            case GDK_KEY_Page_Down:
+                search_clear(do_view);
+                break;
+            case GDK_KEY_Return:
+            case GDK_KEY_KP_Enter:
+            case GDK_KEY_ISO_Enter:
+#ifdef SEARCH_BY_BCODE
+                if (priv->search_item == DO_PRODUCT_VIEW_SEARCH_ITEM_BCODE) {
+                    search_find_by_bcode(do_view, priv->search_text);
+                    search_clear(do_view);
+                    return TRUE;
+                }
+#endif
+                search_clear(do_view);
+                break;
+            case GDK_KEY_Right: {
+#ifdef FILTER
+                const gchar *text = do_product_view_filter_get_text(do_view);
+                char *buf = g_strdup(text ? text : priv->search_text);
+                do_product_view_filter_set_text(do_view, buf);
+                g_free(buf);
+                return TRUE;
+                break;
+#endif
+            }
+            case GDK_KEY_Left:
+                if ( priv->search_char_count > 0 && priv->search_item == DO_LIST_VIEW_SEARCH_ITEM_SORT ) {
+                    search_clear_to_begin_word(do_view);
+                    return TRUE;
+                }
+                break;
+    	default:
+    		break;
+    	}
+    }
+    else if ((event->state & mask) == GDK_CONTROL_MASK) {
+         if  (event->keyval == GDK_KEY_Return ||
+              event->keyval == GDK_KEY_KP_Enter ||
+              event->keyval == GDK_KEY_ISO_Enter ||
+              event->keyval == GDK_KEY_Up ||
+              event->keyval == GDK_KEY_Down ||
+              event->keyval == GDK_KEY_Page_Up ||
+              event->keyval == GDK_KEY_Page_Down ||
+              event->keyval == GDK_KEY_Escape)
+                search_clear(do_view);
+         else {
+            if ( event->keyval == GDK_KEY_F1 ) {
+                gtk_tree_view_set_headers_visible(priv->tree_view, !gtk_tree_view_get_headers_visible(priv->tree_view));
+                return TRUE;
+            }
+         }
+    }
+    return FALSE;
+}
+static gboolean search_add(DoListView *do_view, gchar *string)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    gboolean res = FALSE;
+    int len;
+    gchar *p;
+    for (len = 0, p = string; p && *p != '\0'; p = (gchar*)g_utf8_next_char(p), len++);
+    gchar *buf = do_malloc(strlen(priv->search_text) + strlen(string) + 1);
+    strcpy(buf, priv->search_text);
+    strcpy(buf + strlen(priv->search_text), string);
+    if ( search_find(do_view, buf) ) {
+        strcpy(priv->search_text + strlen(priv->search_text), string);
+        priv->search_char_count +=len;
+        search_refresh_timeout(do_view);
+        res = TRUE;
+    }
+    else {
+        if (priv->search_flush_timeout)
+            g_source_remove(priv->search_flush_timeout);
+        priv->search_flush_timeout = 0;
+    }
+    do_free(buf);
+    return res;
+}
+static void search_back(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    if ( priv->search_char_count ) {
+        priv->search_char_count--;
+        int i;
+        gchar *p;
+        for ( i = 0, p = priv->search_text; i < priv->search_char_count; i++, p = (gchar*)g_utf8_next_char(p) );
+        *p = '\0';
+        if (p == priv->search_text)
+            search_clear(do_view);
+        else {
+            search_refresh_timeout(do_view);
+            gtk_tree_view_row_cursor_redraw(GTK_TREE_VIEW(priv->tree_view));
+        }
+    }
+}
+static void search_clear_to_begin_word(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    gchar *text = get_sort_from_cursor(do_view);
+    if (text) {
+        gunichar out;
+        char *p;
+        int count;
+        for (count = 0, p = (gchar*)text; p && *p !='\0' && count < priv->search_char_count - 1;
+                   p = (gchar*)g_utf8_next_char(p), count++);
+
+        for (; p && p > text && count > 0; p = (gchar*)g_utf8_prev_char(p), --count) {
+            out = g_utf8_get_char(p);
+            if (g_unichar_isspace(out)){
+                break;
+            }
+        }
+        priv->search_char_count = count;
+        if (!p)
+            priv->search_text[0] = '\0';
+        else
+            priv->search_text[p - text] = '\0';
+        g_free(text);
+    }
+    if (!priv->search_char_count)
+        search_clear(do_view);
+    else {
+        search_refresh_timeout(do_view);
+        gtk_tree_view_row_cursor_redraw(GTK_TREE_VIEW(priv->tree_view));
+    }
+}
+static void search_refresh_timeout(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    if (priv->search_flush_timeout)
+        g_source_remove(priv->search_flush_timeout);
+
+    priv->search_flush_timeout =
+        gdk_threads_add_timeout (DO_LIST_VIEW_SEARCH_DIALOG_TIMEOUT,
+    	   (GSourceFunc)search_flush_timeout, do_view);
+}
+static gboolean search_clear(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    gboolean re;
+    re=priv->search_char_count > 0;
+    priv->search_char_count = 0;
+    priv->search_text[0] = '\0';
+    if ( re ) {
+        gtk_tree_view_redraw(GTK_TREE_VIEW(priv->tree_view));
+
+        if (priv->search_flush_timeout) {
+            g_source_remove(priv->search_flush_timeout);
+            priv->search_flush_timeout = 0;
+        }
+        do_view_actions_refresh(gtk_widget_get_toplevel(GTK_WIDGET(do_view)));
+    }
+    return re;
+}
+static gboolean is_code(const gchar *text)
+{
+    gchar *p;
+    gunichar out;
+    int i;
+    for (i = 0, p = (gchar*)text; p && *p !='\0'; p = (gchar*)g_utf8_next_char(p), i++) {
+        out = g_utf8_get_char(p);
+        if (i > 7 || !g_unichar_isdigit(out))
+            return FALSE;
+    }
+    return TRUE;
+}
+#ifdef SEARCH_BCODE
+static gboolean is_bcode(const gchar *text)
+{
+    gchar *p;
+    gunichar out;
+    int i;
+    for (i = 0, p = (gchar*)text; p && *p !='\0'; p = (gchar*)g_utf8_next_char(p), i++) {
+        out = g_utf8_get_char(p);
+        if (i > 13 || !g_unichar_isdigit(out))
+            return FALSE;
+    }
+    return TRUE;
+}
+#endif
+static gboolean search_find(DoListView *do_view, const char *text)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    if (!text || !text[0])
+        return TRUE;
+
+    if (priv->search_item == DO_LIST_VIEW_SEARCH_ITEM_SORT) {
+        gchar *crnt_text;
+        if ((crnt_text = get_sort_from_cursor(do_view)) != NULL) {
+            if ((strlen(crnt_text) >= strlen(text)) &&
+                (!strncmp(crnt_text, text, strlen(text)))) {
+                    g_free(crnt_text);
+                    gtk_tree_view_redraw(GTK_TREE_VIEW(priv->tree_view));
+                    return TRUE;
+            }
+            g_free(crnt_text);
+        }
+    }
+    GtkTreeIter iter;
+    gboolean result = FALSE;
+
+    if ( do_list_model_find_record_by_sort(DO_LIST_MODEL(priv->model), &iter, text) ) {
+        result = TRUE;
+        priv->search_item = DO_LIST_VIEW_SEARCH_ITEM_SORT;
+    }
+    else if ( is_code(text) && do_list_model_find_record_by_code(DO_LIST_MODEL(priv->model), &iter, text) ) {
+        result = TRUE;
+        priv->search_item = DO_LIST_VIEW_SEARCH_ITEM_CODE;
+    }
+#ifdef SEARCH_BY_BCODE
+    else if ( is_bcode(text) ) {
+        result = TRUE;
+        priv->search_item = DO_LIST_VIEW_SEARCH_ITEM_BCODE;
+        do_view_actions_refresh();
+    }
+#endif
+    if ( result ) {
+        GtkTreePath *path;
+        path = gtk_tree_model_get_path(priv->model, &iter);
+        if ( path ) {
+            gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(priv->tree_view), path, NULL,  TRUE, 0.5, 0.0);
+            gtk_tree_view_set_cursor(GTK_TREE_VIEW(priv->tree_view), path, NULL, FALSE);
+            gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(priv->tree_view), path, NULL,  TRUE, 0.5, 0.0);
+            gtk_tree_path_free(path);
+        }
+    }
+    return result;
+}
+
+static gboolean start_find(GtkTreeView *treeview, gpointer data)
+{
+    //return TRUE;
+    gboolean sad;
+    g_object_get(treeview, "enable-search", &sad, NULL);
+    printf("sad %d\n",sad);
+    return FALSE;
+}
+static gboolean search_flush_timeout(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    search_clear(do_view);
+    priv->search_flush_timeout = 0;
+    return FALSE;
+}
+static gchar *get_sort_from_cursor(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    GtkTreePath *path;
+    gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path, NULL);
+    if (!path)
+        return NULL;
+    GtkTreeIter iter;
+    if (gtk_tree_model_get_iter(GTK_TREE_MODEL(priv->model), &iter, path)) {
+
+        GValue value = { 0, };
+        gtk_tree_model_get_value(GTK_TREE_MODEL(priv->model), &iter, DO_LIST_MODEL_COL_SORT, &value);
+        gtk_tree_path_free(path);
+        if (!g_value_get_string(&value))
+            return NULL;
+        return g_strdup(g_value_get_string(&value));
+    }
+    gtk_tree_path_free(path);
+    return NULL;
+}
+
+static gchar *get_code_from_cursor(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    GtkTreePath *path;
+    gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path, NULL);
+    if (!path)
+        return NULL;
+    GtkTreeIter iter;
+    if (gtk_tree_model_get_iter(GTK_TREE_MODEL(priv->model), &iter, path)) {
+
+        GValue value = { 0, };
+        gtk_tree_model_get_value(GTK_TREE_MODEL(priv->model), &iter, DO_LIST_MODEL_COL_CODE, &value);
+        gtk_tree_path_free(path);
+        if (!g_value_get_string(&value))
+            return NULL;
+        return g_strdup(g_value_get_string(&value));
+    }
+    gtk_tree_path_free(path);
+    return NULL;
+}
+
+static gchar *get_code_from_path(DoListView *view, GtkTreePath *path)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
+    GtkTreeIter iter;
+    if (gtk_tree_model_get_iter(GTK_TREE_MODEL(priv->model), &iter, path)) {
+        GValue value = { 0, };
+        gtk_tree_model_get_value(GTK_TREE_MODEL(priv->model), &iter, DO_LIST_MODEL_COL_CODE, &value);
+        if (!g_value_get_string(&value))
+            return NULL;
+        return g_strdup(g_value_get_string(&value));
+    }
+    return NULL;
+}
+static gchar *selected_text(GtkCellRenderer *cell, GtkWidget *view, gchar *text, guint selected_len);
+static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
+    GValue value = { 0, };
+
+    gtk_tree_model_get_value(tree_model, iter, priv->search_sort_col, &value);
+
+    //do_log(LOG_INFO)
+    char *text = (char*)g_value_get_string(&value);
+    if (text && text[0]) {
+        //GValue ads = {0,};
+        //gtk_tree_model_get_value(tree_model, iter, DO_PRODUCT_MODEL_COL_ADS, &ads);
+        //gchar *buf = do_product_name_format(text);
+        //gchar *buf = do_product_name_format(text);
+        gchar *buf = g_strdup(text);
+        gchar *markup = NULL;
+        //gchar *sad = g_strdup_printf("<b>%s</b>", buf);
+        //g_object_set(cell, "markup", buf, NULL);
+        //g_object_set(cell, "text", buf, NULL);
+        g_object_set(cell, "background", NULL, NULL);
+        //g_object_set(cell, "markup", sad, NULL);
+        GtkTreePath *path, *path1;
+        path = gtk_tree_model_get_path(tree_model, iter);
+        gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path1, NULL);
+        if (path1 && path && priv->search_item == DO_LIST_VIEW_SEARCH_ITEM_SORT && priv->search_char_count &&
+            !gtk_tree_path_compare(path, path1) ) {
+            //do_log(LOG_WARNING, "%d %d %s",gtk_tree_path_get_indices(path)[0],gtk_tree_path_get_indices(path1)[0],buf);
+            markup = selected_text(cell,GTK_WIDGET(view), buf, priv->search_char_count);
+        }
+        else
+            markup = g_strdup(text);
+        g_object_set(cell, "markup", markup, NULL);
+        g_free(markup);
+
+        if ( path ) gtk_tree_path_free(path);
+    }
+}
+static gchar *selected_text(GtkCellRenderer *cell, GtkWidget *view, gchar *text, guint selected_len)
+{
+#if GTK_MAJOR_VERSION > 2
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
+    GdkRGBA color_bg, color_fg;
+    GtkStyleContext *context;
+    context = gtk_widget_get_style_context(GTK_WIDGET(priv->tree_view));
+    gtk_style_context_get_background_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL,&color_bg);
+    gtk_style_context_get_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL,&color_fg);
+
+    gint color_bg_red,color_bg_green,color_bg_blue;
+    gint color_fg_red,color_fg_green,color_fg_blue;
+    color_bg_red=color_bg.red*255;color_bg_green=color_bg.green*255;color_bg_blue=color_bg.blue*255;
+    color_fg_red=color_fg.red*255;color_fg_green=color_fg.green*255;color_fg_blue=color_fg.blue*255;
+
+#else
+    GtkStyle *style = gtk_widget_get_style(GTK_WIDGET(view));
+#endif
+    int i;
+    gchar *selected_text = g_strdup(text);
+    gchar *tail;
+
+    for (i = 0, tail = text; tail && *tail !='\0' && i < selected_len;
+        tail = (gchar*)g_utf8_next_char(tail), i++);
+
+    selected_text[tail - text] = '\0';
+    gchar *markup;
+#if GTK_MAJOR_VERSION == 2
+    if ( !style )
+        markup = g_markup_printf_escaped("<span background=\"white\" foreground=\"black\">%s</span>%s",
+                             selected_text, tail ? tail : "");
+    else
+#endif
+#if GTK_MAJOR_VERSION >2
+        markup = g_markup_printf_escaped("<span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span>%s",
+                             color_bg_red,color_bg_green,color_bg_blue,
+                             color_fg_red,color_fg_green,color_fg_blue,
+                             selected_text, tail ? tail : "");
+#else
+        markup = g_markup_printf_escaped("<span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span>%s",
+                             style->base[GTK_STATE_NORMAL].red,style->base[GTK_STATE_NORMAL].green,style->base[GTK_STATE_NORMAL].blue,
+                             style->fg[GTK_STATE_NORMAL].red,style->fg[GTK_STATE_NORMAL].green,style->fg[GTK_STATE_NORMAL].blue,
+                             selected_text, tail ? tail : "");
+#endif
+    g_free(selected_text);
+    return markup;
+
+}
