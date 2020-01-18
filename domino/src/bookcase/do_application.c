@@ -474,11 +474,12 @@ void do_application_set_cache(DoApplication *app, const gchar *key, JsonNode *no
 	do_client_set_cache(DO_CLIENT(priv->client), key, node, NULL, -1);
 
 }
-JsonNode *do_application_get_cache(DoApplication *app, const gchar *key)
+
+JsonNode *do_application_get_cache(DoApplication *app, const gchar *key, GDateTime  **time)
 {
 	DoApplicationPrivate *priv;
 	priv = DO_APPLICATION_GET_PRIVATE(app);
-	return do_client_get_cache(DO_CLIENT(priv->client), key);
+	return do_client_get_cache(DO_CLIENT(priv->client), key, time);
 }
 
 static void do_application_add_acceletarors(GApplication *app)
@@ -486,6 +487,7 @@ static void do_application_add_acceletarors(GApplication *app)
 #if GTK_CHECK_VERSION(3,12,0)
     add_accelerator(DO_APPLICATION(app), "common-actions.Close", "<Primary>W");
     add_accelerator(DO_APPLICATION(app), "common-actions.Quit", "<Primary>Q");
+    add_accelerator(DO_APPLICATION(app), "common-actions.Search", "<Primary>L");
 #endif
 }
 gboolean do_application_settings(DoApplication *app)

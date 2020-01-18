@@ -41,6 +41,9 @@ static void do_common_actions_next(GSimpleAction *action,
 static void do_common_actions_previous(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
+static void do_common_actions_search(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
 
 GActionEntry entries[] =
 {
@@ -61,6 +64,7 @@ GActionEntry entries[] =
 	{ "Next", do_common_actions_next },
 	{ "Previous", do_common_actions_previous },
 	{ "Quit", do_common_actions_quit },
+	{ "Search", do_common_actions_search },
 	{ "Close", do_common_actions_close },
 };
 static GSimpleActionGroup *group = NULL;
@@ -156,6 +160,9 @@ static void do_common_actions_do_list_view_(const gchar *name, DoWindow *window)
     g_return_if_fail (nb != NULL);
 
     view = DO_VIEW(do_list_view_new(name, DO_CLIENT(do_application_get_client(DO_APPLICATION(app)))));
+    if ( !g_strcmp0(name, "goods") ) {
+        do_window_set_goods(DO_WINDOW(window), view);
+    }
     do_end_long_operation(GTK_WIDGET(window));
     if ( !view )
         return;
@@ -229,6 +236,35 @@ static void do_common_actions_previous(GSimpleAction *action,
          do_view_can_do_close_for_esc(DO_VIEW(child)) ) {
         do_view_do_close(DO_VIEW(child));
     }
+}
+static gboolean grab_focus(GtkWidget *widget, gboolean *continue_)
+{
+    if ( !continue_ )
+        return FALSE;
+    if ( GTK_IS_CONTAINER(widget) ) {
+        gtk_container_foreach(GTK_CONTAINER(widget),
+                          (GtkCallback)grab_focus, continue_);
+        if ( !continue_ )
+            return FALSE;
+    }
+    else {
+        const gchar *name = gtk_widget_get_name(widget);
+        if ( !g_strcmp0(name, "do-search-entry") ) {
+            if ( !gtk_widget_is_focus(widget) )
+                gtk_widget_grab_focus(widget);
+            *continue_  = FALSE;
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+static void do_common_actions_search(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       window)
+{
+    gboolean continue_ = TRUE;
+    gtk_container_foreach(GTK_CONTAINER(window),
+                      (GtkCallback)grab_focus, &continue_);
 }
 static void do_common_actions_next(GSimpleAction *action,
                      GVariant      *parameter,

@@ -16,7 +16,6 @@
 
 #define DO_LIST_VIEW_SEARCH_DIALOG_TIMEOUT 5000
 
-
 typedef struct _DoListViewId		DoListViewId;
 typedef struct _DoListViewField		DoListViewField;
 
@@ -104,6 +103,7 @@ static void do_list_view_make_key_column(DoListView *view);
 
 static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, DoListView *view);
 static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view);
+static void do_list_view_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view);
 
 enum
 {
@@ -639,10 +639,18 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
         gtk_tree_view_column_pack_start (col, r, TRUE);
         n = g_slist_length(priv->fields) + DO_LIST_MODEL_N_KEYS - 1;
         gtk_tree_view_column_add_attribute (col, r, "markup", n);
-        if ( !g_strcmp0(field->name, "name") ) {
+        if ( !g_strcmp0(field->name, "name") && !g_strcmp0(priv->name, "goods") ) {
             priv->search_sort_col = n;
             gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_sort_data_func, data, NULL);
         }
+        else
+        if ( !g_strcmp0(field->name, "code") && !g_strcmp0(priv->name, "goods") ) {
+            priv->search_code_col = n;
+            gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_sort_data_func, data, NULL);
+        }
+        else
+            gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_data_func, data, NULL);
+
     }
 
 }
@@ -662,13 +670,14 @@ static void do_list_view_make_key_column(DoListView *view)
 static gboolean search_add(DoListView *do_view, gchar *string);
 static void search_back(DoListView *do_view);
 static void search_clear_to_begin_word(DoListView *do_view);
+static void search_go_to_end_word(DoListView *do_view);
 static void search_refresh_timeout(DoListView *do_view);
 static gboolean search_clear(DoListView *do_view);
 static gboolean search_find(DoListView *do_view, const char *text);
 #ifdef SEARCH_BCODE
 static gboolean search_find_by_bcode(DoListView *do_view, const char *text);
 #endif // SEARCH_BCODE
-static gboolean start_find(GtkTreeView *treeview, gpointer user_data);
+//static gboolean start_find(GtkTreeView *treeview, gpointer user_data);
 static gboolean search_flush_timeout(DoListView *do_view);
 static gchar *get_sort_from_cursor(DoListView *view);
 
@@ -788,6 +797,12 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                 g_free(buf);
                 return TRUE;
                 break;
+#else
+                if ( priv->search_item == DO_LIST_VIEW_SEARCH_ITEM_SORT ) {
+                    search_go_to_end_word(do_view);
+                    return TRUE;
+                }
+                break;
 #endif
             }
             case GDK_KEY_Left:
@@ -891,6 +906,31 @@ static void search_clear_to_begin_word(DoListView *do_view)
         gtk_tree_view_row_cursor_redraw(GTK_TREE_VIEW(priv->tree_view));
     }
 }
+static void search_go_to_end_word(DoListView *do_view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
+    gchar *text = get_sort_from_cursor(do_view);
+    if ( text ) {
+        gunichar out;
+        char *p;
+        int count;
+        for (count = 0, p = (gchar*)text; p && *p !='\0' && count < priv->search_char_count - 1;
+                   p = (gchar*)g_utf8_next_char(p), count++);
+        for (; p && *p !='\0';
+                   p = (gchar*)g_utf8_next_char(p), count++ ) {
+            out = g_utf8_get_char(p);
+            if (g_unichar_isspace(out) && priv->search_char_count < count - 1)
+                break;
+        }
+        priv->search_char_count = count;
+        strcpy(priv->search_text, text);
+        if ( p )
+            priv->search_text[p - text] = '\0';
+        g_free(text);
+    }
+    search_refresh_timeout(do_view);
+    gtk_tree_view_row_cursor_redraw(GTK_TREE_VIEW(priv->tree_view));
+}
 static void search_refresh_timeout(DoListView *do_view)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
@@ -993,7 +1033,7 @@ static gboolean search_find(DoListView *do_view, const char *text)
     }
     return result;
 }
-
+/*
 static gboolean start_find(GtkTreeView *treeview, gpointer data)
 {
     //return TRUE;
@@ -1001,7 +1041,7 @@ static gboolean start_find(GtkTreeView *treeview, gpointer data)
     g_object_get(treeview, "enable-search", &sad, NULL);
     printf("sad %d\n",sad);
     return FALSE;
-}
+}*/
 static gboolean search_flush_timeout(DoListView *do_view)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
@@ -1029,7 +1069,7 @@ static gchar *get_sort_from_cursor(DoListView *do_view)
     gtk_tree_path_free(path);
     return NULL;
 }
-
+/*
 static gchar *get_code_from_cursor(DoListView *do_view)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
@@ -1050,7 +1090,8 @@ static gchar *get_code_from_cursor(DoListView *do_view)
     gtk_tree_path_free(path);
     return NULL;
 }
-
+*/
+/*
 static gchar *get_code_from_path(DoListView *view, GtkTreePath *path)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
@@ -1063,18 +1104,21 @@ static gchar *get_code_from_path(DoListView *view, GtkTreePath *path)
         return g_strdup(g_value_get_string(&value));
     }
     return NULL;
-}
+}*/
 static gchar *selected_text(GtkCellRenderer *cell, GtkWidget *view, gchar *text, guint selected_len);
 static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
-    GValue value = { 0, };
+    //GValue value = { 0, };
+    char *text;
 
-    gtk_tree_model_get_value(tree_model, iter, priv->search_sort_col, &value);
+    //gtk_tree_model_get_value(tree_model, iter, priv->search_sort_col, &value);
+    g_object_get(cell, "text", &text, NULL);
+    //text = (char*)g_value_get_string(&value);
 
     //do_log(LOG_INFO)
-    char *text = (char*)g_value_get_string(&value);
-    if (text && text[0]) {
+    //char *text = (char*)g_value_get_string(&value);
+    if ( text && text[0] ) {
         //GValue ads = {0,};
         //gtk_tree_model_get_value(tree_model, iter, DO_PRODUCT_MODEL_COL_ADS, &ads);
         //gchar *buf = do_product_name_format(text);
@@ -1089,16 +1133,15 @@ static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, Gtk
         GtkTreePath *path, *path1;
         path = gtk_tree_model_get_path(tree_model, iter);
         gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path1, NULL);
-        if (path1 && path && priv->search_item == DO_LIST_VIEW_SEARCH_ITEM_SORT && priv->search_char_count &&
+        if ( path1 && path && priv->search_char_count &&
             !gtk_tree_path_compare(path, path1) ) {
+            if ( !strncmp(text, priv->search_text, priv->search_char_count) ) {
             //do_log(LOG_WARNING, "%d %d %s",gtk_tree_path_get_indices(path)[0],gtk_tree_path_get_indices(path1)[0],buf);
-            markup = selected_text(cell,GTK_WIDGET(view), buf, priv->search_char_count);
+                markup = selected_text(cell,GTK_WIDGET(view), buf, priv->search_char_count);
+                g_object_set(cell, "markup", markup, NULL);
+                g_free(markup);
+            }
         }
-        else
-            markup = g_strdup(text);
-        g_object_set(cell, "markup", markup, NULL);
-        g_free(markup);
-
         if ( path ) gtk_tree_path_free(path);
     }
 }
@@ -1106,15 +1149,17 @@ static gchar *selected_text(GtkCellRenderer *cell, GtkWidget *view, gchar *text,
 {
 #if GTK_MAJOR_VERSION > 2
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
-    GdkRGBA color_bg, color_fg;
+    //GdkRGBA color_bg, color_fg;
+    GdkRGBA color_fg;
     GtkStyleContext *context;
     context = gtk_widget_get_style_context(GTK_WIDGET(priv->tree_view));
-    gtk_style_context_get_background_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL,&color_bg);
-    gtk_style_context_get_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL,&color_fg);
+    //gtk_style_context_get_background_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL, &color_bg);
+    gtk_style_context_get_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL, &color_fg);
 
     gint color_bg_red,color_bg_green,color_bg_blue;
     gint color_fg_red,color_fg_green,color_fg_blue;
-    color_bg_red=color_bg.red*255;color_bg_green=color_bg.green*255;color_bg_blue=color_bg.blue*255;
+    //color_bg_red=color_bg.red*255;color_bg_green=color_bg.green*255;color_bg_blue=color_bg.blue*255;
+    color_bg_red=255;color_bg_green=255;color_bg_blue=255;
     color_fg_red=color_fg.red*255;color_fg_green=color_fg.green*255;color_fg_blue=color_fg.blue*255;
 
 #else
@@ -1149,4 +1194,22 @@ static gchar *selected_text(GtkCellRenderer *cell, GtkWidget *view, gchar *text,
     g_free(selected_text);
     return markup;
 
+}
+static void do_list_view_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view)
+{
+    //DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
+
+    if ( !do_list_model_record_is_relevant(DO_LIST_MODEL(tree_model), iter) ) {
+        gchar *markup, *text;
+        g_object_get(cell, "text", &text, NULL);
+        markup = g_strdup_printf("<i>%s</i>", text);
+        g_object_set(cell, "markup", markup, NULL);
+        g_free(markup);
+    }
+}
+void do_list_view_external_search(DoListView *view, JsonNode *node)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
+
+    do_list_model_set_filter(DO_LIST_MODEL(priv->model), node);
 }

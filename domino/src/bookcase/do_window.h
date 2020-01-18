@@ -59,6 +59,7 @@ void          do_window_set_toolbar_text(DoWindow *window, const gchar *text);
 const gchar  *do_window_get_toolbar_text(DoWindow *window);
 
 void          do_window_update_toolbar(DoWindow *window);
+void          do_window_set_goods(DoWindow *window, DoView *view);
 
 
 

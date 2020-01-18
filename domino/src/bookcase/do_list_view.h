@@ -5,6 +5,7 @@
 #include <gtk/gtk.h>
 #include "do_view.h"
 #include "do_client.h"
+#include <json-glib/json-glib.h>
 
 G_BEGIN_DECLS
 
@@ -39,6 +40,7 @@ struct _DoListViewClass
 GType		do_list_view_get_type(void);
 
 GtkWidget  *do_list_view_new(const gchar *name, DoClient *client);
+void do_list_view_external_search(DoListView *view, JsonNode *node);
 
 G_END_DECLS
 

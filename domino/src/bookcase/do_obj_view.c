@@ -606,7 +606,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 	     !json_object_get_boolean_member(page, "visible") )
 		return;
 
-	node = do_application_get_cache(DO_APPLICATION(app), key);
+	node = do_application_get_cache(DO_APPLICATION(app), key, NULL);
 	if ( !node ) {
         node = do_application_request2(DO_APPLICATION(app), "GET", "GetInfo", priv->key, DO_CLIENT_FLAGS_NOCACHE,
 								"key", priv->key,
@@ -617,7 +617,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
         g_assert(obj != NULL);
         g_assert(json_object_has_member(obj, "pages"));
         json_array_foreach_element(json_object_get_array_member(obj, "pages"), cache_update_columns_info, data);
-        node = do_application_get_cache(DO_APPLICATION(app), key);
+        node = do_application_get_cache(DO_APPLICATION(app), key, NULL);
         g_assert(node == NULL);
     }
 

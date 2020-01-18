@@ -1047,12 +1047,15 @@ void do_client_set_cache(DoClient *client, const gchar *key, JsonNode *node, gch
 {
 	do_client_update_cache(client, key, NULL, node, text, length);
 }
-JsonNode  *do_client_get_cache(DoClient *client, const gchar *key)
+JsonNode  *do_client_get_cache(DoClient *client, const gchar *key, GDateTime  **time)
 {
 	DoValue *value;
 	value = do_client_get_cache_value(client, key);
-	if ( value )
+	if ( value ) {
+        if ( time )
+            *time = value->time;
 		return do_value_get_node(value);
+    }
 	else
 		return NULL;
 }

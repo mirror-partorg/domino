@@ -31,7 +31,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="`pkg-config gtk+-3.0 libsoup-2.4 json-glib-1.0 --cflags` -DDEBUG" />
+			<Add option="`pkg-config gtk+-3.0 libsoup-2.4 json-glib-1.0 --cflags` -DDEBUG1" />
 			<Add option="-DUSE_GTK -DUSE_UTF8 -DNODOMINO -DEXPAT  -DWEBKIT2 -D_LINUX" />
 			<Add directory="../../include" />
 			<Add directory="../../src/bookcase" />
