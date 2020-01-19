@@ -51,6 +51,7 @@ struct _DoApplicationPrivate
 	GApplicationCommandLine *command_line;
 	GtkWidget *first_window;
 	gchar **actions;
+	gboolean clear_cache;
 	GObject *client;
 	gchar *store;
 	gchar *protocol_server_version;
@@ -74,6 +75,9 @@ static void do_application_init(DoApplication *temp)
     {
         {
             "version", 'V', 0, G_OPTION_ARG_NONE, NULL,
+        },
+        {
+            "clearcache", '\0', 0, G_OPTION_ARG_NONE, &priv->clear_cache, NULL,
         },
 
         {
@@ -358,6 +362,8 @@ static gboolean run_actions(DoApplication *app)
         DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
         priv->client = do_client_new(url, priv->store);
     }
+    if ( priv->clear_cache )
+        do_client_clear_cache(priv->client, NULL);
 	time = g_date_time_new_now_local();
 	buf = do_client_strftime(time);
 	do_application_request2_async(app, "GET", "GetVersion", "Version", 0,

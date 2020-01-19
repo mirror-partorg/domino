@@ -23,6 +23,7 @@ static gboolean do_list_model_iter_nth_child(GtkTreeModel *tree_model, GtkTreeIt
 static gboolean do_list_model_iter_parent(GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeIter *child);
 //static gboolean do_list_model_get_last_value(DoListModel *model);
 static gboolean do_list_model_fill(DoListModel *model);
+static gboolean do_list_model_group_update(DoListModel *model);
 
 static void do_list_model_fill_keys(JsonNode *node, DoListModel *model);
 typedef struct _DoListModelRecord DoListModelRecord;
@@ -34,7 +35,7 @@ typedef struct _DoListModelUpdate  DoListModelUpdate;
 //static void do_list_model_index_rebuild(DoListModel *model);
 
 #define UPDATE_TIME_SECOND 10
-#define RELEVANT_TIME_SECOND 60
+#define RELEVANT_TIME_SECOND 600
 #define UPDATE_GROUP_TIMEOUT 500
 #define ARCHIVED_MIN 1000
 
@@ -49,6 +50,8 @@ struct _DoListModelRecord
     time_t    cache_time;
     gboolean  updated;
     gboolean  relevant;
+    gchar     *filter;
+    gchar     *full;
 };
 
 struct _DoListModelUpdate
@@ -71,12 +74,17 @@ struct _DoListModelPrivate
     gboolean            updated_keys;
     GSList             *group_update_keys;
     guint               group_update_source;
+    gboolean            updated;
     gint code_to_col; gint sort_to_col; gint key_to_col;
 
     gboolean            filtered;
     DoListModelRecord **filter_records;
     guint               filter_n_records;
     gchar             **filter_lexems;
+
+    gboolean            full_read;
+    gboolean            full_read_;
+    guint               full_read_percent;
 
 };
 
@@ -167,6 +175,8 @@ static GObject *do_list_model_constructor(GType type, guint n_construct_properti
 
     do_list_model_fill(model);
 
+    priv->updated = TRUE;
+
 	return object;
 
 }
@@ -227,6 +237,8 @@ static void do_list_model_record_free(DoListModelRecord *record)
     g_free(record->code);
     g_free(record->sort);
     g_free(record->key);
+    g_free(record->filter);
+    g_free(record->full);
     g_free(record);
 }
 
@@ -373,6 +385,19 @@ static void do_list_model_group_record_update(JsonArray *columns, guint index_, 
         }
     }
 }
+static void do_list_model_full_read_next(DoListModel *model, const gchar *key)
+{
+    DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(model);
+    DoListModelRecord *record;
+    int i, index = 0;
+    if ( key ) {
+        record = g_hash_table_lookup(priv->keys, key);
+        index = record->index;
+    }
+    for ( i = index; i < priv->n_records && i < index + 1000; i++ )
+        priv->group_update_keys = g_slist_append(priv->group_update_keys, priv->records[i]->key);
+    do_list_model_group_update(model);
+}
 static void do_list_model_group_records_update(JsonNode *node, DoListModelUpdate *data)
 {
 
@@ -394,6 +419,7 @@ static void do_list_model_group_records_update(JsonNode *node, DoListModelUpdate
     //g_slist_foreach(data->keys, (GFunc)do_list_model_group_list_free, NULL);
     DoListModelRecord *record = NULL;
     GSList *l;
+    const gchar *key = NULL;
     for ( l = data->keys; l; l = l->next ) {
         if ( data->filtered ) {
             gint i;
@@ -407,8 +433,19 @@ static void do_list_model_group_records_update(JsonNode *node, DoListModelUpdate
         }
         else
             record = g_hash_table_lookup(priv->keys, l->data);
-        if ( record )
+        if ( record ) {
             record->updated = FALSE;
+            key = record->key;
+            priv->full_read_percent = record->index*100/priv->n_records;
+        }
+    }
+    if ( priv->full_read ) {
+        if ( !g_strcmp0(key, priv->records[priv->n_records-1]->key) ) {
+            priv->full_read = FALSE;
+        }
+        else {
+            do_list_model_full_read_next(data->model, key);
+        }
     }
     g_free(data);
 #ifdef DEBUG
@@ -416,6 +453,7 @@ static void do_list_model_group_records_update(JsonNode *node, DoListModelUpdate
     //g_print("refresh %d msec %f\n", json_array_get_length(array), g_date_time_difference(t2, t1)/1000000.);
 #endif
 }
+
 static gboolean do_list_model_group_update(DoListModel *model)
 {
     DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(model);
@@ -510,8 +548,17 @@ static void do_list_model_get_value(GtkTreeModel *tree_model, GtkTreeIter  *iter
     }
 
     if ( now - record->time < UPDATE_TIME_SECOND || record->updated ) {
-        if ( record->values && record->values[column - DO_LIST_MODEL_N_KEYS] )
-            g_value_set_string(value, record->values[column - DO_LIST_MODEL_N_KEYS]);
+        if ( record->values && record->values[column - DO_LIST_MODEL_N_KEYS] ) {
+
+            if ( column == priv->sort_to_col && record->filter ) {
+                if ( !record->full )
+                    record->full = g_strdup_printf("%s\n%s", record->values[column - DO_LIST_MODEL_N_KEYS], record->filter);
+                g_value_set_string(value, record->full);
+            }
+            else {
+                g_value_set_string(value, record->values[column - DO_LIST_MODEL_N_KEYS]);
+            }
+        }
         else {
             if ( column == priv->code_to_col ) {
                 g_value_set_string(value, record->code);
@@ -530,7 +577,6 @@ static void do_list_model_get_value(GtkTreeModel *tree_model, GtkTreeIter  *iter
 #ifdef DEBUG
     //g_print("get value %s %d %d\n", record->code, column, record->index);
 #endif // DEBUG
-    record->updated = TRUE;
     JsonNode *node;
     gchar *cache_key;
     //GSList *l;
@@ -555,12 +601,13 @@ static void do_list_model_get_value(GtkTreeModel *tree_model, GtkTreeIter  *iter
             found = TRUE;
             break;
         }
-    }
-    if ( !found ) {*/
+    }*/
+    if ( !priv->full_read && priv->updated ) {
+        record->updated = TRUE;
         priv->group_update_keys = g_slist_append(priv->group_update_keys, record->key);
         if ( !priv->group_update_source )
             priv->group_update_source = g_timeout_add(UPDATE_GROUP_TIMEOUT, (GSourceFunc)do_list_model_group_update, tree_model);
-    //}
+    }
 
     //node = do_client_request2_async(priv->client, "GET", "GetRecord", cache_key, DO_CLIENT_FLAGS_QUEUE, (GFunc)do_list_model_record_update, data,
     //                                  "key", record->key, "fields", priv->fields, NULL);
@@ -582,8 +629,16 @@ static void do_list_model_get_value(GtkTreeModel *tree_model, GtkTreeIter  *iter
     }
     else {
         do_list_model_record_update_(DO_LIST_MODEL(tree_model), record, node, g_date_time_to_unix(time));
-        if ( record->values && record->values[column - DO_LIST_MODEL_N_KEYS] )
-            g_value_set_string(value, record->values[column - DO_LIST_MODEL_N_KEYS]);
+        if ( record->values && record->values[column - DO_LIST_MODEL_N_KEYS] ) {
+            if ( column == priv->sort_to_col && record->filter ) {
+                g_free(record->full);
+                record->full = g_strdup_printf("%s\n%s", record->values[column - DO_LIST_MODEL_N_KEYS], record->filter);
+                g_value_set_string(value, record->full);
+            }
+            else {
+                g_value_set_string(value, record->values[column - DO_LIST_MODEL_N_KEYS]);
+            }
+        }
         else
             g_value_set_string(value, "");
         return;
@@ -834,7 +889,11 @@ static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
             }
             g_hash_table_insert(priv->keys, record->key, record);
 		}
-	}
+		if ( priv->full_read && !priv->full_read_ ) {
+            priv->full_read_ = TRUE;
+            do_list_model_full_read_next(model, NULL);
+        }
+    }
 }
 gboolean do_list_model_find_record_by_sort(DoListModel *model, GtkTreeIter *iter, const gchar *text)
 {
@@ -897,7 +956,7 @@ gboolean do_list_model_set_filter(DoListModel *model, JsonNode *node)
 {
     DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(model);
     GtkTreePath *path;
-    gint i;
+    gint i, j;
     if ( priv->filtered ) {
 
         path = gtk_tree_path_new_first();
@@ -960,10 +1019,87 @@ gboolean do_list_model_set_filter(DoListModel *model, JsonNode *node)
             gtk_tree_model_row_inserted(GTK_TREE_MODEL(model), path, &iter);
             gtk_tree_path_free(path);
         }
-        array = json_object_get_array_member(obj, "items");
+        array = json_object_get_array_member(obj, "lexemes");
         priv->filter_lexems = g_new0(gchar*, json_array_get_length(array)+1);
         for ( i = 0; i < json_array_get_length(array); i++ )
             priv->filter_lexems[i] = g_strdup((gchar*)json_array_get_string_element(array, i));
+
+        if ( json_object_has_member(obj, "fields") ) {
+            GList *l;
+            obj = json_object_get_object_member(obj, "fields");
+            for ( l = json_object_get_members(obj); l; l = l->next ) {
+                gchar *key;
+                DoListModelRecord *record;
+                key = l->data;
+                array = json_object_get_array_member(obj, key);
+                record = NULL;
+                for ( i = 0; i < priv->filter_n_records; i++ ) {
+                    if ( !g_strcmp0(priv->filter_records[i]->key, key) ) {
+                        record = priv->filter_records[i];
+                        break;
+                    }
+                }
+                if ( record ) {
+                    for ( i = 0; i < json_array_get_length(array); i++ ) {
+                        gchar *buf;
+                        JsonObject *field;
+                        JsonArray *values;
+                        buf = record->filter;
+                        field = json_array_get_object_element(array, i);
+                        record->filter = g_strdup_printf("%s%s%s: ", buf ? buf : "", buf ? "\n" : "",  json_object_get_string_member(field, "title"));
+                        g_free(buf);
+                        values = json_object_get_array_member(field, "values");
+                        for ( j = 0; j < json_array_get_length(values); j++ ) {
+                            buf = record->filter;
+                            field = json_array_get_object_element(array, i);
+                            record->filter = g_strdup_printf("%s%s%s", buf, j != 0 ? "\n" : "",  json_array_get_string_element(values, j));
+                            g_free(buf);
+                        }
+                    }
+                }
+            }
+        }
     }
     return priv->filtered;
+}
+gboolean do_list_model_is_filtered(DoListModel *tree_model, GStrv *lexems)
+{
+    DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(tree_model);
+    if ( lexems )
+        *lexems = priv->filter_lexems;
+    return priv->filtered;
+}
+gboolean do_list_model_find_record_by_key(DoListModel *model, GtkTreeIter *iter, const gchar *text)
+{
+    DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(model);
+    DoListModelRecord *record;
+    record = g_hash_table_lookup(priv->keys, text);
+    if ( record ) {
+        iter->stamp      = priv->stamp;
+        iter->user_data  = record;
+        iter->user_data2 = NULL;
+        iter->user_data3 = NULL;
+    }
+    return record != NULL;
+}
+void do_list_model_full_read(DoListModel *tree_model)
+{
+    DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(tree_model);
+    priv->full_read = TRUE;
+    if ( priv->n_records > 0 ) {
+        priv->full_read_ = TRUE;
+        do_list_model_full_read_next(tree_model, NULL);
+    }
+}
+gboolean do_list_model_full_readed(DoListModel *tree_model, guint *percent)
+{
+    DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(tree_model);
+    if ( percent )
+        *percent = priv->full_read_percent;
+    return priv->full_read;
+}
+void do_list_model_set_updated(DoListModel *tree_model, gboolean updated)
+{
+    DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(tree_model);
+    priv->updated = updated;
 }

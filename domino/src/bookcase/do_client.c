@@ -295,7 +295,7 @@ static GObject *do_client_constructor(GType type, guint n_construct_properties, 
 	priv->source = g_timeout_add(CACHE_LIVETIME_SECONDS*1000, (GSourceFunc)do_client_cleaning, object);
 	return object;
 }
-static void do_client_clear_cache(GObject *object, const gchar *key)
+void do_client_clear_cache(DoClient *object, const gchar *key)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (DO_CLIENT(object));
 	gchar *error = NULL;
@@ -325,7 +325,7 @@ static void do_client_clear_cache(GObject *object, const gchar *key)
 static void do_client_finalize (GObject *object)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (object);
-	do_client_clear_cache(object,NULL);
+	do_client_clear_cache(DO_CLIENT(object), NULL);
 	g_free(priv->url);
 	g_free(priv->store);
 	if ( priv->conn )
@@ -370,7 +370,7 @@ static void do_client_set_property (GObject *object, guint prop_id, const GValue
 				if ( g_strcmp0(priv->cache_url, url) ) {
 					g_free(priv->cache_url);
 					priv->cache_url = g_strdup(url);
-					do_client_clear_cache(object, NULL);
+					do_client_clear_cache(DO_CLIENT(object), NULL);
 					do_client_update_cache_store_url(DO_CLIENT(object));
 				}
 				g_free(priv->url);
@@ -386,7 +386,7 @@ static void do_client_set_property (GObject *object, guint prop_id, const GValue
 				if ( g_strcmp0(priv->cache_store, store) ) {
 					g_free(priv->cache_store);
 					priv->cache_store = g_strdup(store);
-					do_client_clear_cache(object, NULL);
+					do_client_clear_cache(DO_CLIENT(object), NULL);
 					do_client_update_cache_store_url(DO_CLIENT(object));
 				}
 				g_free(priv->store);

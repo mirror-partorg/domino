@@ -656,6 +656,10 @@ void do_window_set_goods(DoWindow *window, DoView *view)
 static void do_window_entry_activate(GtkEntry *entry, DoWindow *window)
 {
     DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    if ( priv->search_src ) {
+        g_source_remove(priv->search_src);
+        do_window_external_search(window);
+    }
     if ( priv->goods ) {
         impl_set_active_child(GTK_CONTAINER(window), GTK_WIDGET(priv->goods));
         do_view_do_grab_focus(priv->goods);
@@ -673,8 +677,7 @@ static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, 
               //  mask = gtk_accelerator_get_default_mod_mask ();
                 //return TRUE;
     	    case GDK_KEY_Down:
-                impl_set_active_child(GTK_CONTAINER(window), GTK_WIDGET(priv->goods));
-                do_view_do_grab_focus(priv->goods);
+                do_window_entry_activate(GTK_ENTRY(entry), window);
                 return TRUE;
             case GDK_KEY_Escape:
                 priv->entry_changed = TRUE;

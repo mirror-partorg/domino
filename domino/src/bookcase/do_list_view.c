@@ -31,6 +31,7 @@ struct _DoListViewField
     PangoAlignment align;
     gchar *title;
     gboolean invisible;
+    guint type;
 };
 enum {
     DO_LIST_VIEW_SEARCH_ITEM_SORT = 0,
@@ -142,7 +143,8 @@ struct _DoListViewPrivate
     gchar         *name;
     GSList        *fields;
     gchar         *userfields;
-    gboolean       fields_filled;
+    GtkWidget     *entry;
+    //gboolean       fields_filled;
 
     gchar          search_text[1024];
     gint           search_char_count;
@@ -152,6 +154,7 @@ struct _DoListViewPrivate
     gint           search_code_col;
 
     DoView        *receiver;
+    guint          source_load;
 
 };
 
@@ -239,6 +242,9 @@ static GObject *do_list_view_constructor(GType type, guint n_construct_propertie
     priv->do_view = DO_TREE_VIEW(do_tree_view_new(path));
     DOMINO_LOCAL_GET(path, "fields", &priv->userfields, NULL);
     g_free(path);
+
+    priv->entry = gtk_label_new("");
+    do_tree_view_pack_header(priv->do_view, priv->entry);
 
 
     //priv->model = model = GTK_TREE_MODEL(gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING));//to do
@@ -382,6 +388,35 @@ static void do_list_view_do_close(DoView *view)
     //gtk_widget_destroy(GTK_WIDGET(view));
 }
 static gboolean set_view_cursor(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, DoListView *view);
+static gboolean do_list_view_update_title(gpointer data)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(data);
+    guint percent;
+    gchar *buf;
+    if ( !do_list_model_full_readed(DO_LIST_MODEL(priv->model), &percent) ) {
+        gtk_label_set_text(GTK_LABEL(priv->entry), "");
+        gtk_widget_set_visible(GTK_WIDGET(priv->entry), FALSE);
+        gchar *key;
+        key = g_strdup_printf("%s.read", priv->name);
+        buf = g_strdup("{}");
+        JsonNode *node;
+        node = json_node_new(JSON_NODE_OBJECT);
+        do_client_set_cache(priv->client, key, node, buf, -1);
+        g_free(key);g_free(buf);
+        return FALSE;
+    }
+    buf = g_strdup_printf("<b>Первоначальное заполнение(%d%%)...</b>", percent);
+    gtk_label_set_markup(GTK_LABEL(priv->entry), buf);
+    g_free(buf);
+    return TRUE;
+}
+static void do_list_view_read_records(DoListView *view)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
+    do_list_model_full_read(DO_LIST_MODEL(priv->model));
+    gtk_label_set_markup(GTK_LABEL(priv->entry), "<b>Первоначальное заполнение...</b>");
+    priv->source_load = g_timeout_add(1000, do_list_view_update_title, view);
+}
 
 static gboolean do_list_view_fill_first(DoListView *view)
 {
@@ -423,6 +458,14 @@ static gboolean do_list_view_fill_first(DoListView *view)
     g_free(fields);
     gtk_tree_view_set_model(priv->tree_view, model);
 	gtk_tree_model_foreach(GTK_TREE_MODEL(priv->model),(GtkTreeModelForeachFunc)set_view_cursor, view);
+	gchar *key;
+	key = g_strdup_printf("%s.read", priv->name);
+    if ( !do_client_get_cache(priv->client, key, NULL) ) {
+        do_list_view_read_records(view);
+    }
+    else {
+        gtk_widget_set_visible(GTK_WIDGET(priv->entry), FALSE);
+    }
 	return FALSE;
 }
 /*
@@ -533,7 +576,6 @@ static void do_list_view_do_edit(DoView *view, const gchar *tab)
 		parameter = g_variant_new_string(key);
 		do_common_action_activate("ObjView", parameter);
 		//to do g_variant_unref(parameter);
-		return;
 	}
 }
 static 	gboolean do_list_view_can_do_edit(DoView *view, const gchar *tab)
@@ -617,6 +659,10 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
     g_assert(json_object_has_member(obj, "name"));
     field->short_ = json_object_get_string_member(obj, "short")[0];
     field->name = g_strdup(json_object_get_string_member(obj, "name"));
+    if ( json_object_has_member(obj, "type") ) {
+        if ( !g_strcmp0(json_object_get_string_member(obj, "type"), "pixbuf") )
+            field->type = 1;
+    }
     if ( json_object_has_member(obj, "title") )
         field->title = g_strdup(json_object_get_string_member(obj, "title"));
     field->align = PANGO_ALIGN_LEFT;
@@ -631,28 +677,33 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
     }
     if ( !priv->userfields || strchr(priv->userfields, field->short_) ) { //todo
         priv->fields = g_slist_append(priv->fields, field);
-
-        r = gtk_cell_renderer_text_new();
-        g_object_set(r, "xalign", field->align == PANGO_ALIGN_CENTER ? 0.5 : (field->align == PANGO_ALIGN_RIGHT ? 1. : 0.), NULL);
-
+        n = g_slist_length(priv->fields) + DO_LIST_MODEL_N_KEYS - 1;
+        if ( field->type == 1 )
+            r = gtk_cell_renderer_pixbuf_new();
+        else {
+            r = gtk_cell_renderer_text_new();
+            g_object_set(r, "xalign", field->align == PANGO_ALIGN_CENTER ? 0.5 : (field->align == PANGO_ALIGN_RIGHT ? 1. : 0.), NULL);
+        }
         col = do_tree_view_add_column(DO_TREE_VIEW(priv->do_view), field->name, field->title ? field->title : "", 100);
         gtk_tree_view_column_pack_start (col, r, TRUE);
-        n = g_slist_length(priv->fields) + DO_LIST_MODEL_N_KEYS - 1;
-        gtk_tree_view_column_add_attribute (col, r, "markup", n);
-        if ( !g_strcmp0(field->name, "name") && !g_strcmp0(priv->name, "goods") ) {
-            priv->search_sort_col = n;
-            gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_sort_data_func, data, NULL);
+        if ( field->type == 0 ) {
+            gtk_tree_view_column_add_attribute (col, r, "markup", n);
+            if ( !g_strcmp0(field->name, "name") && !g_strcmp0(priv->name, "goods") ) {
+                priv->search_sort_col = n;
+                gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_sort_data_func, data, NULL);
+            }
+            else
+            if ( !g_strcmp0(field->name, "code") && !g_strcmp0(priv->name, "goods") ) {
+                priv->search_code_col = n;
+                gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_sort_data_func, data, NULL);
+            }
+            else
+                gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_data_func, data, NULL);
         }
-        else
-        if ( !g_strcmp0(field->name, "code") && !g_strcmp0(priv->name, "goods") ) {
-            priv->search_code_col = n;
-            gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_sort_data_func, data, NULL);
+        else if ( field->type == 1 ) {
+            gtk_tree_view_column_add_attribute (col, r, "icon-name", n);
         }
-        else
-            gtk_tree_view_column_set_cell_data_func(col, r, (GtkTreeCellDataFunc)do_list_view_cell_data_func, data, NULL);
-
     }
-
 }
 #ifdef DEBUG
 static void do_list_view_make_key_column(DoListView *view)
@@ -718,6 +769,7 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
     {
     	switch (event->keyval)
     	{
+
     	    //case GDK_space:
               //  mask = gtk_accelerator_get_default_mod_mask ();
                 //return TRUE;
@@ -725,6 +777,30 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                 search_back(do_view);
                 return TRUE;
             case GDK_KEY_Escape:
+                if ( do_list_model_is_filtered(DO_LIST_MODEL(priv->model), NULL) ) {
+                    GValue value = {0,};
+                    const gchar *key = NULL;
+                    GtkTreePath *path;
+                    gtk_tree_view_get_cursor(priv->tree_view, &path, NULL);
+                    if ( path ) {
+                        GtkTreeIter iter;
+                        gtk_tree_model_get_iter(priv->model, &iter, path);
+                        gtk_tree_model_get_value(priv->model, &iter, DO_LIST_MODEL_COL_KEY, &value);
+                        key = g_value_get_string(&value);
+                        gtk_tree_path_free(path);
+                    }
+                    do_list_model_set_filter(DO_LIST_MODEL(priv->model), NULL);
+                    if ( key ) {
+                        GtkTreeIter iter;
+                        if ( do_list_model_find_record_by_key(DO_LIST_MODEL(priv->model), &iter, key) ) {
+                            path = gtk_tree_model_get_path(priv->model, &iter);
+                            do_list_model_set_updated(DO_LIST_MODEL(priv->model), FALSE);
+                            gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
+                            do_list_model_set_updated(DO_LIST_MODEL(priv->model), TRUE);
+                        }
+                    }
+                    return TRUE;
+                }
                 if ( !priv->search_char_count &&
                      priv->receiver ) {
                     GtkNotebook *nb;
@@ -1105,7 +1181,8 @@ static gchar *get_code_from_path(DoListView *view, GtkTreePath *path)
     }
     return NULL;
 }*/
-static gchar *selected_text(GtkCellRenderer *cell, GtkWidget *view, gchar *text, guint selected_len);
+static void do_list_view_get_cell_color(DoListView *view, gint *bg_red, gint *bg_green, gint *bg_blue, gint *fg_red, gint *fg_green, gint *fg_blue, gint *bg_red_s, gint *bg_green_s, gint *bg_blue_s);
+
 static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
@@ -1119,81 +1196,93 @@ static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, Gtk
     //do_log(LOG_INFO)
     //char *text = (char*)g_value_get_string(&value);
     if ( text && text[0] ) {
-        //GValue ads = {0,};
-        //gtk_tree_model_get_value(tree_model, iter, DO_PRODUCT_MODEL_COL_ADS, &ads);
-        //gchar *buf = do_product_name_format(text);
-        //gchar *buf = do_product_name_format(text);
-        gchar *buf = g_strdup(text);
-        gchar *markup = NULL;
-        //gchar *sad = g_strdup_printf("<b>%s</b>", buf);
-        //g_object_set(cell, "markup", buf, NULL);
-        //g_object_set(cell, "text", buf, NULL);
-        g_object_set(cell, "background", NULL, NULL);
-        //g_object_set(cell, "markup", sad, NULL);
+        int i, j;
         GtkTreePath *path, *path1;
         path = gtk_tree_model_get_path(tree_model, iter);
         gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path1, NULL);
-        if ( path1 && path && priv->search_char_count &&
-            !gtk_tree_path_compare(path, path1) ) {
-            if ( !strncmp(text, priv->search_text, priv->search_char_count) ) {
-            //do_log(LOG_WARNING, "%d %d %s",gtk_tree_path_get_indices(path)[0],gtk_tree_path_get_indices(path1)[0],buf);
-                markup = selected_text(cell,GTK_WIDGET(view), buf, priv->search_char_count);
-                g_object_set(cell, "markup", markup, NULL);
-                g_free(markup);
+        gboolean select;
+        select = path1 && path && !gtk_tree_path_compare(path, path1);
+        if ( path ) gtk_tree_path_free(path);
+        if ( path1 ) gtk_tree_path_free(path1);
+        gint bg_red, bg_green, bg_blue, fg_red, fg_green, fg_blue, bg_red_s, bg_green_s, bg_blue_s;
+        do_list_view_get_cell_color(view, &bg_red, &bg_green, &bg_blue, &fg_red, &fg_green, &fg_blue, &bg_red_s, &bg_green_s, &bg_blue_s);
+        gchar **lexems;
+        gchar *markup = NULL;
+        if ( do_list_model_is_filtered(DO_LIST_MODEL(priv->model), &lexems) ) {
+            gchar *buf;
+            buf = g_strdup(text);
+            for ( i = 0; i < g_strv_length(lexems); i++ ) {
+                gchar **bufv;
+                bufv = g_strsplit(buf, lexems[i], -1);
+                if ( g_strv_length(bufv) > 1 ) {
+                    g_free(markup);
+                    for ( j = 0; j < g_strv_length(bufv); j++ ) {
+                        if ( j ) {
+                            g_free(buf);
+                            buf = g_strdup(markup);
+                            g_free(markup);
+                        }
+                        if ( j == g_strv_length(bufv) - 1 ) {
+                            markup = g_strdup_printf("%s%s", buf, bufv[j]);
+                        }
+                        else {
+                            if ( select )
+                                markup = g_strdup_printf("%s%s<span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span>", j ? buf : "", bufv[j],
+                                         bg_red, bg_green, bg_blue, fg_red, fg_green, fg_blue, lexems[i]);
+                            else
+                                markup = g_strdup_printf("%s%s<b><span foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", bufv[j], bg_red_s, bg_green_s, bg_blue_s, lexems[i]);
+                        }
+                    }
+                }
+                g_strfreev(bufv);
+            }
+            g_free(buf);
+        }
+        else {
+            g_object_set(cell, "background", NULL, NULL);
+            if ( select && priv->search_char_count ) {
+                if ( !strncmp(text, priv->search_text, priv->search_char_count) ) {
+                    gchar *selected_text = g_strdup(text);
+                    gchar *tail;
+                    for (i = 0, tail = text; tail && *tail !='\0' && i < priv->search_char_count;
+                        tail = (gchar*)g_utf8_next_char(tail), i++);
+
+                    selected_text[tail - text] = '\0';
+                    markup = g_markup_printf_escaped("<span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span>%s",
+                                         bg_red,bg_green,bg_blue,fg_red,fg_green,fg_blue,
+                                         selected_text, tail ? tail : "");
+                    g_free(selected_text);
+                }
             }
         }
-        if ( path ) gtk_tree_path_free(path);
+        if ( markup ) {
+            g_object_set(cell, "markup", markup, NULL);
+            g_free(markup);
+        }
     }
 }
-static gchar *selected_text(GtkCellRenderer *cell, GtkWidget *view, gchar *text, guint selected_len)
+static void do_list_view_get_cell_color(DoListView *view, gint *bg_red, gint *bg_green, gint *bg_blue, gint *fg_red, gint *fg_green, gint *fg_blue, gint *bg_red_s, gint *bg_green_s, gint *bg_blue_s)
 {
 #if GTK_MAJOR_VERSION > 2
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
-    //GdkRGBA color_bg, color_fg;
-    GdkRGBA color_fg;
+    GdkRGBA color_bg, color_fg, color_bg_s;
     GtkStyleContext *context;
+
     context = gtk_widget_get_style_context(GTK_WIDGET(priv->tree_view));
-    //gtk_style_context_get_background_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL, &color_bg);
+    gtk_style_context_get_background_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL, &color_bg);
+    gtk_style_context_get_background_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_SELECTED, &color_bg_s);
     gtk_style_context_get_color(GTK_STYLE_CONTEXT(context), GTK_STATE_FLAG_NORMAL, &color_fg);
 
-    gint color_bg_red,color_bg_green,color_bg_blue;
-    gint color_fg_red,color_fg_green,color_fg_blue;
-    //color_bg_red=color_bg.red*255;color_bg_green=color_bg.green*255;color_bg_blue=color_bg.blue*255;
-    color_bg_red=255;color_bg_green=255;color_bg_blue=255;
-    color_fg_red=color_fg.red*255;color_fg_green=color_fg.green*255;color_fg_blue=color_fg.blue*255;
+    *bg_red = color_bg.red*255;*bg_green=color_bg.green*255;*bg_blue=color_bg.blue*255;
+    *fg_red = color_fg.red*255;*fg_green=color_fg.green*255;*fg_blue=color_fg.blue*255;
+    *bg_red_s = color_bg_s.red*255;*bg_green_s=color_bg_s.green*255;*bg_blue_s=color_bg_s.blue*255;
 
 #else
     GtkStyle *style = gtk_widget_get_style(GTK_WIDGET(view));
+    *bg_red = style->base[GTK_STATE_NORMAL].red;*bg_green=style->base[GTK_STATE_NORMAL].green;*bg_blue=style->base[GTK_STATE_NORMAL].blue;
+    *fg_red = style->fg[GTK_STATE_NORMAL].red;*fg_green=style->fg[GTK_STATE_NORMAL].green;*fg_blue=style->fg[GTK_STATE_NORMAL].blue;
+    *bg_red_s = style->base[GTK_STATE_SELECTED].red;*bg_green_s=style->base[GTK_STATE_SELECTED].green;*bg_blue_s=style->base[GTK_STATE_SELECTED].blue;
 #endif
-    int i;
-    gchar *selected_text = g_strdup(text);
-    gchar *tail;
-
-    for (i = 0, tail = text; tail && *tail !='\0' && i < selected_len;
-        tail = (gchar*)g_utf8_next_char(tail), i++);
-
-    selected_text[tail - text] = '\0';
-    gchar *markup;
-#if GTK_MAJOR_VERSION == 2
-    if ( !style )
-        markup = g_markup_printf_escaped("<span background=\"white\" foreground=\"black\">%s</span>%s",
-                             selected_text, tail ? tail : "");
-    else
-#endif
-#if GTK_MAJOR_VERSION >2
-        markup = g_markup_printf_escaped("<span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span>%s",
-                             color_bg_red,color_bg_green,color_bg_blue,
-                             color_fg_red,color_fg_green,color_fg_blue,
-                             selected_text, tail ? tail : "");
-#else
-        markup = g_markup_printf_escaped("<span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span>%s",
-                             style->base[GTK_STATE_NORMAL].red,style->base[GTK_STATE_NORMAL].green,style->base[GTK_STATE_NORMAL].blue,
-                             style->fg[GTK_STATE_NORMAL].red,style->fg[GTK_STATE_NORMAL].green,style->fg[GTK_STATE_NORMAL].blue,
-                             selected_text, tail ? tail : "");
-#endif
-    g_free(selected_text);
-    return markup;
-
 }
 static void do_list_view_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, DoListView *view)
 {
@@ -1210,6 +1299,7 @@ static void do_list_view_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellR
 void do_list_view_external_search(DoListView *view, JsonNode *node)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
-
-    do_list_model_set_filter(DO_LIST_MODEL(priv->model), node);
+    gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(priv->tree_view), node == NULL);
+    if ( !do_list_model_full_readed(DO_LIST_MODEL(priv->model), NULL) )
+        do_list_model_set_filter(DO_LIST_MODEL(priv->model), node);
 }
