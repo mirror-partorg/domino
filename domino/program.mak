@@ -14,7 +14,7 @@ $(APP):
 			$(CC) $(AM_FLAGS) $(OPT_FLAGS) $(CFLAGS) -c $$f -o $$n; \
 		fi ;\
 	done
-	$(RESOURCES)
+	$(RESOURCES__)
 	for f in $(SRCS) ; do OBJS="$$OBJS $(DIR_TMP)/$$(basename $$f).o"; done ;\
 	export LD_LIBRARY_PATH=/usr/local/psql/lib:/usr/local/psql/lib64:/usr/local/domino/lib && \
 	$(LINK) $(AM_FLAGS) $(OPT_FLAGS) $(CFLAGS) $$OBJS $(OBJ) -o $(DIR_PRG)/$(APP) $(LDFLAGS)

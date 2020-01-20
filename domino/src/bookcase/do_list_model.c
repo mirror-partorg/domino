@@ -960,10 +960,10 @@ gboolean do_list_model_set_filter(DoListModel *model, JsonNode *node)
     if ( priv->filtered ) {
 
         path = gtk_tree_path_new_first();
-        for ( i = 0; i < priv->filter_n_records; i++ ) {
+        for ( i = 0; i < priv->filter_n_records; i++ )
             gtk_tree_model_row_deleted(GTK_TREE_MODEL(model), path);
+        for ( i = 0; i < priv->filter_n_records; i++ )
             do_list_model_record_free(priv->filter_records[i]);
-        }
         gtk_tree_path_free(path);
         g_free(priv->filter_records);
         g_strfreev(priv->filter_lexems);
@@ -1004,7 +1004,6 @@ gboolean do_list_model_set_filter(DoListModel *model, JsonNode *node)
 #endif
         array = json_object_get_array_member(obj, "items");
         priv->filter_n_records = json_array_get_length(array);
-        //priv->n_records = 50;//fix me
         priv->filter_records = (DoListModelRecord**) g_new0(gpointer, priv->filter_n_records);
         for ( i = 0; i < priv->filter_n_records; i++ ) {
             DoListModelRecord *record;

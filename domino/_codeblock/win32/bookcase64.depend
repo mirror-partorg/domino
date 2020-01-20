@@ -288,7 +288,7 @@
 	"do_client.h"
 	<json-glib/json-glib.h>
 
-1579503535 source:c:\var\git\domino\domino\src\bookcase\do_list_view.c
+1579517358 source:c:\var\git\domino\domino\src\bookcase\do_list_view.c
 	"do_list_view.h"
 	"do_list_model.h"
 	"do_tree_view.h"
@@ -298,7 +298,7 @@
 	"do_view_actions.h"
 	"domino.h"
 
-1579486768 source:c:\var\git\domino\domino\src\bookcase\do_list_model.c
+1579517600 source:c:\var\git\domino\domino\src\bookcase\do_list_model.c
 	"do_list_model.h"
 	"do_client.h"
 	<time.h>
