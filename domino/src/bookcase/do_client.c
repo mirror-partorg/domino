@@ -804,23 +804,41 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 		JsonObject *obj;
 		gssize length;
 		gboolean needfree = FALSE;
+		gboolean archived;
+		gboolean err;
 		gchar *out = NULL;
 
-
+        parser = NULL;
 		if ( archive ) {
-            if ( !decompress(msg->response_body->data, msg->response_body->length, &out, &length) )
+            archived = TRUE;
+            if ( msg->response_body->length < 2048 ) { // check for error
+                out = (gchar*)msg->response_body->data;
+                length = msg->response_body->length;
+                parser = json_parser_new();
+                json_parser_load_from_data(parser, out, length, &error);
+                if ( error ) {
+                    g_error_free(error);
+                    g_object_unref(parser);
+                    parser = NULL;
+                    error = NULL;
+                }
+                else
+                    archived = FALSE;
+            }
+            if ( archived && !decompress(msg->response_body->data, msg->response_body->length, &out, &length) )
                 return NULL;
 		}
 		else {
 			out = (gchar*)msg->response_body->data;
 			length = msg->response_body->length;
 		}
-		parser = json_parser_new();
-		json_parser_load_from_data(parser, out, length, &error);
-
-		if ( error ) {
-			g_error ("Unable to parse %s\n", error->message);
-			g_error_free (error);
+		if ( !parser ) {
+            parser = json_parser_new();
+            json_parser_load_from_data(parser, out, length, &error);
+            if ( error ) {
+                g_error ("Unable to parse %s\n", error->message);
+                g_error_free (error);
+            }
 		}
 		res = json_parser_get_root (parser);
 		if ( res ) {
@@ -828,19 +846,22 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 			if ( obj ) {
 				if ( json_object_has_member(obj, "error") ) {
                     g_warning("Error from %s message: %s\n", soup_uri_to_string(soup_message_get_uri(msg),TRUE), json_object_get_string_member(obj, "error"));
-
+                    g_object_unref(parser);
+                    res = NULL;
 				}
-				if ( json_object_has_member(obj, "cachevalid") &&
-				     json_object_get_int_member(obj, "cachevalid") == 1 ) {
-					g_object_unref (parser);
-					if ( callback ) {
-						callback(cache, data);
-					}
-					if ( needfree ) g_free(out);
-                    return cache;
+				if ( res ) {
+                    if ( json_object_has_member(obj, "cachevalid") &&
+                         json_object_get_int_member(obj, "cachevalid") == 1 ) {
+                        g_object_unref (parser);
+                        if ( callback ) {
+                            callback(cache, data);
+                        }
+                        if ( needfree ) g_free(out);
+                        return cache;
+                    }
 				}
 			}
-			if ( key1 )
+			if ( res && key1 )
                 do_client_update_cache(client, key1, parser, NULL, out, length);
 		}
         if ( needfree ) g_free(out);
@@ -918,6 +939,10 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
     while ( name != NULL ) {
         value = va_arg(args, gchar*);
         if ( !g_strcmp0(name, "body") ) {
+            FILE *f;//fix me
+            f = fopen("c:/temp/sad.txt","w+");
+            fwrite(value,strlen(value),1,f);
+            fclose(f);
             body = value;
         }
         else {
@@ -936,6 +961,10 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
     }
 	SoupSession *session;
 	SoupMessage *msg;
+    FILE *f;//fix me
+    f = fopen("c:/temp/sadurl.txt","w+");
+    fwrite(url,strlen(url),1,f);
+    fclose(f);
 
 	//g_print("start message key %s\n", key);//debug it
 	if ( !callback ) {

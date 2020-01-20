@@ -1,0 +1,16 @@
+
+LDFLAGS = $(LIBDO) $(LIBPSQL) $(LIBICONV) $(LIBWINSOCK)  
+CFLAGS = -D_REENTRANT  -DNOCORRECTNDS -DDEBUG_BTI -DDEBUG1  
+
+SRCS = domino.c do_accept.c do_action.c do_alias.c do_balance.c do_config.c \
+       do_doctype.c do_extended.c do_misc.c do_protocol.c do_rz_info.c r3_expr.c \
+       real_in_words.c report.c meta_alias.c domino_action.c \
+       markup.c \
+       $(misc)/btrapi.c $(misc)/iconv_.c $(misc)/csv_util.c $(misc)/utf8.c
+
+VER = 1
+NAME = libdomino.so
+DLL  = domino.dll
+
+
+include ../../library.mak

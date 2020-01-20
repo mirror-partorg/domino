@@ -7,6 +7,7 @@
 #include "do_window.h"
 #include "do_client.h"
 
+#define APPLICATION_ID "com.glekar.bookcase"
 
 G_BEGIN_DECLS
 
@@ -51,8 +52,7 @@ void             do_application_set_cache(DoApplication *app, const gchar *key, 
 JsonNode        *do_application_get_cache(DoApplication *app, const gchar *key, GDateTime  **time);
 gboolean         do_application_settings(DoApplication *app);
 GObject         *do_application_get_client(DoApplication *app);
-
-
+void do_application_log_func(const gchar *log_domain, GLogLevelFlags log_flags, const gchar *msg, gpointer user_data);
 
 G_END_DECLS
 

@@ -1,0 +1,3 @@
+
+include ../../common.mak.i686
+include Makefile.in

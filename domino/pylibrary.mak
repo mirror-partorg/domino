@@ -42,13 +42,10 @@ compile:
 		for f in `cat var/files.lst` ; \
 		do \
 			n=$(DIR_TMP)/$$(basename $$f).o.$$ver ; \
-			echo $$f; \
-			echo $$n; \
-			if [[ 1 -eq 1 ]] ; \
+			if [[ $$f -nt $$n ]] ; \
 			then \
 				echo $$f ; \
-				m="1" ; \
-				echo "$(CC)  -c $$f -shared -fPIC -Wall $(PYTHON_CFLAGS_3) $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) $(PYTHON_LIBS_3) -o $$n"  || exit 1; \
+				$(CC)  -c $$f -shared -fPIC -Wall $(PYTHON_CFLAGS_3) $(AM_FLAGS) $(CFLAGS) $(OPT_FLAGS) $(PYTHON_LIBS_3) -o $$n  || exit 1; \
 			fi ; \
 		done ; \
 		if [[ "$$m" == "1" || ! -f $(NAME)-$$ver ]] ; \

@@ -7,6 +7,6 @@
 #else
 #define PACK_STRUCT __attribute__((gcc_struct, packed))
 #endif
-#endif
+#endif // PACK_STRUCT
 
 #endif

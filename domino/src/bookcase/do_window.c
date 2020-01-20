@@ -570,9 +570,12 @@ static gboolean do_window_external_search(DoWindow *window)
     if ( gtk_widget_is_focus(GTK_WIDGET(priv->entry)) ) {
         text = gtk_entry_get_text(GTK_ENTRY(priv->entry));
         if ( text && text[0] != '\0' ) {
-        GtkApplication *app = gtk_window_get_application(
+            GtkApplication *app = gtk_window_get_application(
                     GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(window))));
-            do_application_request2_async(DO_APPLICATION(app), "GET", "Search", NULL, 0, (GFunc)do_window_external_search_end, window, "string", text, "name", "goods", NULL);
+            gchar *buf;
+            buf = g_strdup_printf("{\"string\":\"%s\"}", text);
+            do_application_request2_async(DO_APPLICATION(app), "POST", "Search", NULL, 0, (GFunc)do_window_external_search_end, window, "body", buf, "name", "goods", NULL);
+            g_free(buf);
         }
     }
     return FALSE;

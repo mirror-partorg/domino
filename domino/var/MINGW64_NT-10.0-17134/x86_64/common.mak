@@ -3,15 +3,15 @@ LINK= g++.exe
 TMP_DIR=C:/var/work/var/MINGW64_NT-10.0-17134/x86_64
 MAKE=make
 AM_MAKEFLAGS=CC=gcc
-PYTHON_VERSION_3=3.8
+PYTHON_VERSION_3=3.7
 AM_FLAGS=-DDOMINO78 \
 -DWINSOCK \
 -I../../include \
 -I../../var/MINGW64_NT-10.0-17134/x86_64 \
--IC:/Users/rishes/Local/Programs/Python/Python38/include  \
--D_WIN32 -DBTI_WIN_32  \
+-IC:/Users/rishes/Local/Programs/Python/Python37/include  \
+-D_WIN32 -DBTI_WIN_64 \
 -L${TMP_DIR}/.libs \
--L"C:\Program Files\Actian\Zen\bin"  \
+-L"C:/Program Files/Actian/Zen/bin"  \
 -DZLIB \
 -DBINARY_UPDATE 
 OPT_FLAGS=-s -O2
@@ -32,7 +32,7 @@ LIBWEBKIT=-lwebkitgtk-3.0 -lsoup-2.4 -llibjavascriptcoregtk-3.0
 LIBGTK=-lgtk-3 -lgobject-2.0 -lglib-2.0 -lgdk-3 -lpango-1.0 -lgthread-2.0 -lgdk_pixbuf-2.0 -lgio-2.0 -lrsvg-2 
 LIBGLIB=-lglib-2.0
 LIBLOUDMOUTH=-lloudmouth-1
-PYTHON_LIBS_3=-lpython38 -LC:/Users/rishes/Local/Programs/Python/Python38
+PYTHON_LIBS_3=-lpython37 -LC:/Users/rishes/Local/Programs/Python/Python37
 WINAPP=-mms-bitfields -Wl,-subsystem,windows
 WINMM=-lwinmm
 MAKEDLL=1

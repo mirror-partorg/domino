@@ -441,7 +441,7 @@ static gboolean do_list_view_fill_first(DoListView *view)
     gint i;
     gint code_to_col = -1, sort_to_col = -1, key_to_col = -1;
     g_return_val_if_fail (priv->fields != NULL, FALSE);
-    fields = g_new0(gchar, g_slist_length(priv->fields));
+    fields = g_new0(gchar, g_slist_length(priv->fields) + 1);
     for ( i = 0, l = priv->fields; l; l=l->next,i++ ) {
         DoListViewField *field;
         field = l->data;
@@ -1227,7 +1227,7 @@ static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, Gtk
                         }
                         else {
                             if ( select )
-                                markup = g_strdup_printf("%s%s<span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span>", j ? buf : "", bufv[j],
+                                markup = g_strdup_printf("%s%s<b><span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", bufv[j],
                                          bg_red, bg_green, bg_blue, fg_red, fg_green, fg_blue, lexems[i]);
                             else
                                 markup = g_strdup_printf("%s%s<b><span foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", bufv[j], bg_red_s, bg_green_s, bg_blue_s, lexems[i]);

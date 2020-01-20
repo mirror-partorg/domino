@@ -610,3 +610,24 @@ GObject *do_application_get_client(DoApplication *app)
 	priv = DO_APPLICATION_GET_PRIVATE(app);
     return priv->client;
 }
+void do_application_log_func(const gchar *log_domain, GLogLevelFlags log_flags, const gchar *msg, gpointer user_data)
+{
+    int level;
+    if ( log_flags & (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_FLAG_RECURSION | G_LOG_FLAG_FATAL) )
+        level = LOG_ERR;
+    else if ( log_flags & G_LOG_LEVEL_WARNING )
+        level = LOG_WARNING;
+    else
+        level = LOG_INFO;
+    if ( msg && strlen(msg) > 0 && msg[strlen(msg)-1] == '\n' ) {
+        gchar *buf;
+        buf = g_strdup(msg);
+        buf[strlen(buf) - 1] = '\0';
+        do_log(level, buf);
+        g_free(buf);
+    }
+    else
+        do_log(level, msg);
+    g_print(msg);
+}
+
