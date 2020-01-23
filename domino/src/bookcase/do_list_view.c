@@ -56,10 +56,10 @@ static	gboolean	do_list_view_close_request	(DoView *view);
 //static 	gboolean	do_list_view_can_do_copy	(DoView *view);
 static 	void		do_list_view_do_edit		(DoView *view, const gchar *tab);
 static 	gboolean	do_list_view_can_do_edit	(DoView *view, const gchar *tab);
-//static 	void		do_list_view_do_apply		(DoView *view);
-//static 	gboolean	do_list_view_can_do_apply	(DoView *view);
-//static 	void		do_list_view_do_unapply		(DoView *view);
-//static 	gboolean	do_list_view_can_do_unapply	(DoView *view);
+static 	void		do_list_view_do_apply		(DoView *view);
+static 	gboolean	do_list_view_can_do_apply	(DoView *view);
+static 	void		do_list_view_do_unapply		(DoView *view);
+static 	gboolean	do_list_view_can_do_unapply	(DoView *view);
 //static 	void		do_list_view_do_mail_send	(DoView *view);
 //static 	gboolean	do_list_view_can_do_mail_send (DoView *view);
 //static 	void		do_list_view_do_popup		(DoView *view, GdkEventButton* event);
@@ -177,10 +177,10 @@ static void do_list_view_view_init(DoViewIface *iface)
 	//iface->can_do_copy = do_list_view_can_do_copy;
 	iface->do_edit = do_list_view_do_edit;
 	iface->can_do_edit = do_list_view_can_do_edit;
-	//iface->do_apply = do_list_view_do_apply;
-	//iface->can_do_apply = do_list_view_can_do_apply;
-	//iface->do_unapply = do_list_view_do_unapply;
-	//iface->can_do_unapply = do_list_view_can_do_unapply;
+	iface->do_apply = do_list_view_do_apply;
+	iface->can_do_apply = do_list_view_can_do_apply;
+	iface->do_unapply = do_list_view_do_unapply;
+	iface->can_do_unapply = do_list_view_can_do_unapply;
 	//iface->do_mail_send = do_list_view_do_mail_send;
 	//iface->can_do_mail_send = do_list_view_can_do_mail_send;
 	//iface->do_popup = do_list_view_do_popup;
@@ -675,7 +675,7 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
         else if ( !g_strcmp0(align, "right") )
             field->align = PANGO_ALIGN_RIGHT;
     }
-    if ( !priv->userfields || strchr(priv->userfields, field->short_) ) { //todo
+    if ( !priv->userfields || strchr(priv->userfields, field->short_) ) {
         priv->fields = g_slist_append(priv->fields, field);
         n = g_slist_length(priv->fields) + DO_LIST_MODEL_N_KEYS - 1;
         if ( field->type == 1 )
@@ -907,6 +907,14 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                 return TRUE;
             }
          }
+    }
+    else if ((event->state & mask) == GDK_SHIFT_MASK) {
+#if !GTK_CHECK_VERSION(3,12,0)
+         if ( event->keyval == GDK_KEY_Delete ) {
+            event->keyval = GDK_KEY_Delete;
+            return TRUE;
+         }
+#endif
     }
     return FALSE;
 }
@@ -1302,4 +1310,58 @@ void do_list_view_external_search(DoListView *view, JsonNode *node)
     gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(priv->tree_view), node == NULL);
     if ( !do_list_model_full_readed(DO_LIST_MODEL(priv->model), NULL) )
         do_list_model_set_filter(DO_LIST_MODEL(priv->model), node);
+}
+static void do_list_view_mark_(DoListView *view, const gchar *mark)
+{
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
+    GtkTreePath *path;
+    gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path, NULL);
+    if ( path ) {
+        GtkTreeIter iter = {0,};
+        GValue value = {0,};
+        JsonNode *node;
+        gtk_tree_model_get_iter(priv->model, &iter, path);
+        gtk_tree_model_get_value(priv->model, &iter, DO_LIST_MODEL_COL_CODE, &value);
+        node = do_client_request2(priv->client, "POST", "SetOrder", NULL, 0,
+                                    "name", priv->name,
+                                    "code", g_value_get_string(&value),
+                                    "mark", mark,
+                                    // ""
+                                     NULL);
+        do_list_model_record_update(DO_LIST_MODEL(priv->model), &iter);
+
+        gtk_tree_path_free(path);
+    }
+}
+static void do_list_view_do_apply(DoView *view)
+{
+    do_list_view_mark_(DO_LIST_VIEW(view), "1");
+}
+static gboolean	do_list_view_can_do_apply(DoView *view)
+{
+    gboolean retval = FALSE;
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
+    GtkTreePath *path;
+    gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path, NULL);
+    if ( path ) {
+        retval = TRUE;
+        gtk_tree_path_free(path);
+    }
+    return retval;
+}
+static void	do_list_view_do_unapply(DoView *view)
+{
+    do_list_view_mark_(DO_LIST_VIEW(view), "0");
+}
+static gboolean	do_list_view_can_do_unapply(DoView *view)
+{
+    gboolean retval = FALSE;
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
+    GtkTreePath *path;
+    gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path, NULL);
+    if ( path ) {
+        retval = TRUE;
+        gtk_tree_path_free(path);
+    }
+    return retval;
 }

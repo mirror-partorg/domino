@@ -49,6 +49,8 @@ void do_list_model_full_read(DoListModel *tree_model);
 gboolean do_list_model_full_readed(DoListModel *tree_model, guint *percent);
 void do_list_model_set_updated(DoListModel *tree_model, gboolean updated);
 
+gboolean do_list_model_record_update(DoListModel *tree_model, GtkTreeIter  *iter);
+
 gboolean do_list_model_record_is_relevant(DoListModel *tree_model, GtkTreeIter  *iter);
 gboolean do_list_model_find_record_by_sort(DoListModel *model, GtkTreeIter *iter, const gchar *text);
 gboolean do_list_model_find_record_by_code(DoListModel *model, GtkTreeIter *iter, const gchar *text);

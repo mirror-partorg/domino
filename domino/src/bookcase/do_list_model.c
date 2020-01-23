@@ -1102,3 +1102,32 @@ void do_list_model_set_updated(DoListModel *tree_model, gboolean updated)
     DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(tree_model);
     priv->updated = updated;
 }
+gboolean do_list_model_record_update(DoListModel *tree_model, GtkTreeIter  *iter)
+{
+    DoListModelRecord  *record;
+    //DoListModel   *do_list_model;
+    DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(tree_model);
+
+    g_return_val_if_fail(DO_IS_LIST_MODEL (tree_model), FALSE);
+    g_return_val_if_fail (iter != NULL, FALSE);
+
+    time_t  now;
+    now = time(NULL);
+
+    record = (DoListModelRecord*) iter->user_data;
+    JsonNode *node;
+    gchar *cache_key;
+
+    cache_key = g_strdup_printf("RECORD.%s.%s", priv->name, record->key);
+    node = do_client_request2(priv->client, "GET", "GetRecord", cache_key, DO_CLIENT_FLAGS_NOCACHE,
+                                      "key", record->key, "fields", priv->fields, NULL);
+    g_free(cache_key);
+    if ( node ) {
+        GtkTreePath *path;
+        do_list_model_record_update_(DO_LIST_MODEL(tree_model), record, node, now);
+        path = gtk_tree_model_get_path(GTK_TREE_MODEL(tree_model), iter);
+        gtk_tree_model_row_changed(GTK_TREE_MODEL(tree_model), path, iter);
+        gtk_tree_path_free(path);
+    }
+    return node != NULL;
+}

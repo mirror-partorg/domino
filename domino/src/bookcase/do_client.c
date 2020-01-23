@@ -926,7 +926,7 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
 	}
 
 	gchar *url;
-	gchar *body = NULL;
+	gchar *body = "{}";
     url = g_strdup_printf("%s/%s?store=%s", priv->url, func, priv->store);
     if ( flags & DO_CLIENT_FLAGS_ARCHIVE ) {
         gchar *buf;
@@ -970,7 +970,7 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
 	if ( !callback ) {
         session = soup_session_new();
         msg = soup_message_new(method, url);
-        if ( !g_strcmp0(method, "POST") && body ) {
+        if ( !g_strcmp0(method, "POST") ) {
             SoupMessageBody *rbody;
             rbody = soup_message_body_new();
             soup_message_body_append(rbody, SOUP_MEMORY_COPY, body, strlen(body));

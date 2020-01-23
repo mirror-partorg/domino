@@ -494,6 +494,13 @@ static void do_application_add_acceletarors(GApplication *app)
     add_accelerator(DO_APPLICATION(app), "common-actions.Close", "<Primary>W");
     add_accelerator(DO_APPLICATION(app), "common-actions.Quit", "<Primary>Q");
     add_accelerator(DO_APPLICATION(app), "common-actions.Search", "<Primary>L");
+#ifdef CASH
+    add_accelerator(DO_APPLICATION(app), "view-actions.ApplyAction", "F12");
+    add_accelerator(DO_APPLICATION(app), "view-actions.UndoApplyAction", "F2");
+#else
+    add_accelerator(DO_APPLICATION(app), "view-actions.ApplyAction", "<Shift>Return");
+    add_accelerator(DO_APPLICATION(app), "view-actions.UndoApplyAction", "<Shift>Insert");
+#endif
 #endif
 }
 gboolean do_application_settings(DoApplication *app)
