@@ -8,8 +8,8 @@
 #include "do_ads_view.h"
 #include "do_obj_view.h"
 #include "do_list_view.h"
+#include "do_html_view.h"
 #include "do_application.h"
-
 
 static void do_common_actions_do_profile_view(GSimpleAction *action,
                      GVariant      *parameter,
@@ -18,6 +18,9 @@ static void do_common_actions_do_setting_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
 static void do_common_actions_do_ads_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
+static void do_common_actions_do_html_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
 static void do_common_actions_do_goods_view(GSimpleAction *action,
@@ -61,6 +64,8 @@ GActionEntry entries[] =
 	{ "ObjView", do_common_actions_do_obj_view, "s" },
 	{ "ProfileView", do_common_actions_do_profile_view, },
 	{ "SettingView", do_common_actions_do_setting_view, },
+	{ "HtmlView", do_common_actions_do_html_view, },
+	{ "HtmlViewGo", do_common_actions_do_html_view, "s" },
 	{ "Next", do_common_actions_next },
 	{ "Previous", do_common_actions_previous },
 	{ "Quit", do_common_actions_quit },
@@ -142,6 +147,30 @@ static void do_common_actions_do_ads_view(GSimpleAction *action,
     g_return_if_fail (nb != NULL);
 
     view = DO_VIEW(do_ads_view_new());
+    do_end_long_operation(GTK_WIDGET(window));
+    if ( !view )
+        return;
+    do_notebook_add_tab(DO_NOTEBOOK(nb), view, -1, TRUE);
+    gtk_widget_grab_focus(GTK_WIDGET(nb));
+    do_view_do_grab_focus(DO_VIEW(view));
+}
+static void do_common_actions_do_html_view(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       window)
+{
+    GtkNotebook *nb;
+    DoView *view;
+    const gchar *uri = NULL;
+
+    nb = GTK_NOTEBOOK (do_window_get_notebook (window));
+    g_return_if_fail (nb != NULL);
+    if ( parameter )
+        uri = g_variant_get_string(parameter, NULL);
+
+    view = DO_VIEW(do_html_view_new());
+    if ( !uri )
+        DOMINO_LOCAL_GET("main", "websearch", &uri, NULL);//todo
+    g_object_set(view, "uri", uri, "title", "Поиск в интернет", NULL);
     do_end_long_operation(GTK_WIDGET(window));
     if ( !view )
         return;

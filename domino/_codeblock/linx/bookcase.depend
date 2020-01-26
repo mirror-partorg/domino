@@ -2959,13 +2959,13 @@
 	<gtk/gtk.h>
 	"do_window.h"
 
-1579344572 /home/mirror/work/git/domino/domino/src/bookcase/do_window.h
+1580017553 /home/mirror/work/git/domino/domino/src/bookcase/do_window.h
 	<glib-object.h>
 	<glib.h>
 	<gtk/gtk.h>
 	"do_view.h"
 
-1579415829 source:/home/mirror/work/git/domino/domino/src/bookcase/do_application.c
+1580017568 source:/home/mirror/work/git/domino/domino/src/bookcase/do_application.c
 	"do_application.h"
 	"domino.h"
 	"do_client.h"
@@ -2975,7 +2975,7 @@
 	"do_common_actions.h"
 	"do_view_actions.h"
 
-1579332297 /home/mirror/work/git/domino/domino/src/bookcase/do_application.h
+1580017061 /home/mirror/work/git/domino/domino/src/bookcase/do_application.h
 	<gtk/gtk.h>
 	<json-glib/json-glib.h>
 	"do_window.h"
@@ -2993,11 +2993,11 @@
 	<glib.h>
 	<gtk/gtk.h>
 
-1570076968 /home/mirror/work/git/domino/domino/src/bookcase/do_html_view.h
+1566382684 /home/mirror/work/git/domino/domino/src/bookcase/do_html_view.h
 	<gtk/gtk.h>
 	"do_view.h"
 
-1579344563 source:/home/mirror/work/git/domino/domino/src/bookcase/do_common_actions.c
+1580032739 source:/home/mirror/work/git/domino/domino/src/bookcase/do_common_actions.c
 	"do_common_actions.h"
 	"do_utilx.h"
 	"do_window.h"
@@ -3008,6 +3008,7 @@
 	"do_ads_view.h"
 	"do_obj_view.h"
 	"do_list_view.h"
+	"do_html_view.h"
 	"do_application.h"
 
 1574339834 /home/mirror/work/git/domino/domino/src/bookcase/do_common_actions.h
@@ -3056,7 +3057,7 @@
 	<string.h>
 	<gdk/gdkkeysyms.h>
 
-1579407997 source:/home/mirror/work/git/domino/domino/src/bookcase/do_window.c
+1580033678 source:/home/mirror/work/git/domino/domino/src/bookcase/do_window.c
 	"do_window.h"
 	"do_view_actions.h"
 	"do_common_actions.h"
@@ -3112,7 +3113,7 @@
 	<stdio.h>
 	<unistd.h>
 
-1574339834 /home/mirror/work/git/domino/domino/include/def.h
+1579783893 /home/mirror/work/git/domino/domino/include/def.h
 
 1574339834 /home/mirror/work/git/domino/domino/include/win32/syslog.h
 	<stdio.h>
@@ -3125,7 +3126,7 @@
 1574339834 /home/mirror/work/git/domino/domino/src/bookcase/do_config.h
 	<dolib.h>
 
-1579415106 source:/home/mirror/work/git/domino/domino/src/bookcase/domino.c
+1580033623 source:/home/mirror/work/git/domino/domino/src/bookcase/domino.c
 	"domino.h"
 	"version.h"
 	"do_config.h"
@@ -3197,17 +3198,19 @@
 1537218756 /usr/include/json-glib-1.0/json-glib/json-gvariant.h
 	<json-glib/json-types.h>
 
-1579415631 /home/mirror/work/git/domino/domino/src/bookcase/do_client.h
+1579916795 /home/mirror/work/git/domino/domino/src/bookcase/do_client.h
 	<gtk/gtk.h>
 	<json-glib/json-glib.h>
 
-1574339834 source:/home/mirror/work/git/domino/domino/src/bookcase/bookcase.c
+1579783893 source:/home/mirror/work/git/domino/domino/src/bookcase/bookcase.c
 	"version.h"
 	"do_application.h"
+	<dolib.h>
 
-1579424069 source:/home/mirror/work/git/domino/domino/src/bookcase/do_client.c
+1580017953 source:/home/mirror/work/git/domino/domino/src/bookcase/do_client.c
 	"do_client.h"
 	"config.h"
+	"do_application.h"
 	<libsoup/soup.h>
 	<stdarg.h>
 	<stdlib.h>
@@ -3460,7 +3463,7 @@
 	<gtk/gtk.h>
 	"do_view.h"
 
-1579332316 source:/home/mirror/work/git/domino/domino/src/bookcase/do_obj_view.c
+1580025044 source:/home/mirror/work/git/domino/domino/src/bookcase/do_obj_view.c
 	"do_obj_view.h"
 	"do_tree_view.h"
 	"do_application.h"
@@ -3468,7 +3471,7 @@
 	"do_utilx.h"
 	<string.h>
 
-1579424191 source:/home/mirror/work/git/domino/domino/src/bookcase/do_list_view.c
+1580025015 source:/home/mirror/work/git/domino/domino/src/bookcase/do_list_view.c
 	"do_list_view.h"
 	"do_list_model.h"
 	"do_tree_view.h"
@@ -3484,13 +3487,473 @@
 	"do_client.h"
 	<json-glib/json-glib.h>
 
-1579422748 source:/home/mirror/work/git/domino/domino/src/bookcase/do_list_model.c
+1579916984 source:/home/mirror/work/git/domino/domino/src/bookcase/do_list_model.c
 	"do_list_model.h"
 	"do_client.h"
 	<time.h>
 
-1579422630 /home/mirror/work/git/domino/domino/src/bookcase/do_list_model.h
+1579784631 /home/mirror/work/git/domino/domino/src/bookcase/do_list_model.h
 	<gtk/gtk.h>
 	"do_client.h"
 	<json-glib/json-glib.h>
+
+1580033049 source:/home/mirror/work/git/domino/domino/src/bookcase/do_html_view.c
+	"do_html_view.h"
+	"do_view.h"
+	"do_utilx.h"
+	"do_view_actions.h"
+	"do_common_actions.h"
+	"domino.h"
+	<webkit2/webkit2.h>
+	<webkit/webkit.h>
+	<libsoup/soup.h>
+	<string.h>
+	<unistd.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/webkit2.h
+	<webkit2/WebKitApplicationInfo.h>
+	<webkit2/WebKitAuthenticationRequest.h>
+	<webkit2/WebKitAutomationSession.h>
+	<webkit2/WebKitBackForwardList.h>
+	<webkit2/WebKitBackForwardListItem.h>
+	<webkit2/WebKitContextMenu.h>
+	<webkit2/WebKitContextMenuActions.h>
+	<webkit2/WebKitContextMenuItem.h>
+	<webkit2/WebKitCookieManager.h>
+	<webkit2/WebKitCredential.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitDeviceInfoPermissionRequest.h>
+	<webkit2/WebKitDownload.h>
+	<webkit2/WebKitEditingCommands.h>
+	<webkit2/WebKitEditorState.h>
+	<webkit2/WebKitEnumTypes.h>
+	<webkit2/WebKitError.h>
+	<webkit2/WebKitFaviconDatabase.h>
+	<webkit2/WebKitColorChooserRequest.h>
+	<webkit2/WebKitFileChooserRequest.h>
+	<webkit2/WebKitFindController.h>
+	<webkit2/WebKitFormSubmissionRequest.h>
+	<webkit2/WebKitGeolocationManager.h>
+	<webkit2/WebKitGeolocationPermissionRequest.h>
+	<webkit2/WebKitHitTestResult.h>
+	<webkit2/WebKitInstallMissingMediaPluginsPermissionRequest.h>
+	<webkit2/WebKitJavascriptResult.h>
+	<webkit2/WebKitMimeInfo.h>
+	<webkit2/WebKitNavigationAction.h>
+	<webkit2/WebKitNavigationPolicyDecision.h>
+	<webkit2/WebKitNetworkProxySettings.h>
+	<webkit2/WebKitNotification.h>
+	<webkit2/WebKitNotificationPermissionRequest.h>
+	<webkit2/WebKitOptionMenu.h>
+	<webkit2/WebKitOptionMenuItem.h>
+	<webkit2/WebKitPermissionRequest.h>
+	<webkit2/WebKitPlugin.h>
+	<webkit2/WebKitPrintCustomWidget.h>
+	<webkit2/WebKitPrintOperation.h>
+	<webkit2/WebKitResponsePolicyDecision.h>
+	<webkit2/WebKitScriptDialog.h>
+	<webkit2/WebKitSecurityManager.h>
+	<webkit2/WebKitSecurityOrigin.h>
+	<webkit2/WebKitSettings.h>
+	<webkit2/WebKitURIRequest.h>
+	<webkit2/WebKitURIResponse.h>
+	<webkit2/WebKitURISchemeRequest.h>
+	<webkit2/WebKitURIUtilities.h>
+	<webkit2/WebKitUserContent.h>
+	<webkit2/WebKitUserContentFilterStore.h>
+	<webkit2/WebKitUserContentManager.h>
+	<webkit2/WebKitUserMediaPermissionRequest.h>
+	<webkit2/WebKitVersion.h>
+	<webkit2/WebKitWebContext.h>
+	<webkit2/WebKitWebInspector.h>
+	<webkit2/WebKitWebResource.h>
+	<webkit2/WebKitWebView.h>
+	<webkit2/WebKitWebViewBase.h>
+	<webkit2/WebKitWebViewSessionState.h>
+	<webkit2/WebKitWebsiteData.h>
+	<webkit2/WebKitWebsiteDataManager.h>
+	<webkit2/WebKitWindowProperties.h>
+	<webkit2/WebKitAutocleanups.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitApplicationInfo.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1573030541 /usr/include/webkitgtk-4.0/webkit2/WebKitDefines.h
+	<glib.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitAuthenticationRequest.h
+	<gtk/gtk.h>
+	<webkit2/WebKitCredential.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitCredential.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitAutomationSession.h
+	<glib-object.h>
+	<webkit2/WebKitApplicationInfo.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitBackForwardList.h
+	<glib-object.h>
+	<webkit2/WebKitBackForwardListItem.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitBackForwardListItem.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitContextMenu.h
+	<glib-object.h>
+	<webkit2/WebKitContextMenuItem.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitForwardDeclarations.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitContextMenuItem.h
+	<gtk/gtk.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitContextMenu.h>
+	<webkit2/WebKitContextMenuActions.h>
+	<webkit2/WebKitForwardDeclarations.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitContextMenuActions.h
+	<glib.h>
+
+1573030541 /usr/include/webkitgtk-4.0/webkit2/WebKitForwardDeclarations.h
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitCookieManager.h
+	<gio/gio.h>
+	<glib-object.h>
+	<libsoup/soup.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitDeviceInfoPermissionRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitDownload.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitForwardDeclarations.h>
+	<webkit2/WebKitURIRequest.h>
+	<webkit2/WebKitURIResponse.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitURIRequest.h
+	<glib-object.h>
+	<libsoup/soup.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitURIResponse.h
+	<gio/gio.h>
+	<libsoup/soup.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitEditingCommands.h
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitEditorState.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1573560929 /usr/include/webkitgtk-4.0/webkit2/WebKitEnumTypes.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitError.h
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitFaviconDatabase.h
+	<cairo.h>
+	<gio/gio.h>
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitColorChooserRequest.h
+	<gtk/gtk.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitFileChooserRequest.h
+	<gtk/gtk.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitFindController.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitForwardDeclarations.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitFormSubmissionRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitGeolocationManager.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitGeolocationPermissionRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitHitTestResult.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitInstallMissingMediaPluginsPermissionRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitJavascriptResult.h
+	<JavaScriptCore/JSBase.h>
+	<jsc/jsc.h>
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992787 /usr/include/webkitgtk-4.0/JavaScriptCore/JSBase.h
+	<stdbool.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/jsc.h
+	<jsc/JSCClass.h>
+	<jsc/JSCContext.h>
+	<jsc/JSCDefines.h>
+	<jsc/JSCException.h>
+	<jsc/JSCOptions.h>
+	<jsc/JSCValue.h>
+	<jsc/JSCVersion.h>
+	<jsc/JSCVirtualMachine.h>
+	<jsc/JSCWeakValue.h>
+	<jsc/JSCAutocleanups.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCClass.h
+	<glib-object.h>
+	<jsc/JSCDefines.h>
+	<jsc/JSCValue.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCDefines.h
+	<glib.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCValue.h
+	<glib-object.h>
+	<jsc/JSCDefines.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCContext.h
+	<glib-object.h>
+	<jsc/JSCDefines.h>
+	<jsc/JSCException.h>
+	<jsc/JSCClass.h>
+	<jsc/JSCValue.h>
+	<jsc/JSCVirtualMachine.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCException.h
+	<glib-object.h>
+	<jsc/JSCDefines.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCVirtualMachine.h
+	<glib-object.h>
+	<jsc/JSCDefines.h>
+	<jsc/JSCValue.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCOptions.h
+	<glib-object.h>
+	<jsc/JSCDefines.h>
+
+1573560929 /usr/include/webkitgtk-4.0/jsc/JSCVersion.h
+	<jsc/JSCDefines.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCWeakValue.h
+	<glib-object.h>
+	<jsc/JSCDefines.h>
+	<jsc/JSCValue.h>
+
+1566992787 /usr/include/webkitgtk-4.0/jsc/JSCAutocleanups.h
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitMimeInfo.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitNavigationAction.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitURIRequest.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitNavigationPolicyDecision.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitNavigationAction.h>
+	<webkit2/WebKitPolicyDecision.h>
+	<webkit2/WebKitURIRequest.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitPolicyDecision.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitNetworkProxySettings.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitNotification.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitForwardDeclarations.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitNotificationPermissionRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitOptionMenu.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitOptionMenuItem.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitOptionMenuItem.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitPermissionRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitPlugin.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitPrintCustomWidget.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<gtk/gtk.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitPrintOperation.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitForwardDeclarations.h>
+	<webkit2/WebKitWebView.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitWebView.h
+	<JavaScriptCore/JSBase.h>
+	<webkit2/WebKitAuthenticationRequest.h>
+	<webkit2/WebKitBackForwardList.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitColorChooserRequest.h>
+	<webkit2/WebKitEditorState.h>
+	<webkit2/WebKitFileChooserRequest.h>
+	<webkit2/WebKitFindController.h>
+	<webkit2/WebKitFormSubmissionRequest.h>
+	<webkit2/WebKitForwardDeclarations.h>
+	<webkit2/WebKitHitTestResult.h>
+	<webkit2/WebKitJavascriptResult.h>
+	<webkit2/WebKitNavigationAction.h>
+	<webkit2/WebKitNotification.h>
+	<webkit2/WebKitOptionMenu.h>
+	<webkit2/WebKitPermissionRequest.h>
+	<webkit2/WebKitPolicyDecision.h>
+	<webkit2/WebKitScriptDialog.h>
+	<webkit2/WebKitSettings.h>
+	<webkit2/WebKitURIRequest.h>
+	<webkit2/WebKitUserContentManager.h>
+	<webkit2/WebKitWebContext.h>
+	<webkit2/WebKitWebInspector.h>
+	<webkit2/WebKitWebResource.h>
+	<webkit2/WebKitWebViewBase.h>
+	<webkit2/WebKitWebViewSessionState.h>
+	<webkit2/WebKitWindowProperties.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitScriptDialog.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitSettings.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1567419315 /usr/include/webkitgtk-4.0/webkit2/WebKitUserContentManager.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitUserContent.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitUserContent.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1567504768 /usr/include/webkitgtk-4.0/webkit2/WebKitWebContext.h
+	<glib-object.h>
+	<webkit2/WebKitAutomationSession.h>
+	<webkit2/WebKitCookieManager.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitDownload.h>
+	<webkit2/WebKitFaviconDatabase.h>
+	<webkit2/WebKitGeolocationManager.h>
+	<webkit2/WebKitNetworkProxySettings.h>
+	<webkit2/WebKitSecurityManager.h>
+	<webkit2/WebKitURISchemeRequest.h>
+	<webkit2/WebKitWebsiteDataManager.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitSecurityManager.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitURISchemeRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitForwardDeclarations.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitWebsiteDataManager.h
+	<gio/gio.h>
+	<webkit2/WebKitCookieManager.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitWebsiteData.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitWebsiteData.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitWebInspector.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitWebViewBase.h>
+
+1573030541 /usr/include/webkitgtk-4.0/webkit2/WebKitWebViewBase.h
+	<gtk/gtk.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitWebResource.h
+	<glib-object.h>
+	<gio/gio.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitURIResponse.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitWebViewSessionState.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitWindowProperties.h
+	<glib-object.h>
+	<gtk/gtk.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitResponsePolicyDecision.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+	<webkit2/WebKitPolicyDecision.h>
+	<webkit2/WebKitURIResponse.h>
+	<webkit2/WebKitURIRequest.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitSecurityOrigin.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitURIUtilities.h
+	<glib.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitUserContentFilterStore.h
+	<gio/gio.h>
+	<webkit2/WebKitDefines.h>
+
+1566992792 /usr/include/webkitgtk-4.0/webkit2/WebKitUserMediaPermissionRequest.h
+	<glib-object.h>
+	<webkit2/WebKitDefines.h>
+
+1573560929 /usr/include/webkitgtk-4.0/webkit2/WebKitVersion.h
+	<webkit2/WebKitDefines.h>
+
+1573030543 /usr/include/webkitgtk-4.0/webkit2/WebKitAutocleanups.h
 

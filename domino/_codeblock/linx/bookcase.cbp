@@ -31,13 +31,13 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="`pkg-config gtk+-3.0 libsoup-2.4 json-glib-1.0 --cflags` -DDEBUG1" />
+			<Add option="`pkg-config gtk+-3.0 libsoup-2.4 json-glib-1.0 webkit2gtk-4.0 --cflags` -DDEBUG -DWEBKIT2" />
 			<Add option="-DUSE_GTK -DUSE_UTF8 -DNODOMINO -DEXPAT  -DWEBKIT2 -D_LINUX" />
 			<Add directory="../../include" />
 			<Add directory="../../src/bookcase" />
 		</Compiler>
 		<Linker>
-			<Add option="`pkg-config gtk+-3.0 json-glib-1.0 libsoup-2.4 --libs` -ldolib -lexpat -lsqlite3 -lz" />
+			<Add option="`pkg-config gtk+-3.0 json-glib-1.0 libsoup-2.4 webkit2gtk-4.0 --libs` -ldolib -lexpat -lsqlite3 -lz" />
 		</Linker>
 		<Unit filename="../../src/bookcase/bookcase.c">
 			<Option compilerVar="CC" />
@@ -64,6 +64,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/bookcase/do_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bookcase/do_html_view.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/bookcase/do_list_model.c">

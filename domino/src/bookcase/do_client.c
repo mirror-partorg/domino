@@ -1,6 +1,9 @@
 
 #include "do_client.h"
 #include "config.h"
+#ifdef DEBUG
+#include "do_application.h"
+#endif
 #include <libsoup/soup.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -13,10 +16,11 @@
 #define DO_TYPE_CLIENT_FLAGS do_client_flags_get_type()
 
 #define ZIP_BUFFER_SIZE 64*1024*8
-#define N_QUEUE 20
-#define N_QUEUE_RESERVED 10
-//#define N_QUEUE 1
-//#define N_QUEUE_RESERVED 0
+#define N_QUEUE 3
+#define N_QUEUE_FILO 5
+#define N_QUEUE_ALL 20
+#define QUEUE_FILO 1
+#define QUEUE_FIFO 1
 
 typedef struct _DoValue	DoValue;
 typedef struct _DoQueueItem	DoQueueItem;
@@ -48,12 +52,13 @@ struct _DoQueueItem
 	SoupSession *session;
 	SoupMessage *msg;
 	gboolean     archive;
-	gchar       *key1;
+	gchar       *key;
 	gboolean     canceled;
 	JsonNode    *cache;
 	gchar       *url;
 	gchar       *body;
 	gchar       *method;
+	gboolean     filo;
 };
 
 struct _DoClientPrivate
@@ -70,8 +75,8 @@ struct _DoClientPrivate
 	gchar       *cache_url;
 	gchar       *cache_store;
 	guint        source;
-	DoQueueItem *queue[N_QUEUE];
-	GSList      *wait_queue;
+	DoQueueItem *process[N_QUEUE];
+	GList       *queue[2];
 	guint        message_index;
 
 };
@@ -85,7 +90,7 @@ GType do_client_flags_get_type(void)
         static const GFlagsValue _do_client_flags_values[] = {
          { DO_CLIENT_FLAGS_ARCHIVE, "DO_CLIENT_FLAGS_ARCHIVE", "archive" },
 	     { DO_CLIENT_FLAGS_NOCACHE, "DO_CLIENT_FLAGS_NOCACHE", "nocache" },
-	     { DO_CLIENT_FLAGS_MAY_IGNORE, "DO_CLIENT_FLAGS_MAY_IGNORE", "may-ignore" },
+	     { DO_CLIENT_FLAGS_FILO, "DO_CLIENT_FLAGS_FILO", "first input last output" },
          { 0, NULL, NULL }
         };
         type = g_flags_register_static ("DoClientFlags", _do_client_flags_values);
@@ -157,6 +162,7 @@ static DoValue *do_value_new_from_parser(GDateTime *time, JsonParser *parser)
 #endif // DEBUG
 	return value;
 }
+static void do_client_queue_item_clear(DoQueueItem *item_queue);
 #ifdef DEBUG
 static DoValue *do_value_new_from_node(GDateTime *time, JsonNode *node, const gchar *key)
 #else
@@ -623,41 +629,99 @@ JsonNode *do_client_request2_valist_async(DoClient *client, const gchar *method,
 {
 	return do_client_request2_valist_(client, method, func, key, flags, callback, data, args);
 }
-static gboolean do_client_queue_item_search(DoClient *client, const gchar *key1, gint *index, gint *capacity)
+#ifdef DEBUG
+static gboolean do_client_process_search(DoClient *client, const gchar *key, gint *index, gint *filo_exists, gint *capacity)
+#else
+static gboolean do_client_process_search(DoClient *client, const gchar *key, gint *index, gint *filo_exists)
+#endif
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
 	guint i;
 	gboolean res = FALSE;
 	*index = -1;
+	if ( filo_exists ) *filo_exists = 0;
+#ifdef DEBUG
 	if ( capacity ) *capacity = 0;
+#endif
     for ( i = 0; i < N_QUEUE; i++ ) {
         DoQueueItem *item;
-        item = priv->queue[i];
-        if ( key1 && item && !g_strcmp0(item->key1, key1) ) {
+        item = priv->process[i];
+        if ( key && item && !g_strcmp0(item->key, key) ) {
             *index = i;
-            if ( !capacity ) return TRUE;
+#ifdef DEBUG
+            if ( !capacity && !filo_exists ) return TRUE;
+#else
+            if ( !filo_exists ) return TRUE;
+#endif
             res = TRUE;
         }
         if ( !item ) {
+#ifdef DEBUG
             if ( capacity ) *capacity = *capacity + 1;
-            *index = i;
+#endif
+            if ( !res )
+                *index = i;
+        }
+        else {
+            if ( filo_exists && item->filo )
+                *filo_exists = *filo_exists + 1;
         }
     }
     return res;
 }
-static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item_queue)
+static GList *do_client_queue_item_search(DoClient *client, const gchar *key)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
-	gint index;
-	if ( do_client_queue_item_search(client, item_queue->key1, &index, NULL) ) {
-        if ( priv->wait_queue ) {
+	guint i;
+#ifdef DEBUG
+	guint j;
+#else
+	GList *l;
+#endif
+    for ( i = 0; i < 2; i++ ) {
+#ifdef DEBUG
+        for ( j = 0; j < g_list_length(priv->queue[i]); j++ ) {
+            DoQueueItem *item;
+            item = g_list_nth_data(priv->queue[i], j);
+            if ( key && item && !g_strcmp0(item->key, key) ) {
+                return g_list_nth(priv->queue[i], j);
+            }
+        }
+#else
+        for ( l = priv->queue[i]; l; l = l->next ) {
+            DoQueueItem *item;
+            item = l->data;
+            if ( key && item && !g_strcmp0(item->key, key) ) {
+                return l;
+            }
+        }
+#endif
+    }
+    return NULL;
+}
+static void do_client_process_clear(DoClient *client, DoQueueItem *item_queue)
+{
+	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
+	gint index, i, filo_exists;
+#ifdef DEBUG
+    gint capacity;
+    g_print("clear %s\n", item_queue->key);
+	if ( do_client_process_search(client, item_queue->key, &index, &filo_exists, &capacity) ) {
+#else
+	if ( do_client_process_search(client, item_queue->key, &index, &filo_exists) ) {
+#endif // DEBUG
+        priv->process[index] = NULL;
+        for ( i = 0; i < 2; i++ ) {
+            if ( !priv->queue[i] ) continue;
             SoupSession *session;
             SoupMessage *msg;
             DoQueueItem *item;
-            item = priv->wait_queue->data;
-            priv->queue[index] = item;
-            priv->wait_queue = g_slist_delete_link(priv->wait_queue, priv->wait_queue);
-            //priv->wait_queue = priv->wait_queue->next;//fix me
+            GList *l;
+            l = priv->queue[i];
+            item = l->data;
+            if ( item->filo && (filo_exists - (item_queue->filo ? 1 : 0)) > 0 ) continue;
+            priv->process[index] = item;
+            priv->queue[i] = g_list_remove_link(priv->queue[i], l);
             session = soup_session_new();
             msg = soup_message_new(item->method, item->url);
             if ( !g_strcmp0(item->method, "POST") && item->body ) {
@@ -669,13 +733,40 @@ static void do_client_queue_item_clear(DoClient *client, DoQueueItem *item_queue
             item->session = session;
             item->msg = msg;
             soup_session_queue_message(session, msg, do_client_message_finished, item);
+            break;
         }
-        else
-            priv->queue[index] = NULL;
 	}
+#ifdef DEBUG
+    {
+        gchar keys[1024];
+        gint capacity1 = 0;
+        gint i, filo_exists = 0;
+        keys[0] = '\0';
+        for ( i = 0; i < N_QUEUE; i++ )
+            if ( priv->process[i] ) {
+                capacity1++;
+                gint n = strlen(keys);
+                if ( n ) {
+                    keys[n] = ' ';
+                    keys[n+1] = '\0';
+                }
+                strcpy(keys + strlen(keys), priv->process[i]->key);
+                if ( priv->process[i]->filo )
+                    filo_exists++;
+            }
+        gchar *text;
+        text = g_strdup_printf("process %d (%s), queue len %d,%d filo exists %d", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
+        do_application_set_info_label(do_application_get_default(), text);
+        g_print("process %d (%s), queue len %d,%d filo exists %d\n", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
+    }
+#endif
+    do_client_queue_item_clear(item_queue);
+}
+static void do_client_queue_item_clear(DoQueueItem *item_queue)
+{
     g_free(item_queue->method);
     g_free(item_queue->url);
-	g_free(item_queue->key1);
+	g_free(item_queue->key);
 	g_free(item_queue->body);
 	g_free(item_queue);
 
@@ -690,8 +781,12 @@ static void do_client_message_finished(SoupSession *session, SoupMessage *msg, g
 #endif // DEBUG
 	//priv->queue_message = g_slist_remove(priv->queue_message, data);
 	if ( !item->canceled )
-		do_client_proccess_message(item->client, msg, item->key1, item->archive, item->callback, item->data, item->cache);
-    do_client_queue_item_clear(item->client, item);
+		do_client_proccess_message(item->client, msg, item->key, item->archive, item->callback, item->data, item->cache);
+    else {
+        if ( item->callback )
+            item->callback(NULL, item->data);
+    }
+    do_client_process_clear(item->client, item);
 }
 gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 {
@@ -700,10 +795,12 @@ gboolean do_client_cancel_request(DoClient *client, const gchar *key)
 	gint   index;
 #ifdef DEBUG
     g_print("cancel request \"%s\"\n", key);
+    if ( do_client_process_search(client, key, &index, NULL, NULL) ) {
+#else
+    if ( do_client_process_search(client, key, &index, NULL) ) {
 #endif
-     if ( do_client_queue_item_search(client, key, &index, NULL) ) {
         DoQueueItem *item;
-        item = priv->queue[index];
+        item = priv->process[index];
         item->canceled = TRUE;
         return TRUE;
     }
@@ -805,7 +902,6 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 		gssize length;
 		gboolean needfree = FALSE;
 		gboolean archived;
-		gboolean err;
 		gchar *out = NULL;
 
         parser = NULL;
@@ -901,20 +997,20 @@ static DoValue *do_client_get_cache_value(DoClient *client, const gchar *key)
 	return value;
 }
 
-static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key1, DoClientFlags flags, GFunc callback, gpointer data, va_list args)
+static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, GFunc callback, gpointer data, va_list args)
 {
 	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (client);
 	JsonNode *res = NULL;
 	JsonNode *cache_res = NULL;
 	GDateTime *cache_time = NULL;
 
-	if ( priv->cached && !(flags & DO_CLIENT_FLAGS_NOCACHE) && key1 ) {
+	if ( priv->cached && !(flags & DO_CLIENT_FLAGS_NOCACHE) && key ) {
 		DoValue *value;
-		value = do_client_get_cache_value(client, key1);
+		value = do_client_get_cache_value(client, key);
 		if ( value ) {
             cache_res = do_value_get_node(value);
 			cache_time = value->time;
-			if ( check_valid_cache(key1, cache_time) ) {
+			if ( check_valid_cache(key, cache_time) ) {
 				if ( callback ) {
 					callback(cache_res, data);
 					return NULL;
@@ -939,10 +1035,10 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
     while ( name != NULL ) {
         value = va_arg(args, gchar*);
         if ( !g_strcmp0(name, "body") ) {
-            FILE *f;//fix me
+            /*FILE *f;//fix me
             f = fopen("c:/temp/sad.txt","w+");
             fwrite(value,strlen(value),1,f);
-            fclose(f);
+            fclose(f);*/
             body = value;
         }
         else {
@@ -961,10 +1057,10 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
     }
 	SoupSession *session;
 	SoupMessage *msg;
-    FILE *f;//fix me
+    /*FILE *f;//fix me
     f = fopen("c:/temp/sadurl.txt","w+");
     fwrite(url,strlen(url),1,f);
-    fclose(f);
+    fclose(f);*/
 
 	//g_print("start message key %s\n", key);//debug it
 	if ( !callback ) {
@@ -977,26 +1073,24 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
             msg->request_body = rbody;
         }
 		soup_session_send_message(session, msg);
-		res = do_client_proccess_message(client, msg, key1, flags & DO_CLIENT_FLAGS_ARCHIVE, callback, data, res);
+		res = do_client_proccess_message(client, msg, key, flags & DO_CLIENT_FLAGS_ARCHIVE, callback, data, res);
 		g_free(url);
 	}
 	else {
         gint index = -1;
+        gboolean filo_exists;
+#ifdef DEBUG
         gint capacity;
-        if ( do_client_queue_item_search(client, key1, &index, &capacity) ) {
+        if ( do_client_process_search(client, key, &index, &filo_exists, &capacity) ) {
+#else
+        if ( do_client_process_search(client, key, &index, &filo_exists) ) {
+#endif
             g_free(url);
             return cache_res;
         }
-        GSList *l;
-        if ( key1 ) {
-            for ( l = priv->wait_queue; l; l=l->next ) {
-                DoQueueItem *item;
-                item = l->data;
-                if ( !g_strcmp0(key1, item->key1) ) {
-                    g_free(url);
-                    return cache_res;
-                }
-            }
+        if ( key && do_client_queue_item_search(client, key) ) {
+                g_free(url);
+                return cache_res;
         }
 		DoQueueItem *item;
 		item = g_new0(DoQueueItem, 1);
@@ -1005,14 +1099,15 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
 		item->client = client;
 		//item->index = priv->item_index++;
 		item->archive = flags & DO_CLIENT_FLAGS_ARCHIVE;
-		item->key1 = key1 ? g_strdup(key1) : g_strdup_printf("%d", priv->message_index++);
+		item->key = key ? g_strdup(key) : g_strdup_printf("%d", priv->message_index++);
 		item->canceled = FALSE;
 		item->cache = res;
         item->url = g_strdup(url);
         item->body = g_strdup(body);
         item->method = g_strdup(method);
+        item->filo = flags & DO_CLIENT_FLAGS_FILO;
         g_free(url);
-		if ( index != -1 && ( !(flags & DO_CLIENT_FLAGS_MAY_IGNORE) || (capacity > N_QUEUE_RESERVED) ) ) {
+		if ( index != -1 && !(item->filo && filo_exists) ) {
             session = soup_session_new();
             msg = soup_message_new(item->method, item->url);
             if ( !g_strcmp0(item->method, "POST") && item->body ) {
@@ -1023,18 +1118,51 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
             }
             item->session = session;
             item->msg = msg;
-            priv->queue[index] = item;
+            priv->process[index] = item;
+#ifdef DEBUG
+            g_print("add %s\n", item->key);
+#endif
             soup_session_queue_message(session, msg, do_client_message_finished, item);
         }
         else {
-            //if ( !(flags & DO_CLIENT_FLAGS_MAY_IGNORE) )
-                priv->wait_queue = g_slist_append(priv->wait_queue, item);
-#ifdef DEBUG
-//            else {
-                //g_print("ignore\n");
-            //}
-#endif // DEBUG
+            if ( flags & DO_CLIENT_FLAGS_FILO ) {
+                priv->queue[QUEUE_FILO] = g_list_insert(priv->queue[QUEUE_FILO], item, 0);
+                if ( g_list_length(priv->queue[QUEUE_FILO]) > N_QUEUE_FILO ) {
+                    DoQueueItem *item;
+                    item = g_list_last(priv->queue[QUEUE_FILO])->data;
+                    if ( item->callback )
+                        item->callback(NULL, item->data);
+                    priv->queue[QUEUE_FILO] = g_list_remove_link(priv->queue[QUEUE_FILO], g_list_last(priv->queue[QUEUE_FILO]));
+                    do_client_queue_item_clear(item);
+                }
+            }
+            else
+                priv->queue[QUEUE_FIFO] = g_list_append(priv->queue[QUEUE_FIFO], item);
         }
+#ifdef DEBUG
+        {
+            gchar keys[1024];
+            gint capacity1 = 0;
+            gint i, filo_exists;
+            keys[0] = '\0';
+            for ( i = 0; i < N_QUEUE; i++ )
+                if ( priv->process[i] ) {
+                    capacity1++;
+                    gint n = strlen(keys);
+                    if ( n ) {
+                        keys[n] = ' ';
+                        keys[n+1] = '\0';
+                    }
+                    strcpy(keys + strlen(keys), priv->process[i]->key);
+                    if ( priv->process[i]->filo )
+                        filo_exists++;
+                }
+            gchar *text;
+            text = g_strdup_printf("process %d (%s), queue len %d,%d filo exists %d", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
+            do_application_set_info_label(do_application_get_default(), text);
+            g_print("process %d (%s), queue len %d,%d filo exists %d\n", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
+        }
+#endif
 	}
 	return res ? res : cache_res;
 }

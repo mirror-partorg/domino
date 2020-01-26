@@ -454,13 +454,13 @@ static void do_obj_view_model_fill(DoObjView *view, const gchar *page_id, JsonNo
 	gchar *markup = NULL;
 	priv = DO_OBJ_VIEW_GET_PRIVATE (view);
 #ifdef DEBUG
-    gchar *data;
-    JsonGenerator *generator = NULL;
-    generator = json_generator_new();
-    json_generator_set_root(generator, node);
-    data = json_generator_to_data(generator, NULL);
-    g_print("Object json \"%s\"\n%s\n", priv->key, data);
-    g_object_unref(generator);
+    //gchar *data;
+    //JsonGenerator *generator = NULL;
+    //generator = json_generator_new();
+    //json_generator_set_root(generator, node);
+    //data = json_generator_to_data(generator, NULL);
+    //g_print("Object json \"%s\"\n%s\n", priv->key, data);
+    //g_object_unref(generator);
 #endif // DEBUG
 	if ( node ) {
         obj = json_node_get_object(node);
@@ -672,7 +672,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 	g_free(name);
 	json_array_foreach_element(columns, do_obj_view_make_column, view);
 #ifdef DEBUG
-    GtkCellRenderer *renderer;
+    /*GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
 	renderer = gtk_cell_renderer_text_new();
 	column = do_tree_view_add_column(DO_TREE_VIEW(view), "id", "id", -1);
@@ -681,7 +681,7 @@ static void do_obj_view_make_page(JsonArray *pages, guint index_, JsonNode *elem
 	renderer = gtk_cell_renderer_text_new();
 	column = do_tree_view_add_column(DO_TREE_VIEW(view), "key", "key", -1);
 	gtk_tree_view_column_pack_start (column, renderer, TRUE);
-	gtk_tree_view_column_add_attribute(column, renderer, "text", 1);
+	gtk_tree_view_column_add_attribute(column, renderer, "text", 1);*/
 #endif
 	gtk_widget_show_all(GTK_WIDGET(view));
 }

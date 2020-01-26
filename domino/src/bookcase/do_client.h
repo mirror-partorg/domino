@@ -24,7 +24,7 @@ typedef enum
 {
 	DO_CLIENT_FLAGS_ARCHIVE = 1 << 0,
 	DO_CLIENT_FLAGS_NOCACHE = 1 << 1,
-	DO_CLIENT_FLAGS_MAY_IGNORE = 1 << 2,
+	DO_CLIENT_FLAGS_FILO = 1 << 2,
 } DoClientFlags;
 
 

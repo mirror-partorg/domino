@@ -128,6 +128,7 @@ int dominox_init()
         domino_config_read(i);
 
     DOMINO_LOCAL_SET("list-goods-view", "fields", "ocnsfPR", NULL);//todo
+    DOMINO_LOCAL_SET("main", "websearch", "https://go.mail.ru", NULL);//todo
 
     return TRUE;
 }

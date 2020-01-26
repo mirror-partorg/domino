@@ -99,7 +99,7 @@ static void do_list_view_set_load_status(DoListView *view, const gchar *load_sta
 static gboolean do_list_view_make_columns(DoListView *view);
 static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode *element_node, gpointer data);
 #ifdef DEBUG
-static void do_list_view_make_key_column(DoListView *view);
+//static void do_list_view_make_key_column(DoListView *view);
 #endif
 
 static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, DoListView *view);
@@ -260,7 +260,7 @@ static GObject *do_list_view_constructor(GType type, guint n_construct_propertie
 
     do_list_view_make_columns(DO_LIST_VIEW(object));
 #ifdef DEBUG
-    do_list_view_make_key_column(DO_LIST_VIEW(object));
+//    do_list_view_make_key_column(DO_LIST_VIEW(object));
 #endif
 
 
@@ -706,7 +706,7 @@ static void do_list_view_make_column(JsonArray *columns, guint index_, JsonNode 
     }
 }
 #ifdef DEBUG
-static void do_list_view_make_key_column(DoListView *view)
+/*static void do_list_view_make_key_column(DoListView *view)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
     GtkCellRenderer   *r;
@@ -716,7 +716,7 @@ static void do_list_view_make_key_column(DoListView *view)
     col = do_tree_view_add_column(DO_TREE_VIEW(priv->do_view),"key", "key", 150);
     gtk_tree_view_column_pack_start (col, r, TRUE);
     gtk_tree_view_column_add_attribute (col, r, "text", 0);
-}
+}*/
 #endif
 static gboolean search_add(DoListView *do_view, gchar *string);
 static void search_back(DoListView *do_view);
@@ -789,16 +789,16 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                         key = g_value_get_string(&value);
                         gtk_tree_path_free(path);
                     }
+                    do_list_model_set_updated(DO_LIST_MODEL(priv->model), FALSE);
                     do_list_model_set_filter(DO_LIST_MODEL(priv->model), NULL);
                     if ( key ) {
                         GtkTreeIter iter;
                         if ( do_list_model_find_record_by_key(DO_LIST_MODEL(priv->model), &iter, key) ) {
                             path = gtk_tree_model_get_path(priv->model, &iter);
-                            do_list_model_set_updated(DO_LIST_MODEL(priv->model), FALSE);
                             gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
-                            do_list_model_set_updated(DO_LIST_MODEL(priv->model), TRUE);
                         }
                     }
+                    do_list_model_set_updated(DO_LIST_MODEL(priv->model), TRUE);
                     return TRUE;
                 }
                 if ( !priv->search_char_count &&
@@ -1319,10 +1319,9 @@ static void do_list_view_mark_(DoListView *view, const gchar *mark)
     if ( path ) {
         GtkTreeIter iter = {0,};
         GValue value = {0,};
-        JsonNode *node;
         gtk_tree_model_get_iter(priv->model, &iter, path);
         gtk_tree_model_get_value(priv->model, &iter, DO_LIST_MODEL_COL_CODE, &value);
-        node = do_client_request2(priv->client, "POST", "SetOrder", NULL, 0,
+        do_client_request2(priv->client, "POST", "SetOrder", NULL, 0,
                                     "name", priv->name,
                                     "code", g_value_get_string(&value),
                                     "mark", mark,

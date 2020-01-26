@@ -65,6 +65,7 @@ struct _DoWindowPrivate
     GtkWidget     *headerbar;
     GtkWidget     *notebook;
 	GtkWidget     *gear_button;
+	GtkWidget     *footer_label;
 	GtkWidget     *button_prev;
 	GtkWidget     *button_next;
 	DoView        *goods;
@@ -254,6 +255,8 @@ static GObject *do_window_constructor (GType type,
     g_signal_connect(priv->entry, "key-press-event", G_CALLBACK(do_window_entry_key_press), window);
     gtk_box_pack_start(GTK_BOX(box), entry, TRUE, TRUE, 6);
 
+    priv->footer_label = gtk_label_new("");
+    gtk_box_pack_start(GTK_BOX(vbox), priv->footer_label, FALSE, FALSE, 0);
 
     menu = g_menu_new();
 #if GTK_CHECK_VERSION(3,12,0)
@@ -273,6 +276,7 @@ static GObject *do_window_constructor (GType type,
 
     g_menu_append(G_MENU(menu), "Акции и рекомендации", "common-actions.AdsView");
     g_menu_append(G_MENU(menu), "Товары", "common-actions.GoodsView");
+    g_menu_append(G_MENU(menu), "Веб", "common-actions.HtmlView");
     submenu = g_menu_new();
     g_menu_append_submenu(G_MENU(menu), "Настройки", G_MENU_MODEL(submenu));
     g_menu_append(G_MENU(submenu), "Пользовательские", "common-actions.ProfileView");
@@ -676,9 +680,17 @@ static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, 
     {
     	switch (event->keyval)
     	{
-    	    //case GDK_space:
-              //  mask = gtk_accelerator_get_default_mod_mask ();
-                //return TRUE;
+    	    case GDK_KEY_Right:
+                {
+                    GVariant *parameter;
+                    gchar *uri, *url;
+                        DOMINO_LOCAL_GET("main", "websearch", &url, NULL);
+                    uri = g_strdup_printf("%s/search?q=%s", url, gtk_entry_get_text(GTK_ENTRY(entry)));
+                    parameter = g_variant_new_string(uri);
+                    do_common_action_activate("HtmlViewGo", parameter);
+                    g_free(uri);
+                    return TRUE;
+                }
     	    case GDK_KEY_Down:
                 do_window_entry_activate(GTK_ENTRY(entry), window);
                 return TRUE;
@@ -694,4 +706,14 @@ static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, 
         }
     }
     return FALSE;
+}
+void do_window_set_footerbar_text(DoWindow *window, const gchar *text)
+{
+    DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    gtk_label_set_text(GTK_LABEL(priv->footer_label), text);
+}
+const gchar  *do_window_get_footerbar_text(DoWindow *window)
+{
+    DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    return gtk_label_get_text(GTK_LABEL(priv->footer_label));
 }

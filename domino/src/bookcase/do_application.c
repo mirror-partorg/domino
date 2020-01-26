@@ -64,6 +64,9 @@ static void do_application_add_acceletarors(GApplication *app);
 static void quit_all (void);
 
 //static gint do_application_command_line (GApplication *application, GApplicationCommandLine *cl);
+#ifdef DEBUG
+DoApplication *application = NULL;
+#endif
 
 static void do_application_init(DoApplication *temp)
 {
@@ -117,6 +120,9 @@ static GObject *do_application_constructor(GType type, guint n_construct_propert
     //g_signal_connect(object, "activate", G_CALLBACK(do_application_activate), object);
     //g_signal_connect(object, "command-line", G_CALLBACK (do_application_command_line), NULL);
 
+#ifdef DEBUG
+    application = DO_APPLICATION(object);
+#endif
 	return object;
 }
 
@@ -362,8 +368,9 @@ static gboolean run_actions(DoApplication *app)
         DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
         priv->client = do_client_new(url, priv->store);
     }
-    if ( priv->clear_cache )
-        do_client_clear_cache(priv->client, NULL);
+    if ( priv->clear_cache ) {
+        do_client_clear_cache(DO_CLIENT(priv->client), NULL);
+    }
 	time = g_date_time_new_now_local();
 	buf = do_client_strftime(time);
 	do_application_request2_async(app, "GET", "GetVersion", "Version", 0,
@@ -499,7 +506,7 @@ static void do_application_add_acceletarors(GApplication *app)
     add_accelerator(DO_APPLICATION(app), "view-actions.UndoApplyAction", "F2");
 #else
     add_accelerator(DO_APPLICATION(app), "view-actions.ApplyAction", "<Shift>Return");
-    add_accelerator(DO_APPLICATION(app), "view-actions.UndoApplyAction", "<Shift>Insert");
+    add_accelerator(DO_APPLICATION(app), "view-actions.UndoApplyAction", "<Shift>Delete");
 #endif
 #endif
 }
@@ -637,4 +644,20 @@ void do_application_log_func(const gchar *log_domain, GLogLevelFlags log_flags, 
         do_log(level, msg);
     g_print(msg);
 }
+#ifdef DEBUG
+inline DoApplication *do_application_get_default()
+{
+    return application;
+}
+void do_application_set_info_label(DoApplication *app, const gchar *label)
+{
+    GList *l;
+    for ( l = gtk_application_get_windows(GTK_APPLICATION(app)); l; l = l->next ) {
+        if ( DO_IS_WINDOW(l->data) ) {
+            do_window_set_footerbar_text(DO_WINDOW(l->data), label);
+            break;
+        }
+    }
 
+}
+#endif

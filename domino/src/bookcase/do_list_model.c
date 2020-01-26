@@ -464,7 +464,7 @@ static gboolean do_list_model_group_update(DoListModel *model)
 #ifdef DEBUG
 	//GDateTime *t1 = g_date_time_new_now_local();
 #endif
-    DoClientFlags flags = DO_CLIENT_FLAGS_MAY_IGNORE;
+    DoClientFlags flags = DO_CLIENT_FLAGS_FILO;
     data = g_new0(DoListModelUpdate, 1);
     data->model = DO_LIST_MODEL(model);
     data->keys = priv->group_update_keys;
@@ -487,7 +487,7 @@ static gboolean do_list_model_group_update(DoListModel *model)
     g_free(body);
     body = str;
 #ifdef DEBUG
-    //g_print("select %d pos\n", g_slist_length(data->keys));
+    g_print("select %d pos\n", g_slist_length(data->keys));
 #endif // DEBUG
 
     do_client_request2_async(priv->client, "POST", "GetRecords", NULL, flags, (GFunc)do_list_model_group_records_update, data,
