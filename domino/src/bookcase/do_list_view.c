@@ -791,6 +791,7 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                     }
                     do_list_model_set_updated(DO_LIST_MODEL(priv->model), FALSE);
                     do_list_model_set_filter(DO_LIST_MODEL(priv->model), NULL);
+                    gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(priv->tree_view), TRUE);
                     if ( key ) {
                         GtkTreeIter iter;
                         if ( do_list_model_find_record_by_key(DO_LIST_MODEL(priv->model), &iter, key) ) {

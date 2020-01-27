@@ -1,3 +1,4 @@
+#if (defined(WEBKIT) || defined(WEBKIT2))
 
 #include "do_html_view.h"
 #include "do_view.h"
@@ -808,3 +809,4 @@ static gboolean	command_can_close_for_esc(DoView *view)
 {
     return TRUE;
 }
+#endif

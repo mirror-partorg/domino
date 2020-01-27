@@ -276,7 +276,9 @@ static GObject *do_window_constructor (GType type,
 
     g_menu_append(G_MENU(menu), "Акции и рекомендации", "common-actions.AdsView");
     g_menu_append(G_MENU(menu), "Товары", "common-actions.GoodsView");
+#if (defined(WEBKIT) || defined(WEBKIT2))
     g_menu_append(G_MENU(menu), "Веб", "common-actions.HtmlView");
+#endif
     submenu = g_menu_new();
     g_menu_append_submenu(G_MENU(menu), "Настройки", G_MENU_MODEL(submenu));
     g_menu_append(G_MENU(submenu), "Пользовательские", "common-actions.ProfileView");
@@ -682,6 +684,7 @@ static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, 
     	{
     	    case GDK_KEY_Right:
                 {
+#if (defined(WEBKIT) || defined(WEBKIT2))
                     GVariant *parameter;
                     gchar *uri, *url;
                         DOMINO_LOCAL_GET("main", "websearch", &url, NULL);
@@ -690,7 +693,9 @@ static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, 
                     do_common_action_activate("HtmlViewGo", parameter);
                     g_free(uri);
                     return TRUE;
+#endif
                 }
+                break;
     	    case GDK_KEY_Down:
                 do_window_entry_activate(GTK_ENTRY(entry), window);
                 return TRUE;
