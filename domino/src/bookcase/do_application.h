@@ -54,8 +54,10 @@ gboolean         do_application_settings(DoApplication *app);
 GObject         *do_application_get_client(DoApplication *app);
 void do_application_log_func(const gchar *log_domain, GLogLevelFlags log_flags, const gchar *msg, gpointer user_data);
 
-#ifdef DEBUG
 DoApplication   *do_application_get_default();
+GtkWindow       *do_application_get_window(DoApplication *app, gboolean *open_dialog);
+void             do_application_set_connection_state(DoApplication *app, gint state);
+#ifdef DEBUG
 void             do_application_set_info_label(DoApplication *app, const gchar *label);
 #endif
 

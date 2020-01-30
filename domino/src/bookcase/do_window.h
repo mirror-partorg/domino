@@ -62,7 +62,7 @@ const gchar  *do_window_get_footerbar_text(DoWindow *window);
 
 void          do_window_update_toolbar(DoWindow *window);
 void          do_window_set_goods(DoWindow *window, DoView *view);
-
+void          do_window_show_connection_state(DoWindow *window, gint state);
 
 
 G_END_DECLS

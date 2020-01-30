@@ -56,6 +56,11 @@ static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event,
 
 #define DO_WINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_WINDOW, DoWindowPrivate))
 
+const gchar *states[] = {"network-idle-symbolic",
+                         "network-receive-symbolic",
+                         "network-transmit-symbolic",
+                         "network-transmit-receive-symbolic",
+                         "network-offline-symbolic"};
 
 struct _DoWindowPrivate
 {
@@ -71,6 +76,7 @@ struct _DoWindowPrivate
 	DoView        *goods;
     guint          clock_event_source;
     guint          search_src;
+    GtkWidget     *connection_icon;
 };
 
 enum
@@ -256,7 +262,12 @@ static GObject *do_window_constructor (GType type,
     gtk_box_pack_start(GTK_BOX(box), entry, TRUE, TRUE, 6);
 
     priv->footer_label = gtk_label_new("");
-    gtk_box_pack_start(GTK_BOX(vbox), priv->footer_label, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), priv->footer_label, FALSE, FALSE, 6);
+
+    priv->connection_icon = gtk_image_new();
+    gtk_image_set_from_icon_name(GTK_IMAGE(priv->connection_icon), states[0], GTK_ICON_SIZE_MENU);
+    gtk_box_pack_end(GTK_BOX(box), priv->connection_icon, FALSE, FALSE, 6);
+
 
     menu = g_menu_new();
 #if GTK_CHECK_VERSION(3,12,0)
@@ -273,6 +284,7 @@ static GObject *do_window_constructor (GType type,
 #endif
     gtk_button_set_image(GTK_BUTTON(gear_button), image);
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(gear_button), G_MENU_MODEL(menu));
+
 
     g_menu_append(G_MENU(menu), "Акции и рекомендации", "common-actions.AdsView");
     g_menu_append(G_MENU(menu), "Товары", "common-actions.GoodsView");
@@ -721,4 +733,10 @@ const gchar  *do_window_get_footerbar_text(DoWindow *window)
 {
     DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
     return gtk_label_get_text(GTK_LABEL(priv->footer_label));
+}
+void do_window_show_connection_state(DoWindow *window, gint state)
+{
+    DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    g_return_if_fail (state >= 0 && state < G_N_ELEMENTS(states));
+    gtk_image_set_from_icon_name(GTK_IMAGE(priv->connection_icon), states[state], GTK_ICON_SIZE_MENU);
 }

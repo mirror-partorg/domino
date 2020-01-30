@@ -21,7 +21,7 @@
 1440478440 c:\var\git\domino\domino\src\bookcase\do_tree_view.h
 	<gtk/gtk.h>
 
-1580097688 source:c:\var\git\domino\domino\src\bookcase\do_application.c
+1580356275 source:c:\var\git\domino\domino\src\bookcase\do_application.c
 	"do_application.h"
 	"domino.h"
 	"do_client.h"
@@ -31,19 +31,19 @@
 	"do_common_actions.h"
 	"do_view_actions.h"
 
-1580097688 c:\var\git\domino\domino\src\bookcase\do_application.h
+1580356226 c:\var\git\domino\domino\src\bookcase\do_application.h
 	<gtk/gtk.h>
 	<json-glib/json-glib.h>
 	"do_window.h"
 	"do_client.h"
 
-1580097688 c:\var\git\domino\domino\src\bookcase\do_window.h
+1580354919 c:\var\git\domino\domino\src\bookcase\do_window.h
 	<glib-object.h>
 	<glib.h>
 	<gtk/gtk.h>
 	"do_view.h"
 
-1572225741 c:\var\git\domino\domino\src\bookcase\domino.h
+1580266643 c:\var\git\domino\domino\src\bookcase\domino.h
 	<gtk/gtk.h>
 	<dolib.h>
 	"do_context.h"
@@ -143,13 +143,14 @@
 1440478440 c:\var\git\domino\domino\src\bookcase\do_marshal.h
 	<glib-object.h>
 
-1572225741 source:c:\var\git\domino\domino\src\bookcase\do_message.c
+1580266893 source:c:\var\git\domino\domino\src\bookcase\do_message.c
 	"do_message.h"
 	<stdio.h>
 	<gtk/gtk.h>
 	<stdlib.h>
 	<dolib.h>
 	"domino.h"
+	"do_application.h"
 
 1574391150 source:c:\var\git\domino\domino\src\bookcase\do_notebook.c
 	"do_notebook.h"
@@ -206,7 +207,7 @@
 	<string.h>
 	<gdk/gdkkeysyms.h>
 
-1580107907 source:c:\var\git\domino\domino\src\bookcase\do_window.c
+1580356302 source:c:\var\git\domino\domino\src\bookcase\do_window.c
 	"do_window.h"
 	"do_view_actions.h"
 	"do_common_actions.h"
@@ -221,7 +222,7 @@
 	<json-glib/json-glib.h>
 	<time.h>
 
-1580097688 source:c:\var\git\domino\domino\src\bookcase\domino.c
+1580266616 source:c:\var\git\domino\domino\src\bookcase\domino.c
 	"domino.h"
 	"version.h"
 	"do_config.h"
@@ -271,7 +272,7 @@
 	"do_utilx.h"
 	<string.h>
 
-1580097688 source:c:\var\git\domino\domino\src\bookcase\do_client.c
+1580357244 source:c:\var\git\domino\domino\src\bookcase\do_client.c
 	"do_client.h"
 	"config.h"
 	"do_application.h"
@@ -300,7 +301,7 @@
 	"do_view_actions.h"
 	"domino.h"
 
-1580097688 source:c:\var\git\domino\domino\src\bookcase\do_list_model.c
+1580356012 source:c:\var\git\domino\domino\src\bookcase\do_list_model.c
 	"do_list_model.h"
 	"do_client.h"
 	<time.h>

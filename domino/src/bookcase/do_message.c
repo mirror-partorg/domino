@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <dolib.h>
 #include "domino.h"
+#include "do_application.h"
 
 
 typedef struct _Message Message;
@@ -124,7 +125,8 @@ static void do_messages_show()
         if ( !dialog ) {
             GtkWindow *topwin;
             int isdialog;
-            topwin = domino_get_top_window(&isdialog);
+
+            topwin = do_application_get_window(do_application_get_default(), &isdialog);
             if ( !topwin || isdialog ) {
                 m_type = GTK_MESSAGE_OTHER;
                 m_but = GTK_BUTTONS_OK;
@@ -306,7 +308,7 @@ static gboolean show_question(const gchar *msg)
 #endif // gtk_message_dialog_new
     GtkWindow *win;
     int i;
-    win = domino_get_top_window(&i);
+    win = do_application_get_window(do_application_get_default(), &i);
     w = gtk_message_dialog_new(win, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
 #define gtk_message_dialog_new dead
     gtk_window_set_icon_name(GTK_WINDOW(w), "domino");
