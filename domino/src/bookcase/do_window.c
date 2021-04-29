@@ -261,6 +261,7 @@ static GObject *do_window_constructor (GType type,
     g_signal_connect(priv->entry, "activate", G_CALLBACK(do_window_entry_activate), window);
     g_signal_connect(priv->entry, "key-press-event", G_CALLBACK(do_window_entry_key_press), window);
     gtk_box_pack_start(GTK_BOX(box), entry, TRUE, TRUE, 6);
+    gtk_widget_set_sensitive(GTK_WIDGET(priv->entry), FALSE);
 
     priv->footer_label = gtk_label_new("");
     gtk_box_pack_start(GTK_BOX(vbox), priv->footer_label, FALSE, FALSE, 6);
@@ -733,8 +734,10 @@ static void do_window_previous_clicked(GtkWidget *widget, DoWindow *window)
 void do_window_set_goods(DoWindow *window, DoView *view)
 {
     DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
-    if ( !priv->goods )
+    if ( !priv->goods ) {
         priv->goods = view;
+        gtk_widget_set_sensitive(GTK_WIDGET(priv->entry), TRUE);
+    }
 }
 static void do_window_entry_activate(GtkEntry *entry, DoWindow *window)
 {
