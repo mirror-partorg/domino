@@ -155,7 +155,6 @@ struct _DoListViewPrivate
 
     DoView        *receiver;
     guint          source_load;
-    gchar         *set_cursor_for_key;
 
 };
 
@@ -585,14 +584,7 @@ static 	gboolean do_list_view_can_do_edit(DoView *view, const gchar *tab)
 }
 static 	gboolean do_list_view_can_do_close_for_esc (DoView *view)
 {
-    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
-    if ( priv->updated_key ) {
-        return TRUE;
-    }
-	if ( priv->path && g_slist_length(priv->path) > 1 ) {
-        return TRUE;
-	}
-	return FALSE;
+	return TRUE; // to do
 }
 static 	const gchar *do_list_view_get_load_status(DoView *view)
 {
@@ -788,17 +780,17 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                 if ( do_list_model_is_filtered(DO_LIST_MODEL(priv->model), NULL) ) {
 
                     GValue value = {0,};
-                    //const gchar *key = NULL;
+                    const gchar *key = NULL;
                     GtkTreePath *path;
                     gtk_tree_view_get_cursor(priv->tree_view, &path, NULL);
                     if ( path ) {
                         GtkTreeIter iter;
                         gtk_tree_model_get_iter(priv->model, &iter, path);
                         gtk_tree_model_get_value(priv->model, &iter, DO_LIST_MODEL_COL_KEY, &value);
-                        priv->set_cursor_for_key = g_value_dup_string(&value);
+                        key = g_value_get_string(&value);
                         gtk_tree_path_free(path);
                     }
-                    /*do_list_model_set_updated(DO_LIST_MODEL(priv->model), FALSE);
+                    do_list_model_set_updated(DO_LIST_MODEL(priv->model), FALSE);
                     do_list_model_set_filter(DO_LIST_MODEL(priv->model), NULL);
                     if ( key ) {
                         GtkTreeIter iter;
@@ -807,8 +799,8 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                             gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
                         }
                     }
-                    do_list_model_set_updated(DO_LIST_MODEL(priv->model), TRUE);fix me*/
-                    do_window_end_search(DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view))));
+                    do_list_model_set_updated(DO_LIST_MODEL(priv->model), TRUE);
+                    do_window_search_end(DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view))));
                     return TRUE;
                 }
                 if ( !priv->search_char_count &&
@@ -856,8 +848,7 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                     return TRUE;
                 }
 #endif
-                //return TRUE;
-                return FALSE;
+                return TRUE;
             case GDK_KEY_Up:
             case GDK_KEY_Down:
             case GDK_KEY_Page_Up:
@@ -1321,20 +1312,8 @@ void do_list_view_external_search(DoListView *view, JsonNode *node)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE (view);
     gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(priv->tree_view), node == NULL);
-    if ( !do_list_model_full_readed(DO_LIST_MODEL(priv->model), NULL) ) {
+    if ( !do_list_model_full_readed(DO_LIST_MODEL(priv->model), NULL) )
         do_list_model_set_filter(DO_LIST_MODEL(priv->model), node);
-        if ( priv->set_cursor_for_key ) {
-            GtkTreePath *path;
-            GtkTreeIter iter;
-            if ( do_list_model_find_record_by_key(DO_LIST_MODEL(priv->model), &iter, priv->set_cursor_for_key) ) {
-                path = gtk_tree_model_get_path(priv->model, &iter);
-                gtk_tree_view_set_cursor(priv->tree_view, path, NULL, FALSE);
-            }
-            g_free(priv->set_cursor_for_key);
-            priv->set_cursor_for_key = NULL;
-        }
-
-    }
 }
 static void do_list_view_mark_(DoListView *view, const gchar *mark)
 {

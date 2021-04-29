@@ -498,7 +498,6 @@ JsonNode *do_application_get_cache(DoApplication *app, const gchar *key, GDateTi
 static void do_application_add_acceletarors(GApplication *app)
 {
 #if GTK_CHECK_VERSION(3,12,0)
-    add_accelerator(DO_APPLICATION(app), "common-actions.HtmlView", "<Primary>T");//fix me
     add_accelerator(DO_APPLICATION(app), "common-actions.Close", "<Primary>W");
     add_accelerator(DO_APPLICATION(app), "common-actions.Quit", "<Primary>Q");
     add_accelerator(DO_APPLICATION(app), "common-actions.Search", "<Primary>L");

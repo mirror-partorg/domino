@@ -1,0 +1,32 @@
+#include <winver.h>
+#include <winuser.h>
+#include <winnt.h>
+
+400 PNG "../../res/icons/bookcase.png"
+500 ICON MOVEABLE PURE LOADONCALL DISCARDABLE "../../res/icons/bookcase.ico"
+
+
+1 VERSIONINFO
+FILEVERSION     0,0,0,1
+PRODUCTVERSION  0,0,0,1
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "GLekar"
+      VALUE "FileDescription", "bookcase"
+      VALUE "FileVersion", "0.0.1"
+      VALUE "InternalName", "bookcase"
+      VALUE "LegalCopyright", "mirror"
+      VALUE "OriginalFilename", "bookcase.exe"
+      VALUE "ProductName", "Bookcase"
+      VALUE "ProductVersion", "0.0.1"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

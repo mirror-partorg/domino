@@ -71,7 +71,6 @@ struct _DoWindowPrivate
 	DoView        *goods;
     guint          clock_event_source;
     guint          search_src;
-    gchar         *search_text;
 };
 
 enum
@@ -567,66 +566,20 @@ static gboolean do_window_external_search_end(JsonNode *node, DoWindow *window)
 	}
 	return FALSE;
 }
-static gchar *mystrip(const gchar *text)
-{
-    gchar **bufv;
-    gchar *ret = NULL, *buf;
-    int j;
-    bufv = g_strsplit(text," ", -1);
-    for ( j = 0; j < g_strv_length(bufv); j++ ) {
-        if ( !bufv[j] || bufv[j][0] == '\0') continue;
-        if ( ret ) {
-            buf = ret;
-            ret = g_strdup_printf("%s %s", buf, bufv[j]);
-            g_free(buf);
-        }
-        else
-            ret = g_strdup(bufv[j]);
-
-    }
-    //ret = g_strjoinv(" ", bufv);
-    g_strfreev(bufv);
-    return ret;
-}
-/*
-g_free(buf);
-
-    char *p;
-    gunichar out;
-    int count;
-    for (count = 0, p = (gchar*)text; p && *p !='\0'; p = (gchar*)g_utf8_next_char(p), count++);
-    for (; p && p > text && count > 0; p = (gchar*)g_utf8_prev_char(p), --count) {
-        out = g_utf8_get_char(p);
-        if ( !g_unichar_isspace(out) )
-            break;
-    }
-    if ( p )
-        p
-        priv->search_text[0] = '\0';
-    else
-        ext[p - text] = '\0';
-    g_free(text);
-}*/
 static gboolean do_window_external_search(DoWindow *window)
 {
 	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
-	gchar *text;
+	const gchar *text;
     priv->search_src = 0;
     if ( gtk_widget_is_focus(GTK_WIDGET(priv->entry)) ) {
-        text = mystrip(gtk_entry_get_text(GTK_ENTRY(priv->entry)));
-        if ( !g_strcmp0(text, priv->search_text) ) {
-            g_free(text);
-            text = NULL;
-        }
-        if ( text ) {
+        text = gtk_entry_get_text(GTK_ENTRY(priv->entry));
+        if ( text && text[0] != '\0' ) {
             GtkApplication *app = gtk_window_get_application(
                     GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(window))));
             gchar *buf;
             buf = g_strdup_printf("{\"string\":\"%s\"}", text);
             do_application_request2_async(DO_APPLICATION(app), "POST", "Search", NULL, 0, (GFunc)do_window_external_search_end, window, "body", buf, "name", "goods", NULL);
             g_free(buf);
-            g_free(priv->search_text);
-            priv->search_text = text;
         }
     }
     return FALSE;
@@ -734,20 +687,9 @@ static void do_window_entry_activate(GtkEntry *entry, DoWindow *window)
         do_view_do_grab_focus(priv->goods);
     }
 }
-void do_window_end_search(DoWindow *window)
-{
-    DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
-    priv->entry_changed = TRUE;
-    gtk_entry_set_text(GTK_ENTRY(priv->entry), "");
-    priv->entry_changed = FALSE;
-    if ( priv->goods ) {
-        impl_set_active_child(GTK_CONTAINER(window), GTK_WIDGET(priv->goods));
-        do_list_view_external_search(DO_LIST_VIEW(priv->goods), NULL);
-    }
-}
 static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, DoWindow *window)
 {
-    //DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
     guint mask = gtk_accelerator_get_default_mod_mask ();
     if ( (event->state & mask) == 0 )
     {
@@ -755,25 +697,26 @@ static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, 
     	{
     	    case GDK_KEY_Right:
                 {
-                    if ( !gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), NULL, NULL) ) {
-                        GVariant *parameter;
-                        gchar *uri, *url;
-                            DOMINO_LOCAL_GET("main", "websearch", &url, NULL);
-                        uri = g_strdup_printf("%s/search?q=%s", url, gtk_entry_get_text(GTK_ENTRY(entry)));
-                        parameter = g_variant_new_string(uri);
-                        do_common_action_activate("HtmlViewGo", parameter);
-                        g_free(uri);
-                        return TRUE;
-                    }
-                    else {
-                        break;
-                    }
+                    GVariant *parameter;
+                    gchar *uri, *url;
+                        DOMINO_LOCAL_GET("main", "websearch", &url, NULL);
+                    uri = g_strdup_printf("%s/search?q=%s", url, gtk_entry_get_text(GTK_ENTRY(entry)));
+                    parameter = g_variant_new_string(uri);
+                    do_common_action_activate("HtmlViewGo", parameter);
+                    g_free(uri);
+                    return TRUE;
                 }
     	    case GDK_KEY_Down:
                 do_window_entry_activate(GTK_ENTRY(entry), window);
                 return TRUE;
             case GDK_KEY_Escape:
-                do_window_end_search(window);
+                priv->entry_changed = TRUE;
+                gtk_entry_set_text(GTK_ENTRY(priv->entry), "");
+                priv->entry_changed = FALSE;
+                if ( priv->goods ) {
+                    impl_set_active_child(GTK_CONTAINER(window), GTK_WIDGET(priv->goods));
+                    do_list_view_external_search(DO_LIST_VIEW(priv->goods), NULL);
+                }
                 return TRUE;
         }
     }

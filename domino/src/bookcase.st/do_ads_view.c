@@ -500,14 +500,7 @@ static 	gboolean do_ads_view_can_do_edit(DoView *view, const gchar *tab)
 }
 static 	gboolean do_ads_view_can_do_close_for_esc (DoView *view)
 {
-    DoAdsViewPrivate *priv = DO_ADS_VIEW_GET_PRIVATE (view);
-    if ( priv->updated_key ) {
-        return TRUE;
-    }
-	if ( priv->path && g_slist_length(priv->path) > 1 ) {
-        return TRUE;
-	}
-	return FALSE;
+	return TRUE; // to do
 }
 static 	const gchar *do_ads_view_get_load_status(DoView *view)
 {

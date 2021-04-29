@@ -311,15 +311,6 @@ static gboolean do_notebook_key_press_cb(GtkWidget *widget, GdkEventKey *event, 
                     do_view_do_close(DO_VIEW(child));
                     return TRUE;
                 }
-                int count = gtk_notebook_get_n_pages(GTK_NOTEBOOK(widget));
-
-                if ( count > 1 ) {
-                    if ( page_num + 1 >= gtk_notebook_get_n_pages(GTK_NOTEBOOK(widget))  )
-                        page_num = 0;
-                    else
-                        page_num++;
-                    gtk_notebook_set_current_page(GTK_NOTEBOOK(widget), page_num);
-                }
             	return FALSE;
             }
             default:

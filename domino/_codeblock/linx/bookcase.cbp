@@ -11,7 +11,7 @@
 				<Option object_output="../../../../../var/Linux/Debian/buster/x86_64/bookcase/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="GoodsView" />
+				<Option parameters="GoodAds GoodsView" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

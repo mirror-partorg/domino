@@ -319,8 +319,9 @@ static void do_common_actions_search_end(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       window)
 {
-    if ( DO_IS_WINDOW(window) )
-        do_window_end_search(DO_WINDOW(window));
+    gboolean continue_ = TRUE;
+    gtk_container_foreach(GTK_CONTAINER(window),
+                      (GtkCallback)grab_focus_end, &continue_);
 }
 static void do_common_actions_next(GSimpleAction *action,
                      GVariant      *parameter,
