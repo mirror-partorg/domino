@@ -29,6 +29,7 @@ USE_EV=0
 USE_EXPAT=1
 USE_JSON=1
 USE_SQLITE3=1
+USE_SOUP=1
 
 LOCAL_CASH=0
 GROUPNAME=domino
@@ -413,6 +414,7 @@ if [ $USE_LIBAV_LOCAL -eq 0 ] ; then
 if [ $USE_LIBVLC -eq 1 ] ; then echo LIBVLC="`pkg-config libvlc --libs`">>common.mak ; fi
 fi
 if [ $USE_LIBXML2 -eq 1 ] ; then echo XML2CFLAGS="`pkg-config libxml-2.0 --cflags`">>common.mak ; fi
+if [ $USE_SOUP -eq 1 ] ; then echo LIBSOUP="-lsoup-2.4">>common.mak ; fi
 if [ $USE_GTK -eq 1 ] 
 then 
 if [ $USE_GTK3 -eq 1 ]

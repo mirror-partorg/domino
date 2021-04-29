@@ -1,5 +1,4 @@
 
-
 #include "do_list_model.h"
 #include "do_client.h"
 #include <time.h>

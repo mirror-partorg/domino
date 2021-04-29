@@ -103,7 +103,7 @@ gboolean domino_check_access(int roles);
 gboolean restart_programm(gchar *message);
 int domino_back_window_focus();
 int domino_dialog_run(GtkDialog *dialog);
-GtkWindow *domino_get_top_window(int *dialog);
+//GtkWindow *domino_get_top_window(int *dialog);
 
 
 void update_action_set_arg(char **argv, gint argc);

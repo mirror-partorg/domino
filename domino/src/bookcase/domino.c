@@ -128,7 +128,7 @@ int dominox_init()
         domino_config_read(i);
 
     DOMINO_LOCAL_SET("list-goods-view", "fields", "ocnsfPR", NULL);//todo
-    DOMINO_LOCAL_SET("main", "websearch", "https://go.mail.ru", NULL);//todo
+    DOMINO_LOCAL_SET("main", "websearch", "https://duckduckgo.com", NULL);//todo
 
     return TRUE;
 }
@@ -160,6 +160,7 @@ int domino_dialog_run(GtkDialog *dialog)
 #define gtk_dialog_run domino_dialog_run
     return res;
 }
+/*
 GtkWindow *domino_get_top_window(int *dialog)
 {
     if ( !windows ) {
@@ -173,7 +174,7 @@ GtkWindow *domino_get_top_window(int *dialog)
         return l->data;
     }
 }
-
+*/
 int domino_back_window_focus()
 {
     if ( back_window ) {

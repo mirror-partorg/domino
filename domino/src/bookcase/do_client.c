@@ -78,9 +78,11 @@ struct _DoClientPrivate
 	DoQueueItem *process[N_QUEUE];
 	GList       *queue[2];
 	guint        message_index;
+	gboolean     connected;
 
 };
 static void do_client_message_finished(SoupSession *session, SoupMessage *msg, gpointer data);
+static void do_client_set_connection_state(DoClient *client);
 
 GType do_client_flags_get_type(void)
 {
@@ -736,31 +738,54 @@ static void do_client_process_clear(DoClient *client, DoQueueItem *item_queue)
             break;
         }
 	}
-#ifdef DEBUG
-    {
-        gchar keys[1024];
-        gint capacity1 = 0;
-        gint i, filo_exists = 0;
-        keys[0] = '\0';
-        for ( i = 0; i < N_QUEUE; i++ )
-            if ( priv->process[i] ) {
-                capacity1++;
-                gint n = strlen(keys);
-                if ( n ) {
-                    keys[n] = ' ';
-                    keys[n+1] = '\0';
-                }
-                strcpy(keys + strlen(keys), priv->process[i]->key);
-                if ( priv->process[i]->filo )
-                    filo_exists++;
-            }
-        gchar *text;
-        text = g_strdup_printf("process %d (%s), queue len %d,%d filo exists %d", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
-        do_application_set_info_label(do_application_get_default(), text);
-        g_print("process %d (%s), queue len %d,%d filo exists %d\n", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
-    }
-#endif
+	do_client_set_connection_state(client);
     do_client_queue_item_clear(item_queue);
+}
+static void do_client_set_connection_state(DoClient *client)
+{
+	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE(client);
+#ifdef DEBUG
+    gchar keys[1024];
+    gint filo_exists = 0;
+    keys[0] = '\0';
+#endif
+    gint capacity1 = 0;
+    gint i;
+    for ( i = 0; i < N_QUEUE; i++ ) {
+        if ( priv->process[i] ) {
+            capacity1++;
+#ifdef DEBUG
+            gint n = strlen(keys);
+            if ( n ) {
+                keys[n] = ' ';
+                keys[n+1] = '\0';
+            }
+            strcpy(keys + strlen(keys), priv->process[i]->key);
+            if ( priv->process[i]->filo )
+                filo_exists++;
+#endif
+        }
+    }
+#ifdef DEBUG
+    gchar *text;
+    text = g_strdup_printf("process %d (%s), queue len %d,%d filo exists %d", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
+    do_application_set_info_label(do_application_get_default(), text);
+    g_print("process %d (%s), queue len %d,%d filo exists %d\n", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
+#endif
+    if ( !priv->connected )
+        do_application_set_connection_state(do_application_get_default(), 4);
+    else {
+        if (capacity1 > 0 && (g_list_length(priv->queue[0]) > 0 || g_list_length(priv->queue[1]) > 0) )
+            do_application_set_connection_state(do_application_get_default(), 3);
+        else
+        if (g_list_length(priv->queue[0]) > 0 || g_list_length(priv->queue[1]) > 0)
+            do_application_set_connection_state(do_application_get_default(), 2);
+        else
+        if (capacity1 > 0)
+            do_application_set_connection_state(do_application_get_default(), 1);
+        else
+            do_application_set_connection_state(do_application_get_default(), 0);
+    }
 }
 static void do_client_queue_item_clear(DoQueueItem *item_queue)
 {
@@ -774,18 +799,23 @@ static void do_client_queue_item_clear(DoQueueItem *item_queue)
 static void do_client_message_finished(SoupSession *session, SoupMessage *msg, gpointer data)
 {
 	DoQueueItem *item = data;
-	//DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (item->client);
+	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (item->client);
+	gboolean res = FALSE;
 #ifdef DEBUG
 	if ( item->canceled )
         g_print("finished canceled\n");
 #endif // DEBUG
 	//priv->queue_message = g_slist_remove(priv->queue_message, data);
-	if ( !item->canceled )
-		do_client_proccess_message(item->client, msg, item->key, item->archive, item->callback, item->data, item->cache);
+	if ( !item->canceled ) {
+		res = do_client_proccess_message(item->client, msg, item->key, item->archive, item->callback, item->data, item->cache) != NULL;
+	}
     else {
         if ( item->callback )
             item->callback(NULL, item->data);
     }
+    priv->connected = res;
+    if ( !priv->connected )
+        do_application_set_connection_state(do_application_get_default(), 4);
     do_client_process_clear(item->client, item);
 }
 gboolean do_client_cancel_request(DoClient *client, const gchar *key)
@@ -1163,6 +1193,7 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
             g_print("process %d (%s), queue len %d,%d filo exists %d\n", capacity1, keys, g_list_length(priv->queue[0]), g_list_length(priv->queue[1]), filo_exists);
         }
 #endif
+        do_client_set_connection_state(client);
 	}
 	return res ? res : cache_res;
 }

@@ -2,9 +2,9 @@ include ../../common.mak
 
 lib_dox  = ../domino/
 
-LDFLAGS = $(LIBGTK) $(WINAPP_) $(LIBDO) $(LIBWEBKIT1) $(LIBEXPAT) $(LIBJSONGLIB) $(LIBSQLITE3) $(LIBSOUP) $(LIBZ) -Wfatal-errors
+LDFLAGS = $(LIBGTK) $(WINAPP_) $(LIBDO) $(LIBWEBKIT) $(LIBEXPAT) $(LIBJSONGLIB) $(LIBSQLITE3) $(LIBSOUP) $(LIBZ) -Wfatal-errors
 
-CFLAGS = -DUSE_GTK -DUSE_UTF8 $(GTKCFLAGS) $(WEBKITCFLAG) $(JSONGLIBCFLAG) -DNODOMINO -DEXPAT -Wfatal-errors -DWEBKIT2
+CFLAGS = -DUSE_GTK -DUSE_UTF8 $(GTKCFLAGS) $(WEBKITCFLAG) $(JSONGLIBCFLAG) -DNODOMINO -DEXPAT -Wfatal-errors -DWEBKIT2 -DDEBUG
 
 
 SRCS = bookcase.c \
@@ -29,7 +29,8 @@ do_validate.c                      \
 do_view.c                           \
 do_view_actions.c                    \
 do_window.c                           \
-domino.c                               \
+do_html_view.c                         \
+domino.c                                \
 hig.c
 
 APP = bookcase

@@ -8,7 +8,9 @@
 #include "do_ads_view.h"
 #include "do_obj_view.h"
 #include "do_list_view.h"
+#if (defined(WEBKIT) || defined(WEBKIT2))
 #include "do_html_view.h"
+#endif
 #include "do_application.h"
 
 static void do_common_actions_do_profile_view(GSimpleAction *action,
@@ -20,9 +22,11 @@ static void do_common_actions_do_setting_view(GSimpleAction *action,
 static void do_common_actions_do_ads_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
+#if (defined(WEBKIT) || defined(WEBKIT2))
 static void do_common_actions_do_html_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
+#endif
 static void do_common_actions_do_goods_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
@@ -67,8 +71,10 @@ GActionEntry entries[] =
 	{ "ObjView", do_common_actions_do_obj_view, "s" },
 	{ "ProfileView", do_common_actions_do_profile_view, },
 	{ "SettingView", do_common_actions_do_setting_view, },
+#if (defined(WEBKIT) || defined(WEBKIT2))
 	{ "HtmlView", do_common_actions_do_html_view, },
 	{ "HtmlViewGo", do_common_actions_do_html_view, "s" },
+#endif
 	{ "Next", do_common_actions_next },
 	{ "Previous", do_common_actions_previous },
 	{ "Quit", do_common_actions_quit },
@@ -158,6 +164,7 @@ static void do_common_actions_do_ads_view(GSimpleAction *action,
     gtk_widget_grab_focus(GTK_WIDGET(nb));
     do_view_do_grab_focus(DO_VIEW(view));
 }
+#if (defined(WEBKIT) || defined(WEBKIT2))
 static void do_common_actions_do_html_view(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       window)
@@ -182,6 +189,7 @@ static void do_common_actions_do_html_view(GSimpleAction *action,
     gtk_widget_grab_focus(GTK_WIDGET(nb));
     do_view_do_grab_focus(DO_VIEW(view));
 }
+#endif
 static void do_common_actions_do_list_view_(const gchar *name, DoWindow *window)
 {
     GtkNotebook *nb;

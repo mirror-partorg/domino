@@ -16,6 +16,7 @@
 #define DEFAULT_STORE "1"
 
 #define OBJECT_ROOT_PATH "MainWindow"
+const int min_protocol_version[] = {1,2,0};
 
 
 #define DO_APPLICATION_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_APPLICATION, DoApplicationPrivate))
@@ -55,6 +56,7 @@ struct _DoApplicationPrivate
 	GObject *client;
 	gchar *store;
 	gchar *protocol_server_version;
+	gint connection_state;
 };
 
 G_DEFINE_TYPE_WITH_CODE (DoApplication, do_application, GTK_TYPE_APPLICATION, G_ADD_PRIVATE(DoApplication))
@@ -64,9 +66,9 @@ static void do_application_add_acceletarors(GApplication *app);
 static void quit_all (void);
 
 //static gint do_application_command_line (GApplication *application, GApplicationCommandLine *cl);
-#ifdef DEBUG
+//#ifdef DEBUG
 DoApplication *application = NULL;
-#endif
+//#endif
 
 static void do_application_init(DoApplication *temp)
 {
@@ -120,9 +122,9 @@ static GObject *do_application_constructor(GType type, guint n_construct_propert
     //g_signal_connect(object, "activate", G_CALLBACK(do_application_activate), object);
     //g_signal_connect(object, "command-line", G_CALLBACK (do_application_command_line), NULL);
 
-#ifdef DEBUG
+//#ifdef DEBUG
     application = DO_APPLICATION(object);
-#endif
+//#endif
 	return object;
 }
 
@@ -213,6 +215,8 @@ do_application_create_window_impl (DoApplication *app)
 	DoWindow *window;
 
 	window = g_object_new (DO_TYPE_WINDOW, "application", app, NULL);
+	if ( DO_IS_WINDOW(window) )
+        g_print("window\n");
 
 	g_signal_connect (window,
 			  "delete_event",
@@ -341,6 +345,16 @@ static void do_application_set_protocol(JsonNode *node, DoApplication *app)
         member = json_object_get_member(obj, "protocol");
         g_assert(member != NULL && json_node_get_value_type(member) == G_TYPE_STRING);
         priv->protocol_server_version = g_strdup(json_node_get_string(member));
+        gchar **version = g_strsplit(priv->protocol_server_version, ".", -1);
+        gint i, n;
+
+        for ( i = 0; i < G_N_ELEMENTS(min_protocol_version); i++ ) {
+            if ( g_strv_length(version) <= i ) break;
+            n = atoi(version[i]);
+            if ( n < min_protocol_version[i] ) {
+                DOMINO_SHOW_ERROR("Верcия сервера %s ниже допустимой %d.%d.%d", priv->protocol_server_version, min_protocol_version[0], min_protocol_version[1], min_protocol_version[2]);
+            }
+        }
         //json_node_unref(node);
 	}
 }
@@ -438,6 +452,23 @@ GtkWidget *do_application_get_focus_child(DoApplication *app)
 		}
 	}
     return NULL;
+}
+GtkWindow *do_application_get_window(DoApplication *app, gboolean *open_dialog)
+{
+	GList *windows, *l;
+	GtkWindow *window = NULL;
+    if ( open_dialog ) *open_dialog = FALSE;
+	windows = gtk_application_get_windows (GTK_APPLICATION (app));
+	for (l = windows; l != NULL; l = g_list_next (l))
+	{
+		if ( DO_IS_WINDOW(l->data) ) {
+            window = l->data;
+		}
+        if ( GTK_IS_DIALOG(l->data) && open_dialog ) {
+            *open_dialog = TRUE;
+        }
+	}
+    return window;
 }
 gboolean do_application_cancel_request(DoApplication *app, const gchar *key)
 {
@@ -645,11 +676,11 @@ void do_application_log_func(const gchar *log_domain, GLogLevelFlags log_flags, 
         do_log(level, msg);
     g_print(msg);
 }
-#ifdef DEBUG
 inline DoApplication *do_application_get_default()
 {
     return application;
 }
+#ifdef DEBUG
 void do_application_set_info_label(DoApplication *app, const gchar *label)
 {
     GList *l;
@@ -662,3 +693,15 @@ void do_application_set_info_label(DoApplication *app, const gchar *label)
 
 }
 #endif
+void do_application_set_connection_state(DoApplication *app, gint state)
+{
+    DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
+    if ( priv->connection_state != state ) {
+        DoWindow *window;
+        priv->connection_state = state;
+        window = DO_WINDOW(do_application_get_window(app, NULL));
+        if ( window ) {
+            do_window_show_connection_state(window, priv->connection_state);
+        }
+    }
+}
