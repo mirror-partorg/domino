@@ -364,7 +364,7 @@ static void do_list_model_group_record_update(JsonArray *columns, guint index_, 
     g_return_if_fail(index_ < g_slist_length(data->keys));
     key = (gchar*)g_slist_nth(data->keys, index_)->data;
     if ( data->filtered ) {
-        gint i;
+        gint i;//to do
         for ( i = 0; i < priv->filter_n_records; i++ ) {
             if ( !g_strcmp0(priv->filter_records[i]->key, key) ) {
                 record = priv->filter_records[i];
@@ -977,6 +977,9 @@ gboolean do_list_model_set_filter(DoListModel *model, JsonNode *node)
                 gtk_tree_path_free(path);
             }
         }
+        priv->filter_n_records = 0;
+        priv->filter_records = NULL;
+
     }
     else {
         if ( node ) {
