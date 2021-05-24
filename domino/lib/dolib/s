@@ -1,0 +1,25 @@
+OBJS=""
+mkdir -p c:/var/MSYS_NT-10.0-19042/x86_64/libdolib.so
+mkdir -p c:/var/MSYS_NT-10.0-19042/x86_64/.libs
+for f in log.c auth.c list.c mem.c data.c socket_io.c rpc_client.c rpc.c scanner.c thread.c proc_state.c service.c util.c ../../misc/iconv_.c charset.c numutils.c ole.c xls.c ; do \
+	n=c:/var/MSYS_NT-10.0-19042/x86_64/libdolib.so/$(basename $f).o ; \
+	if [[ $f -nt $n ]] ; \
+	then \
+		echo $f ; \
+		gcc.exe -shared -fPIC -DDOMINO78 -DWINSOCK -I../../include -I../../var/MSYS_NT-10.0-19042/x86_64 -IC:/dev/msys64/mingw64/include -IC:/dev/msys64/mingw64/include/gtk-3.0 -IC:/dev/msys64/mingw64/include/glib-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/glib-2.0/include -IC:/dev/msys64/mingw64/include/pango-1.0 -IC:/dev/msys64/mingw64/include/cairo -IC:/dev/msys64/mingw64/include/gdk-pixbuf-2.0 -IC:/dev/msys64/mingw64/include/atk-1.0 -IC:/dev/msys64/mingw64/include/webkitgtk-3.0 -IC:/dev/msys64/mingw64/include/libsoup-2.4 -IC:/dev/msys64/mingw64/include/librsvg-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0/include -IC:/dev/msys64/mingw64/include/json-glib-1.0 -IC:/Users/rishes/Local/Programs/Python/Python38/include -D_WIN32 -DBTI_WIN_32 -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0 -IC:/MinGW/mingw64/include -IC:/MinGW/mingw64/include/json-c -Lc:/var/MSYS_NT-10.0-19042/x86_64/.libs -L"C:/Program\ Files/Actian/PSQL/bin" -DZLIB -DBINARY_UPDATE  -s -O2 -D_REENTRANT -DDEBUG1 -c $f -o $n; \
+	fi ;\
+done ; \
+for f in log.c auth.c list.c mem.c data.c socket_io.c rpc_client.c rpc.c scanner.c thread.c proc_state.c service.c util.c ../../misc/iconv_.c charset.c numutils.c ole.c xls.c ; do OBJS="$OBJS c:/var/MSYS_NT-10.0-19042/x86_64/libdolib.so/$(basename $f).o"; done ; \
+if [[ "1" == "1" ]] ; \
+then \
+	g++.exe -shared -fPIC -Wall  -DDOMINO78 -DWINSOCK -I../../include -I../../var/MSYS_NT-10.0-19042/x86_64 -IC:/dev/msys64/mingw64/include -IC:/dev/msys64/mingw64/include/gtk-3.0 -IC:/dev/msys64/mingw64/include/glib-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/glib-2.0/include -IC:/dev/msys64/mingw64/include/pango-1.0 -IC:/dev/msys64/mingw64/include/cairo -IC:/dev/msys64/mingw64/include/gdk-pixbuf-2.0 -IC:/dev/msys64/mingw64/include/atk-1.0 -IC:/dev/msys64/mingw64/include/webkitgtk-3.0 -IC:/dev/msys64/mingw64/include/libsoup-2.4 -IC:/dev/msys64/mingw64/include/librsvg-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0/include -IC:/dev/msys64/mingw64/include/json-glib-1.0 -IC:/Users/rishes/Local/Programs/Python/Python38/include -D_WIN32 -DBTI_WIN_32 -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0 -IC:/MinGW/mingw64/include -IC:/MinGW/mingw64/include/json-c -Lc:/var/MSYS_NT-10.0-19042/x86_64/.libs -L"C:/Program\ Files/Actian/PSQL/bin" -DZLIB -DBINARY_UPDATE  -D_REENTRANT -DDEBUG1 -s -O2 \
+                  $OBJS -o c:/var/MSYS_NT-10.0-19042/x86_64/.libs/dolib.dll  -lz -lws2_32 -liconv   -lm \
+                  -Wl,-soname,libdolib.so.1 ; \
+else  \
+	echo $OBJS ; \
+	g++.exe -shared -fPIC -Wall  -DDOMINO78 -DWINSOCK -I../../include -I../../var/MSYS_NT-10.0-19042/x86_64 -IC:/dev/msys64/mingw64/include -IC:/dev/msys64/mingw64/include/gtk-3.0 -IC:/dev/msys64/mingw64/include/glib-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/glib-2.0/include -IC:/dev/msys64/mingw64/include/pango-1.0 -IC:/dev/msys64/mingw64/include/cairo -IC:/dev/msys64/mingw64/include/gdk-pixbuf-2.0 -IC:/dev/msys64/mingw64/include/atk-1.0 -IC:/dev/msys64/mingw64/include/webkitgtk-3.0 -IC:/dev/msys64/mingw64/include/libsoup-2.4 -IC:/dev/msys64/mingw64/include/librsvg-2.0 -IC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0/include -IC:/dev/msys64/mingw64/include/json-glib-1.0 -IC:/Users/rishes/Local/Programs/Python/Python38/include -D_WIN32 -DBTI_WIN_32 -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib -LC:/Dev/mingw/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/lib/gcc/x86_64-w64-mingw32/8.1.0 -IC:/MinGW/mingw64/include -IC:/MinGW/mingw64/include/json-c -Lc:/var/MSYS_NT-10.0-19042/x86_64/.libs -L"C:/Program\ Files/Actian/PSQL/bin" -DZLIB -DBINARY_UPDATE  -D_REENTRANT -DDEBUG1 -s -O2 \
+                  $OBJS -o c:/var/MSYS_NT-10.0-19042/x86_64/.libs/libdolib.so.   -lz -lws2_32 -liconv   -lm \
+                  -Wl,-soname,libdolib.so.1 ; \
+	ln -fs libdolib.so. c:/var/MSYS_NT-10.0-19042/x86_64/.libs/libdolib.so.1 ; \
+	ln -fs libdolib.so. c:/var/MSYS_NT-10.0-19042/x86_64/.libs/libdolib.so ; \
+fi
