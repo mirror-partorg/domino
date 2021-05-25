@@ -922,6 +922,10 @@ static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, 
 {
 	//g_print("process message key %s\n", key);//debug it
 	JsonNode *res = NULL;
+	if ( !msg ) {
+		g_warning("Error from %s msg is NULL\n", soup_uri_to_string(soup_message_get_uri(msg),TRUE));
+        }
+        else
 	if ( msg->status_code != 200 ) {
 		g_warning("Error from %s status: %d %s\n", soup_uri_to_string(soup_message_get_uri(msg),TRUE), msg->status_code, msg->reason_phrase);
 	}
