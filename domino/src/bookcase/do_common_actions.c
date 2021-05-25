@@ -8,6 +8,8 @@
 #include "do_ads_view.h"
 #include "do_obj_view.h"
 #include "do_list_view.h"
+#include "do_about_dialog.h"
+#include "version.h"
 #if (defined(WEBKIT) || defined(WEBKIT2))
 #include "do_html_view.h"
 #endif
@@ -54,12 +56,15 @@ static void do_common_actions_search(GSimpleAction *action,
 static void do_common_actions_search_end(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data);
+static void do_common_actions_do_about(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data);
 
 GActionEntry entries[] =
 {
 //    { "QuitAction", do_common_actions_do_quit,},
 //    { "CloseAction", do_common_actions_do_close,},
-//    { "HelpAction", do_common_actions_do_about,},
+    { "About", do_common_actions_do_about,},
 	//{ "TabsPrevious",do_common_actions_do_tabs_previous, },
 	//{ "TabsNext", do_common_actions_do_tabs_next, },
 	//{ "TabsMoveLeft", do_common_actions_do_tabs_move_left, },
@@ -103,6 +108,12 @@ void do_common_actions_init(DoWindow *window)
 }
 #define PRINT_ROOT_PATH "Print"
 
+static void do_common_actions_do_about(GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       win)
+{
+    do_about_dialog(win, "");
+}
 static void do_common_actions_quit(GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       window)

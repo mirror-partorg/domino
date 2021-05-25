@@ -1,5 +1,5 @@
-#define VERSION "0.2.0"
-#define ADATE   "17 November 2019"
+#define VERSION "0.9.0"
+#define ADATE   "25 Мая 2021"
 
 #define HANDBOOK_RELEASE VERSION
 

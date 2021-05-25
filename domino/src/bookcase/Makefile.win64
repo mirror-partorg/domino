@@ -29,6 +29,7 @@ do_validate.c                      \
 do_view.c                           \
 do_view_actions.c                    \
 do_window.c                           \
+do_about_dialog.c                     \
 domino.c                               \
 hig.c
 

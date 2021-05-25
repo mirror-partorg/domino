@@ -316,6 +316,7 @@ static GObject *do_window_constructor (GType type,
     g_menu_append(G_MENU(submenu), "Послать по почте", "view-actions.MailSendAction");
 
     g_menu_append(G_MENU(menu), "Закрыть", "common-actions.Close");
+    g_menu_append(G_MENU(menu), "О приложении", "common-actions.About");
     g_menu_append(G_MENU(menu), "Выход", "common-actions.Quit");
 
     DOMINO_PROFILE_OBJECT_INIT(G_OBJECT(window), OBJECT_ROOT_PATH,
