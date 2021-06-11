@@ -2,14 +2,14 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="../../src/bookcase/do_filter.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/bookcase/do_message.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1229" topLine="38" />
+			<Cursor1 position="20" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../../src/bookcase/do_html_view.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/bookcase/do_common_actions.c" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="14019" topLine="405" />
+			<Cursor1 position="4331" topLine="96" />
 		</Cursor>
 	</File>
 	<File name="../../src/bookcase/do_view.c" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -17,44 +17,14 @@
 			<Cursor1 position="9558" topLine="371" />
 		</Cursor>
 	</File>
-	<File name="../../src/bookcase/do_tree_view.c" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/bookcase/do_html_view.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2278" topLine="65" />
+			<Cursor1 position="14019" topLine="405" />
 		</Cursor>
 	</File>
-	<File name="../../src/bookcase/bookcase.c" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/bookcase/do_setting_view.c" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="625" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../../src/bookcase/do_message.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="20" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../../src/bookcase/do_setting_view.c" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2457" topLine="64" />
-		</Cursor>
-	</File>
-	<File name="../../src/bookcase/do_list_model.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="31401" topLine="955" />
-		</Cursor>
-	</File>
-	<File name="../../src/bookcase/domino.c" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3454" topLine="108" />
-		</Cursor>
-	</File>
-	<File name="../../src/bookcase/do_common_actions.c" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3168" topLine="49" />
-		</Cursor>
-	</File>
-	<File name="../../src/bookcase/do_notebook.c" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8825" topLine="295" />
+			<Cursor1 position="2457" topLine="49" />
 		</Cursor>
 	</File>
 	<File name="../../src/bookcase/do_entry.c" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -62,9 +32,19 @@
 			<Cursor1 position="1727" topLine="55" />
 		</Cursor>
 	</File>
-	<File name="../../src/bookcase/do_utilx.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/bookcase/domino.c" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="18522" topLine="547" />
+			<Cursor1 position="3454" topLine="108" />
+		</Cursor>
+	</File>
+	<File name="../../src/bookcase/do_list_model.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="436" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../src/bookcase/do_tree_view.c" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2278" topLine="65" />
 		</Cursor>
 	</File>
 	<File name="../../src/bookcase/do_obj_view.c" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -72,19 +52,14 @@
 			<Cursor1 position="28253" topLine="756" />
 		</Cursor>
 	</File>
-	<File name="../../src/bookcase/do_application.c" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3681" topLine="114" />
-		</Cursor>
-	</File>
 	<File name="../../src/bookcase/do_client.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="0" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../../src/bookcase/do_ads_view.c" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/bookcase/do_utilx.c" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="18537" topLine="487" />
+			<Cursor1 position="18522" topLine="547" />
 		</Cursor>
 	</File>
 	<File name="../../src/bookcase/do_context.c" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -92,14 +67,39 @@
 			<Cursor1 position="2352" topLine="58" />
 		</Cursor>
 	</File>
-	<File name="../../src/bookcase/do_list_view.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/bookcase/do_list_view.c" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="50665" topLine="1307" />
+			<Cursor1 position="16501" topLine="471" />
+		</Cursor>
+	</File>
+	<File name="../../src/bookcase/do_filter.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1229" topLine="38" />
+		</Cursor>
+	</File>
+	<File name="../../src/bookcase/do_application.c" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3681" topLine="114" />
+		</Cursor>
+	</File>
+	<File name="../../src/bookcase/do_ads_view.c" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="18537" topLine="487" />
 		</Cursor>
 	</File>
 	<File name="../../src/bookcase/do_window.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="27045" topLine="740" />
+		</Cursor>
+	</File>
+	<File name="../../src/bookcase/do_notebook.c" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8825" topLine="295" />
+		</Cursor>
+	</File>
+	<File name="../../src/bookcase/bookcase.c" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="625" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

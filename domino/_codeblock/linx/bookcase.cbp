@@ -42,6 +42,9 @@
 		<Unit filename="../../src/bookcase/bookcase.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../src/bookcase/do_about_dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../../src/bookcase/do_ads_view.c">
 			<Option compilerVar="CC" />
 		</Unit>
