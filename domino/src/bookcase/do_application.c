@@ -53,6 +53,8 @@ struct _DoApplicationPrivate
 	GtkWidget *first_window;
 	gchar **actions;
 	gboolean clear_cache;
+	gboolean fullscreen;
+	gboolean hide_control;
 	GObject *client;
 	gchar *store;
 	gchar *protocol_server_version;
@@ -83,6 +85,12 @@ static void do_application_init(DoApplication *temp)
         },
         {
             "clearcache", '\0', 0, G_OPTION_ARG_NONE, &priv->clear_cache, NULL,
+        },
+        {
+            "fullscreen", 'F', 0, G_OPTION_ARG_NONE, &priv->fullscreen, NULL,
+        },
+        {
+            "hidecontrol", 'h', 0, G_OPTION_ARG_NONE, &priv->hide_control, NULL,
         },
 
         {
@@ -358,6 +366,20 @@ static void do_application_set_protocol(JsonNode *node, DoApplication *app)
         //json_node_unref(node);
 	}
 }
+static void main_window_init(DoApplication *app)
+{
+    DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
+    
+    if ( priv->fullscreen )
+        gtk_window_fullscreen(GTK_WINDOW(priv->first_window));
+    if ( priv->hide_control ) {
+#ifdef CURSOR_OFF
+        GdkCursor *cursor = gdk_cursor_new(GDK_BLANK_CURSOR);
+        gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(priv->first_window)), cursor);
+#endif
+    }
+}
+
 static gboolean run_actions(DoApplication *app)
 {
 	DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
@@ -367,8 +389,10 @@ static gboolean run_actions(DoApplication *app)
 	gchar *buf;
 	gint i;
 
-	gchar *url = NULL;
-    DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
+	
+        gchar *url = NULL;
+        main_window_init(app);
+        DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
 	if ( !url )
         DOMINO_COMMON_GET("main", "url", &url, NULL);
 	if ( !priv->store )
@@ -415,13 +439,14 @@ static gboolean run_actions(DoApplication *app)
 }
 static void do_application_activate(GApplication *app)
 {
-	DoApplicationPrivate *priv;
+    DoApplicationPrivate *priv;
     priv = DO_APPLICATION_GET_PRIVATE(app);
     if ( !DOMINO_INIT ) {
         DOMINO_SHOW_ERROR("Окружение не инициализировано");
         return;
     }
     priv->first_window = GTK_WIDGET(do_application_create_window(DO_APPLICATION(app), NULL));
+    domino_set_main_window(GTK_WINDOW(priv->first_window));
     do_application_add_acceletarors(app);
     //if ( priv->actions && priv->actions[0] )
     g_idle_add((GSourceFunc)run_actions, app);
@@ -674,7 +699,7 @@ void do_application_log_func(const gchar *log_domain, GLogLevelFlags log_flags, 
     }
     else
         do_log(level, msg);
-    g_print(msg);
+    g_print("%s", msg);
 }
 inline DoApplication *do_application_get_default()
 {

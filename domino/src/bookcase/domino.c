@@ -237,15 +237,13 @@ int domino_send_barcode_eventkey_to_crntwin(char *barcode)
     return TRUE;
 }
 #endif
-#ifdef FULL_SCREEN
-#ifdef GO_BACK
+#ifdef CASH
 static gboolean sad(gpointer data)
 {
     do_log(LOG_INFO, "go back");
     domino_back_window_focus();
     return FALSE;
 }
-#endif
 #endif
 void domino_set_main_window(GtkWindow *window)
 {
@@ -257,15 +255,13 @@ void domino_set_main_window(GtkWindow *window)
     for ( i = 0; i < 20; i++ ) {
         back_window = gdk_screen_get_active_window(screen);
         if ( back_window ) break;
-        do_log(LOG_INFO, "sleep wait back");
+        g_print("sleep wait back\n");
         DO_SEC_SLEEP(1);
     }
 #endif
-#ifdef FULL_SCREEN
-#ifdef GO_BACK
-    do_log(LOG_INFO, "go back time");
+#ifdef CASH
+    g_print("go back time\n");
     g_timeout_add(500, sad, NULL);
-#endif
 #endif
 }
 void domino_update_main_window_title()
