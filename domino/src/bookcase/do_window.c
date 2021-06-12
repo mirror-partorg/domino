@@ -275,7 +275,7 @@ static GObject *do_window_constructor (GType type,
 #if GTK_CHECK_VERSION(3,12,0)
     image = gtk_image_new_from_icon_name("open-menu-symbolic", GTK_ICON_SIZE_MENU);
 #else
-    image = gtk_image_new_from_icon_name("view-sidebar-symbolic", GTK_ICON_SIZE_MENU);
+    image = gtk_image_new_from_icon_name("view-list-symbolic", GTK_ICON_SIZE_MENU);
 #endif
     priv->gear_button = gear_button = gtk_menu_button_new();
     gtk_box_pack_end(GTK_BOX(box), gear_button, FALSE, FALSE, 0);
