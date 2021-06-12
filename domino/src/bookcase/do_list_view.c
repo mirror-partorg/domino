@@ -733,6 +733,9 @@ static void search_go_to_end_word(DoListView *do_view);
 static void search_refresh_timeout(DoListView *do_view);
 static gboolean search_clear(DoListView *do_view);
 static gboolean search_find(DoListView *do_view, const char *text);
+#ifdef CASH
+static void do_list_view_send(DoListView *list);
+#endif
 #ifdef SEARCH_BCODE
 static gboolean search_find_by_bcode(DoListView *do_view, const char *text);
 #endif // SEARCH_BCODE
@@ -878,13 +881,15 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                 search_clear(do_view);
                 break;
             case GDK_KEY_Right: {
-#ifdef FILTER
-                const gchar *text = do_product_view_filter_get_text(do_view);
-                char *buf = g_strdup(text ? text : priv->search_text);
-                do_product_view_filter_set_text(do_view, buf);
-                g_free(buf);
+#ifdef CASH
+                gchar *text = NULL;
+                if ( priv->search_text && strlen(priv->search_text) > 0 ) {
+                    text = g_strdup( priv->search_text);
+                }
+                do_window_start_search(DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view))), text);
+                //if ( text )
+                //    g_free(text);
                 return TRUE;
-                break;
 #else
                 if ( priv->search_item == DO_LIST_VIEW_SEARCH_ITEM_SORT ) {
                     search_go_to_end_word(do_view);
@@ -899,6 +904,13 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                     return TRUE;
                 }
                 break;
+#ifdef CASH
+            case GDK_KEY_F5:
+                if ( g_strcmp0(priv->name, "goods") == 0 ) {
+                    do_list_view_send(do_view);
+                }
+                break;
+#endif 
     	default:
     		break;
     	}
@@ -1165,7 +1177,7 @@ static gchar *get_sort_from_cursor(DoListView *do_view)
     gtk_tree_path_free(path);
     return NULL;
 }
-/*
+#ifdef CASH
 static gchar *get_code_from_cursor(DoListView *do_view)
 {
     DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(do_view);
@@ -1186,7 +1198,7 @@ static gchar *get_code_from_cursor(DoListView *do_view)
     gtk_tree_path_free(path);
     return NULL;
 }
-*/
+#endif
 /*
 static gchar *get_code_from_path(DoListView *view, GtkTreePath *path)
 {
@@ -1390,3 +1402,24 @@ static gboolean	do_list_view_can_do_unapply(DoView *view)
     }
     return retval;
 }
+#ifdef CASH
+static gboolean sad(gpointer data)
+{
+    do_log(LOG_INFO, "code %s 0 ", (char*)data);
+    domino_send_barcode_eventkey_to_crntwin((char *)data);
+    do_log(LOG_INFO, "code %s 1 ", (char*)data);
+    do_free(data);
+    return FALSE;
+}
+static void do_list_view_send(DoListView *view)
+{
+    gchar *code;
+    gboolean parcel = FALSE;
+    code = get_code_from_cursor(DO_LIST_VIEW(view));
+    if ( !code )
+        return;
+    g_print("code %s\n", code);
+    domino_back_window_focus();
+    g_timeout_add(300, sad,code);
+}
+#endif

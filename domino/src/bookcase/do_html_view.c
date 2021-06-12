@@ -202,7 +202,7 @@ static void do_html_view_load_started(WebKitWebView  *web_view,
 	DoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (view);
 	priv->load_status = TRUE;
 	priv->load_progress = 0;
-	gtk_entry_set_progress_fraction(GTK_ENTRY(priv->load_progress_bar),0);
+	//gtk_entry_set_progress_fraction(GTK_ENTRY(priv->load_progress_bar),0);
     //gtk_widget_show(GTK_WIDGET(priv->load_progress_bar));
     //gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(priv->load_progress_bar), 0);
     g_object_notify (G_OBJECT (view), "load-status");
@@ -214,7 +214,7 @@ static void do_html_view_load_finished(WebKitWebView  *web_view,
 {
 	DoHtmlViewPrivate *priv = DO_HTML_VIEW_GET_PRIVATE (view);
 	priv->load_status = FALSE;
-	gtk_entry_set_progress_fraction(GTK_ENTRY(priv->load_progress_bar),0);
+	//gtk_entry_set_progress_fraction(GTK_ENTRY(priv->load_progress_bar),0);
     //gtk_widget_hide(GTK_WIDGET(priv->load_progress_bar));
    g_object_notify (G_OBJECT (view), "load-status");
 #ifndef CASH
@@ -234,7 +234,7 @@ static void do_html_view_load_changed(WebKitWebView *web_view,
 	priv->load_progress = progress;
     g_object_notify (G_OBJECT (view), "load-progress");
     //gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(priv->load_progress_bar), progress/100.);
-    gtk_entry_set_progress_fraction(GTK_ENTRY(priv->load_progress_bar),progress/100.);
+    //gtk_entry_set_progress_fraction(GTK_ENTRY(priv->load_progress_bar),progress/100.);
 
 }
 #endif
@@ -422,13 +422,13 @@ static void do_html_view_set_url(DoHtmlView *view, const gchar *url)
         }
         soup_uri_free(uri);
 
-        /*fix meif ( !no_proxy ) {
+        if ( !no_proxy ) {
             proxyUri = soup_uri_new(httpProxy);
             g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, proxyUri, NULL);
             soup_uri_free(proxyUri);
         }
         else
-            g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, NULL, NULL);*/
+            g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, NULL, NULL);
     }
 
     webkit_web_view_load_uri(WEBKIT_WEB_VIEW(priv->view_html), url);

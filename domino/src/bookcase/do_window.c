@@ -39,8 +39,10 @@ static void do_window_previous_clicked(GtkWidget *widget, DoWindow *window);
 static void do_window_next_clicked(GtkWidget *widget, DoWindow *window);
 #endif
 
+#ifndef CASH
 #if !GTK_CHECK_VERSION(3,12,0)
 static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event, gpointer data);
+#endif
 #endif
 
 #define DEFAULT_WINDOW_SIZE "800x500"
@@ -55,6 +57,12 @@ static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event,
 #endif // CASH
 
 #define DO_WINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_WINDOW, DoWindowPrivate))
+#if GTK_CHECK_VERSION(3,12,0)
+#define GTK_SEPARATOR_LEN 6
+#else
+#define GTK_SEPARATOR_LEN 2
+#endif
+
 
 const gchar *states[] = {"network-idle-symbolic",
                          "network-receive-symbolic",
@@ -206,9 +214,11 @@ static GObject *do_window_constructor (GType type,
                       G_CALLBACK (window_state_event), NULL);
     g_signal_connect (window, "configure-event",
                       G_CALLBACK (do_window_configure_event_cb), OBJECT_ROOT_PATH);
+#ifndef CASH
 #if !GTK_CHECK_VERSION(3,12,0)
     g_signal_connect (window, "key-press-event",
                       G_CALLBACK (do_window_key_press_event_cb), NULL);
+#endif
 #endif
     priv = DO_WINDOW_GET_PRIVATE(window);
 
@@ -239,7 +249,7 @@ static GObject *do_window_constructor (GType type,
     gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(priv->headerbar), TRUE);
     gtk_header_bar_set_custom_title(GTK_HEADER_BAR(priv->headerbar), box);
 #else
-    gtk_box_pack_start(GTK_BOX(vbox), box, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), box, FALSE, FALSE, 0);
 #endif
     gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 #ifndef POS_MINIMAL
@@ -260,15 +270,15 @@ static GObject *do_window_constructor (GType type,
     g_signal_connect(priv->entry, "changed", G_CALLBACK(do_window_entry_changed), window);
     g_signal_connect(priv->entry, "activate", G_CALLBACK(do_window_entry_activate), window);
     g_signal_connect(priv->entry, "key-press-event", G_CALLBACK(do_window_entry_key_press), window);
-    gtk_box_pack_start(GTK_BOX(box), entry, TRUE, TRUE, 6);
+    gtk_box_pack_start(GTK_BOX(box), entry, TRUE, TRUE, GTK_SEPARATOR_LEN);
     gtk_widget_set_sensitive(GTK_WIDGET(priv->entry), FALSE);
 
     priv->footer_label = gtk_label_new("");
-    gtk_box_pack_start(GTK_BOX(vbox), priv->footer_label, FALSE, FALSE, 6);
+    gtk_box_pack_start(GTK_BOX(vbox), priv->footer_label, FALSE, FALSE, GTK_SEPARATOR_LEN);
 
     priv->connection_icon = gtk_image_new();
     gtk_image_set_from_icon_name(GTK_IMAGE(priv->connection_icon), states[0], GTK_ICON_SIZE_MENU);
-    gtk_box_pack_end(GTK_BOX(box), priv->connection_icon, FALSE, FALSE, 6);
+    gtk_box_pack_end(GTK_BOX(box), priv->connection_icon, FALSE, FALSE, GTK_SEPARATOR_LEN);
 
 
     menu = g_menu_new();
@@ -282,7 +292,7 @@ static GObject *do_window_constructor (GType type,
 #if GTK_CHECK_VERSION(3,12,0)
     gtk_menu_button_set_use_popover(GTK_MENU_BUTTON(gear_button), TRUE);
 #else
-    gtk_box_pack_end(GTK_BOX(headerbar), gear_button, FALSE, FALSE, 0);
+    //gtk_box_pack_end(GTK_BOX(box), gear_button, FALSE, FALSE, 0);
 #endif
     gtk_button_set_image(GTK_BUTTON(gear_button), image);
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(gear_button), G_MENU_MODEL(menu));
@@ -660,6 +670,7 @@ static void do_window_entry_changed(GtkEditable *editable, DoWindow *window)
     }
 	priv->search_src = g_timeout_add(SEARCH_EXTERNAL_TIMEOUT, (GSourceFunc)do_window_external_search, window);
 }
+#ifndef CASH
 #if !GTK_CHECK_VERSION(3,12,0)
 static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event, gpointer data)
 {
@@ -685,7 +696,29 @@ static gboolean do_window_key_press_event_cb(GtkWidget *widget, GtkEvent *event,
     return retval;
 }
 #endif
+#endif
 #ifndef POS_MINIMAL
+void do_window_start_search(DoWindow *window, const gchar *text)
+{
+	GActionGroup *group;
+	GAction *action;
+	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+#if GTK_CHECK_VERSION(3,16,0)
+        group = gtk_widget_get_action_group(GTK_WIDGET(window), "common-actions");
+#else
+	group = do_common_action_get_group();
+#endif
+
+        action = g_action_map_lookup_action(G_ACTION_MAP(group), "Search");
+        if ( action )
+            g_action_activate(action,NULL);
+        if ( text ) {
+             gtk_entry_set_text(GTK_ENTRY(priv->entry), text);
+             gtk_editable_set_position(GTK_EDITABLE(priv->entry), strlen(text));
+             
+        }
+}
+
 static void do_window_next_clicked(GtkWidget *widget, DoWindow *window)
 {
 	GActionGroup *group;
