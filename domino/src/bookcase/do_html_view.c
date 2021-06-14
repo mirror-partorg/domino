@@ -422,13 +422,13 @@ static void do_html_view_set_url(DoHtmlView *view, const gchar *url)
         }
         soup_uri_free(uri);
 
-        if ( !no_proxy ) {
+        /*fix meif ( !no_proxy ) {
             proxyUri = soup_uri_new(httpProxy);
             g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, proxyUri, NULL);
             soup_uri_free(proxyUri);
         }
         else
-            g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, NULL, NULL);
+            g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, NULL, NULL);*/
     }
 
     webkit_web_view_load_uri(WEBKIT_WEB_VIEW(priv->view_html), url);

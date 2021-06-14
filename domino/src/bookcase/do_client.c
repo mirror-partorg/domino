@@ -90,7 +90,7 @@ GType do_client_flags_get_type(void)
     if (G_UNLIKELY (type == 0))
     {
         static const GFlagsValue _do_client_flags_values[] = {
-         { DO_CLIENT_FLAGS_ARCHIVE, "DO_CLIENT_FLAGS_ARCHIVE", "archive" },
+         { DO_CLIENT_FLAGS_ARCHIVE_, "DO_CLIENT_FLAGS_ARCHIVE", "archive" },
 	     { DO_CLIENT_FLAGS_NOCACHE, "DO_CLIENT_FLAGS_NOCACHE", "nocache" },
 	     { DO_CLIENT_FLAGS_FILO, "DO_CLIENT_FLAGS_FILO", "first input last output" },
          { 0, NULL, NULL }
@@ -1058,12 +1058,12 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
 	gchar *url;
 	gchar *body = "{}";
     url = g_strdup_printf("%s/%s?store=%s", priv->url, func, priv->store);
-    if ( flags & DO_CLIENT_FLAGS_ARCHIVE ) {
+    /*fix me if ( flags & DO_CLIENT_FLAGS_ARCHIVE ) {
         gchar *buf;
         buf = g_strdup_printf("%s&zip=1", url);
         g_free(url);
         url = buf;
-    }
+    }*/
     gchar *buf, *name, *value;
     name = va_arg(args, gchar*);
     while ( name != NULL ) {
@@ -1107,7 +1107,8 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
             msg->request_body = rbody;
         }
 		soup_session_send_message(session, msg);
-		res = do_client_proccess_message(client, msg, key, flags & DO_CLIENT_FLAGS_ARCHIVE, callback, data, res);
+		res = do_client_proccess_message(client, msg, key, 0, callback, data, res);
+		//fix meres = do_client_proccess_message(client, msg, key, flags & DO_CLIENT_FLAGS_ARCHIVE, callback, data, res);
 		g_free(url);
 	}
 	else {
@@ -1132,7 +1133,7 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
 		item->data = data;
 		item->client = client;
 		//item->index = priv->item_index++;
-		item->archive = flags & DO_CLIENT_FLAGS_ARCHIVE;
+		item->archive = 0;//fix meflags & DO_CLIENT_FLAGS_ARCHIVE;
 		item->key = key ? g_strdup(key) : g_strdup_printf("%d", priv->message_index++);
 		item->canceled = FALSE;
 		item->cache = res;

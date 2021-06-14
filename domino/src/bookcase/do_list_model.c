@@ -470,8 +470,8 @@ static gboolean do_list_model_group_update(DoListModel *model)
     priv->group_update_keys = NULL;
     priv->group_update_source = 0;
 
-    if ( g_slist_length(data->keys) >= ARCHIVED_MIN )
-        flags = flags | DO_CLIENT_FLAGS_ARCHIVE;
+    //fix meif ( g_slist_length(data->keys) >= ARCHIVED_MIN )
+    //    flags = flags | DO_CLIENT_FLAGS_ARCHIVE;
 
     gchar *body, *str;
     body = g_strdup_printf("{\"fields\":\"%s\",\"name\":\"%s\",\"keys\":[", priv->fields, priv->name);
@@ -784,7 +784,7 @@ static gboolean do_list_model_fill(DoListModel *model)
     JsonNode *node;
 
     priv->updated_keys = TRUE;
-    node = do_client_request2_async(priv->client, "GET", "GetList", priv->name, DO_CLIENT_FLAGS_ARCHIVE,
+    node = do_client_request2_async(priv->client, "GET", "GetList", priv->name, 0,//fix meDO_CLIENT_FLAGS_ARCHIVE,
     		                    (GFunc) do_list_model_fill_keys, model,
 								"name", priv->name,
 								// ""

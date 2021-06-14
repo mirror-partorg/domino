@@ -16,7 +16,8 @@
 #define DEFAULT_STORE "1"
 
 #define OBJECT_ROOT_PATH "MainWindow"
-const int min_protocol_version[] = {1,2,0};
+//fix meconst int min_protocol_version[] = {1,2,0};
+const int min_protocol_version[] = {0,1,0};
 
 
 #define DO_APPLICATION_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), DO_TYPE_APPLICATION, DoApplicationPrivate))
