@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <object id="Webkit" >
+    <property name="proxy-string">http://192.168.8.119:8081</property>
+    <property name="proxy-ignore"></property>
+    <property name="zoom-level"></property>
+  </object>
+  <object id="main" >
+    <property name="websearch">https://duckduckgo.com</property>
+    <property name="url">http://exchange:123@192.168.8.159:15080/ut_aptset_test4/hs/bookcase</property>
+    <property name="store">50</property>
+  </object>
+</config>

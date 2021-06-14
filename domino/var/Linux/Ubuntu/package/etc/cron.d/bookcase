@@ -1,0 +1,6 @@
+# /etc/cron.d/bookcase: crontab entries for the bookcase package
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+*/1 * * * * root /usr/local/bin/check-bookcase

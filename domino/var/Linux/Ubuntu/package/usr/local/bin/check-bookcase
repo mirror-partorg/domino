@@ -1,0 +1,11 @@
+#!/bin/bash
+
+artix=$(ps xa | grep artix-gui | grep -v grep)
+if [[ $artix != "" ]] ; then
+    domino=$(ps xa | grep /usr/local/bin/bookcase | grep -v grep)
+    if [[ $domino == "" ]] ; then
+        if [[ -f /usr/local/bin/bookcase-restart ]] ; then
+            /usr/local/bin/bookcase-restart
+        fi
+    fi
+fi

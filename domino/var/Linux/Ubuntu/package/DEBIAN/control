@@ -1,0 +1,9 @@
+Package: bookcase
+Version: 0.9.99
+Section: unknown
+Priority: optional
+Depends: 
+Architecture: i386
+Essential: no
+Maintainer: glekar.com <yrichesse@gmail.com>
+Description: Bookcase program
