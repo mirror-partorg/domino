@@ -770,7 +770,7 @@ void do_window_set_goods(DoWindow *window, DoView *view)
     DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
     if ( !priv->goods ) {
         priv->goods = view;
-        gtk_widget_set_sensitive(GTK_WIDGET(priv->entry), TRUE);
+        //fix megtk_widget_set_sensitive(GTK_WIDGET(priv->entry), TRUE);
     }
 }
 static void do_window_entry_activate(GtkEntry *entry, DoWindow *window)

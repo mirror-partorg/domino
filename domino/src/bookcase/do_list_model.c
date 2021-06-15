@@ -877,7 +877,8 @@ static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
             if ( json_object_has_member(obj,"key") )
                 record->key = g_strdup((gchar*)json_object_get_string_member(obj, "key"));
             if ( json_object_has_member(obj,"sort") )
-                record->sort = g_strdup((gchar*)json_object_get_string_member(obj, "sort"));
+                record->sort = to_ru_upper_text((gchar*)json_object_get_string_member(obj, "sort"));
+                //record->sort = g_strdup((gchar*)json_object_get_string_member(obj, "sort"));
             if ( json_object_has_member(obj,"code") )
                 record->code = g_strdup((gchar*)json_object_get_string_member(obj, "code"));
             if ( priv->updated_keys ) {

@@ -7,7 +7,7 @@
   </object>
   <object id="main" >
     <property name="websearch">https://duckduckgo.com</property>
-    <property name="url">http://exchange:123@192.168.8.159:15080/ut_aptset_test4/hs/bookcase</property>
+    <property name="url">http://domino:123@192.168.8.159:8080/ut_aptset_new/hs/handbook</property>
     <property name="store">50</property>
   </object>
 </config>

@@ -886,7 +886,7 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                 if ( priv->search_text && strlen(priv->search_text) > 0 ) {
                     text = g_strdup( priv->search_text);
                 }
-                do_window_start_search(DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view))), text);
+                //fix medo_window_start_search(DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view))), text);
                 //if ( text )
                 //    g_free(text);
                 return TRUE;
@@ -1275,7 +1275,9 @@ static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, Gtk
         else {
             g_object_set(cell, "background", NULL, NULL);
             if ( select && priv->search_char_count ) {
-                if ( !strncmp(text, priv->search_text, priv->search_char_count) ) {
+                gchar *buf;
+                buf = to_ru_upper_text(text);
+                if ( !strncmp(buf, priv->search_text, priv->search_char_count) ) {
                     gchar *selected_text = g_strdup(text);
                     gchar *tail;
                     for (i = 0, tail = text; tail && *tail !='\0' && i < priv->search_char_count;
@@ -1287,6 +1289,7 @@ static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, Gtk
                                          selected_text, tail ? tail : "");
                     g_free(selected_text);
                 }
+                g_free(buf);
             }
         }
         if ( markup ) {
