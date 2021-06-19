@@ -1,6 +1,7 @@
 
 #include "do_list_model.h"
 #include "do_client.h"
+#include "do_utilx.h"
 #include <time.h>
 
 // boring declarations of local functions

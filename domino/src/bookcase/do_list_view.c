@@ -910,7 +910,7 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                     do_list_view_send(do_view);
                 }
                 break;
-#endif 
+#endif
     	default:
     		break;
     	}
@@ -1241,11 +1241,18 @@ static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, Gtk
         gchar **lexems;
         gchar *markup = NULL;
         if ( do_list_model_is_filtered(DO_LIST_MODEL(priv->model), &lexems) ) {
-            gchar *buf;
-            buf = g_strdup(text);
+            gchar *buf, *buf1;
+            gint crnt;
+            buf = NULL;
+            markup = g_strdup(text);
             for ( i = 0; i < g_strv_length(lexems); i++ ) {
                 gchar **bufv;
-                bufv = g_strsplit(buf, lexems[i], -1);
+                buf1 = g_strdup(markup);
+                buf = to_upper_text(markup);
+                gchar *lexem, *item, *itemlex;
+                lexem = to_upper_text(lexems[i]);
+                bufv = g_strsplit(buf, lexem, -1);
+                crnt = 0;
                 if ( g_strv_length(bufv) > 1 ) {
                     g_free(markup);
                     for ( j = 0; j < g_strv_length(bufv); j++ ) {
@@ -1255,22 +1262,33 @@ static void do_list_view_cell_sort_data_func(GtkTreeViewColumn *tree_column, Gtk
                             g_free(markup);
                         }
                         if ( j == g_strv_length(bufv) - 1 ) {
-                            markup = g_strdup_printf("%s%s", buf, bufv[j]);
+                            //markup = g_strdup_printf("%s%s", buf, bufv[j]);
+                            markup = g_strdup_printf("%s%s", buf, buf1 + crnt);
                             g_free(buf);
                             buf = g_strdup(markup);
                         }
                         else {
+                            item = g_strndup(buf1+crnt, strlen(bufv[j]));
+                            itemlex = g_strndup(buf1+crnt+strlen(bufv[j]), strlen(lexems[i]));
+                            crnt += strlen(bufv[j]) + strlen(lexems[i]);
                             if ( select )
-                                markup = g_strdup_printf("%s%s<b><span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", bufv[j],
-                                         bg_red, bg_green, bg_blue, fg_red, fg_green, fg_blue, lexems[i]);
-                            else
-                                markup = g_strdup_printf("%s%s<b><span foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", bufv[j], bg_red_s, bg_green_s, bg_blue_s, lexems[i]);
+                                markup = g_strdup_printf("%s%s<b><span background=\"#%2.2hX%2.2hX%2.2hX\" foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", item,
+                                         bg_red, bg_green, bg_blue, fg_red, fg_green, fg_blue, itemlex);
+                            else {
+                                //markup = g_strdup_printf("%s%s<b><span foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", bufv[j], bg_red_s, bg_green_s, bg_blue_s, lexem);
+                                markup = g_strdup_printf("%s%s<b><span foreground=\"#%2.2hX%2.2hX%2.2hX\">%s</span></b>", j ? buf : "", item, bg_red_s, bg_green_s, bg_blue_s, itemlex);
+
+                            }
+                            g_free(item);
+                            g_free(itemlex);
                         }
                     }
                 }
+                g_free(lexem);
                 g_strfreev(bufv);
+                buf1 = buf;
             }
-            g_free(buf);
+            if (buf) g_free(buf);
         }
         else {
             g_object_set(cell, "background", NULL, NULL);

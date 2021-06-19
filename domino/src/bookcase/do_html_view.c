@@ -299,7 +299,25 @@ static GObject *do_html_view_constructor(GType type, guint n_construct_propertie
     s = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(s), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
+#ifdef WEBKIT2
+    gchar *httpProxy, *proxyIgnore;
+
+    DOMINO_LOCAL_GET("Webkit", "proxy-string", &httpProxy, "proxy-ignore", &proxyIgnore, NULL);
+
+    if ( httpProxy && httpProxy[0] != '\0' ) {
+        WebKitWebContext *context = webkit_web_context_new();
+        WebKitNetworkProxySettings *proxy_settings = webkit_network_proxy_settings_new(httpProxy, NULL);
+        webkit_web_context_set_network_proxy_settings(context, WEBKIT_NETWORK_PROXY_MODE_CUSTOM, proxy_settings);
+        priv->view_html = webkit_web_view_new_with_context(context);
+        WebKitSettings*settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(priv->view_html));
+        webkit_settings_set_enable_javascript(settings, TRUE);
+        webkit_web_view_set_settings(WEBKIT_WEB_VIEW(priv->view_html), settings);
+    }
+    else
+        priv->view_html = webkit_web_view_new();
+#else
     priv->view_html = webkit_web_view_new();
+#endif
 
     g_signal_connect(priv->view_html,  "focus-in-event",  G_CALLBACK(focus_in), object);
     g_signal_connect(priv->view_html,  "key-press-event",  G_CALLBACK(key_press), object);
@@ -421,14 +439,16 @@ static void do_html_view_set_url(DoHtmlView *view, const gchar *url)
             g_free(host);
         }
         soup_uri_free(uri);
-
-        /*fix meif ( !no_proxy ) {
+#ifdef WEBKIT2
+#else
+        if ( !no_proxy ) {
             proxyUri = soup_uri_new(httpProxy);
             g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, proxyUri, NULL);
             soup_uri_free(proxyUri);
         }
         else
-            g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, NULL, NULL);*/
+            g_object_set(webkit_get_default_session(), SOUP_SESSION_PROXY_URI, NULL, NULL);
+#endif
     }
 
     webkit_web_view_load_uri(WEBKIT_WEB_VIEW(priv->view_html), url);

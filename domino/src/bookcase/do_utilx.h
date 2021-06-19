@@ -36,6 +36,7 @@ gboolean do_common_edit(GtkWidget *widget);
 gchar *do_product_name_format(const gchar *name);
 gchar *do_first_alpha_upper(const gchar *name);
 gchar *to_ru_upper_text(const gchar *text);
+gchar *to_upper_text(const gchar *text);
 
 gchar *do_money_format(double value, int abr);
 gchar *do_money_string(double value, int mantissa, int abr);

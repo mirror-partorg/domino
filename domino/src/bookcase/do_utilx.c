@@ -2438,6 +2438,22 @@ gchar *to_ru_upper_text(const gchar *text)
     result[nlen] = '\0';
     return result;
 }
+gchar *to_upper_text(const gchar *text)
+{
+    int j,nlen=0;
+    const gchar *buf = text;
+    gchar *result = g_malloc(sizeof (gunichar) * strlen (buf) + 1);
+    gchar *p;
+    gunichar out;
+
+    for (p = (gchar*)buf; p && *p !='\0' ; p = (gchar*)g_utf8_next_char(p)) {
+        out = g_utf8_get_char(p);
+        out = g_unichar_toupper(out);
+        nlen += g_unichar_to_utf8(out, result + nlen);
+    }
+    result[nlen] = '\0';
+    return result;
+}
 gchar *markup_plus(const gchar *markup)
 {
 	gchar *res;
