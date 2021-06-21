@@ -86,6 +86,7 @@ struct _DoWindowPrivate
     guint          search_src;
     gchar         *search_text;
     GtkWidget     *connection_icon;
+    gboolean       force_search;
 };
 
 enum
@@ -640,8 +641,9 @@ static gboolean do_window_external_search(DoWindow *window)
     priv->search_src = 0;
     if ( gtk_widget_is_focus(GTK_WIDGET(priv->entry)) ) {
         text = mystrip(gtk_entry_get_text(GTK_ENTRY(priv->entry)));
-        if ( !g_strcmp0(text, priv->search_text) ) {
+        if ( !g_strcmp0(text, priv->search_text) || priv->force_search ) {
             g_free(text);
+            priv->force_search = FALSE;
             text = NULL;
         }
         if ( text ) {
@@ -776,10 +778,12 @@ void do_window_set_goods(DoWindow *window, DoView *view)
 static void do_window_entry_activate(GtkEntry *entry, DoWindow *window)
 {
     DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    priv->force_search = TRUE;
     if ( priv->search_src ) {
         g_source_remove(priv->search_src);
-        do_window_external_search(window);
+        //do_window_external_search(window);
     }
+    do_window_external_search(window);
     if ( priv->goods ) {
         impl_set_active_child(GTK_CONTAINER(window), GTK_WIDGET(priv->goods));
         do_view_do_grab_focus(priv->goods);

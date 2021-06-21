@@ -781,7 +781,7 @@ static gboolean do_obj_view_key_press(GtkWidget *widget, GdkEventKey *event, DoO
                 return TRUE;
             case GDK_KEY_Down:
             case GDK_KEY_Page_Down:
-                page_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(priv->notebook));
+                /*fix mepage_num = gtk_notebook_get_current_page(GTK_NOTEBOOK(priv->notebook));
                 widget = gtk_notebook_get_nth_page(GTK_NOTEBOOK(priv->notebook), page_num);
                 p = page_by_name(view, g_object_get_data(G_OBJECT(widget), "id"));
                 if ( p && p->more ) {
@@ -797,7 +797,7 @@ static gboolean do_obj_view_key_press(GtkWidget *widget, GdkEventKey *event, DoO
                         do_obj_view_fill_more(view, p->id);
                         return TRUE;
                     }
-                }
+                }*/
                 break;
             default:
                 break;
