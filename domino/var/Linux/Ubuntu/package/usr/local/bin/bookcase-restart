@@ -2,8 +2,9 @@
 
 killall -9 bookcase
 
-echo "export DISPLAY=:255 && export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games && export LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/usr/lib:/usr/local/lib:/usr/local/psql/lib && export LD_BIND_NOW=1 && export GIO_EXTRA_MODULES=/usr/local/lib/gio/modules && /usr/local/bin/bookcase --fullscreen --hidecontrol GoodsView &" | su - autologon
+echo "export DISPLAY=:255 && export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games && export LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/usr/lib:/usr/local/lib:/usr/local/psql/lib && export LD_BIND_NOW=1 && export GIO_EXTRA_MODULES=/usr/local/lib/gio/modules && /usr/local/bin/bookcase --fullscreen --hidecontrol GoodsView $@ &"
+echo "export DISPLAY=:255 && export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games && export LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/usr/lib:/usr/local/lib:/usr/local/psql/lib && export LD_BIND_NOW=1 && export GIO_EXTRA_MODULES=/usr/local/lib/gio/modules && /usr/local/bin/bookcase --fullscreen --hidecontrol GoodsView $@ &" | su - autologon
 sleep 5
-echo "export DISPLAY=:0 && export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games && export LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/usr/lib:/usr/local/lib:/usr/local/psql/lib && export LD_BIND_NOW=1 && export GIO_EXTRA_MODULES=/usr/local/lib/gio/modules && /usr/local/bin/bookcase --fullscreen --hidecontrol  GoodsView &" | su - autologon
+echo "export DISPLAY=:0 && export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games && export LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/usr/lib:/usr/local/lib:/usr/local/psql/lib && export LD_BIND_NOW=1 && export GIO_EXTRA_MODULES=/usr/local/lib/gio/modules && /usr/local/bin/bookcase --fullscreen --hidecontrol  GoodsView $@ &" | su - autologon
 
 

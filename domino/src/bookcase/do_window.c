@@ -661,10 +661,14 @@ static gboolean do_window_external_search(DoWindow *window)
 }
 static void do_window_entry_changed(GtkEditable *editable, DoWindow *window)
 {
-	DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
+    DoWindowPrivate *priv = DO_WINDOW_GET_PRIVATE(window);
 
     if ( !gtk_widget_get_sensitive(priv->entry) )
         return;
+    gchar *text = to_ru_upper_text(gtk_entry_get_text(GTK_ENTRY(priv->entry)));
+    if ( g_strcmp0(text, gtk_entry_get_text(GTK_ENTRY(priv->entry))) )
+        gtk_entry_set_text(GTK_ENTRY(priv->entry), text);
+    g_free(text);
     if ( priv->entry_changed )
         return;
     if ( priv->search_src ) {

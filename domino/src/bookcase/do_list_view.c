@@ -886,9 +886,9 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
                 if ( priv->search_text && strlen(priv->search_text) > 0 ) {
                     text = g_strdup( priv->search_text);
                 }
-                //fix medo_window_start_search(DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view))), text);
-                //if ( text )
-                //    g_free(text);
+                do_window_start_search(DO_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(do_view))), text);
+                if ( text )
+                    g_free(text);
                 return TRUE;
 #else
                 if ( priv->search_item == DO_LIST_VIEW_SEARCH_ITEM_SORT ) {
