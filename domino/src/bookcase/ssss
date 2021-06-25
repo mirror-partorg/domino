@@ -1,1 +1,0 @@
-cd /tmp && rm -f bookcase-0.9.99.deb  && wget ftp://192.168.8.119/bookcase/Linux/Ubuntu/trusty/i686/package/bookcase-0.9.99.deb && dpkg -i bookcase-0.9.99.deb && bookcase-restart
