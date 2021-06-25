@@ -5,9 +5,14 @@
     <property name="proxy-ignore"></property>
     <property name="zoom-level"></property>
   </object>
+  <object id="list-goods-view" >
+    <property name="fields">ocnsfPR</property>
+  </object>
   <object id="main" >
     <property name="websearch">https://duckduckgo.com</property>
-    <property name="url">http://domino:123@192.168.8.159:8080/ut_aptset_new/hs/handbook</property>
+    <property name="url">http://192.168.8.159:8080/ut_aptset_new/hs/handbook</property>
     <property name="store">50</property>
+    <property name="user">domino</property>
+    <property name="password">123</property>
   </object>
 </config>
