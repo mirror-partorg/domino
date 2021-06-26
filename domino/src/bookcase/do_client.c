@@ -31,6 +31,8 @@ enum
 	PROP_0,
 	PROP_URL,
 	PROP_STORE,
+	PROP_USERNAME,
+	PROP_PASSWORD,
 	PROP_CACHED,
 };
 
@@ -79,10 +81,13 @@ struct _DoClientPrivate
 	GList       *queue[2];
 	guint        message_index;
 	gboolean     connected;
+	gchar       *username;
+	gchar       *password;
 
 };
 static void do_client_message_finished(SoupSession *session, SoupMessage *msg, gpointer data);
 static void do_client_set_connection_state(DoClient *client);
+static void basic_authenticate(SoupSession *session, SoupMessage *msg, SoupAuth *auth, gboolean retrying, gpointer data);
 
 GType do_client_flags_get_type(void)
 {
@@ -336,6 +341,8 @@ static void do_client_finalize (GObject *object)
 	do_client_clear_cache(DO_CLIENT(object), NULL);
 	g_free(priv->url);
 	g_free(priv->store);
+	g_free(priv->username);
+	g_free(priv->password);
 	if ( priv->conn )
 		sqlite3_close(priv->conn);
     if ( priv->source )
@@ -386,6 +393,14 @@ static void do_client_set_property (GObject *object, guint prop_id, const GValue
 			}
 			break;
 		}
+		case PROP_USERNAME: {
+			priv->username = g_value_dup_string(value);
+			break;
+		}
+		case PROP_PASSWORD: {
+			priv->password = g_value_dup_string(value);
+			break;
+		}
 		case PROP_STORE: {
 			const gchar *store;
 			store = g_value_get_string(value);
@@ -430,6 +445,22 @@ static void do_client_class_init (DoClientClass *klass)
                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
     g_object_class_install_property
         (object_class,
+         PROP_USERNAME,
+         g_param_spec_string("username",
+                      "Пользователь для авторизации",
+                      "Пользователь для авторизации",
+                      NULL,
+                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property
+        (object_class,
+         PROP_PASSWORD,
+         g_param_spec_string("password",
+                      "Пароль пользователя",
+                      "Пароль пользователя",
+                      NULL,
+                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property
+        (object_class,
          PROP_STORE,
          g_param_spec_string("store",
                       "Код аптеки",
@@ -446,11 +477,13 @@ static void do_client_class_init (DoClientClass *klass)
                                                            G_PARAM_READWRITE));
 }
 
-GObject *do_client_new (const gchar *url, const gchar *store)
+GObject *do_client_new(const gchar *url, const gchar *store, const gchar *username, const gchar *password)
 {
 	return g_object_new (DO_TYPE_CLIENT,
 			     "url", url,
 			     "store", store,
+			     "username", username,
+			     "password", password,
 			     (gpointer) NULL);
 }
 inline const gchar *do_client_get_url(DoClient *client)
@@ -725,6 +758,7 @@ static void do_client_process_clear(DoClient *client, DoQueueItem *item_queue)
             priv->process[index] = item;
             priv->queue[i] = g_list_remove_link(priv->queue[i], l);
             session = soup_session_new();
+            g_signal_connect(session, "authenticate", G_CALLBACK(basic_authenticate), client);
             msg = soup_message_new(item->method, item->url);
             if ( !g_strcmp0(item->method, "POST") && item->body ) {
                 SoupMessageBody *rbody;
@@ -1099,6 +1133,7 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
 	//g_print("start message key %s\n", key);//debug it
 	if ( !callback ) {
         session = soup_session_new();
+        g_signal_connect(session, "authenticate", G_CALLBACK(basic_authenticate), client);
         msg = soup_message_new(method, url);
         if ( !g_strcmp0(method, "POST") ) {
             SoupMessageBody *rbody;
@@ -1144,6 +1179,7 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
         g_free(url);
 		if ( index != -1 && !(item->filo && filo_exists) ) {
             session = soup_session_new();
+            g_signal_connect(session, "authenticate", G_CALLBACK(basic_authenticate), client);
             msg = soup_message_new(item->method, item->url);
             if ( !g_strcmp0(item->method, "POST") && item->body ) {
                 SoupMessageBody *rbody;
@@ -1278,4 +1314,10 @@ static gboolean do_client_cleaning(DoClient *client)
         g_hash_table_remove(priv->hash, key);
 	}
 	return TRUE;
+}
+static void basic_authenticate(SoupSession *session, SoupMessage *msg, SoupAuth *auth, gboolean retrying, gpointer data)
+{
+	DoClientPrivate *priv = DO_CLIENT_GET_PRIVATE (data);
+	if ( priv->username && priv->password )
+        soup_auth_authenticate(auth, priv->username, priv->password);
 }

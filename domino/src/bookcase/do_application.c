@@ -12,8 +12,10 @@
 #define DEFAULT_WINDOW_POSITION "0x0"
 #define DEFAULT_WINDOW_STATE NULL
 
-#define DEFAULT_SERVER_URL "http://api.glekar.com:15080/bookcase"
+#define DEFAULT_SERVER_URL "http://hyperhost:8080/hs/ut_aptset_new/handbook"
 #define DEFAULT_STORE "1"
+#define DEFAULT_USER "domino"
+#define DEFAULT_PASSWORD "123"
 
 #define OBJECT_ROOT_PATH "MainWindow"
 //fix meconst int min_protocol_version[] = {1,2,0};
@@ -370,7 +372,7 @@ static void do_application_set_protocol(JsonNode *node, DoApplication *app)
 static void main_window_init(DoApplication *app)
 {
     DoApplicationPrivate *priv = DO_APPLICATION_GET_PRIVATE(app);
-    
+
     if ( priv->fullscreen )
         gtk_window_fullscreen(GTK_WINDOW(priv->first_window));
     if ( priv->hide_control ) {
@@ -388,24 +390,28 @@ static gboolean run_actions(DoApplication *app)
 	GAction *action;
 	GDateTime *time;
 	gchar *buf;
+	gchar *username = NULL;
+	gchar *password = NULL;
 	gint i;
 
-	
-        gchar *url = NULL;
-        main_window_init(app);
-        DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
+
+    gchar *url = NULL;
+    main_window_init(app);
+    DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
+
 	if ( !url )
         DOMINO_COMMON_GET("main", "url", &url, NULL);
 	if ( !priv->store )
         DOMINO_COMMON_GET("main", "store", &priv->store, NULL);
 
+
 	if ( url && priv->store )
-        priv->client = do_client_new(url, priv->store);
+        priv->client = do_client_new(url, priv->store, username ? username : DEFAULT_USER, password ? password : DEFAULT_PASSWORD);
     else {
         if ( !do_application_settings(app) )
             quit_all();
         DOMINO_LOCAL_GET("main", "url", &url, "store", &priv->store, NULL);
-        priv->client = do_client_new(url, priv->store);
+        priv->client = do_client_new(url, priv->store, username ? username : DEFAULT_USER, password ? password : DEFAULT_PASSWORD);
     }
     if ( priv->clear_cache ) {
         do_client_clear_cache(DO_CLIENT(priv->client), NULL);
@@ -579,7 +585,7 @@ gboolean do_application_settings(DoApplication *app)
             win = GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(priv->first_window)));
     }
 
-#define N_DO_KEY_ENTRY_ 2
+#define N_DO_KEY_ENTRY_ 4
     GtkDialog *dialog;
     GtkWidget *l;
 	GtkWidget *vbox;
@@ -641,23 +647,50 @@ gboolean do_application_settings(DoApplication *app)
     gtk_grid_attach(GTK_GRID(grid), l, 0, row, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), e, 1, row++, 1, 1);
 
+    entry[2] = e = gtk_entry_new();
+    l = gtk_label_new("Имя пользователя:");
+#if GTK_CHECK_VERSION(3,16,0)
+    gtk_label_set_xalign(GTK_LABEL(l), 0.0);
+#else
+    g_object_set(l,"xalign", 0.0, NULL);
+#endif
+    gtk_widget_set_hexpand(e, TRUE);
+    gtk_grid_attach(GTK_GRID(grid), l, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), e, 1, row++, 1, 1);
+
+    entry[3] = e = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(e), FALSE);
+    l = gtk_label_new("Пароль пользователя:");
+#if GTK_CHECK_VERSION(3,16,0)
+    gtk_label_set_xalign(GTK_LABEL(l), 0.0);
+#else
+    g_object_set(l,"xalign", 0.0, NULL);
+#endif
+    gtk_widget_set_hexpand(e, TRUE);
+    gtk_grid_attach(GTK_GRID(grid), l, 0, row, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), e, 1, row++, 1, 1);
+
 	gtk_widget_show_all (vbox);
-	gchar *url, *store;
-    DOMINO_LOCAL_GET("main", "url", &url, "store", &store, NULL);
+	gchar *url = NULL, *store = NULL, *user = NULL, *password = NULL;
+    DOMINO_LOCAL_GET("main", "url", &url, "store", &store, "user", &user, "password", &password, NULL);
 	if ( !url )
         DOMINO_COMMON_GET("main", "url", &url, NULL);
 	if ( !store )
         DOMINO_COMMON_GET("main", "store", &store, NULL);
     gtk_entry_set_text(GTK_ENTRY(entry[0]), url ? url : DEFAULT_SERVER_URL);
     gtk_entry_set_text(GTK_ENTRY(entry[1]), store ? store : DEFAULT_STORE);
+    gtk_entry_set_text(GTK_ENTRY(entry[2]), user ? user : DEFAULT_USER);
+    gtk_entry_set_text(GTK_ENTRY(entry[3]), password ? password : DEFAULT_PASSWORD);
 
     while ( gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT ) {
         g_object_get(entry[0], "text", &url, NULL);
         g_object_get(entry[1], "text", &store, NULL);
-        DOMINO_LOCAL_SET("main","url", url, "store", store, NULL);
+        g_object_get(entry[2], "text", &user, NULL);
+        g_object_get(entry[3], "text", &password, NULL);
+        DOMINO_LOCAL_SET("main","url", url, "store", store, "user", user, "password", password, NULL);
         if ( domino_config_save(DOMINO_CONFIG_LOCAL, TRUE) ) {
             if ( !priv->client )
-                priv->client = do_client_new(url, priv->store);
+                priv->client = do_client_new(url, priv->store, user, password);
             else
                 if ( g_strcmp0(url, do_client_get_url(DO_CLIENT(priv->client))) ||
                      g_strcmp0(store, do_client_get_url(DO_CLIENT(priv->client)))

@@ -42,7 +42,7 @@ struct _DoClientClass
 
 GType	   do_client_get_type(void);
 
-GObject   *do_client_new(const gchar *url, const gchar *store);
+GObject   *do_client_new(const gchar *url, const gchar *store, const gchar *username, const gchar *password);
 const gchar *do_client_get_url(DoClient *client);
 const gchar *do_client_get_store(DoClient *client);
 gboolean   do_client_cancel_request(DoClient *client, const gchar *key);
