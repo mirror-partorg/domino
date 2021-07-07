@@ -127,7 +127,7 @@ int dominox_init()
     for (i = 0; i < DOMINO_CONFIG_N; i++)
         domino_config_read(i);
 
-    DOMINO_LOCAL_SET("list-goods-view", "fields", "ocnsfPR", NULL);//todo
+    DOMINO_LOCAL_SET("list-goods-view", "fields", "ocnsFfPR", NULL);//todo
     DOMINO_LOCAL_SET("main", "websearch", "https://duckduckgo.com", NULL);//todo
 
     return TRUE;

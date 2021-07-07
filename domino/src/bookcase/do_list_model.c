@@ -2,6 +2,7 @@
 #include "do_list_model.h"
 #include "do_client.h"
 #include "do_utilx.h"
+#include <dolib.h>
 #include <time.h>
 
 // boring declarations of local functions
@@ -847,6 +848,11 @@ static void do_list_model_record_update(JsonNode *node, DoListModelUpdate *data)
     g_free(data);
 }
 */
+static gint cmp_func(DoListModelRecord *a, DoListModelRecord *b)
+{
+    return g_strcmp0(a->sort, b->sort);
+}
+
 static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
 {
     DoListModelPrivate *priv = DO_LIST_MODEL_GET_PRIVATE(model);
@@ -863,16 +869,19 @@ static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
 	obj = json_node_get_object(node);
 	if ( obj ) {
         gint i;
+		do_sort_list_t *sort;
+
 		array = json_object_get_array_member(obj, "items");
 		priv->n_records = json_array_get_length(array);
 		//priv->n_records = 50;//fix me
 		priv->records = (DoListModelRecord**) g_new0(gpointer, priv->n_records);
+		sort = do_sort_list_new(FALSE, FALSE, (do_list_cmp_func)cmp_func, NULL);
 		for ( i = 0; i < priv->n_records; i++ ) {
             DoListModelRecord *record;
             JsonObject *obj;
             record = g_new0(DoListModelRecord, 1);
-            priv->records[i] = record;
-            record->index = i;
+            //priv->records[i] = record;
+            //record->index = i;
             obj = json_array_get_object_element(array, i);
             g_assert(obj != NULL);
             if ( json_object_has_member(obj,"key") )
@@ -889,7 +898,15 @@ static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
                 gtk_tree_path_free(path);
             }
             g_hash_table_insert(priv->keys, record->key, record);
+            do_sort_list_add(sort, record);
 		}
+		for ( i = 0; i < sort->count; i++ ) {
+            DoListModelRecord *record;
+            record = sort->list[i];
+            record->index = i;
+            priv->records[i] = record;
+        }
+		do_list_free(sort);
 		if ( priv->full_read && !priv->full_read_ ) {
             priv->full_read_ = TRUE;
             do_list_model_full_read_next(model, NULL);
