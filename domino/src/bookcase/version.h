@@ -1,5 +1,5 @@
-#define VERSION "1.0.1"
-#define ADATE   "11 Jule 2021"
+#define VERSION "1.0.2"
+#define ADATE   "12 Jule 2021"
 
 #define HANDBOOK_RELEASE VERSION
 

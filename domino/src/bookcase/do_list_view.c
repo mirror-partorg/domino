@@ -908,8 +908,24 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
             case GDK_KEY_F5:
                 if ( g_strcmp0(priv->name, "goods") == 0 ) {
                     do_list_view_send(do_view);
+                    return TRUE;
                 }
                 break;
+#if GTK_CHECK_VERSION(3,12,0)
+#else
+            case GDK_KEY_F4:
+                if ( g_strcmp0(priv->name, "goods") == 0 ) {
+                    do_view_action_activate("UndoApplyAction", NULL);
+                    return TRUE;
+                }
+                break;
+            case GDK_KEY_F12:
+                if ( g_strcmp0(priv->name, "goods") == 0 ) {
+                    do_view_action_activate("ApplyAction", NULL);
+                    return TRUE;
+                }
+                break;
+#endif
 #endif
     	default:
     		break;

@@ -160,3 +160,8 @@ void  do_view_actions_set_view(GtkWidget *view)
     do_view_actions_refresh();
 }
 */
+void do_view_action_activate(const gchar *action_name, GVariant *parameter)
+{
+	g_action_group_activate_action(G_ACTION_GROUP(group), action_name, parameter);
+}
+

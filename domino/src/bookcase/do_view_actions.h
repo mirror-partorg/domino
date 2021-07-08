@@ -15,5 +15,7 @@ void       do_view_actions_refresh(GtkWidget *window);
 //DoView     *do_view_actions_get_view();
 
 //void       do_view_doAction(const char *action_name, gpointer user_data);
+void       do_view_action_activate(const gchar *action_name, GVariant *parameter);
+
 
 #endif
