@@ -868,15 +868,13 @@ static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
 		return;
 	obj = json_node_get_object(node);
 	if ( obj ) {
-        gint i;
+        gint i, n_records;
 		do_sort_list_t *sort;
 
 		array = json_object_get_array_member(obj, "items");
-		priv->n_records = json_array_get_length(array);
-		//priv->n_records = 50;//fix me
-		priv->records = (DoListModelRecord**) g_new0(gpointer, priv->n_records);
+		n_records = json_array_get_length(array);
 		sort = do_sort_list_new(FALSE, FALSE, (do_list_cmp_func)cmp_func, NULL);
-		for ( i = 0; i < priv->n_records; i++ ) {
+		for ( i = 0; i < n_records; i++ ) {
             DoListModelRecord *record;
             JsonObject *obj;
             record = g_new0(DoListModelRecord, 1);
@@ -897,13 +895,15 @@ static void do_list_model_fill_keys(JsonNode *node, DoListModel *model)
                 gtk_tree_model_row_inserted(GTK_TREE_MODEL(model), path, &iter);
                 gtk_tree_path_free(path);
             }
-            g_hash_table_insert(priv->keys, record->key, record);
             do_sort_list_add(sort, record);
 		}
+		priv->n_records = n_records;
+		priv->records = (DoListModelRecord**) g_new0(gpointer, priv->n_records);
 		for ( i = 0; i < sort->count; i++ ) {
             DoListModelRecord *record;
             record = sort->list[i];
             record->index = i;
+            g_hash_table_insert(priv->keys, record->key, record);
             priv->records[i] = record;
         }
 		do_list_free(sort);

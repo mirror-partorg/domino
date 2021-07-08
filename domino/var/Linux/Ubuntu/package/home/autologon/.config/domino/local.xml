@@ -6,7 +6,7 @@
     <property name="zoom-level"></property>
   </object>
   <object id="list-goods-view" >
-    <property name="fields">ocnsfPR</property>
+    <property name="fields">ocnsFfPR</property>
   </object>
   <object id="main" >
     <property name="websearch">https://duckduckgo.com</property>

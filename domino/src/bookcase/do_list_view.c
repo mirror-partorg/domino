@@ -760,10 +760,6 @@ static gboolean do_list_view_key_press(GtkWidget *widget, GdkEventKey *event, Do
             return TRUE;
         }
 #else
-        g_print("%s\n%s\n",str,priv->search_text);//fix me
-        if ( !strcmp(priv->search_text,"ЛИ") )
-            g_print("%s\n",str);//fix me
-
         search_add(do_view, str);
 #endif
         g_free(str);
