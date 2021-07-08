@@ -39,6 +39,7 @@ typedef struct _DoListModelUpdate  DoListModelUpdate;
 #define RELEVANT_TIME_SECOND 600
 #define UPDATE_GROUP_TIMEOUT 500
 #define ARCHIVED_MIN 1000
+#define MAXRECORDREAD 100
 
 struct _DoListModelRecord
 {
@@ -394,7 +395,7 @@ static void do_list_model_full_read_next(DoListModel *model, const gchar *key)
         record = g_hash_table_lookup(priv->keys, key);
         index = record->index;
     }
-    for ( i = index; i < priv->n_records && i < index + 1000; i++ )
+    for ( i = index; i < priv->n_records && i < index + MAXRECORDREAD; i++ )
         priv->group_update_keys = g_slist_append(priv->group_update_keys, priv->records[i]->key);
     do_list_model_group_update(model);
 }

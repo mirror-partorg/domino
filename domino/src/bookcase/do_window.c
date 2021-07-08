@@ -816,9 +816,10 @@ static gboolean do_window_entry_key_press(GtkWidget *entry, GdkEventKey *event, 
                 {
                     if ( !gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), NULL, NULL) ) {
                         GVariant *parameter;
-                        gchar *uri, *url;
-                            DOMINO_LOCAL_GET("main", "websearch", &url, NULL);
-                        uri = g_strdup_printf("%s/search?q=%s", url, gtk_entry_get_text(GTK_ENTRY(entry)));
+                        gchar *uri, *url, *format, *path;
+                        DOMINO_LOCAL_GET("main", "websearch", &url, "websearch_str", &format, NULL);
+                        path = g_strdup_printf(format,gtk_entry_get_text(GTK_ENTRY(entry)));
+                        uri = g_strdup_printf("%s/%s", url, path);
                         parameter = g_variant_new_string(uri);
                         do_common_action_activate("HtmlViewGo", parameter);
                         g_free(uri);
