@@ -39,7 +39,7 @@ typedef struct _DoListModelUpdate  DoListModelUpdate;
 #define RELEVANT_TIME_SECOND 600
 #define UPDATE_GROUP_TIMEOUT 500
 #define ARCHIVED_MIN 1000
-#define MAXRECORDREAD 100
+#define MAXRECORDREAD 1000
 
 struct _DoListModelRecord
 {
@@ -834,6 +834,7 @@ static gboolean do_list_model_record_update_(DoListModel *model, DoListModelReco
         do_list_model_get_iter(GTK_TREE_MODEL(model), &iter, path);
         gtk_tree_model_row_changed (GTK_TREE_MODEL(model), path, &iter);
         gtk_tree_path_free(path);
+        changed = TRUE;
     }
     return changed;
 }
