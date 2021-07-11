@@ -1372,23 +1372,26 @@ void do_list_view_external_search(DoListView *view, JsonNode *node)
 }
 static void do_list_view_mark_(DoListView *view, const gchar *mark)
 {
-    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
-    GtkTreePath *path;
-    gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path, NULL);
-    if ( path ) {
-        GtkTreeIter iter = {0,};
-        GValue value = {0,};
-        gtk_tree_model_get_iter(priv->model, &iter, path);
-        gtk_tree_model_get_value(priv->model, &iter, DO_LIST_MODEL_COL_CODE, &value);
-        do_client_request2(priv->client, "POST", "SetOrder", NULL, 0,
-                                    "name", priv->name,
-                                    "code", g_value_get_string(&value),
-                                    "mark", mark,
-                                    // ""
-                                     NULL);
-        do_list_model_record_update(DO_LIST_MODEL(priv->model), &iter);
 
-        gtk_tree_path_free(path);
+    DoListViewPrivate *priv = DO_LIST_VIEW_GET_PRIVATE(view);
+    if ( !g_strcmp0(priv->name, "goods") ) {
+        GtkTreePath *path;
+        gtk_tree_view_get_cursor(GTK_TREE_VIEW(priv->tree_view), &path, NULL);
+        if ( path ) {
+            GtkTreeIter iter = {0,};
+            GValue value = {0,};
+            gtk_tree_model_get_iter(priv->model, &iter, path);
+            gtk_tree_model_get_value(priv->model, &iter, DO_LIST_MODEL_COL_CODE, &value);
+            do_client_request2(priv->client, "POST", "SetOrder", NULL, 0,
+                                        "name", priv->name,
+                                        "code", g_value_get_string(&value),
+                                        "mark", mark,
+                                        // ""
+                                         NULL);
+            do_list_model_record_update(DO_LIST_MODEL(priv->model), &iter);
+
+            gtk_tree_path_free(path);
+        }
     }
 }
 static void do_list_view_do_apply(DoView *view)
