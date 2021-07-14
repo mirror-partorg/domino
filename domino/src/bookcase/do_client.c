@@ -196,7 +196,7 @@ static JsonNode *do_value_get_node(DoValue *value)
 G_DEFINE_TYPE_WITH_CODE (DoClient, do_client, G_TYPE_OBJECT, G_ADD_PRIVATE(DoClient))
 
 static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *method, const gchar *func, const gchar *key, DoClientFlags flags, GFunc callback, gpointer data, va_list args);
-static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key, gboolean archive, GFunc callback, gpointer data, JsonNode *cache);
+static JsonNode *do_client_process_message(DoClient *client, SoupMessage *msg, const gchar *key, gboolean archive, GFunc callback, gpointer data, JsonNode *cache);
 static void do_client_update_cache_store_url(DoClient *client);
 static gboolean do_client_cleaning(DoClient *client);
 
@@ -841,7 +841,7 @@ static void do_client_message_finished(SoupSession *session, SoupMessage *msg, g
 #endif // DEBUG
 	//priv->queue_message = g_slist_remove(priv->queue_message, data);
 	if ( !item->canceled ) {
-		res = do_client_proccess_message(item->client, msg, item->key, item->archive, item->callback, item->data, item->cache) != NULL;
+		res = do_client_process_message(item->client, msg, item->key, item->archive, item->callback, item->data, item->cache) != NULL;
 	}
     else {
         if ( item->callback )
@@ -952,7 +952,7 @@ gboolean decompress(const gchar *src, gssize src_len, gchar **dst, gssize *dst_l
     return FALSE;
 }
 
-static JsonNode *do_client_proccess_message(DoClient *client, SoupMessage *msg, const gchar *key1, gboolean archive, GFunc callback, gpointer data, JsonNode *cache)
+static JsonNode *do_client_process_message(DoClient *client, SoupMessage *msg, const gchar *key1, gboolean archive, GFunc callback, gpointer data, JsonNode *cache)
 {
 	//g_print("process message key %s\n", key);//debug it
 	JsonNode *res = NULL;
@@ -1142,8 +1142,8 @@ static JsonNode *do_client_request2_valist_(DoClient *client, const gchar *metho
             msg->request_body = rbody;
         }
 		soup_session_send_message(session, msg);
-		res = do_client_proccess_message(client, msg, key, 0, callback, data, res);
-		//fix meres = do_client_proccess_message(client, msg, key, flags & DO_CLIENT_FLAGS_ARCHIVE, callback, data, res);
+		res = do_client_process_message(client, msg, key, 0, callback, data, res);
+		//fix meres = do_client_process_message(client, msg, key, flags & DO_CLIENT_FLAGS_ARCHIVE, callback, data, res);
 		g_free(url);
 	}
 	else {

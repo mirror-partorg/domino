@@ -39,7 +39,7 @@ typedef struct _DoListModelUpdate  DoListModelUpdate;
 #define RELEVANT_TIME_SECOND 600
 #define UPDATE_GROUP_TIMEOUT 500
 #define ARCHIVED_MIN 1000
-#define MAXRECORDREAD 1000
+#define MAXRECORDREAD 100
 
 struct _DoListModelRecord
 {
