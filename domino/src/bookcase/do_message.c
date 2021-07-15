@@ -203,15 +203,16 @@ static void do_messages_show()
                     gtk_box_pack_start(GTK_BOX(box), w, FALSE, FALSE, 0);
                 w = gtk_label_new("");
                 gtk_label_set_markup(GTK_LABEL(w), msg->message);
-                gtk_label_set_line_wrap(GTK_LABEL(w), TRUE);
-                gtk_label_set_line_wrap_mode(GTK_LABEL(w), GTK_WRAP_WORD);
+                //gtk_label_set_line_wrap(GTK_LABEL(w), TRUE);
+                //gtk_label_set_line_wrap_mode(GTK_LABEL(w), GTK_WRAP_WORD);
                 gtk_label_set_selectable(GTK_LABEL(w), TRUE);
                 gtk_widget_set_can_focus (w, TRUE);
                 gtk_box_pack_start(GTK_BOX(box), w, TRUE, TRUE, 0);
+
                 box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
                 gtk_box_pack_start(GTK_BOX(vbox), box, FALSE, FALSE, 0);
                 w = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-                gtk_box_set_homogeneous(GTK_BOX(w), TRUE);
+                gtk_box_set_homogeneous(GTK_BOX(w), TRUE );
                 gtk_box_pack_end(GTK_BOX(box), w, FALSE, FALSE, 0);
                 if ( button )
                     gtk_box_pack_start(GTK_BOX(w), button, FALSE, FALSE, 0);
