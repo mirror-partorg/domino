@@ -812,6 +812,14 @@ static gboolean do_list_model_record_update_(DoListModel *model, DoListModelReco
 
     obj = json_node_get_object(node);
     values = json_object_get_array_member(obj, "values");
+    if ( json_array_get_length(values) != priv->n_columns - DO_LIST_MODEL_N_KEYS ) {
+        const gchar *value;
+        for ( i = 0; i < json_array_get_length(values); i++ ) {
+            value = json_array_get_string_element(values, i);
+            g_print(value);
+        }
+        return FALSE;
+    }
     g_assert(json_array_get_length(values) == priv->n_columns - DO_LIST_MODEL_N_KEYS);
 
     record->time = time(NULL);

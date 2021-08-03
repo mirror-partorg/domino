@@ -3667,7 +3667,7 @@
 	<glib-object.h>
 	<webkit2/WebKitDefines.h>
 
-1622371298 /usr/include/webkitgtk-4.0/webkit2/WebKitEnumTypes.h
+1627462916 /usr/include/webkitgtk-4.0/webkit2/WebKitEnumTypes.h
 	<glib-object.h>
 	<webkit2/WebKitDefines.h>
 
@@ -3767,7 +3767,7 @@
 	<glib-object.h>
 	<jsc/JSCDefines.h>
 
-1622371298 /usr/include/webkitgtk-4.0/jsc/JSCVersion.h
+1627462916 /usr/include/webkitgtk-4.0/jsc/JSCVersion.h
 	<jsc/JSCDefines.h>
 
 1614333424 /usr/include/webkitgtk-4.0/jsc/JSCWeakValue.h
@@ -3969,7 +3969,7 @@
 	<glib-object.h>
 	<webkit2/WebKitDefines.h>
 
-1622371298 /usr/include/webkitgtk-4.0/webkit2/WebKitVersion.h
+1627462916 /usr/include/webkitgtk-4.0/webkit2/WebKitVersion.h
 	<webkit2/WebKitDefines.h>
 
 1614333436 /usr/include/webkitgtk-4.0/webkit2/WebKitAutocleanups.h
