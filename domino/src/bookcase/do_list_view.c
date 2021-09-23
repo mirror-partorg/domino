@@ -156,6 +156,7 @@ struct _DoListViewPrivate
     DoView        *receiver;
     guint          source_load;
     gchar         *set_cursor_for_key;
+    gint           order_column;
 
 };
 
@@ -441,6 +442,7 @@ static gboolean do_list_view_fill_first(DoListView *view)
     GSList *l;
     gint i;
     gint code_to_col = -1, sort_to_col = -1, key_to_col = -1;
+    priv->order_column = -1;
     g_return_val_if_fail (priv->fields != NULL, FALSE);
     fields = g_new0(gchar, g_slist_length(priv->fields) + 1);
     for ( i = 0, l = priv->fields; l; l=l->next,i++ ) {
@@ -452,6 +454,8 @@ static gboolean do_list_view_fill_first(DoListView *view)
                 code_to_col = i;
             else if ( !g_strcmp0(field->name, "name") )
                 sort_to_col = i;
+            else if ( !g_strcmp0(field->name, "order") )
+                priv->order_column = i + DO_LIST_MODEL_N_KEYS;
         }
     }
     priv->model = model = do_list_model_new(priv->name, fields, priv->client);
@@ -1404,8 +1408,21 @@ static void do_list_view_mark_(DoListView *view, const gchar *mark)
                                         "mark", mark,
                                         // ""
                                          NULL);
+            //
             do_list_model_record_update(DO_LIST_MODEL(priv->model), &iter);
+/*#warning use deprecated direct mark
+            if ( priv->order_column != -1 ) {
+                GValue value_order = {0,};
+                const gchar *str_;
+                gtk_tree_model_get_value(priv->model, &iter, priv->order_column, &value_order);
+                str_ = g_value_get_string(&value_order);
+                if ( !g_strcmp0(mark,"1") && !g_strcmp0(str_,"") )
+                    gtk_list_store_set_value(GTK_LIST_STORE(priv->model), &iter, priv->order_column, "object-select-symbolic");
+                else
+                if ( !g_strcmp0(mark,"0") && !g_strcmp0(str_,"object-select-symbolic") )
+                    gtk_list_store_set_value(GTK_LIST_STORE(priv->model), &iter, priv->order_column, "");
 
+            }*/
             gtk_tree_path_free(path);
         }
     }
