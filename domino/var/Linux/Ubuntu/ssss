@@ -1,1 +1,1 @@
-export debname=bookcase-1.0.1.deb && cd /tmp && rm -f $debname  && wget ftp://192.168.8.119/bookcase/Linux/Ubuntu/trusty/i686/package/$debname && dpkg -i $debname && bookcase-restart
+export debname=bookcase-1.0.5.deb && cd /tmp && rm -f $debname  && wget ftp://192.168.8.119/bookcase/Linux/Ubuntu/trusty/i686/package/$debname && dpkg -i $debname && bookcase-restart
