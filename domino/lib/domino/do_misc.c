@@ -434,8 +434,9 @@ DO_EXPORT int do_util_product_list_insert_product(do_alias_t *alias, partner_key
             do_cpy(document_order.data.code, document_order_key2.code);
             time_t now = time(NULL);
             struct tm tm = *localtime(&now);
-            do_date_set(&document_order.data.date, tm);
-            do_time_set(&document_order.data.time, tm);
+            BTI_LONG date_,time_;
+            document_order.data.date = do_date_set(&date_, tm);
+            document_order.data.time = do_time_set(&time_, tm);
             do_document_order_params_clear(alias, &document_order);
             return do_document_order_insert(alias, &document_order) == DO_OK;
         }

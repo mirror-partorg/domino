@@ -4,6 +4,7 @@
 #include "../misc/define.h"
 
 #define RUNNING_ (!break_func || !break_func(NULL))
+#ifndef DOMINO78
 
 
 static int do_accept_calc_stock(do_alias_t *alias, document_order_rec_t *document_order, do_doctype_t *doctype, int accept, do_extended_break_func break_func)
@@ -1038,3 +1039,4 @@ DO_EXPORT int do_deaccept(do_alias_t *alias, document_key0_t *document_key0, do_
         do_alias_tran_abort(alias);
     return res;
 }
+#endif

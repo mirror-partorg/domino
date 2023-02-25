@@ -280,6 +280,62 @@ static PyObject *Region_get_params(Region* self, void *unused)
     return res;
 }
 
+static PyObject *Region_equal(Region* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getRegionKey0Type() )
+        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getRegionKey1Type() )
+        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Region_next(Region* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getRegionKey0Type() )
+        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getRegionKey1Type() )
+        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Region_prev(Region* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -336,34 +392,6 @@ static PyObject *Region_gt(Region* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Region_next(Region* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getRegionKey0Type() )
-        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_NEXT);
-    else
-
-    if ( Py_TYPE(key) == getRegionKey1Type() )
-        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *Region_ge(Region* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -380,62 +408,6 @@ static PyObject *Region_ge(Region* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getRegionKey1Type() )
         status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Region_equal(Region* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getRegionKey0Type() )
-        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getRegionKey1Type() )
-        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Region_last(Region* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getRegionKey0Type() )
-        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getRegionKey1Type() )
-        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -530,6 +502,129 @@ static PyObject *Region_first(Region* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Region_last(Region* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getRegionKey0Type() )
+        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getRegionKey1Type() )
+        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Region_iter_equal(Region* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getRegionKey0Type() ) {
+        key_cmp = (region_key0_t*)do_malloc(sizeof(region_key0_t));
+        memcpy(key_cmp, ((RegionKey0*)key)->priv, sizeof(region_key0_t));
+        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRegionKey1Type() ) {
+        key_cmp = (region_key1_t*)do_malloc(sizeof(region_key1_t));
+        memcpy(key_cmp, ((RegionKey1*)key)->priv, sizeof(region_key1_t));
+        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getRegionKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((region_key0_t*)key_cmp)->code, 
+                    ((RegionKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRegionKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((region_key1_t*)key_cmp)->name, 
+                    ((RegionKey1*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Region_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getRegionKey0Type() ) {
+            status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRegionKey1Type() ) {
+            status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Region_iter_gt(Region* self, PyObject *args, PyObject *kwds)
@@ -703,196 +798,6 @@ static PyObject *Region_iter_ge(Region* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getRegionKey1Type() ) {
             status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Region_iter_equal(Region* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getRegionKey0Type() ) {
-        key_cmp = (region_key0_t*)do_malloc(sizeof(region_key0_t));
-        memcpy(key_cmp, ((RegionKey0*)key)->priv, sizeof(region_key0_t));
-        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRegionKey1Type() ) {
-        key_cmp = (region_key1_t*)do_malloc(sizeof(region_key1_t));
-        memcpy(key_cmp, ((RegionKey1*)key)->priv, sizeof(region_key1_t));
-        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getRegionKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((region_key0_t*)key_cmp)->code, 
-                    ((RegionKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRegionKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((region_key1_t*)key_cmp)->name, 
-                    ((RegionKey1*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Region_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getRegionKey0Type() ) {
-            status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRegionKey1Type() ) {
-            status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Region_iter_last(Region* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getRegionKey0Type() ) {
-        key_cmp = (region_key0_t*)do_malloc(sizeof(region_key0_t));
-        memcpy(key_cmp, ((RegionKey0*)key)->priv, sizeof(region_key0_t));
-        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getRegionKey1Type() ) {
-        key_cmp = (region_key1_t*)do_malloc(sizeof(region_key1_t));
-        memcpy(key_cmp, ((RegionKey1*)key)->priv, sizeof(region_key1_t));
-        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getRegionKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((region_key0_t*)key_cmp)->code, 
-                    ((RegionKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getRegionKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((region_key1_t*)key_cmp)->name, 
-                    ((RegionKey1*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Region_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getRegionKey0Type() ) {
-            status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getRegionKey1Type() ) {
-            status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1197,19 +1102,114 @@ static PyObject *Region_iter_first(Region* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Region_update(Region* self)
+static PyObject *Region_iter_last(Region* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_region_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getRegionKey0Type() ) {
+        key_cmp = (region_key0_t*)do_malloc(sizeof(region_key0_t));
+        memcpy(key_cmp, ((RegionKey0*)key)->priv, sizeof(region_key0_t));
+        status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getRegionKey1Type() ) {
+        key_cmp = (region_key1_t*)do_malloc(sizeof(region_key1_t));
+        memcpy(key_cmp, ((RegionKey1*)key)->priv, sizeof(region_key1_t));
+        status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getRegionKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((region_key0_t*)key_cmp)->code, 
+                    ((RegionKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getRegionKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((region_key1_t*)key_cmp)->name, 
+                    ((RegionKey1*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Region_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getRegionKey0Type() ) {
+            status = do_region_get0(self->alias->alias, self->priv, ((RegionKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getRegionKey1Type() ) {
+            status = do_region_get1(self->alias->alias, self->priv, ((RegionKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Region_insert(Region* self)
 {
     int status;
     status = do_region_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Region_update(Region* self)
+{
+    int status;
+    status = do_region_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1424,17 +1424,15 @@ static PyMethodDef Region_methods[] = {
     {"clear_params", (PyCFunction)Region_params_clear, METH_NOARGS, "do_Region_param_clear"},
     {"set_params", (PyCFunction)Region_set_params, METH_VARARGS|METH_KEYWORDS, "do_Region_set_params"},
 
+    {"get_equal", (PyCFunction)Region_equal, METH_VARARGS|METH_KEYWORDS, "Region_equal"},
+
+    {"get_next", (PyCFunction)Region_next, METH_VARARGS|METH_KEYWORDS, "Region_next"},
+
     {"get_prev", (PyCFunction)Region_prev, METH_VARARGS|METH_KEYWORDS, "Region_prev"},
 
     {"get_gt", (PyCFunction)Region_gt, METH_VARARGS|METH_KEYWORDS, "Region_gt"},
 
-    {"get_next", (PyCFunction)Region_next, METH_VARARGS|METH_KEYWORDS, "Region_next"},
-
     {"get_ge", (PyCFunction)Region_ge, METH_VARARGS|METH_KEYWORDS, "Region_ge"},
-
-    {"get_equal", (PyCFunction)Region_equal, METH_VARARGS|METH_KEYWORDS, "Region_equal"},
-
-    {"get_last", (PyCFunction)Region_last, METH_VARARGS|METH_KEYWORDS, "Region_last"},
 
     {"get_lt", (PyCFunction)Region_lt, METH_VARARGS|METH_KEYWORDS, "Region_lt"},
 
@@ -1442,13 +1440,13 @@ static PyMethodDef Region_methods[] = {
 
     {"get_first", (PyCFunction)Region_first, METH_VARARGS|METH_KEYWORDS, "Region_first"},
 
-    {"gets_gt", (PyCFunction)Region_iter_gt, METH_VARARGS|METH_KEYWORDS, "Region_iter_gt"},
-
-    {"gets_ge", (PyCFunction)Region_iter_ge, METH_VARARGS|METH_KEYWORDS, "Region_iter_ge"},
+    {"get_last", (PyCFunction)Region_last, METH_VARARGS|METH_KEYWORDS, "Region_last"},
 
     {"gets_equal", (PyCFunction)Region_iter_equal, METH_VARARGS|METH_KEYWORDS, "Region_iter_equal"},
 
-    {"gets_last", (PyCFunction)Region_iter_last, METH_VARARGS|METH_KEYWORDS, "Region_iter_last"},
+    {"gets_gt", (PyCFunction)Region_iter_gt, METH_VARARGS|METH_KEYWORDS, "Region_iter_gt"},
+
+    {"gets_ge", (PyCFunction)Region_iter_ge, METH_VARARGS|METH_KEYWORDS, "Region_iter_ge"},
 
     {"gets_lt", (PyCFunction)Region_iter_lt, METH_VARARGS|METH_KEYWORDS, "Region_iter_lt"},
 
@@ -1456,9 +1454,11 @@ static PyMethodDef Region_methods[] = {
 
     {"gets_first", (PyCFunction)Region_iter_first, METH_VARARGS|METH_KEYWORDS, "Region_iter_first"},
 
-    {"update", (PyCFunction)Region_update, METH_VARARGS|METH_KEYWORDS, "Region_update"},
+    {"gets_last", (PyCFunction)Region_iter_last, METH_VARARGS|METH_KEYWORDS, "Region_iter_last"},
 
     {"insert", (PyCFunction)Region_insert, METH_VARARGS|METH_KEYWORDS, "Region_insert"},
+
+    {"update", (PyCFunction)Region_update, METH_VARARGS|METH_KEYWORDS, "Region_update"},
 
     {"delete", (PyCFunction)Region_delete, METH_VARARGS|METH_KEYWORDS, "Region_delete"},
 
@@ -1570,6 +1570,30 @@ static PyObject *RegionKey0_set_code(RegionKey0* self, PyObject *args, PyObject 
 //    return result;
 }
 
+static PyObject *RegionKey0_equal(RegionKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_region_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RegionKey0_next(RegionKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_region_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *RegionKey0_prev(RegionKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -1594,48 +1618,12 @@ static PyObject *RegionKey0_gt(RegionKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RegionKey0_next(RegionKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_region_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *RegionKey0_ge(RegionKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_region_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RegionKey0_equal(RegionKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_region_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RegionKey0_last(RegionKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_region_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1676,6 +1664,54 @@ static PyObject *RegionKey0_first(RegionKey0* self, PyObject *args, PyObject *kw
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RegionKey0_last(RegionKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_region_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RegionKey0_iter_equal(RegionKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    region_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_region_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = RegionKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_region_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *RegionKey0_iter_gt(RegionKey0* self, PyObject *args, PyObject *kwds)
@@ -1742,78 +1778,6 @@ static PyObject *RegionKey0_iter_ge(RegionKey0* self, PyObject *args, PyObject *
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_region_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RegionKey0_iter_equal(RegionKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    region_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_region_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = RegionKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_region_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RegionKey0_iter_last(RegionKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    region_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_region_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = RegionKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_region_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -1922,6 +1886,42 @@ static PyObject *RegionKey0_iter_first(RegionKey0* self, PyObject *args, PyObjec
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_region_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *RegionKey0_iter_last(RegionKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    region_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_region_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = RegionKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_region_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2104,17 +2104,15 @@ static PyMethodDef RegionKey0_methods[] = {
 
     {"set_code", (PyCFunction)RegionKey0_set_code, METH_VARARGS|METH_KEYWORDS, "RegionKey0_set_code"},
 
+    {"get_equal", (PyCFunction)RegionKey0_equal, METH_VARARGS|METH_KEYWORDS, "RegionKey0_equal"},
+
+    {"get_next", (PyCFunction)RegionKey0_next, METH_VARARGS|METH_KEYWORDS, "RegionKey0_next"},
+
     {"get_prev", (PyCFunction)RegionKey0_prev, METH_VARARGS|METH_KEYWORDS, "RegionKey0_prev"},
 
     {"get_gt", (PyCFunction)RegionKey0_gt, METH_VARARGS|METH_KEYWORDS, "RegionKey0_gt"},
 
-    {"get_next", (PyCFunction)RegionKey0_next, METH_VARARGS|METH_KEYWORDS, "RegionKey0_next"},
-
     {"get_ge", (PyCFunction)RegionKey0_ge, METH_VARARGS|METH_KEYWORDS, "RegionKey0_ge"},
-
-    {"get_equal", (PyCFunction)RegionKey0_equal, METH_VARARGS|METH_KEYWORDS, "RegionKey0_equal"},
-
-    {"get_last", (PyCFunction)RegionKey0_last, METH_VARARGS|METH_KEYWORDS, "RegionKey0_last"},
 
     {"get_lt", (PyCFunction)RegionKey0_lt, METH_VARARGS|METH_KEYWORDS, "RegionKey0_lt"},
 
@@ -2122,19 +2120,21 @@ static PyMethodDef RegionKey0_methods[] = {
 
     {"get_first", (PyCFunction)RegionKey0_first, METH_VARARGS|METH_KEYWORDS, "RegionKey0_first"},
 
-    {"gets_gt", (PyCFunction)RegionKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)RegionKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_ge"},
+    {"get_last", (PyCFunction)RegionKey0_last, METH_VARARGS|METH_KEYWORDS, "RegionKey0_last"},
 
     {"gets_equal", (PyCFunction)RegionKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)RegionKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_last"},
+    {"gets_gt", (PyCFunction)RegionKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)RegionKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)RegionKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)RegionKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_le"},
 
     {"gets_first", (PyCFunction)RegionKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)RegionKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "RegionKey0_iter_last"},
 
     {NULL}
 };
@@ -2244,6 +2244,30 @@ static PyObject *RegionKey1_set_name(RegionKey1* self, PyObject *args, PyObject 
 //    return result;
 }
 
+static PyObject *RegionKey1_equal(RegionKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_region_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RegionKey1_next(RegionKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_region_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *RegionKey1_prev(RegionKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -2268,48 +2292,12 @@ static PyObject *RegionKey1_gt(RegionKey1* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *RegionKey1_next(RegionKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_region_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *RegionKey1_ge(RegionKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_region_key1(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RegionKey1_equal(RegionKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_region_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *RegionKey1_last(RegionKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_region_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2350,6 +2338,54 @@ static PyObject *RegionKey1_first(RegionKey1* self, PyObject *args, PyObject *kw
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RegionKey1_last(RegionKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_region_key1(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *RegionKey1_iter_equal(RegionKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    region_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_region_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = RegionKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_region_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *RegionKey1_iter_gt(RegionKey1* self, PyObject *args, PyObject *kwds)
@@ -2416,78 +2452,6 @@ static PyObject *RegionKey1_iter_ge(RegionKey1* self, PyObject *args, PyObject *
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_region_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RegionKey1_iter_equal(RegionKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    region_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_region_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = RegionKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_region_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *RegionKey1_iter_last(RegionKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    region_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_region_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = RegionKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_region_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2596,6 +2560,42 @@ static PyObject *RegionKey1_iter_first(RegionKey1* self, PyObject *args, PyObjec
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_region_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *RegionKey1_iter_last(RegionKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    region_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_region_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = RegionKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_region_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2778,17 +2778,15 @@ static PyMethodDef RegionKey1_methods[] = {
 
     {"set_name", (PyCFunction)RegionKey1_set_name, METH_VARARGS|METH_KEYWORDS, "RegionKey1_set_name"},
 
+    {"get_equal", (PyCFunction)RegionKey1_equal, METH_VARARGS|METH_KEYWORDS, "RegionKey1_equal"},
+
+    {"get_next", (PyCFunction)RegionKey1_next, METH_VARARGS|METH_KEYWORDS, "RegionKey1_next"},
+
     {"get_prev", (PyCFunction)RegionKey1_prev, METH_VARARGS|METH_KEYWORDS, "RegionKey1_prev"},
 
     {"get_gt", (PyCFunction)RegionKey1_gt, METH_VARARGS|METH_KEYWORDS, "RegionKey1_gt"},
 
-    {"get_next", (PyCFunction)RegionKey1_next, METH_VARARGS|METH_KEYWORDS, "RegionKey1_next"},
-
     {"get_ge", (PyCFunction)RegionKey1_ge, METH_VARARGS|METH_KEYWORDS, "RegionKey1_ge"},
-
-    {"get_equal", (PyCFunction)RegionKey1_equal, METH_VARARGS|METH_KEYWORDS, "RegionKey1_equal"},
-
-    {"get_last", (PyCFunction)RegionKey1_last, METH_VARARGS|METH_KEYWORDS, "RegionKey1_last"},
 
     {"get_lt", (PyCFunction)RegionKey1_lt, METH_VARARGS|METH_KEYWORDS, "RegionKey1_lt"},
 
@@ -2796,19 +2794,21 @@ static PyMethodDef RegionKey1_methods[] = {
 
     {"get_first", (PyCFunction)RegionKey1_first, METH_VARARGS|METH_KEYWORDS, "RegionKey1_first"},
 
-    {"gets_gt", (PyCFunction)RegionKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_gt"},
-
-    {"gets_ge", (PyCFunction)RegionKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_ge"},
+    {"get_last", (PyCFunction)RegionKey1_last, METH_VARARGS|METH_KEYWORDS, "RegionKey1_last"},
 
     {"gets_equal", (PyCFunction)RegionKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_equal"},
 
-    {"gets_last", (PyCFunction)RegionKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_last"},
+    {"gets_gt", (PyCFunction)RegionKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_gt"},
+
+    {"gets_ge", (PyCFunction)RegionKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_ge"},
 
     {"gets_lt", (PyCFunction)RegionKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_lt"},
 
     {"gets_le", (PyCFunction)RegionKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_le"},
 
     {"gets_first", (PyCFunction)RegionKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_first"},
+
+    {"gets_last", (PyCFunction)RegionKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "RegionKey1_iter_last"},
 
     {NULL}
 };

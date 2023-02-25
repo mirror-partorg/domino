@@ -227,7 +227,9 @@ typedef struct {
         subgroup_key0_t subgroup_key0;
         document_key0_t document_key0;
         document_order_key0_t document_order_key0;
+#ifndef DOMINO78
         shift_key0_t  shift_key0;
+#endif
         char other[1024];
     };
     do_protocol_action_t action;
@@ -847,6 +849,7 @@ int do_protocol_key2(do_alias_t *alias, protocol_key2_t *key, do_alias_oper_t op
 int do_user_get0(do_alias_t *alias, user_rec_t *rec, user_key0_t *key, do_alias_oper_t operation);
 int do_user_key0(do_alias_t *alias, user_key0_t *key, do_alias_oper_t operation);
 
+#ifndef DOMINO78
 int do_shift_get0(do_alias_t *alias, shift_rec_t *rec, shift_key0_t *key, do_alias_oper_t operation);
 int do_shift_key0(do_alias_t *alias, shift_key0_t *key, do_alias_oper_t operation);
 int do_shift_get1(do_alias_t *alias, shift_rec_t *rec, shift_key1_t *key, do_alias_oper_t operation);
@@ -881,6 +884,7 @@ int do_discount_get0(do_alias_t *alias, discount_rec_t *rec, discount_key0_t *ke
 int do_discount_key0(do_alias_t *alias, discount_key0_t *key, do_alias_oper_t operation);
 int do_discount_get1(do_alias_t *alias, discount_rec_t *rec, discount_key1_t *key, do_alias_oper_t operation);
 int do_discount_key1(do_alias_t *alias, discount_key1_t *key, do_alias_oper_t operation);
+#endif
 int do_document_insert(do_alias_t *alias, document_rec_t *rec);
 int do_document_update(do_alias_t *alias, document_rec_t *rec);
 int do_document_delete(do_alias_t *alias);
@@ -973,6 +977,7 @@ int do_protocol_delete(do_alias_t *alias);
 int do_user_insert(do_alias_t *alias, user_rec_t *rec);
 int do_user_update(do_alias_t *alias, user_rec_t *rec);
 int do_user_delete(do_alias_t *alias);
+#ifndef DOMINO78
 int do_shift_insert(do_alias_t *alias, shift_rec_t *rec);
 int do_shift_update(do_alias_t *alias, shift_rec_t *rec);
 int do_shift_delete(do_alias_t *alias);
@@ -989,7 +994,7 @@ int do_realization_delete(do_alias_t *alias);
 //int do_discount_update(do_alias_t *alias, discount_rec_t *rec);
 //int do_discount_delete(do_alias_t *alias);
 int do_alias_discount_create(do_alias_t *alias);
-
+#endif
 double do_prowod2_sum(do_alias_t *alias, prowod2_rec_t *rec, const int number);
 int    do_prowod2_sum_set(do_alias_t *alias, prowod2_rec_t *rec, const int number, double value);
 void   do_prowod2_sum_clear(do_alias_t *alias, prowod2_rec_t *rec);

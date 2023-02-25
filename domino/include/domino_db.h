@@ -1057,6 +1057,7 @@ typedef int64_t BTI_CURRENCY;
     user_struct_t data;
   } user_rec_t;
 
+#ifndef DOMINO78
 /***************************************************************************
   Definition of record from 'ushift.dat' //
 ****************************************************************************/
@@ -1326,7 +1327,7 @@ typedef int64_t BTI_CURRENCY;
     BTI_WORD size;
     discount_struct_t data;
   } discount_rec_t;
-
+#endif
 typedef struct PACK_STRUCT {
     BTI_WORD id;
     BTI_CHAR name[20];
@@ -1381,11 +1382,13 @@ typedef enum {
     DO_DB_SALDO,
     DO_DB_PROTOCOL,
     DO_DB_USER,
+#ifndef DOMINO78
     DO_DB_SHIFT,
     DO_DB_CHECKSUM,
     DO_DB_CHECK,
     DO_DB_REALIZATION,
     DO_DB_DISCOUNT,
+#endif
     DO_DB_STRUCT_FILE,
     DO_DB_END // ALL_DB must be last item
 } file_db_t;

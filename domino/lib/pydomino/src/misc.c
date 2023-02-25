@@ -49,6 +49,7 @@ char *get_product_code(PyObject *product)
         DocumentOrderKey3 *obj=(DocumentOrderKey3 *)product;
         code = do_text(obj->alias->alias, obj->priv->code);
     }
+#ifndef DOMINO78
     else
     if ( Py_TYPE(product) == getCheckType() ) {
         Check *obj=(Check *)product;
@@ -59,6 +60,7 @@ char *get_product_code(PyObject *product)
         CheckKey2 *obj=(CheckKey2 *)product;
         code = do_text(obj->alias->alias, obj->priv->product_code);
     }
+#endif
     else {
         code = NULL;
     }
@@ -187,6 +189,7 @@ static do_string_list_t *get_store_list(PyObject *stores)
     else
     if ( Py_TYPE(stores) == getProwod2Key0Type() )
         str = do_text(((Prowod2Key0*)stores)->alias->alias, ((Prowod2Key0*)stores)->priv->sklad);
+#ifndef DOMINO78
     else
     if ( Py_TYPE(stores) == getRealizationType() )
         str = do_text(((Realization*)stores)->alias->alias, ((Realization*)stores)->priv->data.sklad);
@@ -211,7 +214,7 @@ static do_string_list_t *get_store_list(PyObject *stores)
     else
     if ( Py_TYPE(stores) == getShiftKey3Type() )
         str = do_text(((ShiftKey3*)stores)->alias->alias, ((ShiftKey3*)stores)->priv->sklad);
-
+#endif
     if ( !str )
         return NULL;
 

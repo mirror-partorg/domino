@@ -98,12 +98,14 @@ static const size_t file_record_size[DO_DB_END] = {
     sizeof(saldo_struct_t),
     sizeof(protocol_struct_t),
     sizeof(user_struct_t)
+#ifndef DOMINO78
     ,
     sizeof(shift_struct_t),
     sizeof(checksum_struct_t),
     sizeof(check_struct_t),
     sizeof(realization_struct_t),
     sizeof(discount_struct_t)
+#endif
 };
 
 #define get_capacity(a) ((capacity_t*)(((do_ret_list_t*)a) + 1))

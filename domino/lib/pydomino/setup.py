@@ -14,9 +14,9 @@ setup(
         Extension(
             'pydomino',
             files,
-            include_dirs = ["../../include","../../var/MINGW64_NT-6.3-9600/x86_64"],
+            include_dirs = ["../../include","C:/var/work/var/MSYS_NT-10.0-17134/x86_64"],
 	    libraries=['dolib', 'domino'],
-            library_dirs=['../../var/MSYS_NT-6.3-9600/x86_64/.libs','.'],
+            library_dirs=['../../../../var/MSYS_NT-10.0-17134/x86_64/.libs','.'],
             define_macros=[("BTI_WIN_64",None),("DOMINO78",None)]
         )
     ],

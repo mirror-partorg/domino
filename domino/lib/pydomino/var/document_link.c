@@ -344,6 +344,62 @@ static PyObject *DocumentLink_set_sort(DocumentLink* self, PyObject *args, PyObj
 //    return result;
 }
 
+static PyObject *DocumentLink_equal(DocumentLink* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDocumentLinkKey0Type() )
+        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getDocumentLinkKey1Type() )
+        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLink_next(DocumentLink* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDocumentLinkKey0Type() )
+        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getDocumentLinkKey1Type() )
+        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *DocumentLink_prev(DocumentLink* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -400,34 +456,6 @@ static PyObject *DocumentLink_gt(DocumentLink* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentLink_next(DocumentLink* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDocumentLinkKey0Type() )
-        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_NEXT);
-    else
-
-    if ( Py_TYPE(key) == getDocumentLinkKey1Type() )
-        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *DocumentLink_ge(DocumentLink* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -444,62 +472,6 @@ static PyObject *DocumentLink_ge(DocumentLink* self, PyObject *args, PyObject *k
 
     if ( Py_TYPE(key) == getDocumentLinkKey1Type() )
         status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentLink_equal(DocumentLink* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDocumentLinkKey0Type() )
-        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getDocumentLinkKey1Type() )
-        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentLink_last(DocumentLink* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDocumentLinkKey0Type() )
-        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getDocumentLinkKey1Type() )
-        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -594,6 +566,177 @@ static PyObject *DocumentLink_first(DocumentLink* self, PyObject *args, PyObject
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLink_last(DocumentLink* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDocumentLinkKey0Type() )
+        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getDocumentLinkKey1Type() )
+        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLink_iter_equal(DocumentLink* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
+        key_cmp = (document_link_key0_t*)do_malloc(sizeof(document_link_key0_t));
+        memcpy(key_cmp, ((DocumentLinkKey0*)key)->priv, sizeof(document_link_key0_t));
+        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
+        key_cmp = (document_link_key1_t*)do_malloc(sizeof(document_link_key1_t));
+        memcpy(key_cmp, ((DocumentLinkKey1*)key)->priv, sizeof(document_link_key1_t));
+        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_dtype, 
+                    ((DocumentLinkKey0*)key)->priv->m_dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_sklad, 
+                    ((DocumentLinkKey0*)key)->priv->m_sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_document, 
+                    ((DocumentLinkKey0*)key)->priv->m_document))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->type, 
+                    ((DocumentLinkKey0*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->sort, 
+                    ((DocumentLinkKey0*)key)->priv->sort))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_dtype, 
+                    ((DocumentLinkKey1*)key)->priv->s_dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_sklad, 
+                    ((DocumentLinkKey1*)key)->priv->s_sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_document, 
+                    ((DocumentLinkKey1*)key)->priv->s_document))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->type, 
+                    ((DocumentLinkKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->sort, 
+                    ((DocumentLinkKey1*)key)->priv->sort))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = DocumentLink_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
+            status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
+            status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *DocumentLink_iter_gt(DocumentLink* self, PyObject *args, PyObject *kwds)
@@ -863,292 +1006,6 @@ static PyObject *DocumentLink_iter_ge(DocumentLink* self, PyObject *args, PyObje
 
         if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
             status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *DocumentLink_iter_equal(DocumentLink* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
-        key_cmp = (document_link_key0_t*)do_malloc(sizeof(document_link_key0_t));
-        memcpy(key_cmp, ((DocumentLinkKey0*)key)->priv, sizeof(document_link_key0_t));
-        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
-        key_cmp = (document_link_key1_t*)do_malloc(sizeof(document_link_key1_t));
-        memcpy(key_cmp, ((DocumentLinkKey1*)key)->priv, sizeof(document_link_key1_t));
-        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_dtype, 
-                    ((DocumentLinkKey0*)key)->priv->m_dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_sklad, 
-                    ((DocumentLinkKey0*)key)->priv->m_sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_document, 
-                    ((DocumentLinkKey0*)key)->priv->m_document))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->type, 
-                    ((DocumentLinkKey0*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->sort, 
-                    ((DocumentLinkKey0*)key)->priv->sort))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_dtype, 
-                    ((DocumentLinkKey1*)key)->priv->s_dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_sklad, 
-                    ((DocumentLinkKey1*)key)->priv->s_sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_document, 
-                    ((DocumentLinkKey1*)key)->priv->s_document))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->type, 
-                    ((DocumentLinkKey1*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->sort, 
-                    ((DocumentLinkKey1*)key)->priv->sort))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = DocumentLink_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
-            status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
-            status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *DocumentLink_iter_last(DocumentLink* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
-        key_cmp = (document_link_key0_t*)do_malloc(sizeof(document_link_key0_t));
-        memcpy(key_cmp, ((DocumentLinkKey0*)key)->priv, sizeof(document_link_key0_t));
-        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
-        key_cmp = (document_link_key1_t*)do_malloc(sizeof(document_link_key1_t));
-        memcpy(key_cmp, ((DocumentLinkKey1*)key)->priv, sizeof(document_link_key1_t));
-        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_dtype, 
-                    ((DocumentLinkKey0*)key)->priv->m_dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_sklad, 
-                    ((DocumentLinkKey0*)key)->priv->m_sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_document, 
-                    ((DocumentLinkKey0*)key)->priv->m_document))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->type, 
-                    ((DocumentLinkKey0*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((document_link_key0_t*)key_cmp)->sort, 
-                    ((DocumentLinkKey0*)key)->priv->sort))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_dtype, 
-                    ((DocumentLinkKey1*)key)->priv->s_dtype))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_sklad, 
-                    ((DocumentLinkKey1*)key)->priv->s_sklad))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_document, 
-                    ((DocumentLinkKey1*)key)->priv->s_document))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->type, 
-                    ((DocumentLinkKey1*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((document_link_key1_t*)key_cmp)->sort, 
-                    ((DocumentLinkKey1*)key)->priv->sort))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = DocumentLink_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
-            status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
-            status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1597,19 +1454,162 @@ static PyObject *DocumentLink_iter_first(DocumentLink* self, PyObject *args, PyO
     return retval;
 }
 
-static PyObject *DocumentLink_update(DocumentLink* self)
+static PyObject *DocumentLink_iter_last(DocumentLink* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_document_link_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
+        key_cmp = (document_link_key0_t*)do_malloc(sizeof(document_link_key0_t));
+        memcpy(key_cmp, ((DocumentLinkKey0*)key)->priv, sizeof(document_link_key0_t));
+        status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
+        key_cmp = (document_link_key1_t*)do_malloc(sizeof(document_link_key1_t));
+        memcpy(key_cmp, ((DocumentLinkKey1*)key)->priv, sizeof(document_link_key1_t));
+        status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_dtype, 
+                    ((DocumentLinkKey0*)key)->priv->m_dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_sklad, 
+                    ((DocumentLinkKey0*)key)->priv->m_sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->m_document, 
+                    ((DocumentLinkKey0*)key)->priv->m_document))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->type, 
+                    ((DocumentLinkKey0*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_link_key0_t*)key_cmp)->sort, 
+                    ((DocumentLinkKey0*)key)->priv->sort))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_dtype, 
+                    ((DocumentLinkKey1*)key)->priv->s_dtype))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_sklad, 
+                    ((DocumentLinkKey1*)key)->priv->s_sklad))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->s_document, 
+                    ((DocumentLinkKey1*)key)->priv->s_document))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->type, 
+                    ((DocumentLinkKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((document_link_key1_t*)key_cmp)->sort, 
+                    ((DocumentLinkKey1*)key)->priv->sort))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = DocumentLink_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getDocumentLinkKey0Type() ) {
+            status = do_document_link_get0(self->alias->alias, self->priv, ((DocumentLinkKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getDocumentLinkKey1Type() ) {
+            status = do_document_link_get1(self->alias->alias, self->priv, ((DocumentLinkKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *DocumentLink_insert(DocumentLink* self)
 {
     int status;
     status = do_document_link_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLink_update(DocumentLink* self)
+{
+    int status;
+    status = do_document_link_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1924,17 +1924,15 @@ static PyMethodDef DocumentLink_methods[] = {
 
     {"set_sort", (PyCFunction)DocumentLink_set_sort, METH_VARARGS|METH_KEYWORDS, "DocumentLink_set_sort"},
 
+    {"get_equal", (PyCFunction)DocumentLink_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLink_equal"},
+
+    {"get_next", (PyCFunction)DocumentLink_next, METH_VARARGS|METH_KEYWORDS, "DocumentLink_next"},
+
     {"get_prev", (PyCFunction)DocumentLink_prev, METH_VARARGS|METH_KEYWORDS, "DocumentLink_prev"},
 
     {"get_gt", (PyCFunction)DocumentLink_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLink_gt"},
 
-    {"get_next", (PyCFunction)DocumentLink_next, METH_VARARGS|METH_KEYWORDS, "DocumentLink_next"},
-
     {"get_ge", (PyCFunction)DocumentLink_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLink_ge"},
-
-    {"get_equal", (PyCFunction)DocumentLink_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLink_equal"},
-
-    {"get_last", (PyCFunction)DocumentLink_last, METH_VARARGS|METH_KEYWORDS, "DocumentLink_last"},
 
     {"get_lt", (PyCFunction)DocumentLink_lt, METH_VARARGS|METH_KEYWORDS, "DocumentLink_lt"},
 
@@ -1942,13 +1940,13 @@ static PyMethodDef DocumentLink_methods[] = {
 
     {"get_first", (PyCFunction)DocumentLink_first, METH_VARARGS|METH_KEYWORDS, "DocumentLink_first"},
 
-    {"gets_gt", (PyCFunction)DocumentLink_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_gt"},
-
-    {"gets_ge", (PyCFunction)DocumentLink_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_ge"},
+    {"get_last", (PyCFunction)DocumentLink_last, METH_VARARGS|METH_KEYWORDS, "DocumentLink_last"},
 
     {"gets_equal", (PyCFunction)DocumentLink_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_equal"},
 
-    {"gets_last", (PyCFunction)DocumentLink_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_last"},
+    {"gets_gt", (PyCFunction)DocumentLink_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_gt"},
+
+    {"gets_ge", (PyCFunction)DocumentLink_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_ge"},
 
     {"gets_lt", (PyCFunction)DocumentLink_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_lt"},
 
@@ -1956,9 +1954,11 @@ static PyMethodDef DocumentLink_methods[] = {
 
     {"gets_first", (PyCFunction)DocumentLink_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_first"},
 
-    {"update", (PyCFunction)DocumentLink_update, METH_VARARGS|METH_KEYWORDS, "DocumentLink_update"},
+    {"gets_last", (PyCFunction)DocumentLink_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentLink_iter_last"},
 
     {"insert", (PyCFunction)DocumentLink_insert, METH_VARARGS|METH_KEYWORDS, "DocumentLink_insert"},
+
+    {"update", (PyCFunction)DocumentLink_update, METH_VARARGS|METH_KEYWORDS, "DocumentLink_update"},
 
     {"delete", (PyCFunction)DocumentLink_delete, METH_VARARGS|METH_KEYWORDS, "DocumentLink_delete"},
 
@@ -2218,6 +2218,30 @@ static PyObject *DocumentLinkKey0_set_sort(DocumentLinkKey0* self, PyObject *arg
 //    return result;
 }
 
+static PyObject *DocumentLinkKey0_equal(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLinkKey0_next(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *DocumentLinkKey0_prev(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -2242,48 +2266,12 @@ static PyObject *DocumentLinkKey0_gt(DocumentLinkKey0* self, PyObject *args, PyO
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentLinkKey0_next(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *DocumentLinkKey0_ge(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentLinkKey0_equal(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentLinkKey0_last(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2324,6 +2312,78 @@ static PyObject *DocumentLinkKey0_first(DocumentLinkKey0* self, PyObject *args, 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLinkKey0_last(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLinkKey0_iter_equal(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_link_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.m_dtype, 
+                 self->priv->m_dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.m_sklad, 
+                 self->priv->m_sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.m_document, 
+                 self->priv->m_document))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.sort, 
+                 self->priv->sort))
+               break;
+       }
+
+ 
+        item = DocumentLinkKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *DocumentLinkKey0_iter_gt(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
@@ -2438,126 +2498,6 @@ static PyObject *DocumentLinkKey0_iter_ge(DocumentLinkKey0* self, PyObject *args
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentLinkKey0_iter_equal(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_link_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.m_dtype, 
-                 self->priv->m_dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.m_sklad, 
-                 self->priv->m_sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.m_document, 
-                 self->priv->m_document))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.sort, 
-                 self->priv->sort))
-               break;
-       }
-
- 
-        item = DocumentLinkKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentLinkKey0_iter_last(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_link_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.m_dtype, 
-                 self->priv->m_dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.m_sklad, 
-                 self->priv->m_sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.m_document, 
-                 self->priv->m_document))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.sort, 
-                 self->priv->sort))
-               break;
-       }
-
- 
-        item = DocumentLinkKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2738,6 +2678,66 @@ static PyObject *DocumentLinkKey0_iter_first(DocumentLinkKey0* self, PyObject *a
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentLinkKey0_iter_last(DocumentLinkKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_link_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.m_dtype, 
+                 self->priv->m_dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.m_sklad, 
+                 self->priv->m_sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.m_document, 
+                 self->priv->m_document))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.sort, 
+                 self->priv->sort))
+               break;
+       }
+
+ 
+        item = DocumentLinkKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_link_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3052,17 +3052,15 @@ static PyMethodDef DocumentLinkKey0_methods[] = {
 
     {"set_sort", (PyCFunction)DocumentLinkKey0_set_sort, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_set_sort"},
 
+    {"get_equal", (PyCFunction)DocumentLinkKey0_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_equal"},
+
+    {"get_next", (PyCFunction)DocumentLinkKey0_next, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_next"},
+
     {"get_prev", (PyCFunction)DocumentLinkKey0_prev, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_prev"},
 
     {"get_gt", (PyCFunction)DocumentLinkKey0_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_gt"},
 
-    {"get_next", (PyCFunction)DocumentLinkKey0_next, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_next"},
-
     {"get_ge", (PyCFunction)DocumentLinkKey0_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_ge"},
-
-    {"get_equal", (PyCFunction)DocumentLinkKey0_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_equal"},
-
-    {"get_last", (PyCFunction)DocumentLinkKey0_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_last"},
 
     {"get_lt", (PyCFunction)DocumentLinkKey0_lt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_lt"},
 
@@ -3070,19 +3068,21 @@ static PyMethodDef DocumentLinkKey0_methods[] = {
 
     {"get_first", (PyCFunction)DocumentLinkKey0_first, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_first"},
 
-    {"gets_gt", (PyCFunction)DocumentLinkKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)DocumentLinkKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_ge"},
+    {"get_last", (PyCFunction)DocumentLinkKey0_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_last"},
 
     {"gets_equal", (PyCFunction)DocumentLinkKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)DocumentLinkKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_last"},
+    {"gets_gt", (PyCFunction)DocumentLinkKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)DocumentLinkKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)DocumentLinkKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)DocumentLinkKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_le"},
 
     {"gets_first", (PyCFunction)DocumentLinkKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)DocumentLinkKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey0_iter_last"},
 
     {NULL}
 };
@@ -3340,6 +3340,30 @@ static PyObject *DocumentLinkKey1_set_sort(DocumentLinkKey1* self, PyObject *arg
 //    return result;
 }
 
+static PyObject *DocumentLinkKey1_equal(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLinkKey1_next(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *DocumentLinkKey1_prev(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -3364,48 +3388,12 @@ static PyObject *DocumentLinkKey1_gt(DocumentLinkKey1* self, PyObject *args, PyO
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DocumentLinkKey1_next(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *DocumentLinkKey1_ge(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentLinkKey1_equal(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DocumentLinkKey1_last(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3446,6 +3434,78 @@ static PyObject *DocumentLinkKey1_first(DocumentLinkKey1* self, PyObject *args, 
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLinkKey1_last(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DocumentLinkKey1_iter_equal(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_link_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.s_dtype, 
+                 self->priv->s_dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.s_sklad, 
+                 self->priv->s_sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.s_document, 
+                 self->priv->s_document))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.sort, 
+                 self->priv->sort))
+               break;
+       }
+
+ 
+        item = DocumentLinkKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *DocumentLinkKey1_iter_gt(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
@@ -3560,126 +3620,6 @@ static PyObject *DocumentLinkKey1_iter_ge(DocumentLinkKey1* self, PyObject *args
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentLinkKey1_iter_equal(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_link_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.s_dtype, 
-                 self->priv->s_dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.s_sklad, 
-                 self->priv->s_sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.s_document, 
-                 self->priv->s_document))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.sort, 
-                 self->priv->sort))
-               break;
-       }
-
- 
-        item = DocumentLinkKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DocumentLinkKey1_iter_last(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    document_link_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.s_dtype, 
-                 self->priv->s_dtype))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.s_sklad, 
-                 self->priv->s_sklad))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.s_document, 
-                 self->priv->s_document))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.sort, 
-                 self->priv->sort))
-               break;
-       }
-
- 
-        item = DocumentLinkKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3860,6 +3800,66 @@ static PyObject *DocumentLinkKey1_iter_first(DocumentLinkKey1* self, PyObject *a
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DocumentLinkKey1_iter_last(DocumentLinkKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    document_link_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.s_dtype, 
+                 self->priv->s_dtype))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.s_sklad, 
+                 self->priv->s_sklad))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.s_document, 
+                 self->priv->s_document))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.sort, 
+                 self->priv->sort))
+               break;
+       }
+
+ 
+        item = DocumentLinkKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_document_link_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4174,17 +4174,15 @@ static PyMethodDef DocumentLinkKey1_methods[] = {
 
     {"set_sort", (PyCFunction)DocumentLinkKey1_set_sort, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_set_sort"},
 
+    {"get_equal", (PyCFunction)DocumentLinkKey1_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_equal"},
+
+    {"get_next", (PyCFunction)DocumentLinkKey1_next, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_next"},
+
     {"get_prev", (PyCFunction)DocumentLinkKey1_prev, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_prev"},
 
     {"get_gt", (PyCFunction)DocumentLinkKey1_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_gt"},
 
-    {"get_next", (PyCFunction)DocumentLinkKey1_next, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_next"},
-
     {"get_ge", (PyCFunction)DocumentLinkKey1_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_ge"},
-
-    {"get_equal", (PyCFunction)DocumentLinkKey1_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_equal"},
-
-    {"get_last", (PyCFunction)DocumentLinkKey1_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_last"},
 
     {"get_lt", (PyCFunction)DocumentLinkKey1_lt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_lt"},
 
@@ -4192,19 +4190,21 @@ static PyMethodDef DocumentLinkKey1_methods[] = {
 
     {"get_first", (PyCFunction)DocumentLinkKey1_first, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_first"},
 
-    {"gets_gt", (PyCFunction)DocumentLinkKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_gt"},
-
-    {"gets_ge", (PyCFunction)DocumentLinkKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_ge"},
+    {"get_last", (PyCFunction)DocumentLinkKey1_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_last"},
 
     {"gets_equal", (PyCFunction)DocumentLinkKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_equal"},
 
-    {"gets_last", (PyCFunction)DocumentLinkKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_last"},
+    {"gets_gt", (PyCFunction)DocumentLinkKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_gt"},
+
+    {"gets_ge", (PyCFunction)DocumentLinkKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_ge"},
 
     {"gets_lt", (PyCFunction)DocumentLinkKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_lt"},
 
     {"gets_le", (PyCFunction)DocumentLinkKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_le"},
 
     {"gets_first", (PyCFunction)DocumentLinkKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_first"},
+
+    {"gets_last", (PyCFunction)DocumentLinkKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "DocumentLinkKey1_iter_last"},
 
     {NULL}
 };

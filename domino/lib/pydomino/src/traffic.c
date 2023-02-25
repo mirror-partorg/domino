@@ -1,4 +1,4 @@
-
+#ifndef DOMINO78
 
 #include "traffic.h"
 #include <datetime.h>
@@ -29,12 +29,14 @@ static void Traffic_dealloc(PyObject* self)
 }
 
 static PyObject *Traffic_stocks(Traffic *self, PyObject *args, PyObject *kwds);
+#ifndef DOMINO78
 static PyObject *Traffic_order(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *Traffic_limit(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *Traffic_rebuild_stocks(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *Traffic_info(Traffic *self, PyObject *args, PyObject *kwds);
 static PyObject *get_product_info(do_alias_t *alias, const char *code, const char *store);
 static PyObject *Traffic_set_marked(Traffic *self, PyObject *args, PyObject *kwds);
+#endif
 static PyObject *Traffic_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
     LOG("Traffic new\n");
@@ -231,6 +233,7 @@ typedef struct {
     double price;
 } purchase_t;
 
+#ifndef DOMINO78
 static int get_realiz(do_alias_t *alias, product_rec_t *product, const char *unit, realiz_t *month, realiz_t *season)
 {
 	realization_rec_t realization;
@@ -315,6 +318,7 @@ static int get_realiz(do_alias_t *alias, product_rec_t *product, const char *uni
         return FALSE;
     return TRUE;
 }
+#endif
 const char *season_name(int season)
 {
     switch (season) {
@@ -499,7 +503,8 @@ static PyObject *Traffic_balance(Traffic *self, PyObject *args, PyObject *kwds)
 
         do_cpy(key.dtype, document_key3.dtype);
         do_cpy(key.sklad, document_key3.sklad);
-        do_date_set(&key.date, tm1);
+        BTI_LONG date_;
+        key.date = do_date_set(&date_, tm1);
         do_extended_t *extended;
         extended = do_extended_new(alias);
 
@@ -722,7 +727,8 @@ static double get_product_parcel_sale(do_alias_t *alias, product_key0_t *key, co
     do_text_set(alias, dtype, do_param(DO_PARAM_DOCUMENT_TYPE_PRODUCT_OUT));
 
     do_cpy(document_order_key3.code, key->code);
-    do_date_set(&document_order_key3.date, *tm1);
+    BTI_LONG date_;
+    document_order_key3.date = do_date_set(&date_, *tm1);
     document_order_key3.time = 0;
     do_date_set(&date, *tm2);
     do_text_set(alias, sklad.code, store);
@@ -762,7 +768,8 @@ static double get_product_parcel_purchase(do_alias_t *alias, product_key0_t *key
     do_text_set(alias, dtype, do_param(DO_PARAM_DOCUMENT_TYPE_PRODUCT_IN));
 
     do_cpy(document_order_key3.code, key->code);
-    do_date_set(&document_order_key3.date, *tm1);
+    BTI_LONG date_;
+    document_order_key3.date = do_date_set(&date_, *tm1);
     document_order_key3.time = 0;
     do_date_set(&date, *tm2);
     do_text_set(alias, sklad.code, store);
@@ -895,7 +902,8 @@ static PyObject *Traffic_stocks(Traffic *self, PyObject *args, PyObject *kwds)
     document_order_key4.time = 0;
 
     do_cpy(key.sklad, document_order_key4.sklad);
-    do_date_set(&key.date, tm1);
+    BTI_LONG date_;
+    key.date = do_date_set(&date_, tm1);
 
     do_extended_t *extended;
     extended = do_extended_new(alias);
@@ -1024,7 +1032,8 @@ static PyObject *Traffic_quarantine(Traffic *self, PyObject *args, PyObject *kwd
     document_order_key4.time = 0;
 
     do_cpy(key.sklad, document_order_key4.sklad);
-    do_date_set(&key.date, tm1);
+    BTI_LONG date_;
+    key.date = do_date_set(&date_, tm1);
 
     do_extended_t *extended;
     extended = do_extended_new(alias);
@@ -1434,6 +1443,7 @@ static char *get_contract(do_alias_t *alias, const char *code, const char *store
     }
     return val_string;
 }
+#ifndef DOMINO78
 static PyObject *Traffic_order(Traffic *self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"store","date1","date2", "kind", NULL};
@@ -1543,6 +1553,7 @@ static PyObject *Traffic_order(Traffic *self, PyObject *args, PyObject *kwds)
         return NULL;
     return result;
 }
+#endif
 typedef struct {
    char code[6];
    double quant;
@@ -1567,11 +1578,12 @@ static do_sort_list_t *get_real(do_alias_t *alias, struct tm *tm1, struct tm *tm
 
     do_text_set(alias, document_key3.dtype, do_param(DO_PARAM_DOCUMENT_TYPE_PRODUCT_OUT));
     do_text_set(alias, document_key3.sklad, store);
-    do_date_set(&document_key3.date, *tm1);
+    BTI_LONG date_;
+    document_key3.date = do_date_set(&date_, *tm1);
     document_key3.time = 0;
     do_cpy(key.dtype, document_key3.dtype);
     do_cpy(key.sklad, document_key3.sklad);
-    do_date_set(&key.date, *tm2);
+    key.date = do_date_set(&date_, *tm2);
 
     rec.code[5] = '\0';
 
@@ -1623,6 +1635,7 @@ static do_sort_list_t *get_real(do_alias_t *alias, struct tm *tm1, struct tm *tm
     return realization;
 
 }
+#ifndef DOMINO78
 static do_sort_list_t *get_stock(do_alias_t *alias, struct tm *tm1, struct tm *tm2, const char *store)
 {
 
@@ -1899,6 +1912,7 @@ static PyObject *Traffic_limit(Traffic *self, PyObject *args, PyObject *kwds)
         return NULL;
     return result;
 }
+#endif
 static do_list_t *get_last_product_parcel_order(do_alias_t *alias, product_key0_t *key, const char *dtype, const char **operations, int operations_len, const char *store, struct tm *tm1, struct tm *tm2)
 {
     int status,i;
@@ -1912,7 +1926,8 @@ static do_list_t *get_last_product_parcel_order(do_alias_t *alias, product_key0_
 
     ret = do_list_new(FALSE);
     do_cpy(document_order_key3.code, key->code);
-    do_date_set(&document_order_key3.date, *tm2);
+    BTI_LONG date_;
+    document_order_key3.date = do_date_set(&date_, *tm2);
     document_order_key3.date += 1;
     document_order_key3.time = 0;
     do_date_set(&date, *tm1);
@@ -2031,6 +2046,7 @@ static PyObject *get_write_off(do_alias_t *alias, const char *code, const char *
 
     return retval;
 }
+#ifndef DOMINO78
 static PyObject *get_product_info(do_alias_t *alias, const char *code, const char *store)
 {
 
@@ -2386,7 +2402,7 @@ static PyObject *get_product_info(do_alias_t *alias, const char *code, const cha
     }
     return info;
 }
-
+#endif
 static do_list_t *get_product_order(do_alias_t *alias, product_key0_t *key, const char *store, struct tm *tm1, struct tm *tm2)
 {
 
@@ -2489,7 +2505,7 @@ static do_list_t *get_product_order(do_alias_t *alias, product_key0_t *key, cons
 	return ret;
 }
 
-
+#ifndef DOMINO78
 static PyObject *Traffic_info(Traffic *self, PyObject *args, PyObject *kwds)
 {
     static char *kwlist[] = {"code","store", NULL};
@@ -2511,6 +2527,7 @@ static PyObject *Traffic_info(Traffic *self, PyObject *args, PyObject *kwds)
 
     return get_product_info(self->priv->alias, code, store);
 }
+#endif
 #define ISLEAP(year) ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
 static const unsigned short int __mon_yday[2][13] = {
     { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 },
@@ -2605,3 +2622,4 @@ static PyObject *Traffic_set_marked(Traffic *self, PyObject *args, PyObject *kwd
 }
 
 //int domino_order_set_marked_full(do_alias_t *alias, const char *unit, const char *product_code, struct tm *tm1_, struct tm *tm2_, domino_marked_t marked, double quant, int partner, const char *desc, const char *life_time, const char *manufactor, double price, double price_fact)
+#endif

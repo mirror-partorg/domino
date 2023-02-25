@@ -1,3 +1,4 @@
+#ifndef DOMINO78
 
 #include "price_limit.h"
 #include <datetime.h>
@@ -195,3 +196,4 @@ PyTypeObject *getPriceLimitType()
 {
     return &PriceLimitType_;
 }
+#endif

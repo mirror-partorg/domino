@@ -6,6 +6,7 @@ from myutil import *
 from datetime import datetime
 import re
 import os
+import sys
 
 re_structs=re.compile("typedef\s+struct\s+\w*\s*\{(?P<body>[\w,\s,\;,\,\[,\]]+)\}\s*(?P<name>\w+)\_(?P<type>struct|key\d+)\_t",re.M+re.S)
 re_define_int=re.compile("#define\s+(?P<name>\w+)\s+(?P<value>\d+)")
@@ -79,12 +80,12 @@ def mkdoc(records,path1):
 				html+="&nbsp;&nbsp;&nbsp;"+field.__str__()
 			html+="</pre>"
 	html+="""</html>"""
-	f=open(path1+"doc/index.html","w+")
+	f=open(os.path.join(path1,"doc","index.html"),"w+")
 	f.write(html)
 	f.close()
 def mksrc(records, path1, manual_records):
-	path=path1+"var"
-	f=open(path+"/db.h","wt+")
+	path=os.path.join(path1,"var")
+	f=open(os.path.join(path,"db.h"),"wt+")
 	for name in records:
 		f.write("#include \"%s.h\"\n"%(records[name].ident))
 		records[name].mksrc(path)
@@ -143,12 +144,9 @@ def mksrc(records, path1, manual_records):
 	f.close()
 
 if __name__ == "__main__":
-	try:
-		objs = parce_header_file("../../include/domino_db.h1")
-		path="./"
-	except:
-		objs = parce_header_file("../../../include/domino_db.h1")
-		path="../"
+	filename = os.path.join(os.path.dirname( __file__),"..","..","..","include","domino_db.h2")
+	objs = parce_header_file(filename)
+	path = os.path.join(os.path.dirname( __file__),"..")
 	records=dict()
 	i=0
 	for name in objs:
@@ -186,7 +184,7 @@ if __name__ == "__main__":
 
 	
 	manual_records = []
-	for f in os.listdir(path+"src/"):
+	for f in os.listdir(os.path.join(path,"src")):
 		if f[-2:] == ".h" and f[:-2] != "head":
 			manual_records.append(f[:-2])
 	mkdoc(records,path)

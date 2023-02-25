@@ -47,7 +47,7 @@ static PyObject *Alias_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     LOG("Alias new %d\n",self);
     if ( self == NULL )
         return NULL;
-        self->alias = NULL;
+    self->alias = NULL;
     return (PyObject *)self;
 }
 
@@ -272,7 +272,7 @@ static PyObject *Alias_UserKey0(Alias* self)
     return PyObject_CallFunction((PyObject*)getUserKey0Type(),
                                     "O", self);
 }   
-
+#ifndef DOMINO78
 static PyObject *Alias_Realization(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getRealizationType(),
@@ -308,7 +308,7 @@ static PyObject *Alias_RealizationKey4(Alias* self)
     return PyObject_CallFunction((PyObject*)getRealizationKey4Type(),
                                     "O", self);
 }   
-
+#endif
 static PyObject *Alias_Store(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getStoreType(),
@@ -417,6 +417,7 @@ static PyObject *Alias_DocumentDataKey2(Alias* self)
                                     "O", self);
 }   
 
+#ifndef DOMINO78
 static PyObject *Alias_Shift(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getShiftType(),
@@ -446,7 +447,7 @@ static PyObject *Alias_ShiftKey3(Alias* self)
     return PyObject_CallFunction((PyObject*)getShiftKey3Type(),
                                     "O", self);
 }   
-
+#endif
 static PyObject *Alias_DocumentLink(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getDocumentLinkType(),
@@ -687,6 +688,7 @@ static PyObject *Alias_AccountKey0(Alias* self)
                                     "O", self);
 }   
 
+#ifndef DOMINO78
 static PyObject *Alias_CheckSum(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getCheckSumType(),
@@ -728,7 +730,7 @@ static PyObject *Alias_CheckKey2(Alias* self)
     return PyObject_CallFunction((PyObject*)getCheckKey2Type(),
                                     "O", self);
 }   
-
+#endif
 static PyObject *Alias_DocumentView(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getDocumentViewType(),
@@ -896,6 +898,7 @@ static PyMethodDef Alias_methods[] = {
 
     {"UserKey0", (PyCFunction)Alias_UserKey0,  METH_NOARGS, "Alias_UserKey0"},
 
+#ifndef DOMINO78
     {"Realization", (PyCFunction)Alias_Realization,  METH_NOARGS, "Alias_Realization"},
 
     {"RealizationKey0", (PyCFunction)Alias_RealizationKey0,  METH_NOARGS, "Alias_RealizationKey0"},
@@ -908,6 +911,7 @@ static PyMethodDef Alias_methods[] = {
 
     {"RealizationKey4", (PyCFunction)Alias_RealizationKey4,  METH_NOARGS, "Alias_RealizationKey4"},
 
+#endif
     {"Store", (PyCFunction)Alias_Store,  METH_NOARGS, "Alias_Store"},
 
     {"StoreKey0", (PyCFunction)Alias_StoreKey0,  METH_NOARGS, "Alias_StoreKey0"},
@@ -944,6 +948,7 @@ static PyMethodDef Alias_methods[] = {
 
     {"DocumentDataKey2", (PyCFunction)Alias_DocumentDataKey2,  METH_NOARGS, "Alias_DocumentDataKey2"},
 
+#ifndef DOMINO78
     {"Shift", (PyCFunction)Alias_Shift,  METH_NOARGS, "Alias_Shift"},
 
     {"ShiftKey0", (PyCFunction)Alias_ShiftKey0,  METH_NOARGS, "Alias_ShiftKey0"},
@@ -953,7 +958,7 @@ static PyMethodDef Alias_methods[] = {
     {"ShiftKey2", (PyCFunction)Alias_ShiftKey2,  METH_NOARGS, "Alias_ShiftKey2"},
 
     {"ShiftKey3", (PyCFunction)Alias_ShiftKey3,  METH_NOARGS, "Alias_ShiftKey3"},
-
+#endif
     {"DocumentLink", (PyCFunction)Alias_DocumentLink,  METH_NOARGS, "Alias_DocumentLink"},
 
     {"DocumentLinkKey0", (PyCFunction)Alias_DocumentLinkKey0,  METH_NOARGS, "Alias_DocumentLinkKey0"},
@@ -1034,6 +1039,7 @@ static PyMethodDef Alias_methods[] = {
 
     {"AccountKey0", (PyCFunction)Alias_AccountKey0,  METH_NOARGS, "Alias_AccountKey0"},
 
+#ifndef DOMINO78
     {"CheckSum", (PyCFunction)Alias_CheckSum,  METH_NOARGS, "Alias_CheckSum"},
 
     {"CheckSumKey0", (PyCFunction)Alias_CheckSumKey0,  METH_NOARGS, "Alias_CheckSumKey0"},
@@ -1048,6 +1054,7 @@ static PyMethodDef Alias_methods[] = {
 
     {"CheckKey2", (PyCFunction)Alias_CheckKey2,  METH_NOARGS, "Alias_CheckKey2"},
 
+#endif
     {"DocumentView", (PyCFunction)Alias_DocumentView,  METH_NOARGS, "Alias_DocumentView"},
 
     {"DocumentViewKey0", (PyCFunction)Alias_DocumentViewKey0,  METH_NOARGS, "Alias_DocumentViewKey0"},

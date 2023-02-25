@@ -7,6 +7,7 @@
 
 #define DATE_DIF 30
 
+#ifndef DOMINO78
 DO_EXPORT int do_action_delete_document(do_alias_t *alias, document_key0_t *document_key0)
 {
     return do_deaccept(alias, document_key0, DO_DEACCEPT_AND_DELETE, NULL);
@@ -76,7 +77,6 @@ typedef struct {
     double sum;
     char *info;
 } money_t;
-
 typedef struct {
     int cash;
     int shift;
@@ -120,8 +120,10 @@ static shift_t *shift_new()
     retval->money = do_list_new(TRUE);
     return retval;
 }
+#endif
 #define RUNNING_ (!break_func || !break_func(NULL))
 
+#ifndef DOMINO78
 static shift_t *do_action_read_cl(do_alias_t *alias, const char *filename, do_extended_break_func break_func)
 {
     FILE* fp;
@@ -578,7 +580,8 @@ static do_list_t *do_action_shift_document_get(do_alias_t *alias, shift_t *shift
     do_text_set(alias, document_key3.sklad, shift->sklad);
     do_cpy(document_key0.dtype, document_key3.dtype);
     do_cpy(document_key0.sklad, document_key3.sklad);
-    do_date_set(&document_key3.date, shift->time);
+    BTI_LONG date_;
+    document_key3.date = do_date_set(&date_, shift->time);
     document_key3.date -= DATE_DIF;
     document_key3.time = 0;
 
@@ -606,6 +609,7 @@ static do_list_t *do_action_shift_document_get(do_alias_t *alias, shift_t *shift
     }
     return retval;
 }
+#endif
 typedef struct {
     char *code;
     double quantity;
@@ -639,6 +643,7 @@ static int product_sale_cmp_func (product_sale_t *p1, product_sale_t *p2)
     return i;
 }
 
+#ifndef DOMINO78
 static int do_action_doc_set_info(do_alias_t *alias, shift_t *shift, sale_t *sale, int check, do_list_t *info_l, do_extended_break_func break_func)
 {
     int i, j;
@@ -728,14 +733,15 @@ static int do_action_doc_create(do_alias_t *alias, shift_t *shift, sale_t *sale,
     do_text_set_empty(document.data.name);
     do_cpy(document.data.sklad, document_key0.sklad);
     do_cpy(document.data.document, document_key0.document);
-    do_date_set(&document.data.date, shift->time);
-    do_time_set(&document.data.time, shift->time);
+    DTI_LONG date_,time_;
+    document.data.date = do_date_set(&date_, shift->time);
+    document.data.time = do_time_set(&time_, shift->time);
     do_text_set(alias, document.data.p_g_code, do_param(DO_PARAM_PARTNER_REGION_CASH));
     document.data.p_code = shift->cash;
     sprintf(buf, "%2.2d/%6.6d", shift->cash, shift->shift);
     do_text_set(alias, document.data.p_doc, buf);
-    do_date_set(&document.data.p_date, shift->time);
-    do_time_set(&document.data.p_time, shift->time);
+    document.data.p_date = do_date_set(&date_, shift->time);
+    document.data.p_time = do_time_set(&time_, shift->time);
     do_text_set_empty(document.data.party);
     document.data.accepted = 1;
     do_document_params_clear(alias, &document);
@@ -916,3 +922,4 @@ DO_EXPORT int do_action_receive_cl(do_alias_t *alias, const char *filename, do_e
     shift_free(shift);
     return res;
 }
+#endif

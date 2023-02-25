@@ -1,3 +1,4 @@
+#ifndef DOMINO78
 
 #include "markup.h"
 #include <datetime.h>
@@ -535,3 +536,4 @@ static PyObject *Markup_max_pct_grls(Markup *self, PyObject *args, PyObject *kwd
     Py_DECREF(obj);
     return ret;
 }
+#endif

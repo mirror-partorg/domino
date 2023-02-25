@@ -162,7 +162,7 @@ static PyObject *Stock_set_code0(Stock* self, PyObject *args, PyObject *kwds)
 //    return result;
 }
 
-static PyObject *Stock_store0(Stock* self, void *unused)
+static PyObject *Stock_sklad0(Stock* self, void *unused)
 {
     PyObject *result;
 
@@ -173,7 +173,7 @@ static PyObject *Stock_store0(Stock* self, void *unused)
     return result;
 }
 
-static PyObject *Stock_set_store0(Stock* self, PyObject *args, PyObject *kwds)
+static PyObject *Stock_set_sklad0(Stock* self, PyObject *args, PyObject *kwds)
 {
 //    PyObject *result;
 
@@ -320,6 +320,78 @@ static PyObject *Stock_set_quants(Stock* self, PyObject *args, PyObject *kwds)
     return Py_None;
 }
 
+static PyObject *Stock_equal(Stock* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getStockKey0Type() )
+        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getStockKey1Type() )
+        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getStockKey2Type() )
+        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getStockKey3Type() )
+        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Stock_next(Stock* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getStockKey0Type() )
+        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getStockKey1Type() )
+        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getStockKey2Type() )
+        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getStockKey3Type() )
+        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Stock_prev(Stock* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -392,42 +464,6 @@ static PyObject *Stock_gt(Stock* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Stock_next(Stock* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getStockKey0Type() )
-        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_NEXT);
-    else
-
-    if ( Py_TYPE(key) == getStockKey1Type() )
-        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_NEXT);
-    else
-
-    if ( Py_TYPE(key) == getStockKey2Type() )
-        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_NEXT);
-    else
-
-    if ( Py_TYPE(key) == getStockKey3Type() )
-        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *Stock_ge(Stock* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -452,78 +488,6 @@ static PyObject *Stock_ge(Stock* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getStockKey3Type() )
         status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Stock_equal(Stock* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getStockKey0Type() )
-        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getStockKey1Type() )
-        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getStockKey2Type() )
-        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getStockKey3Type() )
-        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Stock_last(Stock* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getStockKey0Type() )
-        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getStockKey1Type() )
-        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getStockKey2Type() )
-        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getStockKey3Type() )
-        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -642,6 +606,195 @@ static PyObject *Stock_first(Stock* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Stock_last(Stock* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getStockKey0Type() )
+        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getStockKey1Type() )
+        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getStockKey2Type() )
+        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getStockKey3Type() )
+        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Stock_iter_equal(Stock* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getStockKey0Type() ) {
+        key_cmp = (stock_key0_t*)do_malloc(sizeof(stock_key0_t));
+        memcpy(key_cmp, ((StockKey0*)key)->priv, sizeof(stock_key0_t));
+        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getStockKey1Type() ) {
+        key_cmp = (stock_key1_t*)do_malloc(sizeof(stock_key1_t));
+        memcpy(key_cmp, ((StockKey1*)key)->priv, sizeof(stock_key1_t));
+        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getStockKey2Type() ) {
+        key_cmp = (stock_key2_t*)do_malloc(sizeof(stock_key2_t));
+        memcpy(key_cmp, ((StockKey2*)key)->priv, sizeof(stock_key2_t));
+        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getStockKey3Type() ) {
+        key_cmp = (stock_key3_t*)do_malloc(sizeof(stock_key3_t));
+        memcpy(key_cmp, ((StockKey3*)key)->priv, sizeof(stock_key3_t));
+        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getStockKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key0_t*)key_cmp)->sklad, 
+                    ((StockKey0*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((stock_key0_t*)key_cmp)->code, 
+                    ((StockKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key1_t*)key_cmp)->code, 
+                    ((StockKey1*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key2_t*)key_cmp)->sklad0, 
+                    ((StockKey2*)key)->priv->sklad0))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((stock_key2_t*)key_cmp)->code0, 
+                    ((StockKey2*)key)->priv->code0))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key3_t*)key_cmp)->code0, 
+                    ((StockKey3*)key)->priv->code0))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Stock_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getStockKey0Type() ) {
+            status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey1Type() ) {
+            status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey2Type() ) {
+            status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey3Type() ) {
+            status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Stock_iter_gt(Stock* self, PyObject *args, PyObject *kwds)
@@ -931,312 +1084,6 @@ static PyObject *Stock_iter_ge(Stock* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getStockKey3Type() ) {
             status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Stock_iter_equal(Stock* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getStockKey0Type() ) {
-        key_cmp = (stock_key0_t*)do_malloc(sizeof(stock_key0_t));
-        memcpy(key_cmp, ((StockKey0*)key)->priv, sizeof(stock_key0_t));
-        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-
-    if ( Py_TYPE(key) == getStockKey1Type() ) {
-        key_cmp = (stock_key1_t*)do_malloc(sizeof(stock_key1_t));
-        memcpy(key_cmp, ((StockKey1*)key)->priv, sizeof(stock_key1_t));
-        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-
-    if ( Py_TYPE(key) == getStockKey2Type() ) {
-        key_cmp = (stock_key2_t*)do_malloc(sizeof(stock_key2_t));
-        memcpy(key_cmp, ((StockKey2*)key)->priv, sizeof(stock_key2_t));
-        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-
-    if ( Py_TYPE(key) == getStockKey3Type() ) {
-        key_cmp = (stock_key3_t*)do_malloc(sizeof(stock_key3_t));
-        memcpy(key_cmp, ((StockKey3*)key)->priv, sizeof(stock_key3_t));
-        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getStockKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key0_t*)key_cmp)->sklad, 
-                    ((StockKey0*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((stock_key0_t*)key_cmp)->code, 
-                    ((StockKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key1_t*)key_cmp)->code, 
-                    ((StockKey1*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key2_t*)key_cmp)->sklad0, 
-                    ((StockKey2*)key)->priv->sklad0))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((stock_key2_t*)key_cmp)->code0, 
-                    ((StockKey2*)key)->priv->code0))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key3_t*)key_cmp)->code0, 
-                    ((StockKey3*)key)->priv->code0))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Stock_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getStockKey0Type() ) {
-            status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey1Type() ) {
-            status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey2Type() ) {
-            status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_NEXT);
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey3Type() ) {
-            status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Stock_iter_last(Stock* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getStockKey0Type() ) {
-        key_cmp = (stock_key0_t*)do_malloc(sizeof(stock_key0_t));
-        memcpy(key_cmp, ((StockKey0*)key)->priv, sizeof(stock_key0_t));
-        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getStockKey1Type() ) {
-        key_cmp = (stock_key1_t*)do_malloc(sizeof(stock_key1_t));
-        memcpy(key_cmp, ((StockKey1*)key)->priv, sizeof(stock_key1_t));
-        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getStockKey2Type() ) {
-        key_cmp = (stock_key2_t*)do_malloc(sizeof(stock_key2_t));
-        memcpy(key_cmp, ((StockKey2*)key)->priv, sizeof(stock_key2_t));
-        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getStockKey3Type() ) {
-        key_cmp = (stock_key3_t*)do_malloc(sizeof(stock_key3_t));
-        memcpy(key_cmp, ((StockKey3*)key)->priv, sizeof(stock_key3_t));
-        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getStockKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key0_t*)key_cmp)->sklad, 
-                    ((StockKey0*)key)->priv->sklad))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((stock_key0_t*)key_cmp)->code, 
-                    ((StockKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key1_t*)key_cmp)->code, 
-                    ((StockKey1*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key2_t*)key_cmp)->sklad0, 
-                    ((StockKey2*)key)->priv->sklad0))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((stock_key2_t*)key_cmp)->code0, 
-                    ((StockKey2*)key)->priv->code0))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey3Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((stock_key3_t*)key_cmp)->code0, 
-                    ((StockKey3*)key)->priv->code0))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Stock_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getStockKey0Type() ) {
-            status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey1Type() ) {
-            status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey2Type() ) {
-            status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getStockKey3Type() ) {
-            status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1715,19 +1562,172 @@ static PyObject *Stock_iter_first(Stock* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Stock_update(Stock* self)
+static PyObject *Stock_iter_last(Stock* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_stock_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getStockKey0Type() ) {
+        key_cmp = (stock_key0_t*)do_malloc(sizeof(stock_key0_t));
+        memcpy(key_cmp, ((StockKey0*)key)->priv, sizeof(stock_key0_t));
+        status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getStockKey1Type() ) {
+        key_cmp = (stock_key1_t*)do_malloc(sizeof(stock_key1_t));
+        memcpy(key_cmp, ((StockKey1*)key)->priv, sizeof(stock_key1_t));
+        status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getStockKey2Type() ) {
+        key_cmp = (stock_key2_t*)do_malloc(sizeof(stock_key2_t));
+        memcpy(key_cmp, ((StockKey2*)key)->priv, sizeof(stock_key2_t));
+        status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getStockKey3Type() ) {
+        key_cmp = (stock_key3_t*)do_malloc(sizeof(stock_key3_t));
+        memcpy(key_cmp, ((StockKey3*)key)->priv, sizeof(stock_key3_t));
+        status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getStockKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key0_t*)key_cmp)->sklad, 
+                    ((StockKey0*)key)->priv->sklad))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((stock_key0_t*)key_cmp)->code, 
+                    ((StockKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key1_t*)key_cmp)->code, 
+                    ((StockKey1*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key2_t*)key_cmp)->sklad0, 
+                    ((StockKey2*)key)->priv->sklad0))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((stock_key2_t*)key_cmp)->code0, 
+                    ((StockKey2*)key)->priv->code0))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey3Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((stock_key3_t*)key_cmp)->code0, 
+                    ((StockKey3*)key)->priv->code0))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Stock_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getStockKey0Type() ) {
+            status = do_stock_get0(self->alias->alias, self->priv, ((StockKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey1Type() ) {
+            status = do_stock_get1(self->alias->alias, self->priv, ((StockKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey2Type() ) {
+            status = do_stock_get2(self->alias->alias, self->priv, ((StockKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getStockKey3Type() ) {
+            status = do_stock_get3(self->alias->alias, self->priv, ((StockKey3*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Stock_insert(Stock* self)
 {
     int status;
     status = do_stock_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Stock_update(Stock* self)
+{
+    int status;
+    status = do_stock_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1844,8 +1844,8 @@ static PyObject *Stock_set(Stock* self, PyObject *args, PyObject *kwds)
             }
 
             else
-            if ( !strcmp("store0", field_name) ) {
-                if ( !PyObject_CallMethod((PyObject*)self, "set_store0", "O", value) )
+            if ( !strcmp("sklad0", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_sklad0", "O", value) )
                     return NULL;
             }
 
@@ -1923,13 +1923,13 @@ static PyObject *Stock_fields(Stock* self, PyObject *args, PyObject *kwds)
     do_free(str);
     str = buf1;
 
-    value =  Stock_store0(self,NULL);
+    value =  Stock_sklad0(self,NULL);
     if ( !value ) {
        retval = MyString_FromString(str);
        do_free(str);
        return retval;
     }
-    buf = get_desc("store0", value);
+    buf = get_desc("sklad0", value);
     buf1 = do_strdup_printf("%s\n%s",str,buf);
     do_free(buf);
     do_free(str);
@@ -1957,7 +1957,7 @@ static PyGetSetDef Stock_getset[] = {
 
     {"code0",(getter)Stock_code0},
 
-    {"store0",(getter)Stock_store0},
+    {"sklad0",(getter)Stock_sklad0},
 
     {"quants",(getter)Stock_get_quants},
 
@@ -1979,21 +1979,19 @@ static PyMethodDef Stock_methods[] = {
 
     {"set_code0", (PyCFunction)Stock_set_code0, METH_VARARGS|METH_KEYWORDS, "Stock_set_code0"},
 
-    {"set_store0", (PyCFunction)Stock_set_store0, METH_VARARGS|METH_KEYWORDS, "Stock_set_store0"},
+    {"set_sklad0", (PyCFunction)Stock_set_sklad0, METH_VARARGS|METH_KEYWORDS, "Stock_set_sklad0"},
 
     {"set_quant", (PyCFunction)Stock_set_quant, METH_VARARGS|METH_KEYWORDS, "Stock_set_quant"},
+
+    {"get_equal", (PyCFunction)Stock_equal, METH_VARARGS|METH_KEYWORDS, "Stock_equal"},
+
+    {"get_next", (PyCFunction)Stock_next, METH_VARARGS|METH_KEYWORDS, "Stock_next"},
 
     {"get_prev", (PyCFunction)Stock_prev, METH_VARARGS|METH_KEYWORDS, "Stock_prev"},
 
     {"get_gt", (PyCFunction)Stock_gt, METH_VARARGS|METH_KEYWORDS, "Stock_gt"},
 
-    {"get_next", (PyCFunction)Stock_next, METH_VARARGS|METH_KEYWORDS, "Stock_next"},
-
     {"get_ge", (PyCFunction)Stock_ge, METH_VARARGS|METH_KEYWORDS, "Stock_ge"},
-
-    {"get_equal", (PyCFunction)Stock_equal, METH_VARARGS|METH_KEYWORDS, "Stock_equal"},
-
-    {"get_last", (PyCFunction)Stock_last, METH_VARARGS|METH_KEYWORDS, "Stock_last"},
 
     {"get_lt", (PyCFunction)Stock_lt, METH_VARARGS|METH_KEYWORDS, "Stock_lt"},
 
@@ -2001,13 +1999,13 @@ static PyMethodDef Stock_methods[] = {
 
     {"get_first", (PyCFunction)Stock_first, METH_VARARGS|METH_KEYWORDS, "Stock_first"},
 
-    {"gets_gt", (PyCFunction)Stock_iter_gt, METH_VARARGS|METH_KEYWORDS, "Stock_iter_gt"},
-
-    {"gets_ge", (PyCFunction)Stock_iter_ge, METH_VARARGS|METH_KEYWORDS, "Stock_iter_ge"},
+    {"get_last", (PyCFunction)Stock_last, METH_VARARGS|METH_KEYWORDS, "Stock_last"},
 
     {"gets_equal", (PyCFunction)Stock_iter_equal, METH_VARARGS|METH_KEYWORDS, "Stock_iter_equal"},
 
-    {"gets_last", (PyCFunction)Stock_iter_last, METH_VARARGS|METH_KEYWORDS, "Stock_iter_last"},
+    {"gets_gt", (PyCFunction)Stock_iter_gt, METH_VARARGS|METH_KEYWORDS, "Stock_iter_gt"},
+
+    {"gets_ge", (PyCFunction)Stock_iter_ge, METH_VARARGS|METH_KEYWORDS, "Stock_iter_ge"},
 
     {"gets_lt", (PyCFunction)Stock_iter_lt, METH_VARARGS|METH_KEYWORDS, "Stock_iter_lt"},
 
@@ -2015,9 +2013,11 @@ static PyMethodDef Stock_methods[] = {
 
     {"gets_first", (PyCFunction)Stock_iter_first, METH_VARARGS|METH_KEYWORDS, "Stock_iter_first"},
 
-    {"update", (PyCFunction)Stock_update, METH_VARARGS|METH_KEYWORDS, "Stock_update"},
+    {"gets_last", (PyCFunction)Stock_iter_last, METH_VARARGS|METH_KEYWORDS, "Stock_iter_last"},
 
     {"insert", (PyCFunction)Stock_insert, METH_VARARGS|METH_KEYWORDS, "Stock_insert"},
+
+    {"update", (PyCFunction)Stock_update, METH_VARARGS|METH_KEYWORDS, "Stock_update"},
 
     {"delete", (PyCFunction)Stock_delete, METH_VARARGS|METH_KEYWORDS, "Stock_delete"},
 
@@ -2165,6 +2165,30 @@ static PyObject *StockKey0_set_code(StockKey0* self, PyObject *args, PyObject *k
 //    return result;
 }
 
+static PyObject *StockKey0_equal(StockKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey0_next(StockKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *StockKey0_prev(StockKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -2189,48 +2213,12 @@ static PyObject *StockKey0_gt(StockKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *StockKey0_next(StockKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *StockKey0_ge(StockKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_stock_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey0_equal(StockKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey0_last(StockKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2271,6 +2259,60 @@ static PyObject *StockKey0_first(StockKey0* self, PyObject *args, PyObject *kwds
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey0_last(StockKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey0_iter_equal(StockKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = StockKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *StockKey0_iter_gt(StockKey0* self, PyObject *args, PyObject *kwds)
@@ -2349,90 +2391,6 @@ static PyObject *StockKey0_iter_ge(StockKey0* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_stock_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey0_iter_equal(StockKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = StockKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey0_iter_last(StockKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad, 
-                 self->priv->sklad))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = StockKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2559,6 +2517,48 @@ static PyObject *StockKey0_iter_first(StockKey0* self, PyObject *args, PyObject 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_stock_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *StockKey0_iter_last(StockKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad, 
+                 self->priv->sklad))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = StockKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2774,17 +2774,15 @@ static PyMethodDef StockKey0_methods[] = {
 
     {"set_code", (PyCFunction)StockKey0_set_code, METH_VARARGS|METH_KEYWORDS, "StockKey0_set_code"},
 
+    {"get_equal", (PyCFunction)StockKey0_equal, METH_VARARGS|METH_KEYWORDS, "StockKey0_equal"},
+
+    {"get_next", (PyCFunction)StockKey0_next, METH_VARARGS|METH_KEYWORDS, "StockKey0_next"},
+
     {"get_prev", (PyCFunction)StockKey0_prev, METH_VARARGS|METH_KEYWORDS, "StockKey0_prev"},
 
     {"get_gt", (PyCFunction)StockKey0_gt, METH_VARARGS|METH_KEYWORDS, "StockKey0_gt"},
 
-    {"get_next", (PyCFunction)StockKey0_next, METH_VARARGS|METH_KEYWORDS, "StockKey0_next"},
-
     {"get_ge", (PyCFunction)StockKey0_ge, METH_VARARGS|METH_KEYWORDS, "StockKey0_ge"},
-
-    {"get_equal", (PyCFunction)StockKey0_equal, METH_VARARGS|METH_KEYWORDS, "StockKey0_equal"},
-
-    {"get_last", (PyCFunction)StockKey0_last, METH_VARARGS|METH_KEYWORDS, "StockKey0_last"},
 
     {"get_lt", (PyCFunction)StockKey0_lt, METH_VARARGS|METH_KEYWORDS, "StockKey0_lt"},
 
@@ -2792,19 +2790,21 @@ static PyMethodDef StockKey0_methods[] = {
 
     {"get_first", (PyCFunction)StockKey0_first, METH_VARARGS|METH_KEYWORDS, "StockKey0_first"},
 
-    {"gets_gt", (PyCFunction)StockKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)StockKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_ge"},
+    {"get_last", (PyCFunction)StockKey0_last, METH_VARARGS|METH_KEYWORDS, "StockKey0_last"},
 
     {"gets_equal", (PyCFunction)StockKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)StockKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_last"},
+    {"gets_gt", (PyCFunction)StockKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)StockKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)StockKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)StockKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_le"},
 
     {"gets_first", (PyCFunction)StockKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)StockKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey0_iter_last"},
 
     {NULL}
 };
@@ -2914,6 +2914,30 @@ static PyObject *StockKey1_set_code(StockKey1* self, PyObject *args, PyObject *k
 //    return result;
 }
 
+static PyObject *StockKey1_equal(StockKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey1_next(StockKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *StockKey1_prev(StockKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -2938,48 +2962,12 @@ static PyObject *StockKey1_gt(StockKey1* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *StockKey1_next(StockKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *StockKey1_ge(StockKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_stock_key1(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey1_equal(StockKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey1_last(StockKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3020,6 +3008,54 @@ static PyObject *StockKey1_first(StockKey1* self, PyObject *args, PyObject *kwds
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey1_last(StockKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey1_iter_equal(StockKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = StockKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *StockKey1_iter_gt(StockKey1* self, PyObject *args, PyObject *kwds)
@@ -3086,78 +3122,6 @@ static PyObject *StockKey1_iter_ge(StockKey1* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_stock_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey1_iter_equal(StockKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = StockKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey1_iter_last(StockKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = StockKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3266,6 +3230,42 @@ static PyObject *StockKey1_iter_first(StockKey1* self, PyObject *args, PyObject 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_stock_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *StockKey1_iter_last(StockKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = StockKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3448,17 +3448,15 @@ static PyMethodDef StockKey1_methods[] = {
 
     {"set_code", (PyCFunction)StockKey1_set_code, METH_VARARGS|METH_KEYWORDS, "StockKey1_set_code"},
 
+    {"get_equal", (PyCFunction)StockKey1_equal, METH_VARARGS|METH_KEYWORDS, "StockKey1_equal"},
+
+    {"get_next", (PyCFunction)StockKey1_next, METH_VARARGS|METH_KEYWORDS, "StockKey1_next"},
+
     {"get_prev", (PyCFunction)StockKey1_prev, METH_VARARGS|METH_KEYWORDS, "StockKey1_prev"},
 
     {"get_gt", (PyCFunction)StockKey1_gt, METH_VARARGS|METH_KEYWORDS, "StockKey1_gt"},
 
-    {"get_next", (PyCFunction)StockKey1_next, METH_VARARGS|METH_KEYWORDS, "StockKey1_next"},
-
     {"get_ge", (PyCFunction)StockKey1_ge, METH_VARARGS|METH_KEYWORDS, "StockKey1_ge"},
-
-    {"get_equal", (PyCFunction)StockKey1_equal, METH_VARARGS|METH_KEYWORDS, "StockKey1_equal"},
-
-    {"get_last", (PyCFunction)StockKey1_last, METH_VARARGS|METH_KEYWORDS, "StockKey1_last"},
 
     {"get_lt", (PyCFunction)StockKey1_lt, METH_VARARGS|METH_KEYWORDS, "StockKey1_lt"},
 
@@ -3466,19 +3464,21 @@ static PyMethodDef StockKey1_methods[] = {
 
     {"get_first", (PyCFunction)StockKey1_first, METH_VARARGS|METH_KEYWORDS, "StockKey1_first"},
 
-    {"gets_gt", (PyCFunction)StockKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_gt"},
-
-    {"gets_ge", (PyCFunction)StockKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_ge"},
+    {"get_last", (PyCFunction)StockKey1_last, METH_VARARGS|METH_KEYWORDS, "StockKey1_last"},
 
     {"gets_equal", (PyCFunction)StockKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_equal"},
 
-    {"gets_last", (PyCFunction)StockKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_last"},
+    {"gets_gt", (PyCFunction)StockKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_gt"},
+
+    {"gets_ge", (PyCFunction)StockKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_ge"},
 
     {"gets_lt", (PyCFunction)StockKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_lt"},
 
     {"gets_le", (PyCFunction)StockKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_le"},
 
     {"gets_first", (PyCFunction)StockKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_first"},
+
+    {"gets_last", (PyCFunction)StockKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey1_iter_last"},
 
     {NULL}
 };
@@ -3556,7 +3556,7 @@ static PyObject *StockKey2_clone(StockKey2 *self)
     return (PyObject*)result;
 }
 
-static PyObject *StockKey2_store0(StockKey2* self, void *unused)
+static PyObject *StockKey2_sklad0(StockKey2* self, void *unused)
 {
     PyObject *result;
 
@@ -3567,7 +3567,7 @@ static PyObject *StockKey2_store0(StockKey2* self, void *unused)
     return result;
 }
 
-static PyObject *StockKey2_set_store0(StockKey2* self, PyObject *args, PyObject *kwds)
+static PyObject *StockKey2_set_sklad0(StockKey2* self, PyObject *args, PyObject *kwds)
 {
 //    PyObject *result;
 
@@ -3624,6 +3624,30 @@ static PyObject *StockKey2_set_code0(StockKey2* self, PyObject *args, PyObject *
 //    return result;
 }
 
+static PyObject *StockKey2_equal(StockKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey2_next(StockKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *StockKey2_prev(StockKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -3648,48 +3672,12 @@ static PyObject *StockKey2_gt(StockKey2* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *StockKey2_next(StockKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *StockKey2_ge(StockKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_stock_key2(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey2_equal(StockKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey2_last(StockKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3730,6 +3718,60 @@ static PyObject *StockKey2_first(StockKey2* self, PyObject *args, PyObject *kwds
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey2_last(StockKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey2_iter_equal(StockKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad0, 
+                 self->priv->sklad0))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code0, 
+                 self->priv->code0))
+               break;
+       }
+
+ 
+        item = StockKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *StockKey2_iter_gt(StockKey2* self, PyObject *args, PyObject *kwds)
@@ -3808,90 +3850,6 @@ static PyObject *StockKey2_iter_ge(StockKey2* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_stock_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey2_iter_equal(StockKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad0, 
-                 self->priv->sklad0))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code0, 
-                 self->priv->code0))
-               break;
-       }
-
- 
-        item = StockKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey2_iter_last(StockKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.sklad0, 
-                 self->priv->sklad0))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.code0, 
-                 self->priv->code0))
-               break;
-       }
-
- 
-        item = StockKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4026,6 +3984,48 @@ static PyObject *StockKey2_iter_first(StockKey2* self, PyObject *args, PyObject 
     return retval;
 }
 
+static PyObject *StockKey2_iter_last(StockKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.sklad0, 
+                 self->priv->sklad0))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.code0, 
+                 self->priv->code0))
+               break;
+       }
+
+ 
+        item = StockKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
 static PyObject *StockKey2_cmp(StockKey2* self, PyObject *args, PyObject *kwds)
 {
     PyObject *obj;
@@ -4108,7 +4108,7 @@ static PyObject *StockKey2_set(StockKey2* self, PyObject *args, PyObject *kwds)
             switch (i) {
 
                 case 0:
-                    if ( !PyObject_CallMethod((PyObject*)self, "set_store0", "O", value) )
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_sklad0", "O", value) )
                         return NULL;
                     break;
 
@@ -4145,8 +4145,8 @@ static PyObject *StockKey2_set(StockKey2* self, PyObject *args, PyObject *kwds)
 
 
             else
-            if ( !strcmp("store0", field_name) ) {
-                if ( !PyObject_CallMethod((PyObject*)self, "set_store0", "O", value) )
+            if ( !strcmp("sklad0", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_sklad0", "O", value) )
                     return NULL;
             }
 
@@ -4182,13 +4182,13 @@ static PyObject *StockKey2_fields(StockKey2* self, PyObject *args, PyObject *kwd
     PyObject *retval;
 
 
-    value =  StockKey2_store0(self,NULL);
+    value =  StockKey2_sklad0(self,NULL);
     if ( !value ) {
        retval = MyString_FromString(str);
        do_free(str);
        return retval;
     }
-    buf = get_desc("store0", value);
+    buf = get_desc("sklad0", value);
     buf1 = do_strdup_printf("%s\n%s",str,buf);
     do_free(buf);
     do_free(str);
@@ -4215,7 +4215,7 @@ static PyObject *StockKey2_fields(StockKey2* self, PyObject *args, PyObject *kwd
 
 static PyGetSetDef StockKey2_getset[] = {
 
-    {"store0",(getter)StockKey2_store0},
+    {"sklad0",(getter)StockKey2_sklad0},
 
     {"code0",(getter)StockKey2_code0},
 
@@ -4229,21 +4229,19 @@ static PyMethodDef StockKey2_methods[] = {
 
     {"cmp", (PyCFunction)StockKey2_cmp, METH_VARARGS|METH_KEYWORDS, "cmp"},
 
-    {"set_store0", (PyCFunction)StockKey2_set_store0, METH_VARARGS|METH_KEYWORDS, "StockKey2_set_store0"},
+    {"set_sklad0", (PyCFunction)StockKey2_set_sklad0, METH_VARARGS|METH_KEYWORDS, "StockKey2_set_sklad0"},
 
     {"set_code0", (PyCFunction)StockKey2_set_code0, METH_VARARGS|METH_KEYWORDS, "StockKey2_set_code0"},
+
+    {"get_equal", (PyCFunction)StockKey2_equal, METH_VARARGS|METH_KEYWORDS, "StockKey2_equal"},
+
+    {"get_next", (PyCFunction)StockKey2_next, METH_VARARGS|METH_KEYWORDS, "StockKey2_next"},
 
     {"get_prev", (PyCFunction)StockKey2_prev, METH_VARARGS|METH_KEYWORDS, "StockKey2_prev"},
 
     {"get_gt", (PyCFunction)StockKey2_gt, METH_VARARGS|METH_KEYWORDS, "StockKey2_gt"},
 
-    {"get_next", (PyCFunction)StockKey2_next, METH_VARARGS|METH_KEYWORDS, "StockKey2_next"},
-
     {"get_ge", (PyCFunction)StockKey2_ge, METH_VARARGS|METH_KEYWORDS, "StockKey2_ge"},
-
-    {"get_equal", (PyCFunction)StockKey2_equal, METH_VARARGS|METH_KEYWORDS, "StockKey2_equal"},
-
-    {"get_last", (PyCFunction)StockKey2_last, METH_VARARGS|METH_KEYWORDS, "StockKey2_last"},
 
     {"get_lt", (PyCFunction)StockKey2_lt, METH_VARARGS|METH_KEYWORDS, "StockKey2_lt"},
 
@@ -4251,19 +4249,21 @@ static PyMethodDef StockKey2_methods[] = {
 
     {"get_first", (PyCFunction)StockKey2_first, METH_VARARGS|METH_KEYWORDS, "StockKey2_first"},
 
-    {"gets_gt", (PyCFunction)StockKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_gt"},
-
-    {"gets_ge", (PyCFunction)StockKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_ge"},
+    {"get_last", (PyCFunction)StockKey2_last, METH_VARARGS|METH_KEYWORDS, "StockKey2_last"},
 
     {"gets_equal", (PyCFunction)StockKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_equal"},
 
-    {"gets_last", (PyCFunction)StockKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_last"},
+    {"gets_gt", (PyCFunction)StockKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_gt"},
+
+    {"gets_ge", (PyCFunction)StockKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_ge"},
 
     {"gets_lt", (PyCFunction)StockKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_lt"},
 
     {"gets_le", (PyCFunction)StockKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_le"},
 
     {"gets_first", (PyCFunction)StockKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_first"},
+
+    {"gets_last", (PyCFunction)StockKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey2_iter_last"},
 
     {NULL}
 };
@@ -4373,6 +4373,30 @@ static PyObject *StockKey3_set_code0(StockKey3* self, PyObject *args, PyObject *
 //    return result;
 }
 
+static PyObject *StockKey3_equal(StockKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey3_next(StockKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *StockKey3_prev(StockKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -4397,48 +4421,12 @@ static PyObject *StockKey3_gt(StockKey3* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *StockKey3_next(StockKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *StockKey3_ge(StockKey3* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_stock_key3(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey3_equal(StockKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *StockKey3_last(StockKey3* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -4479,6 +4467,54 @@ static PyObject *StockKey3_first(StockKey3* self, PyObject *args, PyObject *kwds
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey3_last(StockKey3* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *StockKey3_iter_equal(StockKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code0, 
+                 self->priv->code0))
+               break;
+       }
+
+ 
+        item = StockKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key3(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *StockKey3_iter_gt(StockKey3* self, PyObject *args, PyObject *kwds)
@@ -4545,78 +4581,6 @@ static PyObject *StockKey3_iter_ge(StockKey3* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_stock_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey3_iter_equal(StockKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code0, 
-                 self->priv->code0))
-               break;
-       }
-
- 
-        item = StockKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key3(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *StockKey3_iter_last(StockKey3* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    stock_key3_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code0, 
-                 self->priv->code0))
-               break;
-       }
-
- 
-        item = StockKey3_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_stock_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4725,6 +4689,42 @@ static PyObject *StockKey3_iter_first(StockKey3* self, PyObject *args, PyObject 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_stock_key3(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *StockKey3_iter_last(StockKey3* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    stock_key3_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_stock_key3(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code0, 
+                 self->priv->code0))
+               break;
+       }
+
+ 
+        item = StockKey3_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_stock_key3(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4907,17 +4907,15 @@ static PyMethodDef StockKey3_methods[] = {
 
     {"set_code0", (PyCFunction)StockKey3_set_code0, METH_VARARGS|METH_KEYWORDS, "StockKey3_set_code0"},
 
+    {"get_equal", (PyCFunction)StockKey3_equal, METH_VARARGS|METH_KEYWORDS, "StockKey3_equal"},
+
+    {"get_next", (PyCFunction)StockKey3_next, METH_VARARGS|METH_KEYWORDS, "StockKey3_next"},
+
     {"get_prev", (PyCFunction)StockKey3_prev, METH_VARARGS|METH_KEYWORDS, "StockKey3_prev"},
 
     {"get_gt", (PyCFunction)StockKey3_gt, METH_VARARGS|METH_KEYWORDS, "StockKey3_gt"},
 
-    {"get_next", (PyCFunction)StockKey3_next, METH_VARARGS|METH_KEYWORDS, "StockKey3_next"},
-
     {"get_ge", (PyCFunction)StockKey3_ge, METH_VARARGS|METH_KEYWORDS, "StockKey3_ge"},
-
-    {"get_equal", (PyCFunction)StockKey3_equal, METH_VARARGS|METH_KEYWORDS, "StockKey3_equal"},
-
-    {"get_last", (PyCFunction)StockKey3_last, METH_VARARGS|METH_KEYWORDS, "StockKey3_last"},
 
     {"get_lt", (PyCFunction)StockKey3_lt, METH_VARARGS|METH_KEYWORDS, "StockKey3_lt"},
 
@@ -4925,19 +4923,21 @@ static PyMethodDef StockKey3_methods[] = {
 
     {"get_first", (PyCFunction)StockKey3_first, METH_VARARGS|METH_KEYWORDS, "StockKey3_first"},
 
-    {"gets_gt", (PyCFunction)StockKey3_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_gt"},
-
-    {"gets_ge", (PyCFunction)StockKey3_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_ge"},
+    {"get_last", (PyCFunction)StockKey3_last, METH_VARARGS|METH_KEYWORDS, "StockKey3_last"},
 
     {"gets_equal", (PyCFunction)StockKey3_iter_equal, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_equal"},
 
-    {"gets_last", (PyCFunction)StockKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_last"},
+    {"gets_gt", (PyCFunction)StockKey3_iter_gt, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_gt"},
+
+    {"gets_ge", (PyCFunction)StockKey3_iter_ge, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_ge"},
 
     {"gets_lt", (PyCFunction)StockKey3_iter_lt, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_lt"},
 
     {"gets_le", (PyCFunction)StockKey3_iter_le, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_le"},
 
     {"gets_first", (PyCFunction)StockKey3_iter_first, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_first"},
+
+    {"gets_last", (PyCFunction)StockKey3_iter_last, METH_VARARGS|METH_KEYWORDS, "StockKey3_iter_last"},
 
     {NULL}
 };

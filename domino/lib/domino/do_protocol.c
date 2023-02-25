@@ -51,8 +51,9 @@ DO_EXPORT int do_protocol_document_order_add(do_alias_t *alias,  const char *dty
     do_text_set(alias, protocol.data.userName, do_alias_username(alias));
     time_t now = time(NULL);
     struct tm tm = *localtime(&now);
-    do_date_set(&protocol.data.date, tm);
-    do_time_set(&protocol.data.time, tm);
+    BTI_LONG date_,time_;
+    protocol.data.date = do_date_set(&date_, tm);
+    protocol.data.time = do_time_set(&time_, tm);
     protocol.size = sizeof(protocol.data);
     switch (action) {
         case DO_PROTOCOL_ACTION_NONE:
@@ -106,8 +107,9 @@ DO_EXPORT int do_protocol_document_add(do_alias_t *alias, const char *dtype, con
     do_text_set(alias, protocol.data.userName, do_alias_username(alias));
     time_t now = time(NULL);
     struct tm tm = *localtime(&now);
-    do_date_set(&protocol.data.date, tm);
-    do_time_set(&protocol.data.time, tm);
+    BTI_LONG date_,time_;
+    protocol.data.date = do_date_set(&date_, tm);
+    protocol.data.time = do_time_set(&time_, tm);
     protocol.size = sizeof(protocol.data);
     switch (action) {
         case DO_PROTOCOL_ACTION_NONE:
@@ -132,8 +134,9 @@ static int do_protocol_document_add_custom(do_alias_t *alias, const char *dtype,
     do_text_set(alias, protocol.data.userName, do_alias_username(alias));
     time_t now = time(NULL);
     struct tm tm = *localtime(&now);
-    do_date_set(&protocol.data.date, tm);
-    do_time_set(&protocol.data.time, tm);
+        BTI_LONG date_,time_;
+    protocol.data.date = do_date_set(&date_, tm);
+    protocol.data.time = do_time_set(&time_, tm);
     protocol.size = sizeof(protocol.data);
     do_text_set(alias, protocol.data.action, action_str);
     if (do_protocol_insert(alias, &protocol) != DO_OK)
@@ -363,6 +366,7 @@ static int make_object_context(do_alias_t *alias, do_protocol_context_t *context
                 do_free(value);
                 break;
             }
+#ifndef DOMINO78
             case DO_PROTOCOL_OBJECT_CHECK:  {
                 char *value = do_strdup(ch);
                 ch = value;
@@ -379,6 +383,7 @@ static int make_object_context(do_alias_t *alias, do_protocol_context_t *context
                 do_free(value);
                 break;
             }
+#endif
             case DO_PROTOCOL_OBJECT_SYSTEM:
             case DO_PROTOCOL_OBJECT_REPLIC:
                 retval = 0;
@@ -508,10 +513,10 @@ DO_EXPORT int do_protocol_parse_string(do_alias_t *alias, const char *objectName
 
 DO_EXPORT void do_protocol_context_free(do_protocol_context_t *context)
 {
-    if (context->other)
-        do_free(context->other);
-    if (context->action_context)
-        do_free(context->action_context);
+    //if (context->other)
+    //    do_free(context->other);
+    //if (context->action_context)
+    //    do_free(context->action_context);
     do_free(context);
 }
 DO_EXPORT int do_protocol_add(do_alias_t *alias, do_protocol_object_t obj, const char *obj_content,
@@ -532,8 +537,9 @@ DO_EXPORT int do_protocol_add(do_alias_t *alias, do_protocol_object_t obj, const
     do_text_set(alias, protocol.data.userName, do_alias_username(alias));
     time_t now = time(NULL);
     struct tm tm = *localtime(&now);
-    do_date_set(&protocol.data.date, tm);
-    do_time_set(&protocol.data.time, tm);
+    BTI_LONG date_,time_;
+    protocol.data.date = do_date_set(&date_, tm);
+    protocol.data.time = do_time_set(&time_, tm);
     protocol.size = sizeof(protocol.data);
     if (action == DO_PROTOCOL_ACTION_NONE &&
         (!action_content || *action_content == '\0'))

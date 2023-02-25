@@ -157,6 +157,7 @@ static PyObject *Protocol_set_date(Protocol* self, PyObject *args, PyObject *kwd
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set data.date");
@@ -166,7 +167,7 @@ static PyObject *Protocol_set_date(Protocol* self, PyObject *args, PyObject *kwd
             self->priv->data.date = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->data.date, tm);
+            self->priv->data.date = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->data.date, &tm);
@@ -209,6 +210,7 @@ static PyObject *Protocol_set_time(Protocol* self, PyObject *args, PyObject *kwd
         return NULL;
     }
     struct tm tm;
+    BTI_LONG time_;
     if ( value ) {
         if ( !PyTime_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set data.time");
@@ -223,7 +225,7 @@ static PyObject *Protocol_set_time(Protocol* self, PyObject *args, PyObject *kwd
              else {
                  tm.tm_hour = PyDateTime_DATE_GET_HOUR(value);tm.tm_min=PyDateTime_DATE_GET_MINUTE(value);tm.tm_sec=PyDateTime_DATE_GET_SECOND(value);
              }
-             do_time_set(&self->priv->data.time, tm);
+             self->priv->data.time = do_time_set(&time_, tm);
         }
     }
     /*do_time(self->priv->data.time, &tm);
@@ -267,6 +269,70 @@ static PyObject *Protocol_set_action(Protocol* self, PyObject *args, PyObject *k
     return Py_None;
 
 //    return result;
+}
+
+static PyObject *Protocol_equal(Protocol* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProtocolKey0Type() )
+        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey1Type() )
+        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_EQUAL);
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey2Type() )
+        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Protocol_next(Protocol* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProtocolKey0Type() )
+        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey1Type() )
+        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey2Type() )
+        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
 static PyObject *Protocol_prev(Protocol* self, PyObject *args, PyObject *kwds)
@@ -333,38 +399,6 @@ static PyObject *Protocol_gt(Protocol* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Protocol_next(Protocol* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProtocolKey0Type() )
-        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_NEXT);
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey1Type() )
-        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_NEXT);
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey2Type() )
-        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *Protocol_ge(Protocol* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -385,70 +419,6 @@ static PyObject *Protocol_ge(Protocol* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getProtocolKey2Type() )
         status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Protocol_equal(Protocol* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProtocolKey0Type() )
-        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey1Type() )
-        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_EQUAL);
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey2Type() )
-        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Protocol_last(Protocol* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProtocolKey0Type() )
-        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey1Type() )
-        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_LAST);
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey2Type() )
-        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -555,6 +525,186 @@ static PyObject *Protocol_first(Protocol* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Protocol_last(Protocol* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProtocolKey0Type() )
+        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey1Type() )
+        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey2Type() )
+        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Protocol_iter_equal(Protocol* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getProtocolKey0Type() ) {
+        key_cmp = (protocol_key0_t*)do_malloc(sizeof(protocol_key0_t));
+        memcpy(key_cmp, ((ProtocolKey0*)key)->priv, sizeof(protocol_key0_t));
+        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey1Type() ) {
+        key_cmp = (protocol_key1_t*)do_malloc(sizeof(protocol_key1_t));
+        memcpy(key_cmp, ((ProtocolKey1*)key)->priv, sizeof(protocol_key1_t));
+        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey2Type() ) {
+        key_cmp = (protocol_key2_t*)do_malloc(sizeof(protocol_key2_t));
+        memcpy(key_cmp, ((ProtocolKey2*)key)->priv, sizeof(protocol_key2_t));
+        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((protocol_key0_t*)key_cmp)->objectName, 
+                    ((ProtocolKey0*)key)->priv->objectName))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((protocol_key0_t*)key_cmp)->date, 
+                    ((ProtocolKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((protocol_key0_t*)key_cmp)->time, 
+                    ((ProtocolKey0*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((protocol_key1_t*)key_cmp)->date, 
+                    ((ProtocolKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((protocol_key1_t*)key_cmp)->time, 
+                    ((ProtocolKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((protocol_key2_t*)key_cmp)->userName, 
+                    ((ProtocolKey2*)key)->priv->userName))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((protocol_key2_t*)key_cmp)->date, 
+                    ((ProtocolKey2*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((protocol_key2_t*)key_cmp)->time, 
+                    ((ProtocolKey2*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Protocol_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
+            status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
+            status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
+            status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Protocol_iter_gt(Protocol* self, PyObject *args, PyObject *kwds)
@@ -834,302 +984,6 @@ static PyObject *Protocol_iter_ge(Protocol* self, PyObject *args, PyObject *kwds
 
         if ( Py_TYPE(key) == getProtocolKey2Type() ) {
             status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Protocol_iter_equal(Protocol* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getProtocolKey0Type() ) {
-        key_cmp = (protocol_key0_t*)do_malloc(sizeof(protocol_key0_t));
-        memcpy(key_cmp, ((ProtocolKey0*)key)->priv, sizeof(protocol_key0_t));
-        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey1Type() ) {
-        key_cmp = (protocol_key1_t*)do_malloc(sizeof(protocol_key1_t));
-        memcpy(key_cmp, ((ProtocolKey1*)key)->priv, sizeof(protocol_key1_t));
-        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey2Type() ) {
-        key_cmp = (protocol_key2_t*)do_malloc(sizeof(protocol_key2_t));
-        memcpy(key_cmp, ((ProtocolKey2*)key)->priv, sizeof(protocol_key2_t));
-        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((protocol_key0_t*)key_cmp)->objectName, 
-                    ((ProtocolKey0*)key)->priv->objectName))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((protocol_key0_t*)key_cmp)->date, 
-                    ((ProtocolKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((protocol_key0_t*)key_cmp)->time, 
-                    ((ProtocolKey0*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((protocol_key1_t*)key_cmp)->date, 
-                    ((ProtocolKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((protocol_key1_t*)key_cmp)->time, 
-                    ((ProtocolKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((protocol_key2_t*)key_cmp)->userName, 
-                    ((ProtocolKey2*)key)->priv->userName))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((protocol_key2_t*)key_cmp)->date, 
-                    ((ProtocolKey2*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((protocol_key2_t*)key_cmp)->time, 
-                    ((ProtocolKey2*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Protocol_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
-            status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
-            status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_NEXT);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
-            status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Protocol_iter_last(Protocol* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getProtocolKey0Type() ) {
-        key_cmp = (protocol_key0_t*)do_malloc(sizeof(protocol_key0_t));
-        memcpy(key_cmp, ((ProtocolKey0*)key)->priv, sizeof(protocol_key0_t));
-        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey1Type() ) {
-        key_cmp = (protocol_key1_t*)do_malloc(sizeof(protocol_key1_t));
-        memcpy(key_cmp, ((ProtocolKey1*)key)->priv, sizeof(protocol_key1_t));
-        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_LAST);
-    }
-    else
-
-    if ( Py_TYPE(key) == getProtocolKey2Type() ) {
-        key_cmp = (protocol_key2_t*)do_malloc(sizeof(protocol_key2_t));
-        memcpy(key_cmp, ((ProtocolKey2*)key)->priv, sizeof(protocol_key2_t));
-        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((protocol_key0_t*)key_cmp)->objectName, 
-                    ((ProtocolKey0*)key)->priv->objectName))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((protocol_key0_t*)key_cmp)->date, 
-                    ((ProtocolKey0*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((protocol_key0_t*)key_cmp)->time, 
-                    ((ProtocolKey0*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((protocol_key1_t*)key_cmp)->date, 
-                    ((ProtocolKey1*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((protocol_key1_t*)key_cmp)->time, 
-                    ((ProtocolKey1*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((protocol_key2_t*)key_cmp)->userName, 
-                    ((ProtocolKey2*)key)->priv->userName))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((protocol_key2_t*)key_cmp)->date, 
-                    ((ProtocolKey2*)key)->priv->date))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((protocol_key2_t*)key_cmp)->time, 
-                    ((ProtocolKey2*)key)->priv->time))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Protocol_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
-            status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
-            status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_PREVIOUS);
-        }
-        else
-
-        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
-            status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1593,19 +1447,167 @@ static PyObject *Protocol_iter_first(Protocol* self, PyObject *args, PyObject *k
     return retval;
 }
 
-static PyObject *Protocol_update(Protocol* self)
+static PyObject *Protocol_iter_last(Protocol* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_protocol_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getProtocolKey0Type() ) {
+        key_cmp = (protocol_key0_t*)do_malloc(sizeof(protocol_key0_t));
+        memcpy(key_cmp, ((ProtocolKey0*)key)->priv, sizeof(protocol_key0_t));
+        status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey1Type() ) {
+        key_cmp = (protocol_key1_t*)do_malloc(sizeof(protocol_key1_t));
+        memcpy(key_cmp, ((ProtocolKey1*)key)->priv, sizeof(protocol_key1_t));
+        status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProtocolKey2Type() ) {
+        key_cmp = (protocol_key2_t*)do_malloc(sizeof(protocol_key2_t));
+        memcpy(key_cmp, ((ProtocolKey2*)key)->priv, sizeof(protocol_key2_t));
+        status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((protocol_key0_t*)key_cmp)->objectName, 
+                    ((ProtocolKey0*)key)->priv->objectName))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((protocol_key0_t*)key_cmp)->date, 
+                    ((ProtocolKey0*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((protocol_key0_t*)key_cmp)->time, 
+                    ((ProtocolKey0*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((protocol_key1_t*)key_cmp)->date, 
+                    ((ProtocolKey1*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((protocol_key1_t*)key_cmp)->time, 
+                    ((ProtocolKey1*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((protocol_key2_t*)key_cmp)->userName, 
+                    ((ProtocolKey2*)key)->priv->userName))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((protocol_key2_t*)key_cmp)->date, 
+                    ((ProtocolKey2*)key)->priv->date))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((protocol_key2_t*)key_cmp)->time, 
+                    ((ProtocolKey2*)key)->priv->time))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Protocol_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getProtocolKey0Type() ) {
+            status = do_protocol_get0(self->alias->alias, self->priv, ((ProtocolKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey1Type() ) {
+            status = do_protocol_get1(self->alias->alias, self->priv, ((ProtocolKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProtocolKey2Type() ) {
+            status = do_protocol_get2(self->alias->alias, self->priv, ((ProtocolKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Protocol_insert(Protocol* self)
 {
     int status;
     status = do_protocol_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Protocol_update(Protocol* self)
+{
+    int status;
+    status = do_protocol_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1859,17 +1861,15 @@ static PyMethodDef Protocol_methods[] = {
 
     {"set_action", (PyCFunction)Protocol_set_action, METH_VARARGS|METH_KEYWORDS, "Protocol_set_action"},
 
+    {"get_equal", (PyCFunction)Protocol_equal, METH_VARARGS|METH_KEYWORDS, "Protocol_equal"},
+
+    {"get_next", (PyCFunction)Protocol_next, METH_VARARGS|METH_KEYWORDS, "Protocol_next"},
+
     {"get_prev", (PyCFunction)Protocol_prev, METH_VARARGS|METH_KEYWORDS, "Protocol_prev"},
 
     {"get_gt", (PyCFunction)Protocol_gt, METH_VARARGS|METH_KEYWORDS, "Protocol_gt"},
 
-    {"get_next", (PyCFunction)Protocol_next, METH_VARARGS|METH_KEYWORDS, "Protocol_next"},
-
     {"get_ge", (PyCFunction)Protocol_ge, METH_VARARGS|METH_KEYWORDS, "Protocol_ge"},
-
-    {"get_equal", (PyCFunction)Protocol_equal, METH_VARARGS|METH_KEYWORDS, "Protocol_equal"},
-
-    {"get_last", (PyCFunction)Protocol_last, METH_VARARGS|METH_KEYWORDS, "Protocol_last"},
 
     {"get_lt", (PyCFunction)Protocol_lt, METH_VARARGS|METH_KEYWORDS, "Protocol_lt"},
 
@@ -1877,13 +1877,13 @@ static PyMethodDef Protocol_methods[] = {
 
     {"get_first", (PyCFunction)Protocol_first, METH_VARARGS|METH_KEYWORDS, "Protocol_first"},
 
-    {"gets_gt", (PyCFunction)Protocol_iter_gt, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_gt"},
-
-    {"gets_ge", (PyCFunction)Protocol_iter_ge, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_ge"},
+    {"get_last", (PyCFunction)Protocol_last, METH_VARARGS|METH_KEYWORDS, "Protocol_last"},
 
     {"gets_equal", (PyCFunction)Protocol_iter_equal, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_equal"},
 
-    {"gets_last", (PyCFunction)Protocol_iter_last, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_last"},
+    {"gets_gt", (PyCFunction)Protocol_iter_gt, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_gt"},
+
+    {"gets_ge", (PyCFunction)Protocol_iter_ge, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_ge"},
 
     {"gets_lt", (PyCFunction)Protocol_iter_lt, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_lt"},
 
@@ -1891,9 +1891,11 @@ static PyMethodDef Protocol_methods[] = {
 
     {"gets_first", (PyCFunction)Protocol_iter_first, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_first"},
 
-    {"update", (PyCFunction)Protocol_update, METH_VARARGS|METH_KEYWORDS, "Protocol_update"},
+    {"gets_last", (PyCFunction)Protocol_iter_last, METH_VARARGS|METH_KEYWORDS, "Protocol_iter_last"},
 
     {"insert", (PyCFunction)Protocol_insert, METH_VARARGS|METH_KEYWORDS, "Protocol_insert"},
+
+    {"update", (PyCFunction)Protocol_update, METH_VARARGS|METH_KEYWORDS, "Protocol_update"},
 
     {"delete", (PyCFunction)Protocol_delete, METH_VARARGS|METH_KEYWORDS, "Protocol_delete"},
 
@@ -2036,6 +2038,7 @@ static PyObject *ProtocolKey0_set_date(ProtocolKey0* self, PyObject *args, PyObj
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set date");
@@ -2045,7 +2048,7 @@ static PyObject *ProtocolKey0_set_date(ProtocolKey0* self, PyObject *args, PyObj
             self->priv->date = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->date, tm);
+            self->priv->date = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->date, &tm);
@@ -2088,6 +2091,7 @@ static PyObject *ProtocolKey0_set_time(ProtocolKey0* self, PyObject *args, PyObj
         return NULL;
     }
     struct tm tm;
+    BTI_LONG time_;
     if ( value ) {
         if ( !PyTime_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set time");
@@ -2102,7 +2106,7 @@ static PyObject *ProtocolKey0_set_time(ProtocolKey0* self, PyObject *args, PyObj
              else {
                  tm.tm_hour = PyDateTime_DATE_GET_HOUR(value);tm.tm_min=PyDateTime_DATE_GET_MINUTE(value);tm.tm_sec=PyDateTime_DATE_GET_SECOND(value);
              }
-             do_time_set(&self->priv->time, tm);
+             self->priv->time = do_time_set(&time_, tm);
         }
     }
     /*do_time(self->priv->time, &tm);
@@ -2112,6 +2116,30 @@ static PyObject *ProtocolKey0_set_time(ProtocolKey0* self, PyObject *args, PyObj
     return Py_None;
 
 //    return result;
+}
+
+static PyObject *ProtocolKey0_equal(ProtocolKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey0_next(ProtocolKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
 static PyObject *ProtocolKey0_prev(ProtocolKey0* self, PyObject *args, PyObject *kwds)
@@ -2138,48 +2166,12 @@ static PyObject *ProtocolKey0_gt(ProtocolKey0* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProtocolKey0_next(ProtocolKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *ProtocolKey0_ge(ProtocolKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProtocolKey0_equal(ProtocolKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProtocolKey0_last(ProtocolKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2220,6 +2212,66 @@ static PyObject *ProtocolKey0_first(ProtocolKey0* self, PyObject *args, PyObject
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey0_last(ProtocolKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey0_iter_equal(ProtocolKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    protocol_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.objectName, 
+                 self->priv->objectName))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ProtocolKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *ProtocolKey0_iter_gt(ProtocolKey0* self, PyObject *args, PyObject *kwds)
@@ -2310,102 +2362,6 @@ static PyObject *ProtocolKey0_iter_ge(ProtocolKey0* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProtocolKey0_iter_equal(ProtocolKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    protocol_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.objectName, 
-                 self->priv->objectName))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ProtocolKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProtocolKey0_iter_last(ProtocolKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    protocol_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.objectName, 
-                 self->priv->objectName))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ProtocolKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2550,6 +2506,54 @@ static PyObject *ProtocolKey0_iter_first(ProtocolKey0* self, PyObject *args, PyO
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProtocolKey0_iter_last(ProtocolKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    protocol_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.objectName, 
+                 self->priv->objectName))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ProtocolKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_protocol_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2802,17 +2806,15 @@ static PyMethodDef ProtocolKey0_methods[] = {
 
     {"set_time", (PyCFunction)ProtocolKey0_set_time, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_set_time"},
 
+    {"get_equal", (PyCFunction)ProtocolKey0_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_equal"},
+
+    {"get_next", (PyCFunction)ProtocolKey0_next, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_next"},
+
     {"get_prev", (PyCFunction)ProtocolKey0_prev, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_prev"},
 
     {"get_gt", (PyCFunction)ProtocolKey0_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_gt"},
 
-    {"get_next", (PyCFunction)ProtocolKey0_next, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_next"},
-
     {"get_ge", (PyCFunction)ProtocolKey0_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_ge"},
-
-    {"get_equal", (PyCFunction)ProtocolKey0_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_equal"},
-
-    {"get_last", (PyCFunction)ProtocolKey0_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_last"},
 
     {"get_lt", (PyCFunction)ProtocolKey0_lt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_lt"},
 
@@ -2820,19 +2822,21 @@ static PyMethodDef ProtocolKey0_methods[] = {
 
     {"get_first", (PyCFunction)ProtocolKey0_first, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_first"},
 
-    {"gets_gt", (PyCFunction)ProtocolKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)ProtocolKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_ge"},
+    {"get_last", (PyCFunction)ProtocolKey0_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_last"},
 
     {"gets_equal", (PyCFunction)ProtocolKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)ProtocolKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_last"},
+    {"gets_gt", (PyCFunction)ProtocolKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ProtocolKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)ProtocolKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)ProtocolKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_le"},
 
     {"gets_first", (PyCFunction)ProtocolKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)ProtocolKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey0_iter_last"},
 
     {NULL}
 };
@@ -2937,6 +2941,7 @@ static PyObject *ProtocolKey1_set_date(ProtocolKey1* self, PyObject *args, PyObj
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set date");
@@ -2946,7 +2951,7 @@ static PyObject *ProtocolKey1_set_date(ProtocolKey1* self, PyObject *args, PyObj
             self->priv->date = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->date, tm);
+            self->priv->date = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->date, &tm);
@@ -2989,6 +2994,7 @@ static PyObject *ProtocolKey1_set_time(ProtocolKey1* self, PyObject *args, PyObj
         return NULL;
     }
     struct tm tm;
+    BTI_LONG time_;
     if ( value ) {
         if ( !PyTime_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set time");
@@ -3003,7 +3009,7 @@ static PyObject *ProtocolKey1_set_time(ProtocolKey1* self, PyObject *args, PyObj
              else {
                  tm.tm_hour = PyDateTime_DATE_GET_HOUR(value);tm.tm_min=PyDateTime_DATE_GET_MINUTE(value);tm.tm_sec=PyDateTime_DATE_GET_SECOND(value);
              }
-             do_time_set(&self->priv->time, tm);
+             self->priv->time = do_time_set(&time_, tm);
         }
     }
     /*do_time(self->priv->time, &tm);
@@ -3013,6 +3019,30 @@ static PyObject *ProtocolKey1_set_time(ProtocolKey1* self, PyObject *args, PyObj
     return Py_None;
 
 //    return result;
+}
+
+static PyObject *ProtocolKey1_equal(ProtocolKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey1_next(ProtocolKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
 static PyObject *ProtocolKey1_prev(ProtocolKey1* self, PyObject *args, PyObject *kwds)
@@ -3039,48 +3069,12 @@ static PyObject *ProtocolKey1_gt(ProtocolKey1* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProtocolKey1_next(ProtocolKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *ProtocolKey1_ge(ProtocolKey1* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProtocolKey1_equal(ProtocolKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProtocolKey1_last(ProtocolKey1* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3121,6 +3115,60 @@ static PyObject *ProtocolKey1_first(ProtocolKey1* self, PyObject *args, PyObject
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey1_last(ProtocolKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey1_iter_equal(ProtocolKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    protocol_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ProtocolKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *ProtocolKey1_iter_gt(ProtocolKey1* self, PyObject *args, PyObject *kwds)
@@ -3199,90 +3247,6 @@ static PyObject *ProtocolKey1_iter_ge(ProtocolKey1* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProtocolKey1_iter_equal(ProtocolKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    protocol_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ProtocolKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProtocolKey1_iter_last(ProtocolKey1* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    protocol_key1_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ProtocolKey1_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3409,6 +3373,48 @@ static PyObject *ProtocolKey1_iter_first(ProtocolKey1* self, PyObject *args, PyO
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProtocolKey1_iter_last(ProtocolKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    protocol_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ProtocolKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_protocol_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3628,17 +3634,15 @@ static PyMethodDef ProtocolKey1_methods[] = {
 
     {"set_time", (PyCFunction)ProtocolKey1_set_time, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_set_time"},
 
+    {"get_equal", (PyCFunction)ProtocolKey1_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_equal"},
+
+    {"get_next", (PyCFunction)ProtocolKey1_next, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_next"},
+
     {"get_prev", (PyCFunction)ProtocolKey1_prev, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_prev"},
 
     {"get_gt", (PyCFunction)ProtocolKey1_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_gt"},
 
-    {"get_next", (PyCFunction)ProtocolKey1_next, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_next"},
-
     {"get_ge", (PyCFunction)ProtocolKey1_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_ge"},
-
-    {"get_equal", (PyCFunction)ProtocolKey1_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_equal"},
-
-    {"get_last", (PyCFunction)ProtocolKey1_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_last"},
 
     {"get_lt", (PyCFunction)ProtocolKey1_lt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_lt"},
 
@@ -3646,19 +3650,21 @@ static PyMethodDef ProtocolKey1_methods[] = {
 
     {"get_first", (PyCFunction)ProtocolKey1_first, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_first"},
 
-    {"gets_gt", (PyCFunction)ProtocolKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_gt"},
-
-    {"gets_ge", (PyCFunction)ProtocolKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_ge"},
+    {"get_last", (PyCFunction)ProtocolKey1_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_last"},
 
     {"gets_equal", (PyCFunction)ProtocolKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_equal"},
 
-    {"gets_last", (PyCFunction)ProtocolKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_last"},
+    {"gets_gt", (PyCFunction)ProtocolKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ProtocolKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_ge"},
 
     {"gets_lt", (PyCFunction)ProtocolKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_lt"},
 
     {"gets_le", (PyCFunction)ProtocolKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_le"},
 
     {"gets_first", (PyCFunction)ProtocolKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_first"},
+
+    {"gets_last", (PyCFunction)ProtocolKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey1_iter_last"},
 
     {NULL}
 };
@@ -3799,6 +3805,7 @@ static PyObject *ProtocolKey2_set_date(ProtocolKey2* self, PyObject *args, PyObj
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set date");
@@ -3808,7 +3815,7 @@ static PyObject *ProtocolKey2_set_date(ProtocolKey2* self, PyObject *args, PyObj
             self->priv->date = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->date, tm);
+            self->priv->date = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->date, &tm);
@@ -3851,6 +3858,7 @@ static PyObject *ProtocolKey2_set_time(ProtocolKey2* self, PyObject *args, PyObj
         return NULL;
     }
     struct tm tm;
+    BTI_LONG time_;
     if ( value ) {
         if ( !PyTime_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set time");
@@ -3865,7 +3873,7 @@ static PyObject *ProtocolKey2_set_time(ProtocolKey2* self, PyObject *args, PyObj
              else {
                  tm.tm_hour = PyDateTime_DATE_GET_HOUR(value);tm.tm_min=PyDateTime_DATE_GET_MINUTE(value);tm.tm_sec=PyDateTime_DATE_GET_SECOND(value);
              }
-             do_time_set(&self->priv->time, tm);
+             self->priv->time = do_time_set(&time_, tm);
         }
     }
     /*do_time(self->priv->time, &tm);
@@ -3875,6 +3883,30 @@ static PyObject *ProtocolKey2_set_time(ProtocolKey2* self, PyObject *args, PyObj
     return Py_None;
 
 //    return result;
+}
+
+static PyObject *ProtocolKey2_equal(ProtocolKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey2_next(ProtocolKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
 static PyObject *ProtocolKey2_prev(ProtocolKey2* self, PyObject *args, PyObject *kwds)
@@ -3901,48 +3933,12 @@ static PyObject *ProtocolKey2_gt(ProtocolKey2* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProtocolKey2_next(ProtocolKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *ProtocolKey2_ge(ProtocolKey2* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProtocolKey2_equal(ProtocolKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProtocolKey2_last(ProtocolKey2* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -3983,6 +3979,66 @@ static PyObject *ProtocolKey2_first(ProtocolKey2* self, PyObject *args, PyObject
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey2_last(ProtocolKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProtocolKey2_iter_equal(ProtocolKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    protocol_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.userName, 
+                 self->priv->userName))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ProtocolKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *ProtocolKey2_iter_gt(ProtocolKey2* self, PyObject *args, PyObject *kwds)
@@ -4073,102 +4129,6 @@ static PyObject *ProtocolKey2_iter_ge(ProtocolKey2* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProtocolKey2_iter_equal(ProtocolKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    protocol_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.userName, 
-                 self->priv->userName))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ProtocolKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProtocolKey2_iter_last(ProtocolKey2* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    protocol_key2_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.userName, 
-                 self->priv->userName))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.date, 
-                 self->priv->date))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.time, 
-                 self->priv->time))
-               break;
-       }
-
- 
-        item = ProtocolKey2_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4313,6 +4273,54 @@ static PyObject *ProtocolKey2_iter_first(ProtocolKey2* self, PyObject *args, PyO
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProtocolKey2_iter_last(ProtocolKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    protocol_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.userName, 
+                 self->priv->userName))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.date, 
+                 self->priv->date))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.time, 
+                 self->priv->time))
+               break;
+       }
+
+ 
+        item = ProtocolKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_protocol_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -4565,17 +4573,15 @@ static PyMethodDef ProtocolKey2_methods[] = {
 
     {"set_time", (PyCFunction)ProtocolKey2_set_time, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_set_time"},
 
+    {"get_equal", (PyCFunction)ProtocolKey2_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_equal"},
+
+    {"get_next", (PyCFunction)ProtocolKey2_next, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_next"},
+
     {"get_prev", (PyCFunction)ProtocolKey2_prev, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_prev"},
 
     {"get_gt", (PyCFunction)ProtocolKey2_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_gt"},
 
-    {"get_next", (PyCFunction)ProtocolKey2_next, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_next"},
-
     {"get_ge", (PyCFunction)ProtocolKey2_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_ge"},
-
-    {"get_equal", (PyCFunction)ProtocolKey2_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_equal"},
-
-    {"get_last", (PyCFunction)ProtocolKey2_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_last"},
 
     {"get_lt", (PyCFunction)ProtocolKey2_lt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_lt"},
 
@@ -4583,19 +4589,21 @@ static PyMethodDef ProtocolKey2_methods[] = {
 
     {"get_first", (PyCFunction)ProtocolKey2_first, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_first"},
 
-    {"gets_gt", (PyCFunction)ProtocolKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_gt"},
-
-    {"gets_ge", (PyCFunction)ProtocolKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_ge"},
+    {"get_last", (PyCFunction)ProtocolKey2_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_last"},
 
     {"gets_equal", (PyCFunction)ProtocolKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_equal"},
 
-    {"gets_last", (PyCFunction)ProtocolKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_last"},
+    {"gets_gt", (PyCFunction)ProtocolKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ProtocolKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_ge"},
 
     {"gets_lt", (PyCFunction)ProtocolKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_lt"},
 
     {"gets_le", (PyCFunction)ProtocolKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_le"},
 
     {"gets_first", (PyCFunction)ProtocolKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_first"},
+
+    {"gets_last", (PyCFunction)ProtocolKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "ProtocolKey2_iter_last"},
 
     {NULL}
 };

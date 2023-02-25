@@ -150,13 +150,14 @@ DO_EXPORT int domino_order_set_marked_full(do_alias_t *alias, const char *unit, 
                 do_cpy(document.data.sklad, document_key0.sklad);
                 do_cpy(document.data.document, document_key0.document);
                 do_text_set_empty(document.data.name);
+                BTI_LONG date_,time_;
                 if ( found ) { // just in case
-                    do_date_set(&document.data.date, tm_);
-                    do_time_set(&document.data.time, tm_);
+                    document.data.date = do_date_set(&date_, tm_);
+                    document.data.time = do_time_set(&time_, tm_);
                 }
                 else {
-                    do_date_set(&document.data.date, tm_now);
-                    do_time_set(&document.data.time, tm_now);
+                    document.data.date = do_date_set(&date_, tm_now);
+                    document.data.time = do_time_set(&time_, tm_now);
                 }
                 do_text_set(alias, document.data.p_g_code, "00");
                 document.data.p_code = 1;
@@ -200,8 +201,9 @@ DO_EXPORT int domino_order_set_marked_full(do_alias_t *alias, const char *unit, 
         document_order.data.line = document_order_key0.line + 1;
         document_order.data.sort = 0;
         do_text_set(alias, document_order.data.code, product_code);
-        do_date_set(&document_order.data.date, tm_now);
-        do_time_set(&document_order.data.time, tm_now);
+        BTI_LONG date_,time_;
+        document_order.data.date = do_date_set(&date_, tm_now);
+        document_order.data.time = do_time_set(&time_, tm_now);
         document_order.data.accepted = 0;
         do_set_empty(document_order.data.nquant);
         do_set_empty(document_order.data.nprice);

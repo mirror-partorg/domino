@@ -1,3 +1,4 @@
+#ifndef DOMINO78
 
 #include "grls.h"
 #include <datetime.h>
@@ -157,3 +158,4 @@ static PyObject *get_price_limits(do_list_t *list)
     //Py_INCREF(res);
     return res;
 }
+#endif

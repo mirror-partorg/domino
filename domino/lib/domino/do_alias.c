@@ -52,6 +52,7 @@ static const char *key[DO_DB_END] = {
     "SALDO",
     "PROTOCOL",
     "USER",
+#ifndef DOMINO78
 #ifndef USE_OLD_CHECK
     "USHIFTS",
 #else
@@ -61,6 +62,7 @@ static const char *key[DO_DB_END] = {
     "CHECKS",
     "REALIZATION",
     "DISCOUNT",
+#endif
     "STRUCT_FILE"};
 #ifdef DEBUG_BTI
 static const char* bti_oper[79] = {
@@ -4633,6 +4635,7 @@ DO_EXPORT int do_user_key0(do_alias_t *alias, user_key0_t *key, do_alias_oper_t 
     }
     return DO_ERROR;
 }
+#ifndef DOMINO78
 DO_EXPORT int do_shift_get0(do_alias_t *alias, shift_rec_t *rec, shift_key0_t *key, do_alias_oper_t operation)
 {
     rec->size = sizeof(shift_struct_t);
@@ -5422,6 +5425,8 @@ DO_EXPORT int do_discount_key1(do_alias_t *alias, discount_key1_t *key, do_alias
     }
     return DO_ERROR;
 }
+#endif
+
 DO_EXPORT int do_document_insert(do_alias_t *alias, document_rec_t *rec)
 {
     return do_alias_btr(alias, B_INSERT, DO_DB_DOCUMENT, &rec->data, &rec->size, NULL, -1);
@@ -5812,6 +5817,7 @@ DO_EXPORT int do_user_delete(do_alias_t *alias)
 {
     return do_alias_btr(alias, B_DELETE, DO_DB_USER, NULL, NULL, NULL, -1);
 }
+#ifndef DOMINO78
 DO_EXPORT int do_shift_insert(do_alias_t *alias, shift_rec_t *rec)
 {
     return do_alias_btr(alias, B_INSERT, DO_DB_SHIFT, &rec->data, &rec->size, NULL, -1);
@@ -5943,7 +5949,7 @@ DO_EXPORT int do_alias_discount_create(do_alias_t *alias)
     }
     return 1;
 }
-
+#endif
 static void from_do_init(do_alias_t *alias, int utf) {
 
     const char *str;
@@ -5986,6 +5992,8 @@ static char* domino_text_(void* src, size_t size, int utf)
     buf[size] = '\0';
     strncpy(buf, (char*)src, size);
     char* cp = buf + size - 1;
+    //while (cp >= buf) { if (*cp == '\0')  *cp = ' ';  --cp; };
+    //cp = buf + size - 1;
     while ((cp >= buf) && (*cp == 32)) --cp;
     *(cp+1) = '\0';
     if ( fdo_conv == (iconv_t)-1 ) {
@@ -6008,9 +6016,13 @@ static char* domino_text_(void* src, size_t size, int utf)
 DO_EXPORT char* do_alias_text_(do_alias_t *alias, void* src, size_t size)
 {
     char* buf = (char*)do_malloc(size + 1);
+    char* cp;
     buf[size] = '\0';
-    strncpy(buf, (char*)src, size);
-    char* cp = buf + size - 1;
+    memcpy(buf, src, size);
+
+    cp = buf + size - 1;
+    while (cp >= buf) { if (*cp == '\0') {*cp = ' ';} --cp; };
+    cp = buf + size - 1;
     while ((cp >= buf) && (*cp == 32)) --cp;
     *(cp+1) = '\0';
     char* result = iconv_(alias->fdo_conv, buf);

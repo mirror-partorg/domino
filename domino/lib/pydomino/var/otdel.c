@@ -242,6 +242,54 @@ static PyObject *Division_get_params(Division* self, void *unused)
     return res;
 }
 
+static PyObject *Division_equal(Division* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDivisionKey0Type() )
+        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Division_next(Division* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDivisionKey0Type() )
+        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Division_prev(Division* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -290,30 +338,6 @@ static PyObject *Division_gt(Division* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Division_next(Division* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDivisionKey0Type() )
-        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *Division_ge(Division* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -326,54 +350,6 @@ static PyObject *Division_ge(Division* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getDivisionKey0Type() )
         status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Division_equal(Division* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDivisionKey0Type() )
-        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Division_last(Division* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getDivisionKey0Type() )
-        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -456,6 +432,102 @@ static PyObject *Division_first(Division* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Division_last(Division* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getDivisionKey0Type() )
+        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Division_iter_equal(Division* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getDivisionKey0Type() ) {
+        key_cmp = (otdel_key0_t*)do_malloc(sizeof(otdel_key0_t));
+        memcpy(key_cmp, ((DivisionKey0*)key)->priv, sizeof(otdel_key0_t));
+        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((otdel_key0_t*)key_cmp)->code, 
+                    ((DivisionKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Division_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
+            status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Division_iter_gt(Division* self, PyObject *args, PyObject *kwds)
@@ -583,150 +655,6 @@ static PyObject *Division_iter_ge(Division* self, PyObject *args, PyObject *kwds
 
         if ( Py_TYPE(key) == getDivisionKey0Type() ) {
             status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Division_iter_equal(Division* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getDivisionKey0Type() ) {
-        key_cmp = (otdel_key0_t*)do_malloc(sizeof(otdel_key0_t));
-        memcpy(key_cmp, ((DivisionKey0*)key)->priv, sizeof(otdel_key0_t));
-        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((otdel_key0_t*)key_cmp)->code, 
-                    ((DivisionKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Division_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
-            status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Division_iter_last(Division* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getDivisionKey0Type() ) {
-        key_cmp = (otdel_key0_t*)do_malloc(sizeof(otdel_key0_t));
-        memcpy(key_cmp, ((DivisionKey0*)key)->priv, sizeof(otdel_key0_t));
-        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((otdel_key0_t*)key_cmp)->code, 
-                    ((DivisionKey0*)key)->priv->code))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Division_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
-            status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -962,19 +890,91 @@ static PyObject *Division_iter_first(Division* self, PyObject *args, PyObject *k
     return retval;
 }
 
-static PyObject *Division_update(Division* self)
+static PyObject *Division_iter_last(Division* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_otdel_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getDivisionKey0Type() ) {
+        key_cmp = (otdel_key0_t*)do_malloc(sizeof(otdel_key0_t));
+        memcpy(key_cmp, ((DivisionKey0*)key)->priv, sizeof(otdel_key0_t));
+        status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((otdel_key0_t*)key_cmp)->code, 
+                    ((DivisionKey0*)key)->priv->code))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Division_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getDivisionKey0Type() ) {
+            status = do_otdel_get0(self->alias->alias, self->priv, ((DivisionKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Division_insert(Division* self)
 {
     int status;
     status = do_otdel_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Division_update(Division* self)
+{
+    int status;
+    status = do_otdel_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1160,17 +1160,15 @@ static PyMethodDef Division_methods[] = {
     {"clear_params", (PyCFunction)Division_params_clear, METH_NOARGS, "do_Division_param_clear"},
     {"set_params", (PyCFunction)Division_set_params, METH_VARARGS|METH_KEYWORDS, "do_Division_set_params"},
 
+    {"get_equal", (PyCFunction)Division_equal, METH_VARARGS|METH_KEYWORDS, "Division_equal"},
+
+    {"get_next", (PyCFunction)Division_next, METH_VARARGS|METH_KEYWORDS, "Division_next"},
+
     {"get_prev", (PyCFunction)Division_prev, METH_VARARGS|METH_KEYWORDS, "Division_prev"},
 
     {"get_gt", (PyCFunction)Division_gt, METH_VARARGS|METH_KEYWORDS, "Division_gt"},
 
-    {"get_next", (PyCFunction)Division_next, METH_VARARGS|METH_KEYWORDS, "Division_next"},
-
     {"get_ge", (PyCFunction)Division_ge, METH_VARARGS|METH_KEYWORDS, "Division_ge"},
-
-    {"get_equal", (PyCFunction)Division_equal, METH_VARARGS|METH_KEYWORDS, "Division_equal"},
-
-    {"get_last", (PyCFunction)Division_last, METH_VARARGS|METH_KEYWORDS, "Division_last"},
 
     {"get_lt", (PyCFunction)Division_lt, METH_VARARGS|METH_KEYWORDS, "Division_lt"},
 
@@ -1178,13 +1176,13 @@ static PyMethodDef Division_methods[] = {
 
     {"get_first", (PyCFunction)Division_first, METH_VARARGS|METH_KEYWORDS, "Division_first"},
 
-    {"gets_gt", (PyCFunction)Division_iter_gt, METH_VARARGS|METH_KEYWORDS, "Division_iter_gt"},
-
-    {"gets_ge", (PyCFunction)Division_iter_ge, METH_VARARGS|METH_KEYWORDS, "Division_iter_ge"},
+    {"get_last", (PyCFunction)Division_last, METH_VARARGS|METH_KEYWORDS, "Division_last"},
 
     {"gets_equal", (PyCFunction)Division_iter_equal, METH_VARARGS|METH_KEYWORDS, "Division_iter_equal"},
 
-    {"gets_last", (PyCFunction)Division_iter_last, METH_VARARGS|METH_KEYWORDS, "Division_iter_last"},
+    {"gets_gt", (PyCFunction)Division_iter_gt, METH_VARARGS|METH_KEYWORDS, "Division_iter_gt"},
+
+    {"gets_ge", (PyCFunction)Division_iter_ge, METH_VARARGS|METH_KEYWORDS, "Division_iter_ge"},
 
     {"gets_lt", (PyCFunction)Division_iter_lt, METH_VARARGS|METH_KEYWORDS, "Division_iter_lt"},
 
@@ -1192,9 +1190,11 @@ static PyMethodDef Division_methods[] = {
 
     {"gets_first", (PyCFunction)Division_iter_first, METH_VARARGS|METH_KEYWORDS, "Division_iter_first"},
 
-    {"update", (PyCFunction)Division_update, METH_VARARGS|METH_KEYWORDS, "Division_update"},
+    {"gets_last", (PyCFunction)Division_iter_last, METH_VARARGS|METH_KEYWORDS, "Division_iter_last"},
 
     {"insert", (PyCFunction)Division_insert, METH_VARARGS|METH_KEYWORDS, "Division_insert"},
+
+    {"update", (PyCFunction)Division_update, METH_VARARGS|METH_KEYWORDS, "Division_update"},
 
     {"delete", (PyCFunction)Division_delete, METH_VARARGS|METH_KEYWORDS, "Division_delete"},
 
@@ -1306,6 +1306,30 @@ static PyObject *DivisionKey0_set_code(DivisionKey0* self, PyObject *args, PyObj
 //    return result;
 }
 
+static PyObject *DivisionKey0_equal(DivisionKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DivisionKey0_next(DivisionKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *DivisionKey0_prev(DivisionKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -1330,48 +1354,12 @@ static PyObject *DivisionKey0_gt(DivisionKey0* self, PyObject *args, PyObject *k
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *DivisionKey0_next(DivisionKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *DivisionKey0_ge(DivisionKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DivisionKey0_equal(DivisionKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *DivisionKey0_last(DivisionKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1412,6 +1400,54 @@ static PyObject *DivisionKey0_first(DivisionKey0* self, PyObject *args, PyObject
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DivisionKey0_last(DivisionKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *DivisionKey0_iter_equal(DivisionKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    otdel_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = DivisionKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *DivisionKey0_iter_gt(DivisionKey0* self, PyObject *args, PyObject *kwds)
@@ -1478,78 +1514,6 @@ static PyObject *DivisionKey0_iter_ge(DivisionKey0* self, PyObject *args, PyObje
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DivisionKey0_iter_equal(DivisionKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    otdel_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = DivisionKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *DivisionKey0_iter_last(DivisionKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    otdel_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
- 
-        item = DivisionKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -1658,6 +1622,42 @@ static PyObject *DivisionKey0_iter_first(DivisionKey0* self, PyObject *args, PyO
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *DivisionKey0_iter_last(DivisionKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    otdel_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+ 
+        item = DivisionKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_otdel_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -1840,17 +1840,15 @@ static PyMethodDef DivisionKey0_methods[] = {
 
     {"set_code", (PyCFunction)DivisionKey0_set_code, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_set_code"},
 
+    {"get_equal", (PyCFunction)DivisionKey0_equal, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_equal"},
+
+    {"get_next", (PyCFunction)DivisionKey0_next, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_next"},
+
     {"get_prev", (PyCFunction)DivisionKey0_prev, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_prev"},
 
     {"get_gt", (PyCFunction)DivisionKey0_gt, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_gt"},
 
-    {"get_next", (PyCFunction)DivisionKey0_next, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_next"},
-
     {"get_ge", (PyCFunction)DivisionKey0_ge, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_ge"},
-
-    {"get_equal", (PyCFunction)DivisionKey0_equal, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_equal"},
-
-    {"get_last", (PyCFunction)DivisionKey0_last, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_last"},
 
     {"get_lt", (PyCFunction)DivisionKey0_lt, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_lt"},
 
@@ -1858,19 +1856,21 @@ static PyMethodDef DivisionKey0_methods[] = {
 
     {"get_first", (PyCFunction)DivisionKey0_first, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_first"},
 
-    {"gets_gt", (PyCFunction)DivisionKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)DivisionKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_ge"},
+    {"get_last", (PyCFunction)DivisionKey0_last, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_last"},
 
     {"gets_equal", (PyCFunction)DivisionKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)DivisionKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_last"},
+    {"gets_gt", (PyCFunction)DivisionKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)DivisionKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)DivisionKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)DivisionKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_le"},
 
     {"gets_first", (PyCFunction)DivisionKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)DivisionKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "DivisionKey0_iter_last"},
 
     {NULL}
 };

@@ -5,6 +5,7 @@
 #define BARCODE_LEN 13
 #define DOC_LEN 6
 #define DECIMAL_SHIFT 100
+#ifndef DOMINO78
 
 DO_EXPORT rz_info_t *do_rz_info_new_from_document_order(do_alias_t *alias, document_order_rec_t *document_order)
 {
@@ -446,3 +447,4 @@ DO_EXPORT int do_rz_info_cmp(rz_info_t *r1, rz_info_t *r2)
                 r1->valuta != r2->valuta)  ? 1 << 5 : 0;
     return retval;
 }
+#endif

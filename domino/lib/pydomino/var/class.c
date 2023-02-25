@@ -124,6 +124,54 @@ static PyObject *Class_set_name(Class* self, PyObject *args, PyObject *kwds)
 //    return result;
 }
 
+static PyObject *Class_equal(Class* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getClassKey0Type() )
+        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Class_next(Class* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getClassKey0Type() )
+        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Class_prev(Class* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -172,30 +220,6 @@ static PyObject *Class_gt(Class* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Class_next(Class* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getClassKey0Type() )
-        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *Class_ge(Class* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -208,54 +232,6 @@ static PyObject *Class_ge(Class* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getClassKey0Type() )
         status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Class_equal(Class* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getClassKey0Type() )
-        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Class_last(Class* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getClassKey0Type() )
-        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -338,6 +314,102 @@ static PyObject *Class_first(Class* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Class_last(Class* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getClassKey0Type() )
+        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Class_iter_equal(Class* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getClassKey0Type() ) {
+        key_cmp = (class_key0_t*)do_malloc(sizeof(class_key0_t));
+        memcpy(key_cmp, ((ClassKey0*)key)->priv, sizeof(class_key0_t));
+        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getClassKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((class_key0_t*)key_cmp)->class_id, 
+                    ((ClassKey0*)key)->priv->class_id))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Class_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getClassKey0Type() ) {
+            status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Class_iter_gt(Class* self, PyObject *args, PyObject *kwds)
@@ -465,150 +537,6 @@ static PyObject *Class_iter_ge(Class* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getClassKey0Type() ) {
             status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Class_iter_equal(Class* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getClassKey0Type() ) {
-        key_cmp = (class_key0_t*)do_malloc(sizeof(class_key0_t));
-        memcpy(key_cmp, ((ClassKey0*)key)->priv, sizeof(class_key0_t));
-        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getClassKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((class_key0_t*)key_cmp)->class_id, 
-                    ((ClassKey0*)key)->priv->class_id))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Class_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getClassKey0Type() ) {
-            status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Class_iter_last(Class* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getClassKey0Type() ) {
-        key_cmp = (class_key0_t*)do_malloc(sizeof(class_key0_t));
-        memcpy(key_cmp, ((ClassKey0*)key)->priv, sizeof(class_key0_t));
-        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getClassKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((class_key0_t*)key_cmp)->class_id, 
-                    ((ClassKey0*)key)->priv->class_id))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Class_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getClassKey0Type() ) {
-            status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -844,19 +772,91 @@ static PyObject *Class_iter_first(Class* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Class_update(Class* self)
+static PyObject *Class_iter_last(Class* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_class_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getClassKey0Type() ) {
+        key_cmp = (class_key0_t*)do_malloc(sizeof(class_key0_t));
+        memcpy(key_cmp, ((ClassKey0*)key)->priv, sizeof(class_key0_t));
+        status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getClassKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((class_key0_t*)key_cmp)->class_id, 
+                    ((ClassKey0*)key)->priv->class_id))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Class_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getClassKey0Type() ) {
+            status = do_class_get0(self->alias->alias, self->priv, ((ClassKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Class_insert(Class* self)
 {
     int status;
     status = do_class_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Class_update(Class* self)
+{
+    int status;
+    status = do_class_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1058,17 +1058,15 @@ static PyMethodDef Class_methods[] = {
 
     {"set_name", (PyCFunction)Class_set_name, METH_VARARGS|METH_KEYWORDS, "Class_set_name"},
 
+    {"get_equal", (PyCFunction)Class_equal, METH_VARARGS|METH_KEYWORDS, "Class_equal"},
+
+    {"get_next", (PyCFunction)Class_next, METH_VARARGS|METH_KEYWORDS, "Class_next"},
+
     {"get_prev", (PyCFunction)Class_prev, METH_VARARGS|METH_KEYWORDS, "Class_prev"},
 
     {"get_gt", (PyCFunction)Class_gt, METH_VARARGS|METH_KEYWORDS, "Class_gt"},
 
-    {"get_next", (PyCFunction)Class_next, METH_VARARGS|METH_KEYWORDS, "Class_next"},
-
     {"get_ge", (PyCFunction)Class_ge, METH_VARARGS|METH_KEYWORDS, "Class_ge"},
-
-    {"get_equal", (PyCFunction)Class_equal, METH_VARARGS|METH_KEYWORDS, "Class_equal"},
-
-    {"get_last", (PyCFunction)Class_last, METH_VARARGS|METH_KEYWORDS, "Class_last"},
 
     {"get_lt", (PyCFunction)Class_lt, METH_VARARGS|METH_KEYWORDS, "Class_lt"},
 
@@ -1076,13 +1074,13 @@ static PyMethodDef Class_methods[] = {
 
     {"get_first", (PyCFunction)Class_first, METH_VARARGS|METH_KEYWORDS, "Class_first"},
 
-    {"gets_gt", (PyCFunction)Class_iter_gt, METH_VARARGS|METH_KEYWORDS, "Class_iter_gt"},
-
-    {"gets_ge", (PyCFunction)Class_iter_ge, METH_VARARGS|METH_KEYWORDS, "Class_iter_ge"},
+    {"get_last", (PyCFunction)Class_last, METH_VARARGS|METH_KEYWORDS, "Class_last"},
 
     {"gets_equal", (PyCFunction)Class_iter_equal, METH_VARARGS|METH_KEYWORDS, "Class_iter_equal"},
 
-    {"gets_last", (PyCFunction)Class_iter_last, METH_VARARGS|METH_KEYWORDS, "Class_iter_last"},
+    {"gets_gt", (PyCFunction)Class_iter_gt, METH_VARARGS|METH_KEYWORDS, "Class_iter_gt"},
+
+    {"gets_ge", (PyCFunction)Class_iter_ge, METH_VARARGS|METH_KEYWORDS, "Class_iter_ge"},
 
     {"gets_lt", (PyCFunction)Class_iter_lt, METH_VARARGS|METH_KEYWORDS, "Class_iter_lt"},
 
@@ -1090,9 +1088,11 @@ static PyMethodDef Class_methods[] = {
 
     {"gets_first", (PyCFunction)Class_iter_first, METH_VARARGS|METH_KEYWORDS, "Class_iter_first"},
 
-    {"update", (PyCFunction)Class_update, METH_VARARGS|METH_KEYWORDS, "Class_update"},
+    {"gets_last", (PyCFunction)Class_iter_last, METH_VARARGS|METH_KEYWORDS, "Class_iter_last"},
 
     {"insert", (PyCFunction)Class_insert, METH_VARARGS|METH_KEYWORDS, "Class_insert"},
+
+    {"update", (PyCFunction)Class_update, METH_VARARGS|METH_KEYWORDS, "Class_update"},
 
     {"delete", (PyCFunction)Class_delete, METH_VARARGS|METH_KEYWORDS, "Class_delete"},
 
@@ -1204,6 +1204,30 @@ static PyObject *ClassKey0_set_class_id(ClassKey0* self, PyObject *args, PyObjec
 //    return result;
 }
 
+static PyObject *ClassKey0_equal(ClassKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_class_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ClassKey0_next(ClassKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_class_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *ClassKey0_prev(ClassKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -1228,48 +1252,12 @@ static PyObject *ClassKey0_gt(ClassKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ClassKey0_next(ClassKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_class_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *ClassKey0_ge(ClassKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_class_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ClassKey0_equal(ClassKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_class_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ClassKey0_last(ClassKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_class_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1310,6 +1298,54 @@ static PyObject *ClassKey0_first(ClassKey0* self, PyObject *args, PyObject *kwds
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ClassKey0_last(ClassKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_class_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ClassKey0_iter_equal(ClassKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    class_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_class_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.class_id, 
+                 self->priv->class_id))
+               break;
+       }
+
+ 
+        item = ClassKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_class_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *ClassKey0_iter_gt(ClassKey0* self, PyObject *args, PyObject *kwds)
@@ -1376,78 +1412,6 @@ static PyObject *ClassKey0_iter_ge(ClassKey0* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_class_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ClassKey0_iter_equal(ClassKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    class_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_class_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.class_id, 
-                 self->priv->class_id))
-               break;
-       }
-
- 
-        item = ClassKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_class_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ClassKey0_iter_last(ClassKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    class_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_class_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.class_id, 
-                 self->priv->class_id))
-               break;
-       }
-
- 
-        item = ClassKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_class_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -1556,6 +1520,42 @@ static PyObject *ClassKey0_iter_first(ClassKey0* self, PyObject *args, PyObject 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_class_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ClassKey0_iter_last(ClassKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    class_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_class_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.class_id, 
+                 self->priv->class_id))
+               break;
+       }
+
+ 
+        item = ClassKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_class_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -1780,17 +1780,15 @@ static PyMethodDef ClassKey0_methods[] = {
 
     {"set_class_id", (PyCFunction)ClassKey0_set_class_id, METH_VARARGS|METH_KEYWORDS, "ClassKey0_set_class_id"},
 
+    {"get_equal", (PyCFunction)ClassKey0_equal, METH_VARARGS|METH_KEYWORDS, "ClassKey0_equal"},
+
+    {"get_next", (PyCFunction)ClassKey0_next, METH_VARARGS|METH_KEYWORDS, "ClassKey0_next"},
+
     {"get_prev", (PyCFunction)ClassKey0_prev, METH_VARARGS|METH_KEYWORDS, "ClassKey0_prev"},
 
     {"get_gt", (PyCFunction)ClassKey0_gt, METH_VARARGS|METH_KEYWORDS, "ClassKey0_gt"},
 
-    {"get_next", (PyCFunction)ClassKey0_next, METH_VARARGS|METH_KEYWORDS, "ClassKey0_next"},
-
     {"get_ge", (PyCFunction)ClassKey0_ge, METH_VARARGS|METH_KEYWORDS, "ClassKey0_ge"},
-
-    {"get_equal", (PyCFunction)ClassKey0_equal, METH_VARARGS|METH_KEYWORDS, "ClassKey0_equal"},
-
-    {"get_last", (PyCFunction)ClassKey0_last, METH_VARARGS|METH_KEYWORDS, "ClassKey0_last"},
 
     {"get_lt", (PyCFunction)ClassKey0_lt, METH_VARARGS|METH_KEYWORDS, "ClassKey0_lt"},
 
@@ -1798,19 +1796,21 @@ static PyMethodDef ClassKey0_methods[] = {
 
     {"get_first", (PyCFunction)ClassKey0_first, METH_VARARGS|METH_KEYWORDS, "ClassKey0_first"},
 
-    {"gets_gt", (PyCFunction)ClassKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)ClassKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_ge"},
+    {"get_last", (PyCFunction)ClassKey0_last, METH_VARARGS|METH_KEYWORDS, "ClassKey0_last"},
 
     {"gets_equal", (PyCFunction)ClassKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)ClassKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_last"},
+    {"gets_gt", (PyCFunction)ClassKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ClassKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)ClassKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)ClassKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_le"},
 
     {"gets_first", (PyCFunction)ClassKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)ClassKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ClassKey0_iter_last"},
 
     {NULL}
 };

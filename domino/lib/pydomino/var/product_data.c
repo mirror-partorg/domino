@@ -40,6 +40,8 @@ static int ProductData_init(ProductData *self, PyObject *args, PyObject *kwds)
 
     do_text_set_empty(self->priv->data.code);
 
+    do_text_set_empty(self->priv->data.analitics);
+
     do_product_data_params_clear(self->alias->alias, self->priv);
 
     PyDateTime_IMPORT;
@@ -166,6 +168,40 @@ static PyObject *ProductData_set_number(ProductData* self, PyObject *args, PyObj
 //    return result;
 }
 
+static PyObject *ProductData_analitics(ProductData* self, void *unused)
+{
+    PyObject *result;
+
+    char *res=do_text(self->alias->alias, self->priv->data.analitics);
+    result = MyString_FromString(res);
+    do_free(res);
+
+    return result;
+}
+
+static PyObject *ProductData_set_analitics(ProductData* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    char *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set data.analitics");
+        return NULL;
+    }
+    if ( value )
+        do_text_set(self->alias->alias, self->priv->data.analitics, value);
+        
+    /*char *res=do_text(self->alias->alias, self->priv->data.analitics);
+    result = MyString_FromString(res);
+    do_free(res);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
 static PyObject *ProductData_set_param(ProductData* self, PyObject *args, PyObject *kwds)
 {
     PyObject *value = NULL;
@@ -282,7 +318,7 @@ static PyObject *ProductData_get_params(ProductData* self, void *unused)
     return res;
 }
 
-static PyObject *ProductData_prev(ProductData* self, PyObject *args, PyObject *kwds)
+static PyObject *ProductData_equal(ProductData* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -293,31 +329,15 @@ static PyObject *ProductData_prev(ProductData* self, PyObject *args, PyObject *k
         return NULL;
 
     if ( Py_TYPE(key) == getProductDataKey0Type() )
-        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_PREVIOUS);
+        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_EQUAL);
     else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
 
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_EQUAL);
+    else
 
-static PyObject *ProductData_gt(ProductData* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProductDataKey0Type() )
-        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_GT);
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_EQUAL);
     else
     
     {
@@ -343,6 +363,78 @@ static PyObject *ProductData_next(ProductData* self, PyObject *args, PyObject *k
     if ( Py_TYPE(key) == getProductDataKey0Type() )
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_NEXT);
     else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_NEXT);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductData_prev(ProductData* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProductDataKey0Type() )
+        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_PREVIOUS);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_PREVIOUS);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductData_gt(ProductData* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProductDataKey0Type() )
+        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_GT);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_GT);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_GT);
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -367,53 +459,13 @@ static PyObject *ProductData_ge(ProductData* self, PyObject *args, PyObject *kwd
     if ( Py_TYPE(key) == getProductDataKey0Type() )
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_GE);
     else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
 
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProductData_equal(ProductData* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProductDataKey0Type() )
-        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_EQUAL);
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_GE);
     else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
 
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProductData_last(ProductData* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getProductDataKey0Type() )
-        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LAST);
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_GE);
     else
     
     {
@@ -439,6 +491,14 @@ static PyObject *ProductData_lt(ProductData* self, PyObject *args, PyObject *kwd
     if ( Py_TYPE(key) == getProductDataKey0Type() )
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LT);
     else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_LT);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_LT);
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -462,6 +522,14 @@ static PyObject *ProductData_le(ProductData* self, PyObject *args, PyObject *kwd
 
     if ( Py_TYPE(key) == getProductDataKey0Type() )
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_LE);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_LE);
     else
     
     {
@@ -487,6 +555,14 @@ static PyObject *ProductData_first(ProductData* self, PyObject *args, PyObject *
     if ( Py_TYPE(key) == getProductDataKey0Type() )
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_FIRST);
     else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_FIRST);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_FIRST);
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -498,7 +574,39 @@ static PyObject *ProductData_first(ProductData* self, PyObject *args, PyObject *
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProductData_iter_gt(ProductData* self, PyObject *args, PyObject *kwds)
+static PyObject *ProductData_last(ProductData* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getProductDataKey0Type() )
+        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() )
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_LAST);
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() )
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductData_iter_equal(ProductData* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
 
@@ -517,7 +625,21 @@ static PyObject *ProductData_iter_gt(ProductData* self, PyObject *args, PyObject
     if ( Py_TYPE(key) == getProductDataKey0Type() ) {
         key_cmp = (product_data_key0_t*)do_malloc(sizeof(product_data_key0_t));
         memcpy(key_cmp, ((ProductDataKey0*)key)->priv, sizeof(product_data_key0_t));
-        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_GT);
+        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+        key_cmp = (product_data_key1_t*)do_malloc(sizeof(product_data_key1_t));
+        memcpy(key_cmp, ((ProductDataKey1*)key)->priv, sizeof(product_data_key1_t));
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+        key_cmp = (product_data_key2_t*)do_malloc(sizeof(product_data_key2_t));
+        memcpy(key_cmp, ((ProductDataKey2*)key)->priv, sizeof(product_data_key2_t));
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_EQUAL);
     }
     else
     
@@ -550,6 +672,46 @@ static PyObject *ProductData_iter_gt(ProductData* self, PyObject *args, PyObject
 
         }
         else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->code, 
+                    ((ProductDataKey1*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->type, 
+                    ((ProductDataKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->analitics, 
+                    ((ProductDataKey1*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->type, 
+                    ((ProductDataKey2*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->analitics, 
+                    ((ProductDataKey2*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -563,6 +725,164 @@ static PyObject *ProductData_iter_gt(ProductData* self, PyObject *args, PyObject
 
         if ( Py_TYPE(key) == getProductDataKey0Type() ) {
             status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+            status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+            status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
+}
+
+static PyObject *ProductData_iter_gt(ProductData* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getProductDataKey0Type() ) {
+        key_cmp = (product_data_key0_t*)do_malloc(sizeof(product_data_key0_t));
+        memcpy(key_cmp, ((ProductDataKey0*)key)->priv, sizeof(product_data_key0_t));
+        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_GT);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+        key_cmp = (product_data_key1_t*)do_malloc(sizeof(product_data_key1_t));
+        memcpy(key_cmp, ((ProductDataKey1*)key)->priv, sizeof(product_data_key1_t));
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_GT);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+        key_cmp = (product_data_key2_t*)do_malloc(sizeof(product_data_key2_t));
+        memcpy(key_cmp, ((ProductDataKey2*)key)->priv, sizeof(product_data_key2_t));
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_GT);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key0_t*)key_cmp)->code, 
+                    ((ProductDataKey0*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key0_t*)key_cmp)->type, 
+                    ((ProductDataKey0*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key0_t*)key_cmp)->number, 
+                    ((ProductDataKey0*)key)->priv->number))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->code, 
+                    ((ProductDataKey1*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->type, 
+                    ((ProductDataKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->analitics, 
+                    ((ProductDataKey1*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->type, 
+                    ((ProductDataKey2*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->analitics, 
+                    ((ProductDataKey2*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = ProductData_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
+            status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+            status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+            status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_NEXT);
         }
         else
     
@@ -604,88 +924,18 @@ static PyObject *ProductData_iter_ge(ProductData* self, PyObject *args, PyObject
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_GE);
     }
     else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+        key_cmp = (product_data_key1_t*)do_malloc(sizeof(product_data_key1_t));
+        memcpy(key_cmp, ((ProductDataKey1*)key)->priv, sizeof(product_data_key1_t));
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_GE);
     }
+    else
 
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((product_data_key0_t*)key_cmp)->code, 
-                    ((ProductDataKey0*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((product_data_key0_t*)key_cmp)->type, 
-                    ((ProductDataKey0*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((product_data_key0_t*)key_cmp)->number, 
-                    ((ProductDataKey0*)key)->priv->number))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = ProductData_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
-            status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *ProductData_iter_equal(ProductData* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getProductDataKey0Type() ) {
-        key_cmp = (product_data_key0_t*)do_malloc(sizeof(product_data_key0_t));
-        memcpy(key_cmp, ((ProductDataKey0*)key)->priv, sizeof(product_data_key0_t));
-        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_EQUAL);
+    if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+        key_cmp = (product_data_key2_t*)do_malloc(sizeof(product_data_key2_t));
+        memcpy(key_cmp, ((ProductDataKey2*)key)->priv, sizeof(product_data_key2_t));
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_GE);
     }
     else
     
@@ -718,6 +968,46 @@ static PyObject *ProductData_iter_equal(ProductData* self, PyObject *args, PyObj
 
         }
         else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->code, 
+                    ((ProductDataKey1*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->type, 
+                    ((ProductDataKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->analitics, 
+                    ((ProductDataKey1*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->type, 
+                    ((ProductDataKey2*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->analitics, 
+                    ((ProductDataKey2*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -733,88 +1023,14 @@ static PyObject *ProductData_iter_equal(ProductData* self, PyObject *args, PyObj
             status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_NEXT);
         }
         else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
 
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *ProductData_iter_last(ProductData* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getProductDataKey0Type() ) {
-        key_cmp = (product_data_key0_t*)do_malloc(sizeof(product_data_key0_t));
-        memcpy(key_cmp, ((ProductDataKey0*)key)->priv, sizeof(product_data_key0_t));
-        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((product_data_key0_t*)key_cmp)->code, 
-                    ((ProductDataKey0*)key)->priv->code))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((product_data_key0_t*)key_cmp)->type, 
-                    ((ProductDataKey0*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((product_data_key0_t*)key_cmp)->number, 
-                    ((ProductDataKey0*)key)->priv->number))
-                   break;
-            }
-
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+            status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_NEXT);
         }
         else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
 
-     item = ProductData_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
-            status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_PREVIOUS);
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+            status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_NEXT);
         }
         else
     
@@ -856,6 +1072,20 @@ static PyObject *ProductData_iter_lt(ProductData* self, PyObject *args, PyObject
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LT);
     }
     else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+        key_cmp = (product_data_key1_t*)do_malloc(sizeof(product_data_key1_t));
+        memcpy(key_cmp, ((ProductDataKey1*)key)->priv, sizeof(product_data_key1_t));
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_LT);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+        key_cmp = (product_data_key2_t*)do_malloc(sizeof(product_data_key2_t));
+        memcpy(key_cmp, ((ProductDataKey2*)key)->priv, sizeof(product_data_key2_t));
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_LT);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -886,6 +1116,46 @@ static PyObject *ProductData_iter_lt(ProductData* self, PyObject *args, PyObject
 
         }
         else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->code, 
+                    ((ProductDataKey1*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->type, 
+                    ((ProductDataKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->analitics, 
+                    ((ProductDataKey1*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->type, 
+                    ((ProductDataKey2*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->analitics, 
+                    ((ProductDataKey2*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -899,6 +1169,16 @@ static PyObject *ProductData_iter_lt(ProductData* self, PyObject *args, PyObject
 
         if ( Py_TYPE(key) == getProductDataKey0Type() ) {
             status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+            status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+            status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -940,6 +1220,20 @@ static PyObject *ProductData_iter_le(ProductData* self, PyObject *args, PyObject
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LE);
     }
     else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+        key_cmp = (product_data_key1_t*)do_malloc(sizeof(product_data_key1_t));
+        memcpy(key_cmp, ((ProductDataKey1*)key)->priv, sizeof(product_data_key1_t));
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_LE);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+        key_cmp = (product_data_key2_t*)do_malloc(sizeof(product_data_key2_t));
+        memcpy(key_cmp, ((ProductDataKey2*)key)->priv, sizeof(product_data_key2_t));
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_LE);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -970,6 +1264,46 @@ static PyObject *ProductData_iter_le(ProductData* self, PyObject *args, PyObject
 
         }
         else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->code, 
+                    ((ProductDataKey1*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->type, 
+                    ((ProductDataKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->analitics, 
+                    ((ProductDataKey1*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->type, 
+                    ((ProductDataKey2*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->analitics, 
+                    ((ProductDataKey2*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -983,6 +1317,16 @@ static PyObject *ProductData_iter_le(ProductData* self, PyObject *args, PyObject
 
         if ( Py_TYPE(key) == getProductDataKey0Type() ) {
             status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+            status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+            status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1024,6 +1368,20 @@ static PyObject *ProductData_iter_first(ProductData* self, PyObject *args, PyObj
         status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_FIRST);
     }
     else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+        key_cmp = (product_data_key1_t*)do_malloc(sizeof(product_data_key1_t));
+        memcpy(key_cmp, ((ProductDataKey1*)key)->priv, sizeof(product_data_key1_t));
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_FIRST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+        key_cmp = (product_data_key2_t*)do_malloc(sizeof(product_data_key2_t));
+        memcpy(key_cmp, ((ProductDataKey2*)key)->priv, sizeof(product_data_key2_t));
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_FIRST);
+    }
+    else
     
     {
         do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -1054,6 +1412,46 @@ static PyObject *ProductData_iter_first(ProductData* self, PyObject *args, PyObj
 
         }
         else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->code, 
+                    ((ProductDataKey1*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->type, 
+                    ((ProductDataKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->analitics, 
+                    ((ProductDataKey1*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->type, 
+                    ((ProductDataKey2*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->analitics, 
+                    ((ProductDataKey2*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
     
         {
             do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
@@ -1067,6 +1465,16 @@ static PyObject *ProductData_iter_first(ProductData* self, PyObject *args, PyObj
 
         if ( Py_TYPE(key) == getProductDataKey0Type() ) {
             status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+            status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_NEXT);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+            status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_NEXT);
         }
         else
     
@@ -1086,19 +1494,167 @@ static PyObject *ProductData_iter_first(ProductData* self, PyObject *args, PyObj
     return retval;
 }
 
-static PyObject *ProductData_update(ProductData* self)
+static PyObject *ProductData_iter_last(ProductData* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_product_data_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getProductDataKey0Type() ) {
+        key_cmp = (product_data_key0_t*)do_malloc(sizeof(product_data_key0_t));
+        memcpy(key_cmp, ((ProductDataKey0*)key)->priv, sizeof(product_data_key0_t));
+        status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+        key_cmp = (product_data_key1_t*)do_malloc(sizeof(product_data_key1_t));
+        memcpy(key_cmp, ((ProductDataKey1*)key)->priv, sizeof(product_data_key1_t));
+        status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_LAST);
+    }
+    else
+
+    if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+        key_cmp = (product_data_key2_t*)do_malloc(sizeof(product_data_key2_t));
+        memcpy(key_cmp, ((ProductDataKey2*)key)->priv, sizeof(product_data_key2_t));
+        status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key0_t*)key_cmp)->code, 
+                    ((ProductDataKey0*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key0_t*)key_cmp)->type, 
+                    ((ProductDataKey0*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key0_t*)key_cmp)->number, 
+                    ((ProductDataKey0*)key)->priv->number))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->code, 
+                    ((ProductDataKey1*)key)->priv->code))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->type, 
+                    ((ProductDataKey1*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((product_data_key1_t*)key_cmp)->analitics, 
+                    ((ProductDataKey1*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->type, 
+                    ((ProductDataKey2*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((product_data_key2_t*)key_cmp)->analitics, 
+                    ((ProductDataKey2*)key)->priv->analitics))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = ProductData_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getProductDataKey0Type() ) {
+            status = do_product_data_get0(self->alias->alias, self->priv, ((ProductDataKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey1Type() ) {
+            status = do_product_data_get1(self->alias->alias, self->priv, ((ProductDataKey1*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+
+        if ( Py_TYPE(key) == getProductDataKey2Type() ) {
+            status = do_product_data_get2(self->alias->alias, self->priv, ((ProductDataKey2*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *ProductData_insert(ProductData* self)
 {
     int status;
     status = do_product_data_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductData_update(ProductData* self)
+{
+    int status;
+    status = do_product_data_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1152,6 +1708,26 @@ static PyObject *ProductData_set(ProductData* self, PyObject *args, PyObject *kw
         do_cpy(self->priv->data.type, ((ProductDataKey0*)obj)->priv->type);
 
         do_cpy(self->priv->data.number, ((ProductDataKey0*)obj)->priv->number);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductDataKey1Type() ) {
+
+        do_cpy(self->priv->data.code, ((ProductDataKey1*)obj)->priv->code);
+
+        do_cpy(self->priv->data.type, ((ProductDataKey1*)obj)->priv->type);
+
+        do_cpy(self->priv->data.analitics, ((ProductDataKey1*)obj)->priv->analitics);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductDataKey2Type() ) {
+
+        do_cpy(self->priv->data.type, ((ProductDataKey2*)obj)->priv->type);
+
+        do_cpy(self->priv->data.analitics, ((ProductDataKey2*)obj)->priv->analitics);
 
     }
 
@@ -1230,6 +1806,12 @@ static PyObject *ProductData_set(ProductData* self, PyObject *args, PyObject *kw
             }
 
             else
+            if ( !strcmp("analitics", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_analitics", "O", value) )
+                    return NULL;
+            }
+
+            else
             if ( !strcmp("param", field_name) ) {
                 if ( !PyObject_CallMethod((PyObject*)self, "set_param", "O", value) )
                     return NULL;
@@ -1303,6 +1885,18 @@ static PyObject *ProductData_fields(ProductData* self, PyObject *args, PyObject 
     do_free(str);
     str = buf1;
 
+    value =  ProductData_analitics(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("analitics", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
     value = ProductData_get_params(self, NULL);
     buf = get_params_desc(value);
     buf1 = do_strdup_printf("%s\n%s",str,buf);
@@ -1325,6 +1919,8 @@ static PyGetSetDef ProductData_getset[] = {
 
     {"number",(getter)ProductData_number},
 
+    {"analitics",(getter)ProductData_analitics},
+
     {"params",(getter)ProductData_get_params},
 
     {NULL}
@@ -1341,22 +1937,22 @@ static PyMethodDef ProductData_methods[] = {
 
     {"set_number", (PyCFunction)ProductData_set_number, METH_VARARGS|METH_KEYWORDS, "ProductData_set_number"},
 
+    {"set_analitics", (PyCFunction)ProductData_set_analitics, METH_VARARGS|METH_KEYWORDS, "ProductData_set_analitics"},
+
     {"set_param", (PyCFunction)ProductData_set_param, METH_VARARGS|METH_KEYWORDS, "do_ProductData_param_set"},
     {"param", (PyCFunction)ProductData_get_param, METH_VARARGS|METH_KEYWORDS, "do_ProductData_param"},
     {"clear_params", (PyCFunction)ProductData_params_clear, METH_NOARGS, "do_ProductData_param_clear"},
     {"set_params", (PyCFunction)ProductData_set_params, METH_VARARGS|METH_KEYWORDS, "do_ProductData_set_params"},
 
+    {"get_equal", (PyCFunction)ProductData_equal, METH_VARARGS|METH_KEYWORDS, "ProductData_equal"},
+
+    {"get_next", (PyCFunction)ProductData_next, METH_VARARGS|METH_KEYWORDS, "ProductData_next"},
+
     {"get_prev", (PyCFunction)ProductData_prev, METH_VARARGS|METH_KEYWORDS, "ProductData_prev"},
 
     {"get_gt", (PyCFunction)ProductData_gt, METH_VARARGS|METH_KEYWORDS, "ProductData_gt"},
 
-    {"get_next", (PyCFunction)ProductData_next, METH_VARARGS|METH_KEYWORDS, "ProductData_next"},
-
     {"get_ge", (PyCFunction)ProductData_ge, METH_VARARGS|METH_KEYWORDS, "ProductData_ge"},
-
-    {"get_equal", (PyCFunction)ProductData_equal, METH_VARARGS|METH_KEYWORDS, "ProductData_equal"},
-
-    {"get_last", (PyCFunction)ProductData_last, METH_VARARGS|METH_KEYWORDS, "ProductData_last"},
 
     {"get_lt", (PyCFunction)ProductData_lt, METH_VARARGS|METH_KEYWORDS, "ProductData_lt"},
 
@@ -1364,13 +1960,13 @@ static PyMethodDef ProductData_methods[] = {
 
     {"get_first", (PyCFunction)ProductData_first, METH_VARARGS|METH_KEYWORDS, "ProductData_first"},
 
-    {"gets_gt", (PyCFunction)ProductData_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_gt"},
-
-    {"gets_ge", (PyCFunction)ProductData_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_ge"},
+    {"get_last", (PyCFunction)ProductData_last, METH_VARARGS|METH_KEYWORDS, "ProductData_last"},
 
     {"gets_equal", (PyCFunction)ProductData_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_equal"},
 
-    {"gets_last", (PyCFunction)ProductData_iter_last, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_last"},
+    {"gets_gt", (PyCFunction)ProductData_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ProductData_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_ge"},
 
     {"gets_lt", (PyCFunction)ProductData_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_lt"},
 
@@ -1378,9 +1974,11 @@ static PyMethodDef ProductData_methods[] = {
 
     {"gets_first", (PyCFunction)ProductData_iter_first, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_first"},
 
-    {"update", (PyCFunction)ProductData_update, METH_VARARGS|METH_KEYWORDS, "ProductData_update"},
+    {"gets_last", (PyCFunction)ProductData_iter_last, METH_VARARGS|METH_KEYWORDS, "ProductData_iter_last"},
 
     {"insert", (PyCFunction)ProductData_insert, METH_VARARGS|METH_KEYWORDS, "ProductData_insert"},
+
+    {"update", (PyCFunction)ProductData_update, METH_VARARGS|METH_KEYWORDS, "ProductData_update"},
 
     {"delete", (PyCFunction)ProductData_delete, METH_VARARGS|METH_KEYWORDS, "ProductData_delete"},
 
@@ -1568,6 +2166,30 @@ static PyObject *ProductDataKey0_set_number(ProductDataKey0* self, PyObject *arg
 //    return result;
 }
 
+static PyObject *ProductDataKey0_equal(ProductDataKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey0_next(ProductDataKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *ProductDataKey0_prev(ProductDataKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -1592,48 +2214,12 @@ static PyObject *ProductDataKey0_gt(ProductDataKey0* self, PyObject *args, PyObj
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *ProductDataKey0_next(ProductDataKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *ProductDataKey0_ge(ProductDataKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProductDataKey0_equal(ProductDataKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *ProductDataKey0_last(ProductDataKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1674,6 +2260,66 @@ static PyObject *ProductDataKey0_first(ProductDataKey0* self, PyObject *args, Py
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey0_last(ProductDataKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey0_iter_equal(ProductDataKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.number, 
+                 self->priv->number))
+               break;
+       }
+
+ 
+        item = ProductDataKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *ProductDataKey0_iter_gt(ProductDataKey0* self, PyObject *args, PyObject *kwds)
@@ -1764,102 +2410,6 @@ static PyObject *ProductDataKey0_iter_ge(ProductDataKey0* self, PyObject *args, 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProductDataKey0_iter_equal(ProductDataKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    product_data_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.number, 
-                 self->priv->number))
-               break;
-       }
-
- 
-        item = ProductDataKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *ProductDataKey0_iter_last(ProductDataKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    product_data_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.code, 
-                 self->priv->code))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.number, 
-                 self->priv->number))
-               break;
-       }
-
- 
-        item = ProductDataKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2004,6 +2554,54 @@ static PyObject *ProductDataKey0_iter_first(ProductDataKey0* self, PyObject *arg
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey0_iter_last(ProductDataKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.number, 
+                 self->priv->number))
+               break;
+       }
+
+ 
+        item = ProductDataKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2288,17 +2886,15 @@ static PyMethodDef ProductDataKey0_methods[] = {
 
     {"set_number", (PyCFunction)ProductDataKey0_set_number, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_set_number"},
 
+    {"get_equal", (PyCFunction)ProductDataKey0_equal, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_equal"},
+
+    {"get_next", (PyCFunction)ProductDataKey0_next, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_next"},
+
     {"get_prev", (PyCFunction)ProductDataKey0_prev, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_prev"},
 
     {"get_gt", (PyCFunction)ProductDataKey0_gt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_gt"},
 
-    {"get_next", (PyCFunction)ProductDataKey0_next, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_next"},
-
     {"get_ge", (PyCFunction)ProductDataKey0_ge, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_ge"},
-
-    {"get_equal", (PyCFunction)ProductDataKey0_equal, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_equal"},
-
-    {"get_last", (PyCFunction)ProductDataKey0_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_last"},
 
     {"get_lt", (PyCFunction)ProductDataKey0_lt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_lt"},
 
@@ -2306,19 +2902,21 @@ static PyMethodDef ProductDataKey0_methods[] = {
 
     {"get_first", (PyCFunction)ProductDataKey0_first, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_first"},
 
-    {"gets_gt", (PyCFunction)ProductDataKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)ProductDataKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_ge"},
+    {"get_last", (PyCFunction)ProductDataKey0_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_last"},
 
     {"gets_equal", (PyCFunction)ProductDataKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)ProductDataKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_last"},
+    {"gets_gt", (PyCFunction)ProductDataKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ProductDataKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)ProductDataKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)ProductDataKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_le"},
 
     {"gets_first", (PyCFunction)ProductDataKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)ProductDataKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey0_iter_last"},
 
     {NULL}
 };
@@ -2345,4 +2943,1755 @@ static PyTypeObject ProductDataKey0Type_ = {
 PyTypeObject *getProductDataKey0Type()
 {
     return &ProductDataKey0Type_;
+}
+
+static void ProductDataKey1_dealloc(PyObject* self)
+{
+    do_free(((ProductDataKey1*)self)->priv);
+    Py_DECREF(((ProductDataKey1*)self)->alias);
+    self->ob_type->tp_free((PyObject*)self);
+    LOG("ProductDataKey1 free\n");
+}
+static PyObject *ProductDataKey1_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    LOG("ProductDataKey1 new\n");
+    ProductDataKey1 *self;
+    self = PyObject_NEW(ProductDataKey1, type);
+    //self = (ProductDataKey1 *)type->tp_alloc(type, 0);
+    if ( self == NULL )
+        return NULL;
+    self->priv = do_malloc0(sizeof(product_data_key1_t));
+    return (PyObject *)self;
+}
+static int ProductDataKey1_init(ProductDataKey1 *self, PyObject *args, PyObject *kwds)
+{
+    //LOG("ProductDataKey1 init\n");
+    static char *kwlist[] = {"alias", NULL};
+    PyObject *alias;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &alias) ) {
+        do_log(LOG_ERR, "no param \"alias\"");
+        return -1;
+    }
+
+    Py_INCREF(alias);
+    self->alias = (Alias*)alias;
+    
+    do_text_set_empty(self->priv->code);
+
+    do_text_set_empty(self->priv->analitics);
+
+    PyDateTime_IMPORT;
+    return 0;
+}
+
+static PyObject *ProductDataKey1_clone(ProductDataKey1 *self)
+{
+    ProductDataKey1 *result;
+    result = (ProductDataKey1*)PyObject_CallFunction((PyObject*)getProductDataKey1Type(),
+                                    "O", self->alias);
+    memcpy(result->priv, self->priv, sizeof(*self->priv));
+    return (PyObject*)result;
+}
+
+static PyObject *ProductDataKey1_code(ProductDataKey1* self, void *unused)
+{
+    PyObject *result;
+
+    char *res=do_text(self->alias->alias, self->priv->code);
+    result = MyString_FromString(res);
+    do_free(res);
+
+    return result;
+}
+
+static PyObject *ProductDataKey1_set_code(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    char *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set code");
+        return NULL;
+    }
+    if ( value )
+        do_text_set(self->alias->alias, self->priv->code, value);
+        
+    /*char *res=do_text(self->alias->alias, self->priv->code);
+    result = MyString_FromString(res);
+    do_free(res);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *ProductDataKey1_record_type(ProductDataKey1* self, void *unused)
+{
+    PyObject *result;
+
+    result = MyLong_FromLong(self->priv->type);
+
+    return result;
+}
+
+static PyObject *ProductDataKey1_set_record_type(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    PyObject *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set type");
+        return NULL;
+    }
+    if ( value ) {
+        if ( MyLong_Check(value) )
+             self->priv->type = MyLong_AsLong(value);
+        else
+        if ( PyFloat_Check(value) )
+             self->priv->type = PyFloat_AsDouble(value);
+        else {
+            do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set type");
+            return NULL;
+        }
+    }
+    //result = MyLong_FromLong(self->priv->type);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *ProductDataKey1_analitics(ProductDataKey1* self, void *unused)
+{
+    PyObject *result;
+
+    char *res=do_text(self->alias->alias, self->priv->analitics);
+    result = MyString_FromString(res);
+    do_free(res);
+
+    return result;
+}
+
+static PyObject *ProductDataKey1_set_analitics(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    char *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set analitics");
+        return NULL;
+    }
+    if ( value )
+        do_text_set(self->alias->alias, self->priv->analitics, value);
+        
+    /*char *res=do_text(self->alias->alias, self->priv->analitics);
+    result = MyString_FromString(res);
+    do_free(res);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *ProductDataKey1_equal(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_next(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_prev(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_gt(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_GT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_ge(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_GE);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_lt(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_le(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_LE);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_first(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_FIRST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_last(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey1_iter_equal(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey1_iter_gt(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_GT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey1_iter_ge(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_GE);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey1_iter_lt(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey1_iter_le(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_LE);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey1_iter_first(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_FIRST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey1_iter_last(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key1_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.code, 
+                 self->priv->code))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey1_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key1(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey1_cmp(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+    int depth;
+    int res = 0;
+
+    static char *kwlist[] = {"object", "depth", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &obj, &depth) ) {
+        do_log(LOG_ERR, "Invalid params");
+        return NULL;
+    }
+        
+    if ( Py_TYPE(obj) == getProductDataKey1Type() ) {
+    
+
+       if ( !res && depth >= 1 ) {
+           res = do_cmp(self->priv->code, ((ProductDataKey1*)obj)->priv->code);
+       }
+
+       if ( !res && depth >= 2 ) {
+           res = self->priv->type - ((ProductDataKey1*)obj)->priv->type;
+       }
+
+       if ( !res && depth >= 3 ) {
+           res = do_cmp(self->priv->analitics, ((ProductDataKey1*)obj)->priv->analitics);
+       }
+
+       return MyLong_FromLong(res);
+    }
+
+    do_log(LOG_ERR, "Invalid argument \"object\": wrong type");
+    return NULL;
+}
+
+static PyObject *ProductDataKey1_set_alias(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+
+    static char *kwlist[] = {"object", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &obj) )
+        return NULL;
+    if ( Py_TYPE(obj) != getAliasType() ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set alias");
+        return NULL;
+    }
+    Py_DECREF(((ProductDataKey1*)self)->alias);
+    Py_INCREF(obj);
+    ((ProductDataKey1*)self)->alias = (Alias*)obj;
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *ProductDataKey1_set(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+
+    static char *kwlist[] = {"object", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &obj) )
+        return NULL;
+    if ( Py_TYPE(obj) == getProductDataKey1Type() ) {
+        memcpy(self->priv, ((ProductDataKey1*)obj)->priv, sizeof(*self->priv));
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductDataType() ) {
+
+        do_cpy(self->priv->code, ((ProductData*)obj)->priv->data.code);
+
+        do_cpy(self->priv->type, ((ProductData*)obj)->priv->data.type);
+
+        do_cpy(self->priv->analitics, ((ProductData*)obj)->priv->data.analitics);
+
+    }
+
+    else 
+    if ( PyList_Check(obj) ||  PyTuple_Check(obj) ) {
+        int i;
+        int size;
+        size = PyList_Check(obj) ? PyList_Size(obj) : PyTuple_Size(obj);
+        for ( i = 0; i < size; i++ ) {
+            PyObject *value;
+            value =  PyList_Check(obj) ? PyList_GetItem(obj, i) : PyTuple_GetItem(obj, i);
+            switch (i) {
+
+                case 0:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_code", "O", value) )
+                        return NULL;
+                    break;
+
+                case 1:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_record_type", "O", value) )
+                        return NULL;
+                    break;
+
+                case 2:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_analitics", "O", value) )
+                        return NULL;
+                    break;
+
+                default:
+                    do_log(LOG_ERR, "%s size larger than the number of fields", PyList_Check(obj) ? "List":"Tuple");
+                    return NULL;
+            }
+        }
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductType() ) {
+
+        do_cpy(self->priv->code, ((Product*)obj)->priv->data.code);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey0Type() ) {
+
+        do_cpy(self->priv->code, ((ProductKey0*)obj)->priv->code);
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey1Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey2Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey3Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey4Type() ) {
+
+        do_cpy(self->priv->code, ((ProductKey4*)obj)->priv->code);
+
+    }
+
+    else 
+    if ( PyDict_Check(obj) ) {
+        PyObject *fields;
+        int i;
+        
+        fields = PyDict_Keys(obj);
+        for ( i = 0; i < PyList_Size(fields); i++ ) {
+            PyObject *name;
+            PyObject *value;
+            char *field_name;
+            
+            name = PyList_GetItem(fields, i);
+            value = PyDict_GetItem(obj, name); 
+            field_name = MyString_AsString(name);
+            if ( field_name[0] == '\0' ) {
+                do_log(LOG_ERR, "Dictionary key is not a string");
+                return NULL;
+            } 
+
+
+            else
+            if ( !strcmp("code", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_code", "O", value) )
+                    return NULL;
+            }
+
+            else
+            if ( !strcmp("record_type", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_record_type", "O", value) )
+                    return NULL;
+            }
+
+            else
+            if ( !strcmp("analitics", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_analitics", "O", value) )
+                    return NULL;
+            }
+
+            else {
+                do_log(LOG_ERR, "Class \"ProductDataKey1\"does not contain \"%s\"", field_name);
+                return NULL;
+            }
+            do_free(field_name);
+        }
+    }
+    
+    else
+    {
+        do_log(LOG_ERR, "Invalid argument \"object\": wrong type");
+        return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *ProductDataKey1_fields(ProductDataKey1* self, PyObject *args, PyObject *kwds)
+{
+    char *str=do_strdup("Class ProductDataKey1");
+    char *buf;
+    char *buf1;
+    PyObject *value = NULL;
+    PyObject *retval;
+
+
+    value =  ProductDataKey1_code(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("code", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
+    value =  ProductDataKey1_record_type(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("record_type", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
+    value =  ProductDataKey1_analitics(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("analitics", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+    
+    buf = do_strdup_printf("%s\n",str);
+    retval = MyString_FromString(buf);
+    do_free(str);
+    do_free(buf);
+    return retval;
+}
+
+static PyGetSetDef ProductDataKey1_getset[] = {
+
+    {"code",(getter)ProductDataKey1_code},
+
+    {"record_type",(getter)ProductDataKey1_record_type},
+
+    {"analitics",(getter)ProductDataKey1_analitics},
+
+    {NULL}
+};
+
+static PyMethodDef ProductDataKey1_methods[] = {
+    {"set", (PyCFunction)ProductDataKey1_set, METH_VARARGS|METH_KEYWORDS, "set"},
+    {"set_alias", (PyCFunction)ProductDataKey1_set_alias, METH_VARARGS|METH_KEYWORDS, "set_alias"},
+    {"clone", (PyCFunction)ProductDataKey1_clone, METH_NOARGS, "clone"},
+
+    {"cmp", (PyCFunction)ProductDataKey1_cmp, METH_VARARGS|METH_KEYWORDS, "cmp"},
+
+    {"set_code", (PyCFunction)ProductDataKey1_set_code, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_set_code"},
+
+    {"set_record_type", (PyCFunction)ProductDataKey1_set_record_type, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_set_record_type"},
+
+    {"set_analitics", (PyCFunction)ProductDataKey1_set_analitics, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_set_analitics"},
+
+    {"get_equal", (PyCFunction)ProductDataKey1_equal, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_equal"},
+
+    {"get_next", (PyCFunction)ProductDataKey1_next, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_next"},
+
+    {"get_prev", (PyCFunction)ProductDataKey1_prev, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_prev"},
+
+    {"get_gt", (PyCFunction)ProductDataKey1_gt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_gt"},
+
+    {"get_ge", (PyCFunction)ProductDataKey1_ge, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_ge"},
+
+    {"get_lt", (PyCFunction)ProductDataKey1_lt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_lt"},
+
+    {"get_le", (PyCFunction)ProductDataKey1_le, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_le"},
+
+    {"get_first", (PyCFunction)ProductDataKey1_first, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_first"},
+
+    {"get_last", (PyCFunction)ProductDataKey1_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_last"},
+
+    {"gets_equal", (PyCFunction)ProductDataKey1_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_iter_equal"},
+
+    {"gets_gt", (PyCFunction)ProductDataKey1_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ProductDataKey1_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_iter_ge"},
+
+    {"gets_lt", (PyCFunction)ProductDataKey1_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_iter_lt"},
+
+    {"gets_le", (PyCFunction)ProductDataKey1_iter_le, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_iter_le"},
+
+    {"gets_first", (PyCFunction)ProductDataKey1_iter_first, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_iter_first"},
+
+    {"gets_last", (PyCFunction)ProductDataKey1_iter_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey1_iter_last"},
+
+    {NULL}
+};
+
+static PyTypeObject ProductDataKey1Type_ = {
+    PyVarObject_HEAD_INIT(NULL,0)
+    //0,                         /*ob_size*/
+    "pydomino.ProductDataKey1",             /*tp_name*/
+    sizeof(ProductDataKey1),             /*tp_basicsize*/
+    0,                         /*tp_itemsize*/
+    (destructor)ProductDataKey1_dealloc, /*tp_dealloc*/
+    0,0,0,0,0,0,0,0,0,0,(reprfunc)ProductDataKey1_fields,0,0,0,
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
+    "ProductDataKey1 objects",           /* tp_doc */
+    0,0,0,0,0,0,               /* tp_iternext */
+    ProductDataKey1_methods,             /* tp_methods */
+    0,
+    ProductDataKey1_getset
+    ,0,0,0,0, 0,                         /* tp_dictoffset */
+    (initproc)ProductDataKey1_init,      /* tp_init */
+    0,                         /* tp_alloc */
+    ProductDataKey1_new,                 /* tp_new */
+};
+PyTypeObject *getProductDataKey1Type()
+{
+    return &ProductDataKey1Type_;
+}
+
+static void ProductDataKey2_dealloc(PyObject* self)
+{
+    do_free(((ProductDataKey2*)self)->priv);
+    Py_DECREF(((ProductDataKey2*)self)->alias);
+    self->ob_type->tp_free((PyObject*)self);
+    LOG("ProductDataKey2 free\n");
+}
+static PyObject *ProductDataKey2_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    LOG("ProductDataKey2 new\n");
+    ProductDataKey2 *self;
+    self = PyObject_NEW(ProductDataKey2, type);
+    //self = (ProductDataKey2 *)type->tp_alloc(type, 0);
+    if ( self == NULL )
+        return NULL;
+    self->priv = do_malloc0(sizeof(product_data_key2_t));
+    return (PyObject *)self;
+}
+static int ProductDataKey2_init(ProductDataKey2 *self, PyObject *args, PyObject *kwds)
+{
+    //LOG("ProductDataKey2 init\n");
+    static char *kwlist[] = {"alias", NULL};
+    PyObject *alias;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &alias) ) {
+        do_log(LOG_ERR, "no param \"alias\"");
+        return -1;
+    }
+
+    Py_INCREF(alias);
+    self->alias = (Alias*)alias;
+    
+    do_text_set_empty(self->priv->analitics);
+
+    PyDateTime_IMPORT;
+    return 0;
+}
+
+static PyObject *ProductDataKey2_clone(ProductDataKey2 *self)
+{
+    ProductDataKey2 *result;
+    result = (ProductDataKey2*)PyObject_CallFunction((PyObject*)getProductDataKey2Type(),
+                                    "O", self->alias);
+    memcpy(result->priv, self->priv, sizeof(*self->priv));
+    return (PyObject*)result;
+}
+
+static PyObject *ProductDataKey2_record_type(ProductDataKey2* self, void *unused)
+{
+    PyObject *result;
+
+    result = MyLong_FromLong(self->priv->type);
+
+    return result;
+}
+
+static PyObject *ProductDataKey2_set_record_type(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    PyObject *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set type");
+        return NULL;
+    }
+    if ( value ) {
+        if ( MyLong_Check(value) )
+             self->priv->type = MyLong_AsLong(value);
+        else
+        if ( PyFloat_Check(value) )
+             self->priv->type = PyFloat_AsDouble(value);
+        else {
+            do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set type");
+            return NULL;
+        }
+    }
+    //result = MyLong_FromLong(self->priv->type);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *ProductDataKey2_analitics(ProductDataKey2* self, void *unused)
+{
+    PyObject *result;
+
+    char *res=do_text(self->alias->alias, self->priv->analitics);
+    result = MyString_FromString(res);
+    do_free(res);
+
+    return result;
+}
+
+static PyObject *ProductDataKey2_set_analitics(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+//    PyObject *result;
+
+    char *value = NULL;
+    static char *kwlist[] = {"value", NULL};
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "|s", kwlist, &value) ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set analitics");
+        return NULL;
+    }
+    if ( value )
+        do_text_set(self->alias->alias, self->priv->analitics, value);
+        
+    /*char *res=do_text(self->alias->alias, self->priv->analitics);
+    result = MyString_FromString(res);
+    do_free(res);*/
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+//    return result;
+}
+
+static PyObject *ProductDataKey2_equal(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_next(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_prev(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_gt(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_GT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_ge(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_GE);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_lt(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_LT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_le(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_LE);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_first(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_FIRST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_last(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *ProductDataKey2_iter_equal(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey2_iter_gt(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_GT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey2_iter_ge(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_GE);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey2_iter_lt(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_LT);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey2_iter_le(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_LE);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey2_iter_first(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_FIRST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey2_iter_last(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    product_data_key2_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.analitics, 
+                 self->priv->analitics))
+               break;
+       }
+
+ 
+        item = ProductDataKey2_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_product_data_key2(self->alias->alias, self->priv, DO_GET_PREVIOUS);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *ProductDataKey2_cmp(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+    int depth;
+    int res = 0;
+
+    static char *kwlist[] = {"object", "depth", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &obj, &depth) ) {
+        do_log(LOG_ERR, "Invalid params");
+        return NULL;
+    }
+        
+    if ( Py_TYPE(obj) == getProductDataKey2Type() ) {
+    
+
+       if ( !res && depth >= 1 ) {
+           res = self->priv->type - ((ProductDataKey2*)obj)->priv->type;
+       }
+
+       if ( !res && depth >= 2 ) {
+           res = do_cmp(self->priv->analitics, ((ProductDataKey2*)obj)->priv->analitics);
+       }
+
+       return MyLong_FromLong(res);
+    }
+
+    do_log(LOG_ERR, "Invalid argument \"object\": wrong type");
+    return NULL;
+}
+
+static PyObject *ProductDataKey2_set_alias(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+
+    static char *kwlist[] = {"object", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &obj) )
+        return NULL;
+    if ( Py_TYPE(obj) != getAliasType() ) {
+        do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set alias");
+        return NULL;
+    }
+    Py_DECREF(((ProductDataKey2*)self)->alias);
+    Py_INCREF(obj);
+    ((ProductDataKey2*)self)->alias = (Alias*)obj;
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *ProductDataKey2_set(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *obj;
+
+    static char *kwlist[] = {"object", NULL};
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &obj) )
+        return NULL;
+    if ( Py_TYPE(obj) == getProductDataKey2Type() ) {
+        memcpy(self->priv, ((ProductDataKey2*)obj)->priv, sizeof(*self->priv));
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductDataType() ) {
+
+        do_cpy(self->priv->type, ((ProductData*)obj)->priv->data.type);
+
+        do_cpy(self->priv->analitics, ((ProductData*)obj)->priv->data.analitics);
+
+    }
+
+    else 
+    if ( PyList_Check(obj) ||  PyTuple_Check(obj) ) {
+        int i;
+        int size;
+        size = PyList_Check(obj) ? PyList_Size(obj) : PyTuple_Size(obj);
+        for ( i = 0; i < size; i++ ) {
+            PyObject *value;
+            value =  PyList_Check(obj) ? PyList_GetItem(obj, i) : PyTuple_GetItem(obj, i);
+            switch (i) {
+
+                case 0:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_record_type", "O", value) )
+                        return NULL;
+                    break;
+
+                case 1:
+                    if ( !PyObject_CallMethod((PyObject*)self, "set_analitics", "O", value) )
+                        return NULL;
+                    break;
+
+                default:
+                    do_log(LOG_ERR, "%s size larger than the number of fields", PyList_Check(obj) ? "List":"Tuple");
+                    return NULL;
+            }
+        }
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductType() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey0Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey1Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey2Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey3Type() ) {
+
+    }
+
+    else 
+    if ( Py_TYPE(obj) == getProductKey4Type() ) {
+
+    }
+
+    else 
+    if ( PyDict_Check(obj) ) {
+        PyObject *fields;
+        int i;
+        
+        fields = PyDict_Keys(obj);
+        for ( i = 0; i < PyList_Size(fields); i++ ) {
+            PyObject *name;
+            PyObject *value;
+            char *field_name;
+            
+            name = PyList_GetItem(fields, i);
+            value = PyDict_GetItem(obj, name); 
+            field_name = MyString_AsString(name);
+            if ( field_name[0] == '\0' ) {
+                do_log(LOG_ERR, "Dictionary key is not a string");
+                return NULL;
+            } 
+
+
+            else
+            if ( !strcmp("record_type", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_record_type", "O", value) )
+                    return NULL;
+            }
+
+            else
+            if ( !strcmp("analitics", field_name) ) {
+                if ( !PyObject_CallMethod((PyObject*)self, "set_analitics", "O", value) )
+                    return NULL;
+            }
+
+            else {
+                do_log(LOG_ERR, "Class \"ProductDataKey2\"does not contain \"%s\"", field_name);
+                return NULL;
+            }
+            do_free(field_name);
+        }
+    }
+    
+    else
+    {
+        do_log(LOG_ERR, "Invalid argument \"object\": wrong type");
+        return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *ProductDataKey2_fields(ProductDataKey2* self, PyObject *args, PyObject *kwds)
+{
+    char *str=do_strdup("Class ProductDataKey2");
+    char *buf;
+    char *buf1;
+    PyObject *value = NULL;
+    PyObject *retval;
+
+
+    value =  ProductDataKey2_record_type(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("record_type", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+
+    value =  ProductDataKey2_analitics(self,NULL);
+    if ( !value ) {
+       retval = MyString_FromString(str);
+       do_free(str);
+       return retval;
+    }
+    buf = get_desc("analitics", value);
+    buf1 = do_strdup_printf("%s\n%s",str,buf);
+    do_free(buf);
+    do_free(str);
+    str = buf1;
+    
+    buf = do_strdup_printf("%s\n",str);
+    retval = MyString_FromString(buf);
+    do_free(str);
+    do_free(buf);
+    return retval;
+}
+
+static PyGetSetDef ProductDataKey2_getset[] = {
+
+    {"record_type",(getter)ProductDataKey2_record_type},
+
+    {"analitics",(getter)ProductDataKey2_analitics},
+
+    {NULL}
+};
+
+static PyMethodDef ProductDataKey2_methods[] = {
+    {"set", (PyCFunction)ProductDataKey2_set, METH_VARARGS|METH_KEYWORDS, "set"},
+    {"set_alias", (PyCFunction)ProductDataKey2_set_alias, METH_VARARGS|METH_KEYWORDS, "set_alias"},
+    {"clone", (PyCFunction)ProductDataKey2_clone, METH_NOARGS, "clone"},
+
+    {"cmp", (PyCFunction)ProductDataKey2_cmp, METH_VARARGS|METH_KEYWORDS, "cmp"},
+
+    {"set_record_type", (PyCFunction)ProductDataKey2_set_record_type, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_set_record_type"},
+
+    {"set_analitics", (PyCFunction)ProductDataKey2_set_analitics, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_set_analitics"},
+
+    {"get_equal", (PyCFunction)ProductDataKey2_equal, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_equal"},
+
+    {"get_next", (PyCFunction)ProductDataKey2_next, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_next"},
+
+    {"get_prev", (PyCFunction)ProductDataKey2_prev, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_prev"},
+
+    {"get_gt", (PyCFunction)ProductDataKey2_gt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_gt"},
+
+    {"get_ge", (PyCFunction)ProductDataKey2_ge, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_ge"},
+
+    {"get_lt", (PyCFunction)ProductDataKey2_lt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_lt"},
+
+    {"get_le", (PyCFunction)ProductDataKey2_le, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_le"},
+
+    {"get_first", (PyCFunction)ProductDataKey2_first, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_first"},
+
+    {"get_last", (PyCFunction)ProductDataKey2_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_last"},
+
+    {"gets_equal", (PyCFunction)ProductDataKey2_iter_equal, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_iter_equal"},
+
+    {"gets_gt", (PyCFunction)ProductDataKey2_iter_gt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_iter_gt"},
+
+    {"gets_ge", (PyCFunction)ProductDataKey2_iter_ge, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_iter_ge"},
+
+    {"gets_lt", (PyCFunction)ProductDataKey2_iter_lt, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_iter_lt"},
+
+    {"gets_le", (PyCFunction)ProductDataKey2_iter_le, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_iter_le"},
+
+    {"gets_first", (PyCFunction)ProductDataKey2_iter_first, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_iter_first"},
+
+    {"gets_last", (PyCFunction)ProductDataKey2_iter_last, METH_VARARGS|METH_KEYWORDS, "ProductDataKey2_iter_last"},
+
+    {NULL}
+};
+
+static PyTypeObject ProductDataKey2Type_ = {
+    PyVarObject_HEAD_INIT(NULL,0)
+    //0,                         /*ob_size*/
+    "pydomino.ProductDataKey2",             /*tp_name*/
+    sizeof(ProductDataKey2),             /*tp_basicsize*/
+    0,                         /*tp_itemsize*/
+    (destructor)ProductDataKey2_dealloc, /*tp_dealloc*/
+    0,0,0,0,0,0,0,0,0,0,(reprfunc)ProductDataKey2_fields,0,0,0,
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
+    "ProductDataKey2 objects",           /* tp_doc */
+    0,0,0,0,0,0,               /* tp_iternext */
+    ProductDataKey2_methods,             /* tp_methods */
+    0,
+    ProductDataKey2_getset
+    ,0,0,0,0, 0,                         /* tp_dictoffset */
+    (initproc)ProductDataKey2_init,      /* tp_init */
+    0,                         /* tp_alloc */
+    ProductDataKey2_new,                 /* tp_new */
+};
+PyTypeObject *getProductDataKey2Type()
+{
+    return &ProductDataKey2Type_;
 }

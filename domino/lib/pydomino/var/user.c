@@ -396,6 +396,54 @@ static PyObject *User_get_params(User* self, void *unused)
     return res;
 }
 
+static PyObject *User_equal(User* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getUserKey0Type() )
+        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *User_next(User* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getUserKey0Type() )
+        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *User_prev(User* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -444,30 +492,6 @@ static PyObject *User_gt(User* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *User_next(User* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getUserKey0Type() )
-        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *User_ge(User* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -480,54 +504,6 @@ static PyObject *User_ge(User* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getUserKey0Type() )
         status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *User_equal(User* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getUserKey0Type() )
-        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *User_last(User* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getUserKey0Type() )
-        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -610,6 +586,108 @@ static PyObject *User_first(User* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *User_last(User* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getUserKey0Type() )
+        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *User_iter_equal(User* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getUserKey0Type() ) {
+        key_cmp = (user_key0_t*)do_malloc(sizeof(user_key0_t));
+        memcpy(key_cmp, ((UserKey0*)key)->priv, sizeof(user_key0_t));
+        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getUserKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((user_key0_t*)key_cmp)->type, 
+                    ((UserKey0*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((user_key0_t*)key_cmp)->name, 
+                    ((UserKey0*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = User_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getUserKey0Type() ) {
+            status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *User_iter_gt(User* self, PyObject *args, PyObject *kwds)
@@ -749,162 +827,6 @@ static PyObject *User_iter_ge(User* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getUserKey0Type() ) {
             status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *User_iter_equal(User* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getUserKey0Type() ) {
-        key_cmp = (user_key0_t*)do_malloc(sizeof(user_key0_t));
-        memcpy(key_cmp, ((UserKey0*)key)->priv, sizeof(user_key0_t));
-        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getUserKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((user_key0_t*)key_cmp)->type, 
-                    ((UserKey0*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((user_key0_t*)key_cmp)->name, 
-                    ((UserKey0*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = User_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getUserKey0Type() ) {
-            status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *User_iter_last(User* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getUserKey0Type() ) {
-        key_cmp = (user_key0_t*)do_malloc(sizeof(user_key0_t));
-        memcpy(key_cmp, ((UserKey0*)key)->priv, sizeof(user_key0_t));
-        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getUserKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((user_key0_t*)key_cmp)->type, 
-                    ((UserKey0*)key)->priv->type))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((user_key0_t*)key_cmp)->name, 
-                    ((UserKey0*)key)->priv->name))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = User_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getUserKey0Type() ) {
-            status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1158,19 +1080,97 @@ static PyObject *User_iter_first(User* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *User_update(User* self)
+static PyObject *User_iter_last(User* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_user_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getUserKey0Type() ) {
+        key_cmp = (user_key0_t*)do_malloc(sizeof(user_key0_t));
+        memcpy(key_cmp, ((UserKey0*)key)->priv, sizeof(user_key0_t));
+        status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getUserKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((user_key0_t*)key_cmp)->type, 
+                    ((UserKey0*)key)->priv->type))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((user_key0_t*)key_cmp)->name, 
+                    ((UserKey0*)key)->priv->name))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = User_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getUserKey0Type() ) {
+            status = do_user_get0(self->alias->alias, self->priv, ((UserKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *User_insert(User* self)
 {
     int status;
     status = do_user_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *User_update(User* self)
+{
+    int status;
+    status = do_user_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -1446,17 +1446,15 @@ static PyMethodDef User_methods[] = {
     {"clear_params", (PyCFunction)User_params_clear, METH_NOARGS, "do_User_param_clear"},
     {"set_params", (PyCFunction)User_set_params, METH_VARARGS|METH_KEYWORDS, "do_User_set_params"},
 
+    {"get_equal", (PyCFunction)User_equal, METH_VARARGS|METH_KEYWORDS, "User_equal"},
+
+    {"get_next", (PyCFunction)User_next, METH_VARARGS|METH_KEYWORDS, "User_next"},
+
     {"get_prev", (PyCFunction)User_prev, METH_VARARGS|METH_KEYWORDS, "User_prev"},
 
     {"get_gt", (PyCFunction)User_gt, METH_VARARGS|METH_KEYWORDS, "User_gt"},
 
-    {"get_next", (PyCFunction)User_next, METH_VARARGS|METH_KEYWORDS, "User_next"},
-
     {"get_ge", (PyCFunction)User_ge, METH_VARARGS|METH_KEYWORDS, "User_ge"},
-
-    {"get_equal", (PyCFunction)User_equal, METH_VARARGS|METH_KEYWORDS, "User_equal"},
-
-    {"get_last", (PyCFunction)User_last, METH_VARARGS|METH_KEYWORDS, "User_last"},
 
     {"get_lt", (PyCFunction)User_lt, METH_VARARGS|METH_KEYWORDS, "User_lt"},
 
@@ -1464,13 +1462,13 @@ static PyMethodDef User_methods[] = {
 
     {"get_first", (PyCFunction)User_first, METH_VARARGS|METH_KEYWORDS, "User_first"},
 
-    {"gets_gt", (PyCFunction)User_iter_gt, METH_VARARGS|METH_KEYWORDS, "User_iter_gt"},
-
-    {"gets_ge", (PyCFunction)User_iter_ge, METH_VARARGS|METH_KEYWORDS, "User_iter_ge"},
+    {"get_last", (PyCFunction)User_last, METH_VARARGS|METH_KEYWORDS, "User_last"},
 
     {"gets_equal", (PyCFunction)User_iter_equal, METH_VARARGS|METH_KEYWORDS, "User_iter_equal"},
 
-    {"gets_last", (PyCFunction)User_iter_last, METH_VARARGS|METH_KEYWORDS, "User_iter_last"},
+    {"gets_gt", (PyCFunction)User_iter_gt, METH_VARARGS|METH_KEYWORDS, "User_iter_gt"},
+
+    {"gets_ge", (PyCFunction)User_iter_ge, METH_VARARGS|METH_KEYWORDS, "User_iter_ge"},
 
     {"gets_lt", (PyCFunction)User_iter_lt, METH_VARARGS|METH_KEYWORDS, "User_iter_lt"},
 
@@ -1478,9 +1476,11 @@ static PyMethodDef User_methods[] = {
 
     {"gets_first", (PyCFunction)User_iter_first, METH_VARARGS|METH_KEYWORDS, "User_iter_first"},
 
-    {"update", (PyCFunction)User_update, METH_VARARGS|METH_KEYWORDS, "User_update"},
+    {"gets_last", (PyCFunction)User_iter_last, METH_VARARGS|METH_KEYWORDS, "User_iter_last"},
 
     {"insert", (PyCFunction)User_insert, METH_VARARGS|METH_KEYWORDS, "User_insert"},
+
+    {"update", (PyCFunction)User_update, METH_VARARGS|METH_KEYWORDS, "User_update"},
 
     {"delete", (PyCFunction)User_delete, METH_VARARGS|METH_KEYWORDS, "User_delete"},
 
@@ -1636,6 +1636,30 @@ static PyObject *UserKey0_set_name(UserKey0* self, PyObject *args, PyObject *kwd
 //    return result;
 }
 
+static PyObject *UserKey0_equal(UserKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_user_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *UserKey0_next(UserKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_user_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *UserKey0_prev(UserKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -1660,48 +1684,12 @@ static PyObject *UserKey0_gt(UserKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *UserKey0_next(UserKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_user_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *UserKey0_ge(UserKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_user_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *UserKey0_equal(UserKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_user_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *UserKey0_last(UserKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_user_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -1742,6 +1730,60 @@ static PyObject *UserKey0_first(UserKey0* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *UserKey0_last(UserKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_user_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *UserKey0_iter_equal(UserKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    user_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_user_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = UserKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_user_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *UserKey0_iter_gt(UserKey0* self, PyObject *args, PyObject *kwds)
@@ -1820,90 +1862,6 @@ static PyObject *UserKey0_iter_ge(UserKey0* self, PyObject *args, PyObject *kwds
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_user_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *UserKey0_iter_equal(UserKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    user_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_user_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = UserKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_user_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *UserKey0_iter_last(UserKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    user_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_user_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.type, 
-                 self->priv->type))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.name, 
-                 self->priv->name))
-               break;
-       }
-
- 
-        item = UserKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_user_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2030,6 +1988,48 @@ static PyObject *UserKey0_iter_first(UserKey0* self, PyObject *args, PyObject *k
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_user_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *UserKey0_iter_last(UserKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    user_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_user_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.type, 
+                 self->priv->type))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.name, 
+                 self->priv->name))
+               break;
+       }
+
+ 
+        item = UserKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_user_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -2245,17 +2245,15 @@ static PyMethodDef UserKey0_methods[] = {
 
     {"set_name", (PyCFunction)UserKey0_set_name, METH_VARARGS|METH_KEYWORDS, "UserKey0_set_name"},
 
+    {"get_equal", (PyCFunction)UserKey0_equal, METH_VARARGS|METH_KEYWORDS, "UserKey0_equal"},
+
+    {"get_next", (PyCFunction)UserKey0_next, METH_VARARGS|METH_KEYWORDS, "UserKey0_next"},
+
     {"get_prev", (PyCFunction)UserKey0_prev, METH_VARARGS|METH_KEYWORDS, "UserKey0_prev"},
 
     {"get_gt", (PyCFunction)UserKey0_gt, METH_VARARGS|METH_KEYWORDS, "UserKey0_gt"},
 
-    {"get_next", (PyCFunction)UserKey0_next, METH_VARARGS|METH_KEYWORDS, "UserKey0_next"},
-
     {"get_ge", (PyCFunction)UserKey0_ge, METH_VARARGS|METH_KEYWORDS, "UserKey0_ge"},
-
-    {"get_equal", (PyCFunction)UserKey0_equal, METH_VARARGS|METH_KEYWORDS, "UserKey0_equal"},
-
-    {"get_last", (PyCFunction)UserKey0_last, METH_VARARGS|METH_KEYWORDS, "UserKey0_last"},
 
     {"get_lt", (PyCFunction)UserKey0_lt, METH_VARARGS|METH_KEYWORDS, "UserKey0_lt"},
 
@@ -2263,19 +2261,21 @@ static PyMethodDef UserKey0_methods[] = {
 
     {"get_first", (PyCFunction)UserKey0_first, METH_VARARGS|METH_KEYWORDS, "UserKey0_first"},
 
-    {"gets_gt", (PyCFunction)UserKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)UserKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_ge"},
+    {"get_last", (PyCFunction)UserKey0_last, METH_VARARGS|METH_KEYWORDS, "UserKey0_last"},
 
     {"gets_equal", (PyCFunction)UserKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)UserKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_last"},
+    {"gets_gt", (PyCFunction)UserKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)UserKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)UserKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)UserKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_le"},
 
     {"gets_first", (PyCFunction)UserKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)UserKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "UserKey0_iter_last"},
 
     {NULL}
 };

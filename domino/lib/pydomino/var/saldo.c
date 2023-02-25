@@ -404,6 +404,7 @@ static PyObject *Saldo_set_date_first(Saldo* self, PyObject *args, PyObject *kwd
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set data.date_n");
@@ -413,7 +414,7 @@ static PyObject *Saldo_set_date_first(Saldo* self, PyObject *args, PyObject *kwd
             self->priv->data.date_n = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->data.date_n, tm);
+            self->priv->data.date_n = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->data.date_n, &tm);
@@ -456,6 +457,7 @@ static PyObject *Saldo_set_date(Saldo* self, PyObject *args, PyObject *kwds)
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set data.date");
@@ -465,7 +467,7 @@ static PyObject *Saldo_set_date(Saldo* self, PyObject *args, PyObject *kwds)
             self->priv->data.date = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->data.date, tm);
+            self->priv->data.date = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->data.date, &tm);
@@ -499,6 +501,7 @@ static PyObject *Saldo_set_date_modify(Saldo* self, PyObject *args, PyObject *kw
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set data.date_modify");
@@ -508,7 +511,7 @@ static PyObject *Saldo_set_date_modify(Saldo* self, PyObject *args, PyObject *kw
             self->priv->data.date_modify = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->data.date_modify, tm);
+            self->priv->data.date_modify = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->data.date_modify, &tm);
@@ -542,6 +545,7 @@ static PyObject *Saldo_set_time_modify(Saldo* self, PyObject *args, PyObject *kw
         return NULL;
     }
     struct tm tm;
+    BTI_LONG time_;
     if ( value ) {
         if ( !PyTime_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \"value\": wrong type. set data.time_modify");
@@ -556,7 +560,7 @@ static PyObject *Saldo_set_time_modify(Saldo* self, PyObject *args, PyObject *kw
              else {
                  tm.tm_hour = PyDateTime_DATE_GET_HOUR(value);tm.tm_min=PyDateTime_DATE_GET_MINUTE(value);tm.tm_sec=PyDateTime_DATE_GET_SECOND(value);
              }
-             do_time_set(&self->priv->data.time_modify, tm);
+             self->priv->data.time_modify = do_time_set(&time_, tm);
         }
     }
     /*do_time(self->priv->data.time_modify, &tm);
@@ -695,6 +699,54 @@ static PyObject *Saldo_get_credit_sums(Saldo* self, void *unused)
     return result;
 }
 
+static PyObject *Saldo_equal(Saldo* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getSaldoKey0Type() )
+        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_EQUAL);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Saldo_next(Saldo* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getSaldoKey0Type() )
+        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_NEXT);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *Saldo_prev(Saldo* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -743,30 +795,6 @@ static PyObject *Saldo_gt(Saldo* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *Saldo_next(Saldo* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getSaldoKey0Type() )
-        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_NEXT);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *Saldo_ge(Saldo* self, PyObject *args, PyObject *kwds)
 {
     PyObject *key;
@@ -779,54 +807,6 @@ static PyObject *Saldo_ge(Saldo* self, PyObject *args, PyObject *kwds)
 
     if ( Py_TYPE(key) == getSaldoKey0Type() )
         status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_GE);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Saldo_equal(Saldo* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getSaldoKey0Type() )
-        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_EQUAL);
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *Saldo_last(Saldo* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", NULL};
-    int status;
-
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
-        return NULL;
-
-    if ( Py_TYPE(key) == getSaldoKey0Type() )
-        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_LAST);
     else
     
     {
@@ -909,6 +889,150 @@ static PyObject *Saldo_first(Saldo* self, PyObject *args, PyObject *kwds)
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Saldo_last(Saldo* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", NULL};
+    int status;
+
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "O|", kwlist, &key) )
+        return NULL;
+
+    if ( Py_TYPE(key) == getSaldoKey0Type() )
+        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_LAST);
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Saldo_iter_equal(Saldo* self, PyObject *args, PyObject *kwds)
+{
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
+    int status;
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+
+    if ( Py_TYPE(key) == getSaldoKey0Type() ) {
+        key_cmp = (saldo_key0_t*)do_malloc(sizeof(saldo_key0_t));
+        memcpy(key_cmp, ((SaldoKey0*)key)->priv, sizeof(saldo_key0_t));
+        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_EQUAL);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->division, 
+                    ((SaldoKey0*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->layer, 
+                    ((SaldoKey0*)key)->priv->layer))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->account, 
+                    ((SaldoKey0*)key)->priv->account))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->account_total, 
+                    ((SaldoKey0*)key)->priv->account_total))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount, 
+                    ((SaldoKey0*)key)->priv->subaccount))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount_total, 
+                    ((SaldoKey0*)key)->priv->subaccount_total))
+                   break;
+            }
+       
+            if ( depth >= 7 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_g_code, 
+                    ((SaldoKey0*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 8 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_code, 
+                    ((SaldoKey0*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 9 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->other, 
+                    ((SaldoKey0*)key)->priv->other))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Saldo_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
+            status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_NEXT);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Saldo_iter_gt(Saldo* self, PyObject *args, PyObject *kwds)
@@ -1132,246 +1256,6 @@ static PyObject *Saldo_iter_ge(Saldo* self, PyObject *args, PyObject *kwds)
 
         if ( Py_TYPE(key) == getSaldoKey0Type() ) {
             status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Saldo_iter_equal(Saldo* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getSaldoKey0Type() ) {
-        key_cmp = (saldo_key0_t*)do_malloc(sizeof(saldo_key0_t));
-        memcpy(key_cmp, ((SaldoKey0*)key)->priv, sizeof(saldo_key0_t));
-        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_EQUAL);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->division, 
-                    ((SaldoKey0*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->layer, 
-                    ((SaldoKey0*)key)->priv->layer))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->account, 
-                    ((SaldoKey0*)key)->priv->account))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->account_total, 
-                    ((SaldoKey0*)key)->priv->account_total))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount, 
-                    ((SaldoKey0*)key)->priv->subaccount))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount_total, 
-                    ((SaldoKey0*)key)->priv->subaccount_total))
-                   break;
-            }
-       
-            if ( depth >= 7 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_g_code, 
-                    ((SaldoKey0*)key)->priv->p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 8 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_code, 
-                    ((SaldoKey0*)key)->priv->p_code))
-                   break;
-            }
-       
-            if ( depth >= 9 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->other, 
-                    ((SaldoKey0*)key)->priv->other))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Saldo_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
-            status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_NEXT);
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-    }
-    if ( status == DO_ERROR ) {
-        do_free(key_cmp);
-        Py_DECREF(retval);
-        return NULL;
-    }
-    do_free(key_cmp);
-    //Py_INCREF(retval);
-    return retval;
-}
-
-static PyObject *Saldo_iter_last(Saldo* self, PyObject *args, PyObject *kwds)
-{
-    PyObject *key;
-
-    static char *kwlist[] = {"key", "depth", NULL};
-    int status;
-    int depth;
-    void *key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-
-    if ( Py_TYPE(key) == getSaldoKey0Type() ) {
-        key_cmp = (saldo_key0_t*)do_malloc(sizeof(saldo_key0_t));
-        memcpy(key_cmp, ((SaldoKey0*)key)->priv, sizeof(saldo_key0_t));
-        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_LAST);
-    }
-    else
-    
-    {
-        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-        return NULL;
-    }
-
-    while ( status == DO_OK ) {
-
-        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
-       
-            if ( depth >= 1 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->division, 
-                    ((SaldoKey0*)key)->priv->division))
-                   break;
-            }
-       
-            if ( depth >= 2 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->layer, 
-                    ((SaldoKey0*)key)->priv->layer))
-                   break;
-            }
-       
-            if ( depth >= 3 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->account, 
-                    ((SaldoKey0*)key)->priv->account))
-                   break;
-            }
-       
-            if ( depth >= 4 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->account_total, 
-                    ((SaldoKey0*)key)->priv->account_total))
-                   break;
-            }
-       
-            if ( depth >= 5 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount, 
-                    ((SaldoKey0*)key)->priv->subaccount))
-                   break;
-            }
-       
-            if ( depth >= 6 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount_total, 
-                    ((SaldoKey0*)key)->priv->subaccount_total))
-                   break;
-            }
-       
-            if ( depth >= 7 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_g_code, 
-                    ((SaldoKey0*)key)->priv->p_g_code))
-                   break;
-            }
-       
-            if ( depth >= 8 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_code, 
-                    ((SaldoKey0*)key)->priv->p_code))
-                   break;
-            }
-       
-            if ( depth >= 9 ) {
-                if ( do_cmp(((saldo_key0_t*)key_cmp)->other, 
-                    ((SaldoKey0*)key)->priv->other))
-                   break;
-            }
-
-        }
-        else
-    
-        {
-            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
-            return NULL;
-        }
-
-     item = Saldo_clone(self);
-     PyList_Append(retval, (PyObject*)item);
-     Py_DECREF(item);        
-     
-
-        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
-            status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_PREVIOUS);
         }
         else
     
@@ -1751,19 +1635,139 @@ static PyObject *Saldo_iter_first(Saldo* self, PyObject *args, PyObject *kwds)
     return retval;
 }
 
-static PyObject *Saldo_update(Saldo* self)
+static PyObject *Saldo_iter_last(Saldo* self, PyObject *args, PyObject *kwds)
 {
+    PyObject *key;
+
+    static char *kwlist[] = {"key", "depth", NULL};
     int status;
-    status = do_saldo_update(self->alias->alias, self->priv);
-    if ( status == DO_ERROR )
+    int depth;
+    void *key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "Oi|", kwlist, &key, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
         return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+    }
+
+    if ( Py_TYPE(key) == getSaldoKey0Type() ) {
+        key_cmp = (saldo_key0_t*)do_malloc(sizeof(saldo_key0_t));
+        memcpy(key_cmp, ((SaldoKey0*)key)->priv, sizeof(saldo_key0_t));
+        status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_LAST);
+    }
+    else
+    
+    {
+        do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+        return NULL;
+    }
+
+    while ( status == DO_OK ) {
+
+        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
+       
+            if ( depth >= 1 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->division, 
+                    ((SaldoKey0*)key)->priv->division))
+                   break;
+            }
+       
+            if ( depth >= 2 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->layer, 
+                    ((SaldoKey0*)key)->priv->layer))
+                   break;
+            }
+       
+            if ( depth >= 3 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->account, 
+                    ((SaldoKey0*)key)->priv->account))
+                   break;
+            }
+       
+            if ( depth >= 4 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->account_total, 
+                    ((SaldoKey0*)key)->priv->account_total))
+                   break;
+            }
+       
+            if ( depth >= 5 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount, 
+                    ((SaldoKey0*)key)->priv->subaccount))
+                   break;
+            }
+       
+            if ( depth >= 6 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->subaccount_total, 
+                    ((SaldoKey0*)key)->priv->subaccount_total))
+                   break;
+            }
+       
+            if ( depth >= 7 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_g_code, 
+                    ((SaldoKey0*)key)->priv->p_g_code))
+                   break;
+            }
+       
+            if ( depth >= 8 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->p_code, 
+                    ((SaldoKey0*)key)->priv->p_code))
+                   break;
+            }
+       
+            if ( depth >= 9 ) {
+                if ( do_cmp(((saldo_key0_t*)key_cmp)->other, 
+                    ((SaldoKey0*)key)->priv->other))
+                   break;
+            }
+
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+     item = Saldo_clone(self);
+     PyList_Append(retval, (PyObject*)item);
+     Py_DECREF(item);        
+     
+
+        if ( Py_TYPE(key) == getSaldoKey0Type() ) {
+            status = do_saldo_get0(self->alias->alias, self->priv, ((SaldoKey0*)key)->priv, DO_GET_PREVIOUS);
+        }
+        else
+    
+        {
+            do_log(LOG_ERR, "Invalid argument \"key\": wrong type");
+            return NULL;
+        }
+
+    }
+    if ( status == DO_ERROR ) {
+        do_free(key_cmp);
+        Py_DECREF(retval);
+        return NULL;
+    }
+    do_free(key_cmp);
+    //Py_INCREF(retval);
+    return retval;
 }
 
 static PyObject *Saldo_insert(Saldo* self)
 {
     int status;
     status = do_saldo_insert(self->alias->alias, self->priv);
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *Saldo_update(Saldo* self)
+{
+    int status;
+    status = do_saldo_update(self->alias->alias, self->priv);
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
@@ -2227,17 +2231,15 @@ static PyMethodDef Saldo_methods[] = {
 
     {"debit_sum", (PyCFunction)Saldo_get_debit_sum, METH_VARARGS|METH_KEYWORDS,"Saldo_get_debit_sum"},
 
+    {"get_equal", (PyCFunction)Saldo_equal, METH_VARARGS|METH_KEYWORDS, "Saldo_equal"},
+
+    {"get_next", (PyCFunction)Saldo_next, METH_VARARGS|METH_KEYWORDS, "Saldo_next"},
+
     {"get_prev", (PyCFunction)Saldo_prev, METH_VARARGS|METH_KEYWORDS, "Saldo_prev"},
 
     {"get_gt", (PyCFunction)Saldo_gt, METH_VARARGS|METH_KEYWORDS, "Saldo_gt"},
 
-    {"get_next", (PyCFunction)Saldo_next, METH_VARARGS|METH_KEYWORDS, "Saldo_next"},
-
     {"get_ge", (PyCFunction)Saldo_ge, METH_VARARGS|METH_KEYWORDS, "Saldo_ge"},
-
-    {"get_equal", (PyCFunction)Saldo_equal, METH_VARARGS|METH_KEYWORDS, "Saldo_equal"},
-
-    {"get_last", (PyCFunction)Saldo_last, METH_VARARGS|METH_KEYWORDS, "Saldo_last"},
 
     {"get_lt", (PyCFunction)Saldo_lt, METH_VARARGS|METH_KEYWORDS, "Saldo_lt"},
 
@@ -2245,13 +2247,13 @@ static PyMethodDef Saldo_methods[] = {
 
     {"get_first", (PyCFunction)Saldo_first, METH_VARARGS|METH_KEYWORDS, "Saldo_first"},
 
-    {"gets_gt", (PyCFunction)Saldo_iter_gt, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_gt"},
-
-    {"gets_ge", (PyCFunction)Saldo_iter_ge, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_ge"},
+    {"get_last", (PyCFunction)Saldo_last, METH_VARARGS|METH_KEYWORDS, "Saldo_last"},
 
     {"gets_equal", (PyCFunction)Saldo_iter_equal, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_equal"},
 
-    {"gets_last", (PyCFunction)Saldo_iter_last, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_last"},
+    {"gets_gt", (PyCFunction)Saldo_iter_gt, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_gt"},
+
+    {"gets_ge", (PyCFunction)Saldo_iter_ge, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_ge"},
 
     {"gets_lt", (PyCFunction)Saldo_iter_lt, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_lt"},
 
@@ -2259,9 +2261,11 @@ static PyMethodDef Saldo_methods[] = {
 
     {"gets_first", (PyCFunction)Saldo_iter_first, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_first"},
 
-    {"update", (PyCFunction)Saldo_update, METH_VARARGS|METH_KEYWORDS, "Saldo_update"},
+    {"gets_last", (PyCFunction)Saldo_iter_last, METH_VARARGS|METH_KEYWORDS, "Saldo_iter_last"},
 
     {"insert", (PyCFunction)Saldo_insert, METH_VARARGS|METH_KEYWORDS, "Saldo_insert"},
+
+    {"update", (PyCFunction)Saldo_update, METH_VARARGS|METH_KEYWORDS, "Saldo_update"},
 
     {"delete", (PyCFunction)Saldo_delete, METH_VARARGS|METH_KEYWORDS, "Saldo_delete"},
 
@@ -2667,6 +2671,30 @@ static PyObject *SaldoKey0_set_other(SaldoKey0* self, PyObject *args, PyObject *
 //    return result;
 }
 
+static PyObject *SaldoKey0_equal(SaldoKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *SaldoKey0_next(SaldoKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
 static PyObject *SaldoKey0_prev(SaldoKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
@@ -2691,48 +2719,12 @@ static PyObject *SaldoKey0_gt(SaldoKey0* self, PyObject *args, PyObject *kwds)
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
 }
 
-static PyObject *SaldoKey0_next(SaldoKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
 static PyObject *SaldoKey0_ge(SaldoKey0* self, PyObject *args, PyObject *kwds)
 {
     int status;
 
 
     status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_GE);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *SaldoKey0_equal(SaldoKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-
-    if ( status == DO_ERROR )
-        return NULL;
-    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
-}
-
-static PyObject *SaldoKey0_last(SaldoKey0* self, PyObject *args, PyObject *kwds)
-{
-    int status;
-
-
-    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_LAST);
 
     if ( status == DO_ERROR )
         return NULL;
@@ -2773,6 +2765,102 @@ static PyObject *SaldoKey0_first(SaldoKey0* self, PyObject *args, PyObject *kwds
     if ( status == DO_ERROR )
         return NULL;
     return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *SaldoKey0_last(SaldoKey0* self, PyObject *args, PyObject *kwds)
+{
+    int status;
+
+
+    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_LAST);
+
+    if ( status == DO_ERROR )
+        return NULL;
+    return MyLong_FromLong((status == DO_OK) ? 1 : 0);
+}
+
+static PyObject *SaldoKey0_iter_equal(SaldoKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    saldo_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.layer, 
+                 self->priv->layer))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.account, 
+                 self->priv->account))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.account_total, 
+                 self->priv->account_total))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.subaccount, 
+                 self->priv->subaccount))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.subaccount_total, 
+                 self->priv->subaccount_total))
+               break;
+       }
+
+       if ( depth >= 7 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 8 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 9 ) {
+           if ( do_cmp(key_cmp.other, 
+                 self->priv->other))
+               break;
+       }
+
+ 
+        item = SaldoKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
 }
 
 static PyObject *SaldoKey0_iter_gt(SaldoKey0* self, PyObject *args, PyObject *kwds)
@@ -2935,174 +3023,6 @@ static PyObject *SaldoKey0_iter_ge(SaldoKey0* self, PyObject *args, PyObject *kw
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *SaldoKey0_iter_equal(SaldoKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    saldo_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_EQUAL);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.layer, 
-                 self->priv->layer))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.account, 
-                 self->priv->account))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.account_total, 
-                 self->priv->account_total))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.subaccount, 
-                 self->priv->subaccount))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.subaccount_total, 
-                 self->priv->subaccount_total))
-               break;
-       }
-
-       if ( depth >= 7 ) {
-           if ( do_cmp(key_cmp.p_g_code, 
-                 self->priv->p_g_code))
-               break;
-       }
-
-       if ( depth >= 8 ) {
-           if ( do_cmp(key_cmp.p_code, 
-                 self->priv->p_code))
-               break;
-       }
-
-       if ( depth >= 9 ) {
-           if ( do_cmp(key_cmp.other, 
-                 self->priv->other))
-               break;
-       }
-
- 
-        item = SaldoKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_NEXT);
-    }
-    if ( status == DO_ERROR ) {
-        Py_DECREF(retval);
-        return NULL;
-    }
-    return retval;
-}
-
-static PyObject *SaldoKey0_iter_last(SaldoKey0* self, PyObject *args, PyObject *kwds)
-{
-    static char *kwlist[] = {"depth", NULL};
-    int status;
-    int depth;
-    saldo_key0_t key_cmp;
-    PyObject *retval = NULL;
-    PyObject *item;
-    retval = PyList_New(0);
-    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
-        do_log(LOG_ERR, "Invalid argument");
-        return NULL;
-    }
-    do_cpy(key_cmp, *self->priv);
-    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_LAST);
-    while ( status == DO_OK ) {
-
-       if ( depth >= 1 ) {
-           if ( do_cmp(key_cmp.division, 
-                 self->priv->division))
-               break;
-       }
-
-       if ( depth >= 2 ) {
-           if ( do_cmp(key_cmp.layer, 
-                 self->priv->layer))
-               break;
-       }
-
-       if ( depth >= 3 ) {
-           if ( do_cmp(key_cmp.account, 
-                 self->priv->account))
-               break;
-       }
-
-       if ( depth >= 4 ) {
-           if ( do_cmp(key_cmp.account_total, 
-                 self->priv->account_total))
-               break;
-       }
-
-       if ( depth >= 5 ) {
-           if ( do_cmp(key_cmp.subaccount, 
-                 self->priv->subaccount))
-               break;
-       }
-
-       if ( depth >= 6 ) {
-           if ( do_cmp(key_cmp.subaccount_total, 
-                 self->priv->subaccount_total))
-               break;
-       }
-
-       if ( depth >= 7 ) {
-           if ( do_cmp(key_cmp.p_g_code, 
-                 self->priv->p_g_code))
-               break;
-       }
-
-       if ( depth >= 8 ) {
-           if ( do_cmp(key_cmp.p_code, 
-                 self->priv->p_code))
-               break;
-       }
-
-       if ( depth >= 9 ) {
-           if ( do_cmp(key_cmp.other, 
-                 self->priv->other))
-               break;
-       }
-
- 
-        item = SaldoKey0_clone(self);
-        PyList_Append(retval, (PyObject*)item);
-        Py_DECREF(item);        
-        status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3355,6 +3275,90 @@ static PyObject *SaldoKey0_iter_first(SaldoKey0* self, PyObject *args, PyObject 
         PyList_Append(retval, (PyObject*)item);
         Py_DECREF(item);        
         status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_NEXT);
+    }
+    if ( status == DO_ERROR ) {
+        Py_DECREF(retval);
+        return NULL;
+    }
+    return retval;
+}
+
+static PyObject *SaldoKey0_iter_last(SaldoKey0* self, PyObject *args, PyObject *kwds)
+{
+    static char *kwlist[] = {"depth", NULL};
+    int status;
+    int depth;
+    saldo_key0_t key_cmp;
+    PyObject *retval = NULL;
+    PyObject *item;
+    retval = PyList_New(0);
+    if ( !PyArg_ParseTupleAndKeywords(args, kwds, "i|", kwlist, &depth) ) {
+        do_log(LOG_ERR, "Invalid argument");
+        return NULL;
+    }
+    do_cpy(key_cmp, *self->priv);
+    status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_LAST);
+    while ( status == DO_OK ) {
+
+       if ( depth >= 1 ) {
+           if ( do_cmp(key_cmp.division, 
+                 self->priv->division))
+               break;
+       }
+
+       if ( depth >= 2 ) {
+           if ( do_cmp(key_cmp.layer, 
+                 self->priv->layer))
+               break;
+       }
+
+       if ( depth >= 3 ) {
+           if ( do_cmp(key_cmp.account, 
+                 self->priv->account))
+               break;
+       }
+
+       if ( depth >= 4 ) {
+           if ( do_cmp(key_cmp.account_total, 
+                 self->priv->account_total))
+               break;
+       }
+
+       if ( depth >= 5 ) {
+           if ( do_cmp(key_cmp.subaccount, 
+                 self->priv->subaccount))
+               break;
+       }
+
+       if ( depth >= 6 ) {
+           if ( do_cmp(key_cmp.subaccount_total, 
+                 self->priv->subaccount_total))
+               break;
+       }
+
+       if ( depth >= 7 ) {
+           if ( do_cmp(key_cmp.p_g_code, 
+                 self->priv->p_g_code))
+               break;
+       }
+
+       if ( depth >= 8 ) {
+           if ( do_cmp(key_cmp.p_code, 
+                 self->priv->p_code))
+               break;
+       }
+
+       if ( depth >= 9 ) {
+           if ( do_cmp(key_cmp.other, 
+                 self->priv->other))
+               break;
+       }
+
+ 
+        item = SaldoKey0_clone(self);
+        PyList_Append(retval, (PyObject*)item);
+        Py_DECREF(item);        
+        status = do_saldo_key0(self->alias->alias, self->priv, DO_GET_PREVIOUS);
     }
     if ( status == DO_ERROR ) {
         Py_DECREF(retval);
@@ -3805,17 +3809,15 @@ static PyMethodDef SaldoKey0_methods[] = {
 
     {"debit_sum", (PyCFunction)Saldo_get_debit_sum, METH_VARARGS|METH_KEYWORDS,"Saldo_get_debit_sum"},
 
+    {"get_equal", (PyCFunction)SaldoKey0_equal, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_equal"},
+
+    {"get_next", (PyCFunction)SaldoKey0_next, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_next"},
+
     {"get_prev", (PyCFunction)SaldoKey0_prev, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_prev"},
 
     {"get_gt", (PyCFunction)SaldoKey0_gt, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_gt"},
 
-    {"get_next", (PyCFunction)SaldoKey0_next, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_next"},
-
     {"get_ge", (PyCFunction)SaldoKey0_ge, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_ge"},
-
-    {"get_equal", (PyCFunction)SaldoKey0_equal, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_equal"},
-
-    {"get_last", (PyCFunction)SaldoKey0_last, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_last"},
 
     {"get_lt", (PyCFunction)SaldoKey0_lt, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_lt"},
 
@@ -3823,19 +3825,21 @@ static PyMethodDef SaldoKey0_methods[] = {
 
     {"get_first", (PyCFunction)SaldoKey0_first, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_first"},
 
-    {"gets_gt", (PyCFunction)SaldoKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_gt"},
-
-    {"gets_ge", (PyCFunction)SaldoKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_ge"},
+    {"get_last", (PyCFunction)SaldoKey0_last, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_last"},
 
     {"gets_equal", (PyCFunction)SaldoKey0_iter_equal, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_equal"},
 
-    {"gets_last", (PyCFunction)SaldoKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_last"},
+    {"gets_gt", (PyCFunction)SaldoKey0_iter_gt, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_gt"},
+
+    {"gets_ge", (PyCFunction)SaldoKey0_iter_ge, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_ge"},
 
     {"gets_lt", (PyCFunction)SaldoKey0_iter_lt, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_lt"},
 
     {"gets_le", (PyCFunction)SaldoKey0_iter_le, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_le"},
 
     {"gets_first", (PyCFunction)SaldoKey0_iter_first, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_first"},
+
+    {"gets_last", (PyCFunction)SaldoKey0_iter_last, METH_VARARGS|METH_KEYWORDS, "SaldoKey0_iter_last"},
 
     {NULL}
 };

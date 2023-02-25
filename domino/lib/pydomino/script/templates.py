@@ -520,6 +520,7 @@ set_date = Template(
         return NULL;
     }
     struct tm tm;
+    BTI_LONG date;
     if ( value ) {
         if ( !PyDate_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \\"value\\": wrong type. set $fieldname");
@@ -529,7 +530,7 @@ set_date = Template(
             self->priv->$fieldname = MyLong_AsLong(value);
         } else {
             do_date_set_ymd(&tm, PyDateTime_GET_YEAR(value), PyDateTime_GET_MONTH(value), PyDateTime_GET_DAY(value));
-            do_date_set(&self->priv->$fieldname, tm);
+            self->priv->$fieldname = do_date_set(&date, tm);
         }
     }
     /*do_date(self->priv->$fieldname, &tm);
@@ -552,6 +553,7 @@ set_time = Template(
         return NULL;
     }
     struct tm tm;
+    BTI_LONG time_;
     if ( value ) {
         if ( !PyTime_Check(value) && !PyDateTime_Check(value) && !MyLong_Check(value) ) {
             do_log(LOG_ERR, "Invalid argument \\"value\\": wrong type. set $fieldname");
@@ -566,7 +568,7 @@ set_time = Template(
              else {
                  tm.tm_hour = PyDateTime_DATE_GET_HOUR(value);tm.tm_min=PyDateTime_DATE_GET_MINUTE(value);tm.tm_sec=PyDateTime_DATE_GET_SECOND(value);
              }
-             do_time_set(&self->priv->$fieldname, tm);
+             self->priv->$fieldname = do_time_set(&time_, tm);
         }
     }
     /*do_time(self->priv->$fieldname, &tm);
