@@ -7547,6 +7547,12 @@ DO_EXPORT const char *do_alias_get_host(do_alias_t *alias)
     else
         return empty_str;
 }
+DO_EXPORT const char *do_alias_get_filename(do_alias_t *alias, file_db_t id)
+{
+    return alias->dbfilename[id];
+}
+
+
 void do_alias_set_host(do_alias_t *alias, const char *host)
 {
     if ( alias->host )

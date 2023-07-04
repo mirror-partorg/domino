@@ -1,7 +1,395 @@
-['var/account.c', 'var/alias.c', 'var/barcode.c', 'var/check.c', 'var/checksum.c', 'var/class.c', 'var/document.c', 'var/document_data.c', 'var/document_link.c', 'var/document_order.c', 'var/document_prow.c', 'var/document_type.c', 'var/document_view.c', 'var/enum.c', 'var/group.c', 'var/otdel.c', 'var/partner.c', 'var/partner_data.c', 'var/product.c', 'var/product_data.c', 'var/product_link.c', 'var/product_view.c', 'var/protocol.c', 'var/prowod.c', 'var/prowod2.c', 'var/pydomino.c', 'var/realization.c', 'var/region.c', 'var/saldo.c', 'var/shift.c', 'var/sklad.c', 'var/stock.c', 'var/subaccount.c', 'var/subgroup.c', 'var/user.c', 'var/util.c', 'src/grls.c', 'src/markup.c', 'src/markup_info.c', 'src/misc.c', 'src/price_limit.c', 'src/traffic.c', 'src/view.c']
-running build
-running build_ext
-building 'pydomino' extension
-C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Tools\MSVC\14.24.28314\bin\HostX86\x64\cl.exe /c /nologo /Ox /W3 /GL /DNDEBUG /MD -DBTI_WIN_64 -DDOMINO78 -I../../include -I../../var/MINGW64_NT-6.3-9600/x86_64 -IC:\Users\rishes\Local\Programs\Python\Python38\include -IC:\Users\rishes\Local\Programs\Python\Python38\include "-IC:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Tools\MSVC\14.24.28314\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt" /Tcvar/account.c /Fobuild\temp.win-amd64-3.8\Release\var/account.obj
-account.c
-../../include\def.h(16): fatal error C1070: ������ #if/#endif � 䠩�� "C:\var\git\domino\domino\include\def.h"
+In file included from ./var/db.h:1,
+                 from ./var/account.c:2:
+./var/document.h:5:20: error: Python.h: Нет такого файла или каталога
+In file included from ./var/document.h:7,
+                 from ./var/db.h:1,
+                 from ./var/account.c:2:
+./var/alias.h:9: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/alias.h:12: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:1,
+                 from ./var/account.c:2:
+./var/document.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document.h:38: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document.h:42: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document.h:45: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document.h:49: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:2,
+                 from ./var/account.c:2:
+./var/document_order.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_order.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_order.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_order.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_order.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_order.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_order.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_order.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_order.h:38: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_order.h:42: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_order.h:45: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_order.h:49: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:3,
+                 from ./var/account.c:2:
+./var/document_link.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_link.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_link.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_link.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_link.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_link.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:4,
+                 from ./var/account.c:2:
+./var/enum.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/enum.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/enum.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/enum.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:5,
+                 from ./var/account.c:2:
+./var/document_view.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_view.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_view.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_view.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_view.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_view.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:6,
+                 from ./var/account.c:2:
+./var/document_data.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_data.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_data.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_data.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_data.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_data.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_data.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_data.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:7,
+                 from ./var/account.c:2:
+./var/product.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product.h:38: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product.h:42: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product.h:45: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product.h:49: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:8,
+                 from ./var/account.c:2:
+./var/product_link.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_link.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product_link.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_link.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product_link.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_link.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:9,
+                 from ./var/account.c:2:
+./var/product_view.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_view.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product_view.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_view.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product_view.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_view.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:10,
+                 from ./var/account.c:2:
+./var/product_data.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_data.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product_data.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_data.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product_data.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_data.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/product_data.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/product_data.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:11,
+                 from ./var/account.c:2:
+./var/barcode.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/barcode.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/barcode.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/barcode.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/barcode.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/barcode.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:12,
+                 from ./var/account.c:2:
+./var/account.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/account.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/account.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:13,
+                 from ./var/account.c:2:
+./var/subaccount.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/subaccount.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/subaccount.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/subaccount.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:14,
+                 from ./var/account.c:2:
+./var/class.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/class.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/class.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/class.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:15,
+                 from ./var/account.c:2:
+./var/group.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/group.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/group.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/group.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/group.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/group.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:16,
+                 from ./var/account.c:2:
+./var/subgroup.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/subgroup.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/subgroup.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/subgroup.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/subgroup.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/subgroup.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:17,
+                 from ./var/account.c:2:
+./var/region.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/region.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/region.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/region.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/region.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/region.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:18,
+                 from ./var/account.c:2:
+./var/otdel.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/otdel.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/otdel.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/otdel.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:19,
+                 from ./var/account.c:2:
+./var/partner.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/partner.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/partner.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/partner.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/partner.h:38: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner.h:42: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:20,
+                 from ./var/account.c:2:
+./var/partner_data.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner_data.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/partner_data.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner_data.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/partner_data.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner_data.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/partner_data.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/partner_data.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:21,
+                 from ./var/account.c:2:
+./var/sklad.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/sklad.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/sklad.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/sklad.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:22,
+                 from ./var/account.c:2:
+./var/document_prow.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_prow.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_prow.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_prow.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:23,
+                 from ./var/account.c:2:
+./var/document_type.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_type.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/document_type.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/document_type.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:24,
+                 from ./var/account.c:2:
+./var/stock.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/stock.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/stock.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/stock.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/stock.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/stock.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/stock.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/stock.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/stock.h:38: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/stock.h:42: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:25,
+                 from ./var/account.c:2:
+./var/prowod.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod.h:38: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod.h:42: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod.h:45: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod.h:49: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:26,
+                 from ./var/account.c:2:
+./var/prowod2.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod2.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod2.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod2.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod2.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod2.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod2.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod2.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/prowod2.h:38: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/prowod2.h:42: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:27,
+                 from ./var/account.c:2:
+./var/saldo.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/saldo.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/saldo.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/saldo.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:28,
+                 from ./var/account.c:2:
+./var/protocol.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/protocol.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/protocol.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/protocol.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/protocol.h:24: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/protocol.h:28: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/protocol.h:31: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/protocol.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/db.h:29,
+                 from ./var/account.c:2:
+./var/user.h:10: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/user.h:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/user.h:17: ошибка: expected specifier-qualifier-list before ‘PyObject_HEAD’
+./var/user.h:21: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+In file included from ./var/account.c:3:
+./var/util.h:29: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/util.h:30: ошибка: expected declaration specifiers or ‘...’ before ‘PyObject’
+./var/util.h:31: ошибка: expected ‘)’ before ‘*’ token
+./var/util.h:32: ошибка: expected ‘)’ before ‘*’ token
+./var/util.h:33: ошибка: expected ‘)’ before ‘*’ token
+./var/util.h:34: ошибка: expected ‘)’ before ‘*’ token
+./var/util.h:35: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/util.h:37: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:4:22: error: datetime.h: Нет такого файла или каталога
+./var/account.c:7: ошибка: expected ‘)’ before ‘*’ token
+./var/account.c:14: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:25: ошибка: expected declaration specifiers or ‘...’ before ‘PyObject’
+./var/account.c:25: ошибка: expected declaration specifiers or ‘...’ before ‘PyObject’
+./var/account.c: In function ‘Account_init’:
+./var/account.c:29: ошибка: ‘PyObject’ undeclared (first use in this function)
+./var/account.c:29: ошибка: (Each undeclared identifier is reported only once
+./var/account.c:29: ошибка: for each function it appears in.)
+./var/account.c:29: ошибка: ‘alias’ undeclared (first use in this function)
+./var/account.c:31: предупреждение: implicit declaration of function ‘PyArg_ParseTupleAndKeywords’
+./var/account.c:31: ошибка: ‘args’ undeclared (first use in this function)
+./var/account.c:31: ошибка: ‘kwds’ undeclared (first use in this function)
+./var/account.c:36: предупреждение: implicit declaration of function ‘Py_INCREF’
+./var/account.c:37: ошибка: ‘Account’ has no member named ‘alias’
+./var/account.c:39: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:39: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:41: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:41: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:43: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:43: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:45: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:45: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:47: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:47: ошибка: ‘Account’ has no member named ‘priv’
+./var/account.c:49: ошибка: ‘PyDateTime_IMPORT’ undeclared (first use in this function)
+./var/account.c: На верхнем уровне:
+./var/account.c:53: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:63: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:74: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:97: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:108: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:131: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:142: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:165: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:174: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:203: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:212: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:241: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:250: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:279: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:288: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:317: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:326: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:355: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:364: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:393: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:402: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:431: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:442: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:465: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:477: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:507: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:531: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:555: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:579: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:603: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:627: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:651: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:675: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:699: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:723: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:801: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:879: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:957: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1035: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1113: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1191: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1269: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1278: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1287: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1296: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1315: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1445: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1600: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘Account_getset’
+./var/account.c:1629: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘Account_methods’
+./var/account.c:1699: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘AccountType_’
+./var/account.c:1718: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1723: ошибка: expected ‘)’ before ‘*’ token
+./var/account.c:1730: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1741: ошибка: expected declaration specifiers or ‘...’ before ‘PyObject’
+./var/account.c:1741: ошибка: expected declaration specifiers or ‘...’ before ‘PyObject’
+./var/account.c: In function ‘AccountKey0_init’:
+./var/account.c:1745: ошибка: ‘PyObject’ undeclared (first use in this function)
+./var/account.c:1745: ошибка: ‘alias’ undeclared (first use in this function)
+./var/account.c:1747: ошибка: ‘args’ undeclared (first use in this function)
+./var/account.c:1747: ошибка: ‘kwds’ undeclared (first use in this function)
+./var/account.c:1753: ошибка: ‘AccountKey0’ has no member named ‘alias’
+./var/account.c:1755: ошибка: ‘AccountKey0’ has no member named ‘priv’
+./var/account.c:1755: ошибка: ‘AccountKey0’ has no member named ‘priv’
+./var/account.c:1757: ошибка: ‘PyDateTime_IMPORT’ undeclared (first use in this function)
+./var/account.c: На верхнем уровне:
+./var/account.c:1761: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1770: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1781: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1804: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1813: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1842: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1854: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1866: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1878: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1890: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1902: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1914: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1926: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1938: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1950: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:1992: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2034: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2076: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2118: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2160: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2202: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2244: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2275: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2294: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2391: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+./var/account.c:2431: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘AccountKey0_getset’
+./var/account.c:2440: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘AccountKey0_methods’
+./var/account.c:2486: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘AccountKey0Type_’
+./var/account.c:2505: ошибка: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+make: *** [compile] Ошибка 1
