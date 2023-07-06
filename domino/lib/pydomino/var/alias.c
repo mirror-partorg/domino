@@ -112,6 +112,14 @@ static PyObject *Alias_get_host(Alias* self)
 
     return result;
 }
+static PyObject *Alias_get_document_filename(Alias* self)
+{
+    PyObject *result;
+
+    result = MyString_FromString(do_alias_get_filename(self->alias,DO_DB_DOCUMENT));
+
+    return result;
+}
 static PyObject *Alias_utf8(Alias* self)
 {
     PyObject  *result;
@@ -840,6 +848,9 @@ static PyMethodDef Alias_methods[] = {
     {"get_host", (PyCFunction)Alias_get_host, METH_NOARGS,
      "do_alias_get_host"
     },
+    {"get_document_filename", (PyCFunction)Alias_get_document_filename, METH_NOARGS,
+     "do_alias_get_document_filename"
+    },    
     {"utf8", (PyCFunction)Alias_utf8, METH_NOARGS,
      "do_alias_utf8"
     },
