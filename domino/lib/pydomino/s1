@@ -1,0 +1,38 @@
+if [[ ! -d doc ]] ; then mkdir doc ; fi
+if [[ ! -d var ]] ; then mkdir var ; fi
+if [[ ! -f var/_info.txt ]] ; then /usr/bin/env python3 script/generate.py ; fi
+mkdir -p ../../../../var/Linux///x86_64/pydomino.so
+if [[ "X2.7" != "X" ]] ; \
+then \
+	ver=2.7 ; \
+	m="0" ; \
+	echo for python-$ver ; \
+	for f in `cat var/files.lst` ; \
+	do \
+		n=../../../../var/Linux///x86_64/pydomino.so/$(basename $f).o.$ver ; \
+		if [[ $f -nt $n ]] ; \
+		then \
+			echo $f ; \
+			m="1" ; \
+			gcc -shared -fPIC -Wall \
+			  \
+                         -L../../../../var/Linux///x86_64/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/psql/lib -L/usr/local/psql/lib64 -DBTI_LINUX_64 -I../../var/Linux///x86_64 -DZLIB -DDOMINO78 -DUSE_NCURSES  -D_DEBUG1 -D_REENTRANT  -ggdb \
+                         -c $f -o $n || exit 1; \
+		fi ; \
+	done ; \
+	if [[ "$m" == "1" || ! -f pydomino.so-$ver ]] ; \
+	then \
+		OBJS="" ; \
+		for f in `cat var/files.lst` ; \
+		do \
+			n=../../../../var/Linux///x86_64/pydomino.so/$(basename $f).o.$ver ; \
+			OBJS="$OBJS $n"; \
+		done ; \
+		echo $OBJS ; \
+		g++ -shared -fPIC -Wall  -L../../../../var/Linux///x86_64/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/psql/lib -L/usr/local/psql/lib64 -DBTI_LINUX_64 -I../../var/Linux///x86_64 -DZLIB -DDOMINO78 -DUSE_NCURSES  -D_DEBUG1 -D_REENTRANT  -ggdb \
+                  $OBJS -o ../../../../var/Linux///x86_64/.libs/pydomino.so-$ver -ldomino -ldolib -lpsqlmif \
+                  -Wl,-soname,../../../../var/Linux///x86_64/.libs/pydomino.so-$ver ; \
+	fi ; \
+fi
+for python-2.7
+./var/account.c
