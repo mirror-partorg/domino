@@ -112,6 +112,14 @@ static PyObject *Alias_get_host(Alias* self)
 
     return result;
 }
+static PyObject *Alias_get_document_filename(Alias* self)
+{
+    PyObject *result;
+
+    result = MyString_FromString(do_alias_get_filename(self->alias,DO_DB_DOCUMENT));
+
+    return result;
+}
 static PyObject *Alias_utf8(Alias* self)
 {
     PyObject  *result;
@@ -676,6 +684,18 @@ static PyObject *Alias_ProductDataKey0(Alias* self)
                                     "O", self);
 }   
 
+static PyObject *Alias_ProductDataKey1(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductDataKey1Type(),
+                                    "O", self);
+}   
+
+static PyObject *Alias_ProductDataKey2(Alias* self)
+{
+    return PyObject_CallFunction((PyObject*)getProductDataKey2Type(),
+                                    "O", self);
+}   
+
 static PyObject *Alias_Account(Alias* self)
 {
     return PyObject_CallFunction((PyObject*)getAccountType(),
@@ -828,6 +848,9 @@ static PyMethodDef Alias_methods[] = {
     {"get_host", (PyCFunction)Alias_get_host, METH_NOARGS,
      "do_alias_get_host"
     },
+    {"get_document_filename", (PyCFunction)Alias_get_document_filename, METH_NOARGS,
+     "do_alias_get_document_filename"
+    },    
     {"utf8", (PyCFunction)Alias_utf8, METH_NOARGS,
      "do_alias_utf8"
     },
@@ -1034,6 +1057,10 @@ static PyMethodDef Alias_methods[] = {
     {"ProductData", (PyCFunction)Alias_ProductData,  METH_NOARGS, "Alias_ProductData"},
 
     {"ProductDataKey0", (PyCFunction)Alias_ProductDataKey0,  METH_NOARGS, "Alias_ProductDataKey0"},
+
+    {"ProductDataKey1", (PyCFunction)Alias_ProductDataKey1,  METH_NOARGS, "Alias_ProductDataKey1"},
+    
+    {"ProductDataKey2", (PyCFunction)Alias_ProductDataKey2,  METH_NOARGS, "Alias_ProductDataKey2"},
 
     {"Account", (PyCFunction)Alias_Account,  METH_NOARGS, "Alias_Account"},
 

@@ -44,8 +44,16 @@ PYTHON_CFLAGS_2=
 PYTHON_LIBS_2=
 PYTHON_VERSION_2=
 PYTHON_DIR_2=
+<<<<<<< HEAD
 PYTHON_VERSION_3=3.3
 PYTHON_CFLAGS_3=-I/usr/local/include/python3.3m
 PYTHON_LIBS_3=
 PYTHON_VERSION_3=3.3
 PYTHON_DIR_3=/usr/local/lib/python3.3/site-packages
+=======
+PYTHON_VERSION_3=3.1
+PYTHON_CFLAGS_3=-I/usr/include/python3.1
+PYTHON_LIBS_3=
+PYTHON_VERSION_3=3.1
+PYTHON_DIR_3=/usr/lib/python3.1/site-packages
+>>>>>>> 00cfd472edcba5e6a4170b5a7d2e8898fe391694

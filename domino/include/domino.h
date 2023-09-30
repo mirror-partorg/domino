@@ -633,6 +633,7 @@ int        do_alias_utf8(do_alias_t *alias);
 void       do_alias_set_wait_flag(do_alias_t *alias, int wait);
 const char *do_alias_get_name(do_alias_t *alias);
 const char *do_alias_get_host(do_alias_t *alias);
+const char *do_alias_get_filename(do_alias_t *alias, file_db_t id);
 void       do_alias_free(do_alias_t *alias);
 void       do_alias_set_struct_location(do_alias_t *alias, const char *path);
 int        do_alias_open(do_alias_t *alias, int openAll, ...);
@@ -1191,6 +1192,7 @@ int   do_unit_measure_code(const char* name);
 char* do_unit_measure_name(int code);
 int   do_stock_cmp(double f1, double f2);
 
+#ifdef EXPAT
 do_config_t *do_config_new(const char *encoding, const char *name);
 void do_config_free(do_config_t *config);
 int   do_config_read(do_config_t *config, const char *filename, int empty);
@@ -1217,6 +1219,7 @@ void   do_config_set_property_int(do_config_t *config, const char *path, const c
 void   do_config_set_property_double(do_config_t *config, const char *path, const char *property, double value);
 void   do_config_set_property_bool(do_config_t *config, const char *path, const char *property, int value);
 void   do_config_clear_property(do_config_t *config, const char *path, const char *property);
+#endif
 
 do_doctype_t *do_doctype_new(do_alias_t *alias, const char* dtype, const char* dtype1);
 do_doctype_t *do_doctype_new_from_dtype(do_alias_t *alias, document_type_rec_t *dtype);

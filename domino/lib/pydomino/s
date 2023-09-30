@@ -1,7 +1,10 @@
-['var/account.c', 'var/alias.c', 'var/barcode.c', 'var/check.c', 'var/checksum.c', 'var/class.c', 'var/document.c', 'var/document_data.c', 'var/document_link.c', 'var/document_order.c', 'var/document_prow.c', 'var/document_type.c', 'var/document_view.c', 'var/enum.c', 'var/group.c', 'var/otdel.c', 'var/partner.c', 'var/partner_data.c', 'var/product.c', 'var/product_data.c', 'var/product_link.c', 'var/product_view.c', 'var/protocol.c', 'var/prowod.c', 'var/prowod2.c', 'var/pydomino.c', 'var/realization.c', 'var/region.c', 'var/saldo.c', 'var/shift.c', 'var/sklad.c', 'var/stock.c', 'var/subaccount.c', 'var/subgroup.c', 'var/user.c', 'var/util.c', 'src/grls.c', 'src/markup.c', 'src/markup_info.c', 'src/misc.c', 'src/price_limit.c', 'src/traffic.c', 'src/view.c']
-running build
-running build_ext
-building 'pydomino' extension
-C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Tools\MSVC\14.24.28314\bin\HostX86\x64\cl.exe /c /nologo /Ox /W3 /GL /DNDEBUG /MD -DBTI_WIN_64 -DDOMINO78 -I../../include -I../../var/MINGW64_NT-6.3-9600/x86_64 -IC:\Users\rishes\Local\Programs\Python\Python38\include -IC:\Users\rishes\Local\Programs\Python\Python38\include "-IC:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Tools\MSVC\14.24.28314\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt" /Tcvar/account.c /Fobuild\temp.win-amd64-3.8\Release\var/account.obj
-account.c
-../../include\def.h(16): fatal error C1070: ������ #if/#endif � 䠩�� "C:\var\git\domino\domino\include\def.h"
+/bin/sh: lsb_release: команда не найдена
+/bin/sh: lsb_release: команда не найдена
+/bin/sh: lsb_release: команда не найдена
+In file included from ./var/db.h:1:0,
+                 from ./var/account.c:2:
+./var/document.h:5:20: фатальная ошибка: Python.h: Нет такого файла или каталога
+ #include <Python.h>
+                    ^
+компиляция прервана.
+make: *** [compile] Ошибка 1

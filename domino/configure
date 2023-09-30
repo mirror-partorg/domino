@@ -15,18 +15,19 @@ USE_LOUDMOUTH=0
 USE_LOUDMOUTH_LOCAL=0
 USE_LIBAV=0
 USE_LIBAV_LOCAL=1
-USE_GTK=1
-USE_GTK3=1
-USE_GLIB=1
+USE_GTK=0
+USE_GTK3=0
+USE_GLIB=0
 USE_PYTHON=0
 USE_OLD_ARTIX_INFO=0
 USE_NCURSES=1
 USE_ARTIX=0
 USE_LIBXML2=1
 USE_LIBVLC=0
-USE_POPPLER=1
+USE_POPPLER=0
 USE_EV=0
-USE_EXPAT=1
+USE_DOMINO78=1
+USE_EXPAT=0
 USE_JSON=1
 USE_SQLITE3=1
 USE_SOUP=1
@@ -343,6 +344,7 @@ if [ $LOCAL_CASH -eq  1 ] ; then echo -DLOCAL_CASH \\>>common.mak ; fi
 if [ $USE_EXPAT -eq  1 ] ; then echo -DEXPAT \\>>common.mak ; fi
 if [ $USE_ARTIX -eq  1 ] ; then echo -DARTIX \\>>common.mak ; fi
 if [ $USE_ZLIB -eq  1 ] ; then echo -DZLIB \\>>common.mak ; fi
+if [ $USE_DOMINO78 -eq  1 ] ; then echo -DDOMINO78 \\>>common.mak ; fi
 if [ $USE_CUPS -eq  1 ] ; then echo -DCUPS \\>>common.mak ; fi
 if [ $USE_PYTHON -eq  1 ] ; then echo -DPYTHON \\>>common.mak ; fi
 if [ $USE_GCRYPT -eq 1 ] ; then echo -DGCRIPT \\>>common.mak ; fi
