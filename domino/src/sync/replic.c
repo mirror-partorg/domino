@@ -21,6 +21,11 @@ static int product_is_equal(product_struct_t *new_, int newsize, product_struct_
 static void product_set_l(do_alias_t *alias, product_struct_t *new_, product_struct_t *old);
 static int protocol_write_change_stock(do_alias_t *alias, stock_key0_t *key);
 static int protocol_write_change_document(do_alias_t *alias, document_struct_t *document_st, int changed);
+int do_protocol_key1_date_set(protocol_key1_t *key, struct tm *tm);
+int do_protocol_date_set(protocol_struct_t *key, struct tm *tm);
+int do_document_key3_date_set(document_key3_t *key, struct tm *tm);
+int do_protocol_time_set(protocol_struct_t *key, struct tm *tm);
+
 
 #define RUNNING_ (!break_func || !break_func(NULL))
 
@@ -762,16 +767,19 @@ static void product_set_l(do_alias_t *alias, product_struct_t *new_, product_str
     }
 }
 
-do_ret_list_t *replic_select_product_base_parcel(do_alias_t *alias,  const char *sklad, int base_parcel, do_extended_break_func break_func)
+do_ret_list_t *replic_select_product_base_parcel(do_alias_t *alias,  const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
+#ifndef DOMINO78
     int base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE);
-    int code_size = 0;
+#endif
+    int n = 0,i = 0;
     do_ret_list_t *retval;
     product_key0_t product_key0;
     do_extended_t *extended;
+#ifndef DOMINO78
+    int code_size = 0;
     char *prefix = NULL;
-
-    if (base_parcel) {
+    if ( base_parcel ) {
         prefix = domino_get_unit_prefix(alias, sklad);
         if (!prefix || *prefix == '\0') {
             do_log(LOG_ERR, "local product's prefix are empty");
@@ -781,47 +789,85 @@ do_ret_list_t *replic_select_product_base_parcel(do_alias_t *alias,  const char 
         }
         code_size = strlen(prefix);
     }
+#endif
     product_key0.base_parcel = base_parcel;
-    do_text_set_empty(product_key0.code);
+    if ( do_text_is_empty(key1->code) )
+        do_text_set_empty(product_key0.code);
+    else
+        do_cpy(product_key0.code,key1->code);
+
+    n = 1;
+#ifndef DOMINO78
+    if ( base_parcel )
+        n++;
+#endif
+    if ( !do_text_is_empty(key2->code) )
+        n++;
 
     extended = do_extended_new(alias);
     do_extended_set_break_func(extended, break_func, NULL);
     do_extended_set_file_db(extended, DO_DB_PRODUCT);
     do_extended_set_key(extended, 0, &product_key0);
-    do_extended_set_filter(extended, !base_parcel,
-                           (base_parcel) ? 2 : 1, sizeof(product_key0.base_parcel), code_size);
-    do_extended_set_filter_term(extended, 0,
+#ifndef DOMINO78
+    if ( base_parcel )
+        do_extended_set_filter(extended, !base_parcel, n, sizeof(product_key0.base_parcel), code_size, sizeof(product_key0.code));
+    else
+#endif
+        do_extended_set_filter(extended, !base_parcel, n, sizeof(product_key0.base_parcel), sizeof(product_key0.code));
+
+    do_extended_set_filter_term(extended, i,
                                 DO_EXTENDED_TYPE_INTEGER,
                                 offsetof(product_struct_t, base_parcel),
                                 DO_EXTENDED_COMP_EQUAL,
-                                (base_parcel) ?
+                                (n > i+1) ?
                                   DO_EXTENDED_CONNECTION_AND :
                                   DO_EXTENDED_CONNECTION_NO,
                                 &product_key0.base_parcel);
-    if (base_parcel)
-        do_extended_set_filter_term(extended, 1,
+    i+=1;
+#ifndef DOMINO78
+    if ( base_parcel ) {
+        do_extended_set_filter_term(extended, i,
                                     DO_EXTENDED_TYPE_STRING,
                                     offsetof(product_struct_t, code) + base_len,
                                     DO_EXTENDED_COMP_EQUAL,
-                                    DO_EXTENDED_CONNECTION_NO,
+                                    (n > i+1) ?
+                                     DO_EXTENDED_CONNECTION_AND :
+                                     DO_EXTENDED_CONNECTION_NO,
                                     prefix);
+        i++;
+    }
+#endif
+    if ( !do_text_is_empty(key2->code) )
+        do_extended_set_filter_term(extended, i,
+                                    DO_EXTENDED_TYPE_STRING,
+                                    offsetof(product_struct_t, code),
+                                    DO_EXTENDED_COMP_LT,
+                                    (n > i+1) ?
+                                     DO_EXTENDED_CONNECTION_AND :
+                                     DO_EXTENDED_CONNECTION_NO,
+                                    key2->code);
     do_extended_set_fields_full_record(extended, sizeof(product_struct_t));
     retval = do_extended_get(extended, -1);
+#ifndef DOMINO78
     if (prefix)
         do_free(prefix);
+#endif
     do_extended_free(extended);
     return retval;
 }
-do_ret_list_t *replic_select_product_view_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, do_extended_break_func break_func)
+do_ret_list_t *replic_select_product_view_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
-    int   code_size = 0;
+    int  n = 0;
+#ifndef DOMINO78
+    int   code_size = 0
     char *prefix = NULL;
-    char  parcel_separator = do_param(DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR)[0];
+#endif
     int   base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE);
+    char  parcel_separator = do_param(DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR)[0];
     do_ret_list_t       *retval;
-    product_view_key0_t  product_view_key0;
+    product_view_key1_t  product_view_key1;
     do_extended_t       *extended;
-
+#ifndef DOMINO78
     if (base_parcel) {
         prefix = domino_get_unit_prefix(alias, sklad);
         if (!prefix || *prefix == '\0') {
@@ -832,43 +878,71 @@ do_ret_list_t *replic_select_product_view_base_parcel(do_alias_t *alias, const c
         }
         code_size = strlen(prefix);
     }
-    do_text_set_empty(product_view_key0.code);
-    do_text_set_empty(product_view_key0.sort);
-    do_text_set_empty(product_view_key0.sklad);
-    product_view_key0.type = 0;
+#endif
+    n++;
+    if ( do_text_is_empty(key1->code) )
+        do_text_set_empty(product_view_key1.code);
+    else
+        do_cpy(product_view_key1.code,key1->code);
+    do_text_set_empty(product_view_key1.sklad);
+    if ( !do_text_is_empty(key2->code) )
+        n++;
 
     extended = do_extended_new(alias);
     do_extended_set_break_func(extended, break_func, NULL);
     do_extended_set_file_db(extended, DO_DB_PRODUCT_VIEW);
-    do_extended_set_key(extended, 0, &product_view_key0);
-    do_extended_set_filter(extended, FALSE, 1, (base_parcel) ? code_size : sizeof(parcel_separator));
+    do_extended_set_key(extended, 1, &product_view_key1);
+
+#ifndef DOMINO78
+    do_extended_set_filter(extended, FALSE, 2, (base_parcel) ? code_size : sizeof(parcel_separator), sizeof(product_view_key1.code));
+#else
+    do_extended_set_filter(extended, FALSE, 2, sizeof(parcel_separator), sizeof(product_view_key1.code) );
+#endif
     do_extended_set_filter_term(extended, 0,
                                 DO_EXTENDED_TYPE_STRING,
                                 offsetof(product_view_struct_t, code) + base_len,
-                                (base_parcel) ?
+                                ( base_parcel ) ?
                                   DO_EXTENDED_COMP_EQUAL :
                                   DO_EXTENDED_COMP_NOT_EQUAL,
-                                DO_EXTENDED_CONNECTION_NO,
+
+                                (n < 2) ? DO_EXTENDED_CONNECTION_NO : DO_EXTENDED_CONNECTION_AND,
+#ifndef DOMINO78
                                 (base_parcel) ?
                                   prefix :
-                                  &parcel_separator);
+#endif
+                                  &parcel_separator
+                                  );
+    if ( n > 1 ) {
+        do_extended_set_filter_term(extended, 1,
+                                DO_EXTENDED_TYPE_STRING,
+                                offsetof(product_view_struct_t, code),
+                                DO_EXTENDED_COMP_LT,
+                                DO_EXTENDED_CONNECTION_NO,
+                                key2->code
+                                  );
+    }
     do_extended_set_fields_full_record(extended, sizeof(product_view_struct_t));
     retval = do_extended_get(extended, -1);
+#ifndef DOMINO78
     if (prefix)
         do_free(prefix);
+#endif // DOMINO78
     do_extended_free(extended);
     return retval;
 }
-do_ret_list_t *replic_select_barcode_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, do_extended_break_func break_func)
+do_ret_list_t *replic_select_barcode_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
+    int n = 0;
+#ifndef DOMINO78
     int   code_size = 0;
     char *prefix = NULL;
+#endif
     char  parcel_separator = do_param(DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR)[0];
     int   base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE);
     do_ret_list_t  *retval;
-    barcode_key0_t  barcode_key0;
+    barcode_key1_t  barcode_key1;
     do_extended_t  *extended;
-
+#ifndef DOMINO78
     if (base_parcel) {
         prefix = domino_get_unit_prefix(alias, sklad);
         if (!prefix || *prefix == '\0') {
@@ -880,27 +954,50 @@ do_ret_list_t *replic_select_barcode_base_parcel(do_alias_t *alias, const char *
         code_size = strlen(prefix);
         do_log(LOG_INFO, "prefix %s", prefix);
     }
-    do_text_set_empty(barcode_key0.barcode);
-
+#endif
+    n++;
+    if ( do_text_is_empty(key1->code) )
+        do_text_set_empty(barcode_key1.code);
+    else
+        do_cpy(barcode_key1.code,key1->code);
+    if ( !do_text_is_empty(key2->code) )
+        n++;
     extended = do_extended_new(alias);
     do_extended_set_break_func(extended, break_func, NULL);
     do_extended_set_file_db(extended, DO_DB_BARCODE);
-    do_extended_set_key(extended, 0, &barcode_key0);
-    do_extended_set_filter(extended, FALSE, 1, (base_parcel) ? code_size : sizeof(parcel_separator));
+    do_extended_set_key(extended, 1, &barcode_key1);
+#ifndef DOMINO78
+    do_extended_set_filter(extended, FALSE, n, (base_parcel) ? code_size : sizeof(parcel_separator), sizeof(barcode_key1.code));
+#else
+    do_extended_set_filter(extended, FALSE, n, sizeof(parcel_separator), sizeof(barcode_key1.code));
+#endif
     do_extended_set_filter_term(extended, 0,
                                 DO_EXTENDED_TYPE_STRING,
                                 offsetof(barcode_struct_t, code) + base_len,
                                 (base_parcel) ?
                                   DO_EXTENDED_COMP_EQUAL :
                                   DO_EXTENDED_COMP_NOT_EQUAL,
-                                DO_EXTENDED_CONNECTION_NO,
+                                (n > 1) ?  DO_EXTENDED_CONNECTION_AND :  DO_EXTENDED_CONNECTION_NO,
+#ifndef DOMINO78
                                 (base_parcel) ?
                                   prefix :
+#endif
                                   &parcel_separator);
+    if ( n > 1 ) {
+        do_extended_set_filter_term(extended, 1,
+                                DO_EXTENDED_TYPE_STRING,
+                                offsetof(barcode_struct_t, code),
+                                DO_EXTENDED_COMP_LT,
+                                DO_EXTENDED_CONNECTION_NO,
+                                key2->code
+                                  );
+    }
     do_extended_set_fields_full_record(extended, sizeof(barcode_struct_t));
     retval = do_extended_get(extended, -1);
-    if (prefix)
+#ifndef DOMINO78
+    if ( prefix )
         do_free(prefix);
+#endif
     do_extended_free(extended);
     return retval;
 }
@@ -1470,12 +1567,12 @@ int replic_select_stock(do_alias_t *alias, stock_key0_t *key, do_list_t *retval,
 }
 */
 
-int replic_products(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, do_extended_break_func break_func)
+int replic_products(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
     int            count, i, j, del;
     do_ret_list_t *list;
     do_list_t        *do_list_ins, *do_list_ch, *do_list_del;
-    size_t         size_new;
+    int            size_new;
     char          *code;
     void          *crnt;
     do_size_t   *sz;
@@ -1510,7 +1607,7 @@ int replic_products(do_alias_t *alias, void *data, size_t size, const char *skla
         }
     }
 
-    list = replic_select_product_base_parcel(alias, sklad, base_parcel, break_func);
+    list = replic_select_product_base_parcel(alias, sklad, base_parcel, key1, key2, break_func);
 
     status = (list != NULL) ? DO_OK : DO_ERROR;
 
@@ -1537,7 +1634,7 @@ int replic_products(do_alias_t *alias, void *data, size_t size, const char *skla
                     }
                 }
                 else {
-                    if ( !product_is_equal(product_new_st, size_new, product_st, do_ret_list_item_len(list, i))) {
+                    if ( !product_is_equal((product_struct_t*)product_new_st, size_new, (product_struct_t*)product_st, do_ret_list_item_len(list, i))) {
                         product_set_l(alias, product_new_st, product_st);
                         do_list_add(do_list_ch, product_new_st);
                     }
@@ -1587,7 +1684,10 @@ int replic_products(do_alias_t *alias, void *data, size_t size, const char *skla
             if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
                 status = DO_ERROR;
             else
-                status = product_update(alias, &product, break_func);
+                if ( clone )
+                    status = do_product_update(alias, &product);
+                else
+                    status = product_update(alias, &product, break_func);
         }
         do_free(code);
     }
@@ -1632,7 +1732,7 @@ int replic_products(do_alias_t *alias, void *data, size_t size, const char *skla
     return status == DO_OK;
 }
 
-int replic_products_view(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, do_extended_break_func break_func)
+int replic_products_view(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
     int            count, i, j, del;
     do_ret_list_t *list;
@@ -1673,7 +1773,7 @@ int replic_products_view(do_alias_t *alias, void *data, size_t size, const char 
     }
 
 
-    list = replic_select_product_view_base_parcel(alias, sklad, base_parcel, break_func);
+    list = replic_select_product_view_base_parcel(alias, sklad, base_parcel, key1, key2, break_func);
 
     status = (list != NULL) ? DO_OK : DO_ERROR;
 
@@ -1789,9 +1889,9 @@ int replic_products_view(do_alias_t *alias, void *data, size_t size, const char 
     return status == DO_OK;
 }
 
-int replic_products_data(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, do_extended_break_func break_func, product_key4_t *key1, product_key4_t *key2)
+int replic_products_data_2(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
-    int            count, i, j, del, cd = 0, tr = 0;
+    int            count, i, j, del, tr = 0;
     do_ret_list_t *list1;
     do_extended_t *extended;
     do_list_t        *do_list_ins, *do_list_ch, *do_list_del;
@@ -1836,8 +1936,8 @@ int replic_products_data(do_alias_t *alias, void *data, size_t size, const char 
     }
     do_text_set(alias,product_key4.code,PRODUCT_FIRST_CODE);
 
-    int   code_size = 0;
     char *prefix = NULL;
+    int   code_size = 0;
     char  parcel_separator = do_param(DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR)[0];
     int   base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE);
 
@@ -2013,7 +2113,7 @@ int replic_products_data(do_alias_t *alias, void *data, size_t size, const char 
 }
 
 
-int replic_barcodes(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, do_extended_break_func break_func)
+int replic_barcodes(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
     int            count, i, j, del;
     do_ret_list_t *list;
@@ -2069,7 +2169,7 @@ int replic_barcodes(do_alias_t *alias, void *data, size_t size, const char *skla
         }
     }
 
-    list = replic_select_barcode_base_parcel(alias, sklad, base_parcel, break_func);
+    list = replic_select_barcode_base_parcel(alias, sklad, base_parcel, key1,key2, break_func);
 
     status = (list != NULL) ? DO_OK : DO_ERROR;
 
@@ -6326,7 +6426,8 @@ int add_protocol(do_alias_t *alias,
         }
     }
 
-    do_date_set(&protocol_key1.date, *date_end);
+    do_protocol_key1_date_set(&protocol_key1, date_end);
+    //do_date_set2(&protocol_key1.date, date_end);
     protocol_key1.time = 0;
 
     extended = do_extended_new(alias);
@@ -7261,6 +7362,7 @@ int replic_get_stocks(do_alias_t *alias, do_list_t *list, do_data_t *out, do_ext
     }
     return TRUE;
 }
+#ifndef DOMINO78
 do_ret_list_t *replic_select_realization(do_alias_t *alias, const char *sklad, int date_start, int date_end, do_extended_break_func break_func)
 {
     do_extended_t *extended = NULL;
@@ -7297,6 +7399,7 @@ do_ret_list_t *replic_select_realization(do_alias_t *alias, const char *sklad, i
     do_extended_free(extended);
     return list;
 }
+#endif
 #ifndef DOMINO78
 int replic_realization(do_alias_t *alias,
                      char *sklad, struct tm *date_start, struct tm *date_end,
@@ -7491,8 +7594,8 @@ int replic_protocol_write_change_document(do_alias_t *alias, const char *dtype, 
         sprintf(buff, "%s.%s.%s.%s", do_param(DO_PARAM_PROTOCOL_OBJECT_DOCUMENT), dtype, store, document);
         do_text_set(alias, protocol.data.objectName, buff);
         do_text_set(alias, protocol.data.userName, REPLIC_NAME);
-        do_date_set(&protocol.data.date, tm);
-        do_time_set(&protocol.data.time, tm);
+        do_protocol_date_set(&protocol.data, &tm);
+        do_protocol_time_set(&protocol.data, &tm);
         protocol.size = sizeof(protocol.data);
         do_text_set(alias, protocol.data.action, action);
         if ( do_protocol_insert(alias, &protocol) != DO_OK )
@@ -8215,7 +8318,7 @@ int get_balance_41(do_alias_t *alias, const char *store, struct tm date, double 
     document_key3.date = 0;
     document_key3.time = 0;
     do_cpy(key3, document_key3);
-    do_date_set(&key3.date, date);
+    do_document_key3_date_set(&key3, &date);
     status = do_document_get3(alias, &document, &document_key3, DO_GET_GE);
     while ( status == DO_OK ) {
         if ( do_cmp(key3.dtype, document_key3.dtype) ||
@@ -8235,7 +8338,7 @@ int get_balance_41(do_alias_t *alias, const char *store, struct tm date, double 
     document_key3.date = 0;
     document_key3.time = 0;
     do_cpy(key3, document_key3);
-    do_date_set(&key3.date, date);
+    do_document_key3_date_set(&key3, &date);
     status = do_document_get3(alias, &document, &document_key3, DO_GET_GE);
     while ( status == DO_OK ) {
         if ( do_cmp(key3.dtype, document_key3.dtype) ||
@@ -8251,6 +8354,290 @@ int get_balance_41(do_alias_t *alias, const char *store, struct tm date, double 
         return FALSE;
     *balance = sum_in - sum_out;
     return TRUE;
+}
+#define ISLEAP(year)	((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
+#define	SECS_PER_HOUR (60 * 60)
+int do_protocol_key1_date_set(protocol_key1_t *key, struct tm *tm)
+{
+    int y = 1801;
+    key->date = tm->tm_yday + 4;
+    for (;y < tm->tm_year + 1900; y++) {
+        key->date += ISLEAP(y) ? 366 : 365;
+    }
+    return key->date;
+}
+int do_protocol_date_set(protocol_struct_t *key, struct tm *tm)
+{
+    int y = 1801;
+    key->date = tm->tm_yday + 4;
+    for (;y < tm->tm_year + 1900; y++) {
+        key->date += ISLEAP(y) ? 366 : 365;
+    }
+    return key->date;
+}
+int do_protocol_time_set(protocol_struct_t *key, struct tm *tm)
+{
+    key->time = (tm->tm_hour*SECS_PER_HOUR + tm->tm_min*60 + tm->tm_sec)*100;
+    return key->time;
+}
+int do_document_key3_date_set(document_key3_t *key, struct tm *tm)
+{
+    int y = 1801;
+    key->date = tm->tm_yday + 4;
+    for (;y < tm->tm_year + 1900; y++) {
+        key->date += ISLEAP(y) ? 366 : 365;
+    }
+    return key->date;
+}
+
+do_ret_list_t *replic_select_product_data_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+#ifndef DOMINO78
+    char *prefix = NULL;
+    int   code_size = 0;
+#endif // DOMINO78
+    int   n = 0;
+    char  parcel_separator = do_param(DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR)[0];
+    int   base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE);
+
+    do_ret_list_t       *retval;
+    product_data_key0_t  product_data_key0;//, key_tmp;
+    do_extended_t       *extended;
+#ifndef DOMINO78
+    if ( base_parcel ) {
+        prefix = domino_get_unit_prefix(alias, sklad);
+        if (!prefix || *prefix == '\0') {
+            do_log(LOG_ERR, "local product's prefix are empty");
+            if (prefix)
+                do_free(prefix);
+            return NULL;
+        }
+        code_size = strlen(prefix);
+    }
+#endif
+    n++;
+    if ( do_text_is_empty(key1->code) )
+        do_text_set(alias, product_data_key0.code, PRODUCT_FIRST_CODE);// skip local data
+        //do_text_set_empty(product_data_key0.code);
+    else
+        do_cpy(product_data_key0.code,key1->code);
+    if ( !do_text_is_empty(key2->code) )
+        n++;
+    //do_text_set_empty(product_data_key0.code);
+#ifndef DOMINO78
+    product_data_key0.type = PRODUCT_DATA_FIRST_TYPE;
+#else
+    product_data_key0.type = 0;
+#endif // DOMINO78
+    product_data_key0.number = 0;
+    //key_tmp.type = PRODUCT_DATA_RESERVE_TYPE;
+
+    extended = do_extended_new(alias);
+    do_extended_set_break_func(extended, break_func, NULL);
+    do_extended_set_file_db(extended, DO_DB_PRODUCT_DATA);
+    do_extended_set_key(extended, 0, &product_data_key0);
+#ifndef DOMINO78
+    do_extended_set_filter(extended, FALSE, n, (base_parcel) ? code_size : sizeof(parcel_separator),sizeof(product_data_key0.code));
+#else
+    do_extended_set_filter(extended, FALSE, n, sizeof(parcel_separator),sizeof(product_data_key0.code));
+#endif
+    do_extended_set_filter_term(extended, 0,
+                                DO_EXTENDED_TYPE_STRING,
+                                offsetof(product_data_struct_t, code) + base_len,
+                                (base_parcel) ?
+                                  DO_EXTENDED_COMP_EQUAL :
+                                  DO_EXTENDED_COMP_NOT_EQUAL,
+                                ( n < 2) ? DO_EXTENDED_CONNECTION_NO : DO_EXTENDED_CONNECTION_AND,
+#ifndef DOMINO78
+                                (base_parcel) ?
+                                  prefix :
+#endif
+                                  &parcel_separator);
+    if ( n > 1 ) {
+        do_extended_set_filter_term(extended, 1,
+                                DO_EXTENDED_TYPE_STRING,
+                                offsetof(product_data_struct_t, code),
+                                DO_EXTENDED_COMP_LT,
+                                DO_EXTENDED_CONNECTION_NO,
+                                key2->code);
+    }
+    do_extended_set_fields_full_record(extended, sizeof(product_data_struct_t));
+    retval = do_extended_get(extended, -1);
+
+#ifndef DOMINO78
+    if (prefix)
+        do_free(prefix);
+#endif
+    do_extended_free(extended);
+    return retval;
+}
+
+int replic_products_data(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    int            count, i, j, del;
+    do_ret_list_t *list;
+    do_list_t        *do_list_ins, *do_list_ch, *do_list_del;
+    size_t         size_new;
+    char          *code;
+    void          *crnt;
+    do_size_t   *sz;
+    int            status;
+
+    do_list_ins = do_list_new(0);
+    do_list_del = do_list_new(0);
+    do_list_ch  = do_list_new(0);
+
+    product_data_key0_t    product_data_key0;
+    product_data_rec_t     product_data;
+    product_data_struct_t *product_data_st;
+    product_data_struct_t *product_data_new_st;
+
+    crnt = data;
+
+    if (size) {
+        sz = crnt;
+        crnt += sizeof(*sz);
+        debug_assert(crnt <= data + size);
+        debug_assert(*sz >= 0);
+
+        count = *sz;
+        for (i = 0; i < count; i++) {
+            sz = crnt;
+            crnt += sizeof(*sz);
+            debug_assert(crnt <= data + size);
+            debug_assert(*sz <= sizeof(product_data_struct_t) && *sz >= sizeof(product_data_struct_t) - sizeof(product_data.data.params));
+            do_list_add(do_list_ins, crnt);
+            crnt += *sz;
+            debug_assert(crnt <= data + size);
+        }
+    }
+    list = replic_select_product_data_base_parcel(alias, sklad, base_parcel, key1, key2, break_func);
+
+    status = (list != NULL) ? DO_OK : DO_ERROR;
+
+    for (i = 0; status == DO_OK && i < do_ret_list_count(list); i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_data_st = do_ret_list_item_data(list, i);
+        del = TRUE;
+        for (j =0; j < do_list_ins->count; j++) {
+            product_data_new_st = do_list_ins->list[j];
+            size_new = *((do_size_t*)(do_list_ins->list[j] - sizeof(do_size_t)));
+
+            if (product_data_st->type == product_data_new_st->type &&
+                product_data_st->number == product_data_new_st->number &&
+                !memcmp(&product_data_st->code, &product_data_new_st->code, sizeof(product_data_st->code))) {
+                del = FALSE;
+                do_list_delete(do_list_ins, j);
+                if (size_new != do_ret_list_item_len(list, i) ||
+                    memcmp(product_data_st, product_data_new_st, size_new)) {
+                    do_list_add(do_list_ch, product_data_new_st);
+                }
+                break;
+            }
+        }
+        if (del)
+            do_list_add(do_list_del, product_data_st);
+    }
+
+    for (i = 0; i < do_list_ins->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+        product_data.size = *((do_size_t*)(do_list_ins->list[i] - sizeof(do_size_t)));;
+        memcpy(&product_data.data, do_list_ins->list[i], product_data.size);
+
+        //if ( product_data.data.type == PRODUCT_DATA_RESERVE_TYPE )
+        //    continue;
+
+        code = do_text(alias, product_data.data.code);
+        do_log(LOG_INFO, "insert product_data \"%s\"", code);
+        status = do_product_data_insert(alias, &product_data);
+        if ( status == DO_OK ) {
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+        }
+        do_free(code);
+    }
+    for (i = 0; i < do_list_ch->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_data_st = do_list_ch->list[i];
+        //if ( product_data_st->type == PRODUCT_DATA_RESERVE_TYPE )
+        //    continue;
+
+
+        product_data_key0.type = product_data_st->type;
+        product_data_key0.number = product_data_st->number;
+        memcpy(&product_data_key0.code,  &product_data_st->code,  sizeof(product_data_key0.code));
+        status = do_product_data_get0(alias, &product_data, &product_data_key0, DO_GET_EQUAL);
+
+        code = do_text(alias, product_data_key0.code);
+        do_log(LOG_INFO, "update product_data \"%s\"", code);
+
+        status = do_product_data_get0(alias, &product_data, &product_data_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            product_data.size = *((do_size_t*)(do_list_ch->list[i] - sizeof(do_size_t)));
+            memcpy(&product_data.data, do_list_ch->list[i], product_data.size);
+            status = do_product_data_update(alias, &product_data);
+            if ( status == DO_OK ) {
+                if ( !do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE) )
+                    status = DO_ERROR;
+            }
+
+        }
+        do_free(code);
+    }
+    for (i = 0; i < do_list_del->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+
+        product_data_st = do_list_del->list[i];
+        //if ( product_data_st->type == PRODUCT_DATA_RESERVE_TYPE )
+        //    continue;
+
+        product_data_key0.type = product_data_st->type;
+        product_data_key0.number = product_data_st->number;
+        memcpy(&product_data_key0.code,  &product_data_st->code,  sizeof(product_data_key0.code));
+
+        code = do_text(alias, product_data_key0.code);
+        do_log(LOG_INFO, "delete product_data \"%s\" %d %d", code, product_data_st->type, product_data_st->number);
+        //exit(1);//!!
+
+
+        status = do_product_data_get0(alias, &product_data, &product_data_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            status = do_product_data_delete(alias);
+            if ( status == DO_OK ) {
+                if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                    status = DO_ERROR;
+            }
+        }
+        do_free(code);
+        if (status == DO_KEY_NOT_FOUND)
+            status = DO_OK;
+    }
+    if ( status != DO_OK && status != DO_ERROR ) {
+        do_log(LOG_ERR, "the operation is completed with the status %d", status);
+        status = DO_ERROR;
+    }
+    if (list)
+        do_ret_list_free(list);
+    do_list_free(do_list_ins);
+    do_list_free(do_list_del);
+    do_list_free(do_list_ch);
+
+    return status == DO_OK;
 }
 
 

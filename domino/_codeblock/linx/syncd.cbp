@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-d 10 -F -f /usr/local/domino/etc/syncd-client1-.conf" />
+				<Option parameters="-F " />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -21,6 +21,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="-F " />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -39,12 +40,11 @@
 			<Add option="-DUSE_BTI" />
 			<Add option="-DUSE_MINIMAL1" />
 			<Add option="-DDEBUG" />
+			<Add option="-D_LINUX" />
 		</Compiler>
 		<Linker>
 			<Add library="domino" />
-			<Add library="loudmouth-1" />
 			<Add library="dolib" />
-			<Add directory="../../lib/control/auth/" />
 		</Linker>
 		<Unit filename="../../lib/dolib/log.c">
 			<Option compilerVar="CC" />
@@ -90,10 +90,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/sync/util.h" />
-		<Extensions>
-			<code_completion />
-			<debugger />
-			<envvars />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

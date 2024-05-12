@@ -51,11 +51,11 @@ typedef  enum {
     DC_CMD_GET_STOCKS,
 
     DC_CMD_GET_UPDATED_STOCKS,
-
+#ifndef DOMINO78
     DC_CMD_GET_CHECKS,
 
     DC_CMD_GET_REALIZATION,
-
+#endif
     DC_CMD_GET_PROTOCOL,
 
 
@@ -70,9 +70,9 @@ typedef  enum {
 
 // Util
 
-
+#ifndef DOMINO78
     DC_CMD_MAKE_REALIZATION,
-
+#endif
     DC_CMD_GET_BALANCE_41,
 
     DC_CMD_UNDEFINE
@@ -85,9 +85,9 @@ static const do_rpc_command_t dc_commands[DC_CMD_UNDEFINE] = {
 // Get
     {"get_product",       "get product info", "get product info\n\r\tparam: \"<code>\"", 0, 0},
 
-    {"get_products",      "get products", "get products\n\rparam: {<base>|<parcel> \"<sklad>\"}", 0, 0},
-    {"get_products_view", "get product's views", "get product's views\n\rparam: {<base>|<parcel> \"<sklad>\"}", 0, 0},
-    {"get_products_data", "get product's daties", "get product's daties\n\rparam: {<base>|<parcel> \"<sklad>\"}", 0, 0},
+    {"get_products",      "get products", "get products\n\rparam: {<base>|<parcel> \"<sklad>\"} [<code1> <code2>]", 0, 0},
+    {"get_products_view", "get product's views", "get product's views\n\rparam: {<base>|<parcel> \"<sklad>\"} [<code1> <code2>]", 0, 0},
+    {"get_products_data", "get product's daties", "get product's daties\n\rparam: {<base>|<parcel> \"<sklad>\"} [<code1> <code2>]", 0, 0},
 
     {"get_barcodes",       "get base barcodes", "get base barcodes\n\rparam: {<base>|<parcel> \"<sklad>\"}", 0, 0},
 
@@ -118,9 +118,10 @@ static const do_rpc_command_t dc_commands[DC_CMD_UNDEFINE] = {
         "\"<dtype>.<sklad>\" [,\"<dtype>.<sklad>\" ...] <date start> <date end>", 0, 0},
     {"get_stocks", "get stocks and price", "get stocks and price\n\r\tparam: \"<sklad>\"", 0, 0},
     {"get_updated_stocks", "get updated stocks and price", "get updated stocks and price\n\r\tparam: <index> [\"<skip_stores>\"]", 0, 0},
-
+#ifndef DOMINO78
     {"get_checks", "get checks", "get checks\n\r\tparam: \"<sklad>\" <date start> <date end>", 0, 0},
     {"get_realization", "get realization", "get realization\n\r\tparam: \"<sklad>\" <date start> <date end>", 0, 0},
+#endif
     {"get_protocol", "get protocol", "get protocol\n\r\tparam: <date start> <date end>", 0, 0},
 
 // Put
@@ -131,7 +132,9 @@ static const do_rpc_command_t dc_commands[DC_CMD_UNDEFINE] = {
     {"put_stock", "put stock", "put stock for update", 0, 1},
     {"put_stocks", "put stocks", "put stocks for update", 0, 1},
 // Utilddd
+#ifndef DOMINO78
     {"make_realization", "make realization", "make realization\n\r\tparam: \"<sklad>\" <date start> <date end>", 0, 0},
+#endif
     {"get_balance_41", "get balance 41", "get balance\n\r\tparam: \"<sklad>\" <date end>", 0, 0},
 
 };
@@ -183,8 +186,10 @@ static void get_updated_stocks(sync_info_t *sync_info, do_list_t *param, do_data
 static void get_docs(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 static void get_docs_in_period(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 static void get_docs_from_protocol(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
+#ifndef DOMINO78
 static void get_checks(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 static void get_realization(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
+#endif
 static void get_protocol(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 
 static void put_product(sync_info_t *sync_info, do_list_t *param, do_data_t *in, do_data_t *out);
@@ -194,8 +199,9 @@ static void put_document_order(sync_info_t *sync_info, do_list_t *param, do_data
 static void put_stock(sync_info_t *sync_info, do_list_t *param, do_data_t *in, do_data_t *out);
 static void put_stocks(sync_info_t *sync_info, do_list_t *param, do_data_t *in, do_data_t *out);
 
-
+#ifndef DOMINO78
 static void make_realization(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
+#endif
 static void get_balance41(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 
 static int break_func()
@@ -282,12 +288,14 @@ void sync_exec_command(int client_id, void *owner, int command, do_list_t *param
         case DC_CMD_GET_UPDATED_STOCKS:
             get_updated_stocks(sync_info, param, out);
             break;
+#ifndef DOMINO78
         case DC_CMD_GET_CHECKS:
             get_checks(sync_info, param, out);
             break;
         case DC_CMD_GET_REALIZATION:
             get_realization(sync_info, param, out);
             break;
+#endif // DOMINO78
         case DC_CMD_GET_PROTOCOL:
             get_protocol(sync_info, param, out);
             break;
@@ -313,11 +321,11 @@ void sync_exec_command(int client_id, void *owner, int command, do_list_t *param
         case DC_CMD_PUT_STOCKS:
             put_stocks(sync_info, param, data, out);
             break;
-
+#ifndef DOMINO78
         case DC_CMD_MAKE_REALIZATION:
             make_realization(sync_info, param, out);
             break;
-
+#endif
         case DC_CMD_GET_BALANCE_41:
             get_balance41(sync_info, param, out);
             break;
@@ -460,16 +468,27 @@ static void get_products(sync_info_t *sync_info, do_list_t *param, do_data_t *ou
 
     int base_parcel = !strcmp(param_value(param, 0).string, "parcel");
     const char *sklad = NULL;
+    product_key4_t key1,key2;
+    int n = 0;
+    do_text_set_empty(key1.code);
+    do_text_set_empty(key2.code);
+    n += 1;
+
     if (base_parcel) {
-        if ( param_count(param) != 2 ||
-             param_type(param, 1) != do_lx_cstring ) {
+        if ( param_count(param) < n+1 ||
+             param_type(param, n) != do_lx_cstring ) {
             do_data_set_err(out, "Syntax error. Use ? for help");
             return;
         }
-        sklad = param_value(param, 1).string;
+        sklad = param_value(param, n).string;
+        n += 1;
     }
-    else {
-        if ( param_count(param) != 1 ) {
+    if ((param_count(param) != n) && (param_count(param) != n + 2)) {
+        do_data_set_err(out, "Syntax error. Use ? for help");
+        return;
+    }
+    if (param_count(param) == n + 2) {
+        if ((param_type(param, n) != do_lx_cstring) || (param_type(param, n+1) != do_lx_cstring )) {
             do_data_set_err(out, "Syntax error. Use ? for help");
             return;
         }
@@ -484,10 +503,15 @@ static void get_products(sync_info_t *sync_info, do_list_t *param, do_data_t *ou
             do_alias_free(alias);
         return;
     }
+    if (param_count(param) == n + 2) {
+        do_text_set(alias, key1.code, param_value(param, n).string);
+        do_text_set(alias, key2.code, param_value(param, n+1).string);
+        n += 2;
+    }
 
     do_ret_list_t *list;
 
-    list = replic_select_product_base_parcel(alias, sklad, base_parcel, break_func);
+    list = replic_select_product_base_parcel(alias, sklad, base_parcel, &key1, &key2,  break_func);
     do_data_clear(out);
     if (!list)
         do_data_set_err(out, "Cant read db");
@@ -511,35 +535,49 @@ static void get_products_view(sync_info_t *sync_info, do_list_t *param, do_data_
 
     int base_parcel = !strcmp(param_value(param, 0).string, "parcel");
     const char *sklad = NULL;
-    if (base_parcel) {
-        if ( param_count(param) != 2 ||
-             param_type(param, 1) != do_lx_cstring ) {
-            do_data_set_err(out, "Syntax error. Use ? for help");
-            return;
-        }
-        sklad = param_value(param, 1).string;
-    }
-    else {
-        if ( param_count(param) != 1 ) {
-            do_data_set_err(out, "Syntax error. Use ? for help");
-            return;
-        }
-    }
+    product_key4_t key1,key2;
+    int n = 0;
+    do_text_set_empty(key1.code);
+    do_text_set_empty(key2.code);
+    n += 1;
 
+    if (base_parcel) {
+        if ( param_count(param) < n+1 ||
+             param_type(param, n) != do_lx_cstring ) {
+            do_data_set_err(out, "Syntax error. Use ? for help");
+            return;
+        }
+        sklad = param_value(param, n).string;
+        n += 1;
+    }
+    if ((param_count(param) != n) && (param_count(param) != n + 2)) {
+        do_data_set_err(out, "Syntax error. Use ? for help");
+        return;
+    }
+    if (param_count(param) == n + 2) {
+        if ((param_type(param, n) != do_lx_cstring) || (param_type(param, n+1) != do_lx_cstring )) {
+            do_data_set_err(out, "Syntax error. Use ? for help");
+            return;
+        }
+    }
 
     do_alias_t *alias;
     alias = domino_alias_new(sync_info->opt->alias_name);
     do_data_set_str(out, "");
-    if (!alias || !do_alias_open(alias, 0, DO_DB_PRODUCT_VIEW, DO_DB_PRODUCT_DATA, DO_DB_SKLAD, DO_DB_END)) {
+    if (!alias || !do_alias_open(alias, 0, DO_DB_PRODUCT, DO_DB_PRODUCT_VIEW, DO_DB_SKLAD, DO_DB_END)) {
         do_data_set_err(out, "cant open db");
         if (alias)
             do_alias_free(alias);
         return;
     }
+    if (param_count(param) == n + 2) {
+        do_text_set(alias, key1.code, param_value(param, n).string);
+        do_text_set(alias, key2.code, param_value(param, n+1).string);
+    }
 
     do_ret_list_t *list;
 
-    list = replic_select_product_view_base_parcel(alias, sklad, base_parcel, break_func);
+    list = replic_select_product_view_base_parcel(alias, sklad, base_parcel, &key1, &key2, break_func);
     do_data_clear(out);
     if (!list)
         do_data_set_err(out, "Cant read db");
@@ -563,35 +601,48 @@ static void get_products_data(sync_info_t *sync_info, do_list_t *param, do_data_
 
     int base_parcel = !strcmp(param_value(param, 0).string, "parcel");
     const char *sklad = NULL;
-    if (base_parcel) {
-        if ( param_count(param) != 2 ||
-             param_type(param, 1) != do_lx_cstring ) {
-            do_data_set_err(out, "Syntax error. Use ? for help");
-            return;
-        }
-        sklad = param_value(param, 1).string;
-    }
-    else {
-        if ( param_count(param) != 1 ) {
-            do_data_set_err(out, "Syntax error. Use ? for help");
-            return;
-        }
-    }
+    product_key4_t key1,key2;
+    int n = 0;
+    do_text_set_empty(key1.code);
+    do_text_set_empty(key2.code);
+    n += 1;
 
+    if (base_parcel) {
+        if ( param_count(param) < n+1 ||
+             param_type(param, n) != do_lx_cstring ) {
+            do_data_set_err(out, "Syntax error. Use ? for help");
+            return;
+        }
+        sklad = param_value(param, n).string;
+        n += 1;
+    }
+    if ((param_count(param) != n) && (param_count(param) != n + 2)) {
+        do_data_set_err(out, "Syntax error. Use ? for help");
+        return;
+    }
+    if (param_count(param) == n + 2) {
+        if ((param_type(param, n) != do_lx_cstring) || (param_type(param, n+1) != do_lx_cstring )) {
+            do_data_set_err(out, "Syntax error. Use ? for help");
+            return;
+        }
+    }
 
     do_alias_t *alias;
     alias = domino_alias_new(sync_info->opt->alias_name);
     do_data_set_str(out, "");
-    if (!alias || !do_alias_open(alias, 0, DO_DB_PRODUCT_DATA, DO_DB_SKLAD, DO_DB_END)) {
+    if (!alias || !do_alias_open(alias, 0, DO_DB_PRODUCT, DO_DB_PRODUCT_DATA, DO_DB_SKLAD, DO_DB_END)) {
         do_data_set_err(out, "cant open db");
         if (alias)
             do_alias_free(alias);
         return;
     }
-
+    if (param_count(param) == n + 2) {
+        do_text_set(alias, key1.code, param_value(param, n).string);
+        do_text_set(alias, key2.code, param_value(param, n+1).string);
+    }
     do_ret_list_t *list;
 
-    list = replic_select_product_data_base_parcel(alias, sklad, base_parcel, break_func);
+    list = replic_select_product_data_base_parcel(alias, sklad, base_parcel, &key1, &key2, break_func);
     do_data_clear(out);
     if (!list)
         do_data_set_err(out, "Cant read db");
@@ -615,8 +666,12 @@ static void get_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *ou
 
     int base_parcel = !strcmp(param_value(param, 0).string, "parcel");
     const char *sklad = NULL;
-    if (base_parcel) {
-        if ( param_count(param) != 2 ||
+    product_key4_t key1,key2;
+    int n = 0;
+    do_text_set_empty(key1.code);
+    do_text_set_empty(key2.code);
+    if ( base_parcel ) {
+        if ( ((param_count(param) != 2) && (param_count(param) != 4) ) ||
              param_type(param, 1) != do_lx_cstring ) {
             do_data_set_err(out, "Syntax error. Use ? for help");
             return;
@@ -624,12 +679,11 @@ static void get_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *ou
         sklad = param_value(param, 1).string;
     }
     else {
-        if ( param_count(param) != 1 ) {
+        if ( (param_count(param) != 1) &&  (param_count(param) != 3) ) {
             do_data_set_err(out, "Syntax error. Use ? for help");
             return;
         }
     }
-
     do_alias_t *alias;
     alias = domino_alias_new(sync_info->opt->alias_name);
     do_data_set_str(out, "");
@@ -639,10 +693,16 @@ static void get_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *ou
             do_alias_free(alias);
         return;
     }
+    n = 1;
+    if (param_count(param) == n + 2) {
+        do_text_set(alias, key1.code, param_value(param, n).string);
+        do_text_set(alias, key2.code, param_value(param, n+1).string);
+    }
+
 
     do_ret_list_t *list;
+    list = replic_select_barcode_base_parcel(alias, sklad, base_parcel, &key1, &key2, break_func);
 
-    list = replic_select_barcode_base_parcel(alias, sklad, base_parcel, break_func);
     do_data_clear(out);
     if (!list)
         do_data_set_err(out, "Cant read db");
@@ -1815,7 +1875,7 @@ static void get_stocks(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
         return;
     }
     const char separator = do_param(DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR)[0];
-    int base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH);
+    int base_len = do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE);
     int status;
 
     stock_struct_t *stock;
@@ -1847,7 +1907,7 @@ static void get_stocks(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
 
         if ( local_unit &&
               (do_stock_struct_quant(alias, stock, DO_CONST_QUANT_REST) +
-                do_stock_struct_quant(alias, stock, DO_CONST_QUANT_CRNTSALE) 
+                do_stock_struct_quant(alias, stock, DO_CONST_QUANT_CRNTSALE)
               > 0 ) &&
               (stock->code[base_len] == separator) ) {
             do_cpy(barcode_key1.code, stock->code);
@@ -1997,7 +2057,7 @@ static void get_stocks(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
     do_alias_free(alias);
     ZIP_IT;
 }
-
+#ifndef DOMINO78
 static void get_checks(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
 {
     int date_start, date_end;
@@ -2146,6 +2206,7 @@ static void get_realization(sync_info_t *sync_info, do_list_t *param, do_data_t 
     do_alias_free(alias);
     ZIP_IT;
 }
+#endif
 static void get_protocol(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
 {
 
@@ -2370,6 +2431,7 @@ static void put_document(sync_info_t *sync_info, do_list_t *param, do_data_t *in
         do_data_set_str(out, DO_EXCH_OK);
     do_alias_free(alias);
 }
+#ifndef DOMINO78
 static void make_realization(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
 {
     int date_start, date_end;
@@ -2404,6 +2466,7 @@ static void make_realization(sync_info_t *sync_info, do_list_t *param, do_data_t
         do_data_set_str(out, "Ok");
     do_alias_free(alias);
 }
+#endif
 static int get_last_protocol_last_index(do_alias_t *alias)
 {
     product_data_key0_t product_data_key0, key;

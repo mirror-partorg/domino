@@ -1,0 +1,26 @@
+OBJS=""
+mkdir -p ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so
+mkdir -p ../../../../var/Linux/Debian/bullseye/x86_64/.libs
+for f in domino.c do_accept.c do_action.c do_alias.c do_balance.c do_config.c do_doctype.c do_extended.c do_misc.c do_protocol.c do_rz_info.c r3_expr.c real_in_words.c report.c meta_alias.c domino_action.c markup.c ../../misc/btrapi.c ../../misc/iconv_.c ../../misc/csv_util.c ../../misc/utf8.c ; do \
+	n=../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/$(basename $f).o ; \
+	if [[ $f -nt $n ]] ; \
+	then \
+		echo $f ; \
+		gcc -shared -fPIC -L../../../../var/Linux/Debian/bullseye/x86_64/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/actianzen/lib64 -DBTI_LINUX_64 -I../../var/Linux/Debian/bullseye/x86_64 -DZLIB -DDOMINO78 -DCUPS -DUSE_NCURSES  -ggdb -D_REENTRANT  -DNOCORRECTNDS -DDEBUG_BTI -DDEBUG1   -c $f -o $n; \
+	fi ;\
+done ; \
+for f in domino.c do_accept.c do_action.c do_alias.c do_balance.c do_config.c do_doctype.c do_extended.c do_misc.c do_protocol.c do_rz_info.c r3_expr.c real_in_words.c report.c meta_alias.c domino_action.c markup.c ../../misc/btrapi.c ../../misc/iconv_.c ../../misc/csv_util.c ../../misc/utf8.c ; do OBJS="$OBJS ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/$(basename $f).o"; done ; \
+if [[ "" == "1" ]] ; \
+then \
+	g++ -shared -fPIC -Wall  -L../../../../var/Linux/Debian/bullseye/x86_64/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/actianzen/lib64 -DBTI_LINUX_64 -I../../var/Linux/Debian/bullseye/x86_64 -DZLIB -DDOMINO78 -DCUPS -DUSE_NCURSES  -D_REENTRANT  -DNOCORRECTNDS -DDEBUG_BTI -DDEBUG1   -ggdb \
+                  $OBJS -o ../../../../var/Linux/Debian/bullseye/x86_64/.libs/domino.dll -ldolib -lpsqlmif     \
+                  -Wl,-soname,libdomino.so.1 ; \
+else  \
+	echo $OBJS ; \
+	g++ -shared -fPIC -Wall  -L../../../../var/Linux/Debian/bullseye/x86_64/.libs -I/usr/include/loudmouth-1.0 -I../../lib/ffmpeg -I../../include -D_LINUX -DHAVE_SYSLOG -L/usr/local/actianzen/lib64 -DBTI_LINUX_64 -I../../var/Linux/Debian/bullseye/x86_64 -DZLIB -DDOMINO78 -DCUPS -DUSE_NCURSES  -D_REENTRANT  -DNOCORRECTNDS -DDEBUG_BTI -DDEBUG1   -ggdb \
+                  $OBJS -o ../../../../var/Linux/Debian/bullseye/x86_64/.libs/libdomino.so.`cat version.h | grep -I VERSION | cut -d' ' -f3 | egrep '^"[0-9]+.[0-9]+.[0-9]+"' | cut -d'"' -f2`  -ldolib -lpsqlmif     \
+                  -Wl,-soname,libdomino.so.1 ; \
+	ln -fs libdomino.so.`cat version.h | grep -I VERSION | cut -d' ' -f3 | egrep '^"[0-9]+.[0-9]+.[0-9]+"' | cut -d'"' -f2` ../../../../var/Linux/Debian/bullseye/x86_64/.libs/libdomino.so.1 ; \
+	ln -fs libdomino.so.`cat version.h | grep -I VERSION | cut -d' ' -f3 | egrep '^"[0-9]+.[0-9]+.[0-9]+"' | cut -d'"' -f2` ../../../../var/Linux/Debian/bullseye/x86_64/.libs/libdomino.so ; \
+fi
+../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/domino.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_accept.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_action.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_alias.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_balance.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_config.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_doctype.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_extended.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_misc.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_protocol.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/do_rz_info.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/r3_expr.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/real_in_words.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/report.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/meta_alias.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/domino_action.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/markup.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/btrapi.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/iconv_.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/csv_util.c.o ../../../../var/Linux/Debian/bullseye/x86_64/libdomino.so/utf8.c.o

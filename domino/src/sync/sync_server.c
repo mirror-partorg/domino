@@ -46,7 +46,7 @@ static int break_func()
 
 static int send_product(sync_server_t *sync, product_key4_t *product_key4)
 {
-    if (product_key4->code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH)] ==
+    if (product_key4->code[do_param_int(DO_PARAM_PRODUCT_BASE_CODE_LENGTH_DEPRECATE)] ==
         do_param(DO_PARAM_PRODUCT_BASE_PARCEL_SEPARATOR)[0])
         return TRUE;
 

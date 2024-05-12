@@ -26,17 +26,27 @@ typedef struct{
         OBJ_DOCUMENT_MODIFIED,
         OBJ_STOCKS1,
         OBJ_UPDATED_STOCKS,
+#ifndef DOMINO78
         OBJ_CHECKS,
         OBJ_REALIZATION,
+#endif
         OBJ_PROTOCOL,
 
+#ifndef DOMINO78
         OBJ_MAKE_REALIZATION,
+#endif
         OBJ_CHECK_BALANCE_41,
         OBJ_CHECK_PARCELS,
     } obj;
     union {
         struct {
-            char  sklad[1024];
+            char code1[1024];
+            char code2[1024];
+        } products;
+        struct {
+            char sklad[1024];
+            char code1[1024];
+            char code2[1024];
         } parcels;
         struct {
             char  sklad[1024];
@@ -83,6 +93,7 @@ typedef struct {
     int   port;
     char *alias_name;
     char *key_file;
+    int   clone;
     do_list_t *objs;
 } option_client_t;
 

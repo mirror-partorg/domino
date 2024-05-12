@@ -2,6 +2,7 @@
 
 #define RUNNING_ (!break_func || !break_func(NULL))
 
+#ifndef DOMINO78
 int util_clean_realization(do_alias_t *alias, const char *sklad, int date_start, int date_end, do_extended_break_func break_func)
 {
     int status;
@@ -235,3 +236,4 @@ int util_make_realization(do_alias_t *alias, const char *sklad, int date_start, 
     domino_meta_alias_free(meta);
     return res;
 }
+#endif

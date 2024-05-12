@@ -294,6 +294,7 @@ typedef int64_t BTI_CURRENCY;
     BTI_BYTE nprice[15];                            //407
     BTI_CHAR params[2048];                          //422
   }product_struct_t;
+
   typedef struct PACK_STRUCT {
     BTI_SINT base_parcel;
     BTI_CHAR code[DOMINO_FIELD_CODE_SIZE];
@@ -833,7 +834,7 @@ typedef int64_t BTI_CURRENCY;
   typedef struct PACK_STRUCT {
     BTI_CHAR code0[DOMINO_FIELD_CODE_SIZE];
   } stock_key3_t;
-#endif 
+#endif
   typedef struct {
     BTI_WORD size;
     stock_struct_t data;

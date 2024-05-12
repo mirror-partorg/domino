@@ -20,6 +20,7 @@ option_client_t *option_client_new()
     result->objs = do_list_new(1);
     result->alias_name = NULL;
     result->key_file = NULL;
+    result->clone = FALSE;
 
     return result;
 }
@@ -65,6 +66,7 @@ enum {
    OPT_ALIAS,
    OPT_DEBUG,
    OPT_PIDFILE,
+   OPT_CLONE,
 };
 
 static const struct option longoptions[] = {
@@ -76,6 +78,7 @@ static const struct option longoptions[] = {
    {"key",                 required_argument, NULL, OPT_KEY},
    {"alias",               required_argument, NULL, OPT_ALIAS},
    {"writepid",            required_argument, NULL, OPT_PIDFILE},
+   {"clone",               no_argument,       NULL, OPT_CLONE},
    {0,                     no_argument,       NULL, OPT_NOARG}
 };
 void print_usage()
@@ -84,6 +87,7 @@ void print_usage()
          "  Options are as follows:\n"
          "  -d, --debug <level>       set debug level (>0)\n"
          "  -u, --user  <name>        set username\n"
+         "  --clone                   clone handbook's record\n"
          "  -p, --password <pas>      set password\n"
          "  -V, --version             display version info\n"
          "  -a, --alias               set alias name (default local)\n"
@@ -91,19 +95,19 @@ void print_usage()
          "  -?, --help                display this help\n"
          "  --writepid <pid_file>     write pid file\n"
          "  Object are as follows:\n"
-         " product <code>               - sync product\n"
-         " products                     - sync products\n"
-         " parcels <sklad>              - sync parcels\n"
-         " stocks  <sklad>              - sync stocks\n"
-         " updated-stocks               - sync updated stocks\n"
-         " partner <region>.<code>      - sync partner\n"
-         " partners [<region>]          - sync partners\n"
-         " groups                       - sync groups\n"
-         " operations                   - sync operations\n"
-         " sklads                       - sync sklads\n"
-         " otdels                       - sync otdels\n"
-         " users                        - sync users\n"
-         " handbooks                    - sync products, partners, groups, operations, sklads, otdels, users\n"
+         " product <code>                  - sync product\n"
+         " products <code1> <code2>        - sync products\n"
+         " parcels <sklad> <code1> <code2> - sync parcels\n"
+         " stocks  <sklad>                 - sync stocks\n"
+         " updated-stocks                  - sync updated stocks\n"
+         " partner <region>.<code>         - sync partner\n"
+         " partners [<region>]             - sync partners\n"
+         " groups                          - sync groups\n"
+         " operations                      - sync operations\n"
+         " sklads                          - sync sklads\n"
+         " otdels                          - sync otdels\n"
+         " users                           - sync users\n"
+         " handbooks                       - sync products, partners, groups, operations, sklads, otdels, users\n"
          " document  <dtype>.<sklad>.<number>[,<dtype>.<sklad>.<number>...] - sync documents\n"
          " document_period <dtype>.<sklad>[,<dtype>.<sklad>...] {all | <date_begin> <date_end>} - sync documents in period\n"
          " document_modified <dtype>.<sklad>[,<dtype>.<sklad>...] <date_begin> <date_end> - sync modified documents from protocol \n"
@@ -229,6 +233,10 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
          do_free(opt->password);
          opt->password = do_strdup(optarg);
          break;
+      case OPT_CLONE:
+         opt->clone = TRUE;
+         break;
+
       case OPT_PIDFILE:
          if (optarg[0] == '-') {
             errflag++;
@@ -309,6 +317,7 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
                     if (argind == argc)
                         errflag++;
                     else {
+
                         strcpy(obj->product.code, argv[argind]);
                         argind++;
                     }
@@ -316,6 +325,18 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
                 else
                 if (!strcmp(arg, "products")) {
                     obj->obj = OBJ_PRODUCTS;
+                    if (argind == argc)
+                        errflag++;
+                    else {
+                        strcpy(obj->products.code1, argv[argind]);
+                        argind++;
+                    }
+                    if (argind == argc)
+                        errflag++;
+                    else {
+                        strcpy(obj->products.code2, argv[argind]);
+                        argind++;
+                    }
                 }
                 else
                 if (!strcmp(arg, "partner")) {
@@ -373,6 +394,19 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
                         strcpy(obj->parcels.sklad, argv[argind]);
                         argind++;
                     }
+                    if (argind == argc)
+                        errflag++;
+                    else {
+                        strcpy(obj->parcels.code1, argv[argind]);
+                        argind++;
+                    }
+                    if (argind == argc)
+                        errflag++;
+                    else {
+                        strcpy(obj->parcels.code2, argv[argind]);
+                        argind++;
+                    }
+
                 }
                 else
                 if (!strcmp(arg, "check_parcels")) {
@@ -573,6 +607,7 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
                     argind++;
                 }
                 else
+#ifndef DOMINO78
                 if (!strcmp(arg, "checks") ||
                     !strcmp(arg, "realization") ||
                     !strcmp(arg, "make_realization") ) {
@@ -618,6 +653,7 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
                     argind++;
                 }
                 else
+#endif
                 if (!strcmp(arg, "protocol")) {
                     obj->obj = OBJ_PROTOCOL;
                     if (argind == argc) {

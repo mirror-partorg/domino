@@ -37,10 +37,10 @@ int add_protocol(do_alias_t *alias,
                      do_extended_break_func break_func);
 
 int replic_product(do_alias_t *alias, const char *code, void *data, size_t size, do_extended_break_func break_func);
-int replic_products(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, do_extended_break_func break_func);
-int replic_products_view(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, do_extended_break_func break_func);
-int replic_products_data(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, do_extended_break_func break_func);
-int replic_barcodes(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, do_extended_break_func break_func);
+int replic_products(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
+int replic_products_view(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
+int replic_products_data(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
+int replic_barcodes(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
 int replic_partner(do_alias_t *alias, const char *g_code, int code, void *data, size_t size, do_extended_break_func break_func);
 int replic_document_order(do_alias_t *alias, const char *dtype, const char *sklad, const char *document, int line, void *data, size_t size, int *changed, do_extended_break_func break_func);
 int replic_regions(do_alias_t *alias, void *data, size_t size, do_extended_break_func break_func);
@@ -65,14 +65,15 @@ int replic_get_document_order(do_alias_t *alias, const char *dtype, const char *
 int replic_get_stock(do_alias_t *alias, const char *store, const char *code, do_data_t *out, do_extended_break_func break_func);
 int replic_get_stocks(do_alias_t *alias, do_list_t *list, do_data_t *out, do_extended_break_func break_func);
 
-do_ret_list_t *replic_select_product_base_parcel(do_alias_t *alias,  const char *sklad, int base_parcel, do_extended_break_func break_func);
-do_ret_list_t *replic_select_product_view_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, do_extended_break_func break_func);
-do_ret_list_t *replic_select_product_data_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, do_extended_break_func break_func);
-do_ret_list_t *replic_select_barcode_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, do_extended_break_func break_func);
+do_ret_list_t *replic_select_product_base_parcel(do_alias_t *alias,  const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
+do_ret_list_t *replic_select_product_view_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
+do_ret_list_t *replic_select_product_data_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
+do_ret_list_t *replic_select_barcode_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func);
 do_ret_list_t *replic_select_shifts(do_alias_t *alias, const char *sklad, int date_start, int date_end, do_extended_break_func break_func);
+#ifndef DOMINO78
 do_ret_list_t *replic_select_shift_check(do_alias_t *alias, shift_struct_t *shift_st, do_extended_break_func break_func);
 do_ret_list_t *replic_select_shift_checksum(do_alias_t *alias, shift_struct_t *shift_st, do_extended_break_func break_func);
-
+#endif
 do_ret_list_t *replic_select_document_order(do_alias_t *alias, document_key0_t *document_key0, do_extended_break_func break_func);
 do_ret_list_t *replic_select_document_parcel(do_alias_t *alias, document_key0_t *document_key0, do_extended_break_func break_func);
 do_ret_list_t *replic_select_document_data(do_alias_t *alias, document_key0_t *document_key0, do_extended_break_func break_func);

@@ -55,6 +55,8 @@ int main(int argc, char *argv[])
 
     opt = option_client_new();
     char *sklad;
+    product_key4_t key1;
+    product_key4_t key2;
     if (option_client_parse_options(opt, argc, argv))
        exit(1);
     if (opt->show_version) {
@@ -186,6 +188,7 @@ int main(int argc, char *argv[])
                     if (!err)
                         err = !replic_document(alias, do_data_get(out), do_data_size(out), NULL);
                     break;
+#ifndef DOMINO78
                 case OBJ_CHECKS:
                     do_log(LOG_INFO, "checks replication");
                     command = "get_checks";
@@ -204,6 +207,7 @@ int main(int argc, char *argv[])
                                                 &obj->sklad_period.date_beg, &obj->sklad_period.date_end,
                                                 do_data_get(out), do_data_size(out), NULL);
                     break;
+#endif
                 case OBJ_PROTOCOL:
                     do_log(LOG_INFO, "protocol replication");
                     command = "get_protocol";
@@ -238,21 +242,25 @@ int main(int argc, char *argv[])
                     command = "get_products";
                     param = (char*) do_malloc(200);
                     if (obj->obj == OBJ_PRODUCTS) {
-                        strcpy(param, "base");
+                        sprintf(param, "base \"%s\" \"%s\"", obj->products.code1,obj->products.code2);
                         base_parcel = 0;
                         sklad = NULL;
+                        do_text_set(alias,key1.code,obj->products.code1);
+                        do_text_set(alias,key2.code,obj->products.code2);
                     }
                     else {
-                        sprintf(param, "parcel \"%s\"", obj->parcels.sklad);
+                        sprintf(param, "parcel \"%s\" \"%s\" \"%s\"", obj->parcels.sklad,obj->parcels.code1,obj->parcels.code2);
                         sklad = obj->parcels.sklad;
                         base_parcel = 1;
+                        do_text_set(alias,key1.code,obj->parcels.code1);
+                        do_text_set(alias,key2.code,obj->parcels.code2);
                     }
 
                     do_log(LOG_INFO, "get data %s",(obj->obj == OBJ_PRODUCTS) ? "product" : "parcel");
                     err = !do_rpc_client_send_command(client, command, param, NULL, out);
                     if (!err) {
                         do_log(LOG_INFO, "data received %s",(obj->obj == OBJ_PRODUCTS) ? "product" : "parcel");
-                        err = !replic_products(alias, do_data_get(out), do_data_size(out), sklad, base_parcel, NULL);
+                        err = !replic_products(alias, do_data_get(out), do_data_size(out), sklad, base_parcel, opt->clone, &key1, &key2, NULL);
                     }
                     do_data_clear(out);
 
@@ -263,7 +271,7 @@ int main(int argc, char *argv[])
                     }
                     if (!err) {
                         do_log(LOG_INFO, "data received view");
-                        err = !replic_products_view(alias, do_data_get(out), do_data_size(out), sklad, base_parcel, NULL);
+                        err = !replic_products_view(alias, do_data_get(out), do_data_size(out), sklad, base_parcel, opt->clone, &key1, &key2, NULL);
                     }
                     do_data_clear(out);
 
@@ -274,7 +282,7 @@ int main(int argc, char *argv[])
                     }
                     if (!err) {
                         do_log(LOG_INFO, "data received product data");
-                        err = !replic_products_data(alias, do_data_get(out), do_data_size(out), sklad, base_parcel, NULL);
+                        err = !replic_products_data(alias, do_data_get(out), do_data_size(out), sklad, base_parcel, opt->clone, &key1, &key2, NULL);
                     }
                     do_data_clear(out);
                     command = "get_barcodes";
@@ -284,7 +292,7 @@ int main(int argc, char *argv[])
                     }
                     if (!err) {
                         do_log(LOG_INFO, "data received barcode");
-                        err = !replic_barcodes(alias, do_data_get(out), do_data_size(out), sklad, base_parcel, NULL);
+                        err = !replic_barcodes(alias, do_data_get(out), do_data_size(out), sklad, base_parcel,  opt->clone, &key1, &key2, NULL);
                     }
 
                     break;
@@ -415,6 +423,7 @@ int main(int argc, char *argv[])
                         err = !replic_otdels(alias, do_data_get(out), do_data_size(out), NULL);
                     do_data_clear(out);
                     break;
+#ifndef DOMINO78
                 case OBJ_REALIZATION: {
                     struct tm tm1;
                     do_log(LOG_INFO, "realization replication");
@@ -454,6 +463,7 @@ int main(int argc, char *argv[])
                         do_log(LOG_INFO, "Ok");
                     do_free(param);
                     break;
+#endif
                 case OBJ_CHECK_PARCELS:
                     do_log(LOG_INFO, "check parcels \"%s\"", obj->stocks.sklad);
                     err = check_parcels(alias, client, obj->stocks.sklad, NULL);
@@ -617,7 +627,7 @@ static int set_last_stock_replic(do_alias_t *alias, const char *sklad, struct tm
     BTI_LONG time1;
     time_t now = time(NULL);
     struct tm tm1 = *localtime(&now);
-    
+
     do_time_set(&time2, *tm);
     do_time_set(&time1, tm1);
     do_date_set(&date2, *tm);
