@@ -19,6 +19,8 @@
 #include <string.h>
 #ifndef HAVE_SYSLOG_H
 #include "./win32/syslog.h"
+#else
+#include <syslog.h>
 #endif
 #include <iconv.h>
 #ifdef _WIN32
