@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
     do_sort_list_t *stock;
     int i, status;
     char *sklad;
+    product_struct_t product;
+    do_log(LOG_INFO, "The library is compiled without __attribute__((packed)) sizeof product struct not valid %d", sizeof(product));
 
     conv = iconv_open(OUT_CHARSET, get_locale_lang());
     if ( argc != 3 )
@@ -66,14 +68,17 @@ int main(int argc, char *argv[])
         do_alias_free(alias);
         exit(1);
     }
+    do_log(LOG_INFO, "1");
     sklad = do_strdup(argv[2]);
 
     stock = get_stock(alias, sklad);
     if ( !stock ) {
+    do_log(LOG_INFO, "2");
         do_alias_free(alias);
         exit(1);
     }
     setlocale(LC_NUMERIC,"C");
+    do_log(LOG_INFO, "3 %d",stock->count);
     for ( i = 0; i < stock->count; i++ ) {
         stock_t *rec;
         product_key4_t product_key4;
@@ -133,7 +138,7 @@ do_list_t *get_stock(do_alias_t *alias, const char *sklad)
     status = do_stock_get0(alias, &stock, &stock_key0, DO_GET_GE);
     while ( status == DO_OK ) {
         if ( do_cmp(key.sklad, stock_key0.sklad) ) break;
-        if ( strncmp(stock.data.code, crnt.code, 5) ) {
+        if ( strncmp(stock.data.code, crnt.code, 6) ) {
             if ( crnt.stock ) {
                 if ( crnt.price > 0 )
                     do_list_add_alloc(retval, &crnt, sizeof(crnt));
@@ -141,16 +146,16 @@ do_list_t *get_stock(do_alias_t *alias, const char *sklad)
                     do_log(LOG_ERR, "product \"%s\" no price", crnt.code);
             }
             crnt.code = do_text(alias, stock.data.code);
-            crnt.code[5] = '\0';
+            crnt.code[6] = '\0';
             crnt.price = 0;
             crnt.stock = FALSE;
         }
-        if ( stock.data.code[5] != '.' &&
+        if ( stock.data.code[6] != '.' &&
              do_stock_quant(alias, &stock, DO_CONST_QUANT_PRICE_FULL) > 0
              ) {
             crnt.price = do_stock_quant(alias, &stock, DO_CONST_QUANT_PRICE_FULL);
         }
-        if ( stock.data.code[5] == '.' &&
+        if ( stock.data.code[6] == '.' &&
             do_stock_quant(alias, &stock, DO_CONST_QUANT_REST) +
             do_stock_quant(alias, &stock, DO_CONST_QUANT_CRNTSALE) > 0
             ) {

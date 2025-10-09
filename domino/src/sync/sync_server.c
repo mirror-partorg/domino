@@ -39,7 +39,7 @@ void sync_server_free(sync_server_t *sync)
 {
     do_free(sync);
 }
-static int break_func()
+static int break_func(void *user_data)
 {
     return do_mproc_state_get_state() != DO_STATE_RUN;
 }

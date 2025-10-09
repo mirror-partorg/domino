@@ -69,7 +69,7 @@ static void install_signal_handlers(void) {
 }
 #endif
 
-static int init()
+static int init(int argc, char *argv[])
 {
     if (!option_read_config(opt))
         exit(1);

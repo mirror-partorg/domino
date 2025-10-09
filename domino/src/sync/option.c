@@ -340,7 +340,7 @@ int option_parse_options(option_t *opt, int argc, char *argv[])
    }
 
    if (errflag)
-      print_usage(argv);
+      print_usage();
    return errflag;
 }
 

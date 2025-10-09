@@ -11,7 +11,7 @@
 #include <domino.h>
 #include <limits.h>
 
-#define RUNNING (!break_func())
+#define RUNNING (!break_func(NULL))
 
 typedef  enum {
     DC_CMD_CONFIG = 0,
@@ -204,7 +204,7 @@ static void make_realization(sync_info_t *sync_info, do_list_t *param, do_data_t
 #endif
 static void get_balance41(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 
-static int break_func()
+static int break_func(void *user_data)
 {
     return do_mproc_state_get_state() != DO_STATE_RUN;
 }

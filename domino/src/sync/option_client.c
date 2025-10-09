@@ -715,7 +715,7 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
         errflag++;
 
     if (errflag)
-        print_usage(argv);
+        print_usage();
     return errflag;
 }
 
