@@ -105,21 +105,25 @@ int main(int argc, char *argv[])
             switch (obj->obj) {
                 case OBJ_DOCUMENT:
                     command = "get_document";
-                    param = (char*) do_malloc(1024);
-                    buf = (char*) do_malloc(1024);
+                    //param = (char*) do_malloc(1024);
+                    //buf = (char*) do_malloc(1024);
                     len = 1024;
-                    *param = '\0';
+                    param = NULL;
                     for (i = 0; i < obj->document.documents->count; i++) {
                         key = obj->document.documents->list[i];
-                        if (strlen(param) + 10 + strlen(key->document) + strlen(key->dtype) + strlen(key->sklad) > len - 1) {
-                            param = do_realloc(param, len*2);
-                            len *=2;
+                        //if (strlen(param) + 10 + strlen(key->document) + strlen(key->dtype) + strlen(key->sklad) > len - 1) {
+                        //    param = do_realloc(param, len*2);
+                        //    len *=2;
+                        //}
+                        if ( param ) {
+                            buf = do_strdup_printf("%s \"%s.%s.%s\"", param, key->dtype, key->sklad, key->document);
+                            do_free(param);
+                            param = buf;
                         }
-                        sprintf(buf, "%s \"%s.%s.%s\"", param, key->dtype, key->sklad, key->document);
-                        strcpy(param, buf);
-                    }
-                    do_free(buf);
+                        else
+                            param = do_strdup_printf("\"%s.%s.%s\"", key->dtype, key->sklad, key->document);
 
+                    }
                     do_log(LOG_INFO, "documents replication \"%s\"", param);
                     err = !do_rpc_client_send_command(client, command, param, NULL, out);
                     do_free(param);
@@ -127,7 +131,8 @@ int main(int argc, char *argv[])
                         err = !replic_document(alias, do_data_get(out), do_data_size(out), NULL);
                     break;
                 case OBJ_DOCUMENT_PERIOD:
-                    param = (char*) do_malloc(1024);
+                    //param = (char*) do_malloc(1024);
+                    param = NULL;
                     err = 0;
                     for (i = 0; i < obj->document.documents->count && !err; i++) {
                         key = obj->document.documents->list[i];
@@ -138,9 +143,9 @@ int main(int argc, char *argv[])
                         else  {
                             d1 = do_datetoa(obj->document.date_beg);
                             d2 = do_datetoa(obj->document.date_end);
-                                sprintf(param, "\"%s.%s\" %s %s", key->dtype, key->sklad, d1, d2);
-                                do_free(d1);
-                                do_free(d2);
+                            param = do_strdup_printf("\"%s.%s\" %s %s", key->dtype, key->sklad, d1, d2);
+                            do_free(d1);
+                            do_free(d2);
                         }
                         do_log(LOG_INFO, "documents in period replication \"%s\"", param);
                         err = !do_rpc_client_send_command(client, command, param, NULL, out);
@@ -156,29 +161,38 @@ int main(int argc, char *argv[])
                 case OBJ_DOCUMENT_MODIFIED:
 
                     command = "get_document_from_protocol";
-                    param = (char*) do_malloc(1024);
-                    buf = (char*) do_malloc(1024);
+                    //param = (char*) do_malloc(1024);
+                    //buf = (char*) do_malloc(1024);
                     len = 1024;
-                    *param = '\0';
+                    //*param = '\0';
+                    param = NULL;
                     for (i=0; i < obj->document.documents->count; i++) {
                         key = obj->document.documents->list[i];
-                        if (strlen(param) + 10 + strlen(key->sklad) + strlen(key->dtype) > len - 1) {
-                            param = do_realloc(param, len*2);
-                            len *=2;
+                        //if (strlen(param) + 10 + strlen(key->sklad) + strlen(key->dtype) > len - 1) {
+                        //    param = do_realloc(param, len*2);
+                        //    len *=2;
+                        //}
+                        if ( param ) {
+                            buf = do_strdup_printf("%s \"%s.%s\"", param, key->dtype, key->sklad);
+                            do_free(param);
+                            param = buf;
                         }
-                        sprintf(buf, "%s \"%s.%s\"", param, key->dtype, key->sklad);
-                        strcpy(param, buf);
+                        else
+                            param = do_strdup_printf("\"%s.%s\"", key->dtype, key->sklad);
                     }
                     d1 = do_datetoa(obj->document.date_beg);
                     d2 = do_datetoa(obj->document.date_end);
-                    if (strlen(param) + 10 + strlen(d1) + strlen(d2) > len - 1) {
-                        param = do_realloc(param, len*2);
-                        len *=2;
+                    //if (strlen(param) + 10 + strlen(d1) + strlen(d2) > len - 1) {
+                    //    param = do_realloc(param, len*2);
+                    //    len *=2;
+                    //}
+                    if ( param ) {
+                        buf = do_strdup_printf("%s %s %s", param, d1, d2);
+                        do_free(param);
+                        param = buf;
                     }
-
-                    sprintf(buf, "%s %s %s", param, d1, d2);
-                    strcpy(param, buf);
-                    do_free(buf);
+                    else
+                        param = do_strdup_printf(" %s %s", d1, d2);
 
                     do_free(d1);
                     do_free(d2);
@@ -240,16 +254,16 @@ int main(int argc, char *argv[])
                 case OBJ_PARCELS:
                     do_log(LOG_INFO, "products replication");
                     command = "get_products";
-                    param = (char*) do_malloc(200);
+                    param = NULL;//(char*) do_malloc(200);
                     if (obj->obj == OBJ_PRODUCTS) {
-                        sprintf(param, "base \"%s\" \"%s\"", obj->products.code1,obj->products.code2);
+                        param = do_strdup_printf("base \"%s\" \"%s\"", obj->products.code1,obj->products.code2);
                         base_parcel = 0;
                         sklad = NULL;
                         do_text_set(alias,key1.code,obj->products.code1);
                         do_text_set(alias,key2.code,obj->products.code2);
                     }
                     else {
-                        sprintf(param, "parcel \"%s\" \"%s\" \"%s\"", obj->parcels.sklad,obj->parcels.code1,obj->parcels.code2);
+                        param = do_strdup_printf("parcel \"%s\" \"%s\" \"%s\"", obj->parcels.sklad,obj->parcels.code1,obj->parcels.code2);
                         sklad = obj->parcels.sklad;
                         base_parcel = 1;
                         do_text_set(alias,key1.code,obj->parcels.code1);
@@ -293,6 +307,53 @@ int main(int argc, char *argv[])
                     if (!err) {
                         do_log(LOG_INFO, "data received barcode");
                         err = !replic_barcodes(alias, do_data_get(out), do_data_size(out), sklad, base_parcel,  opt->clone, &key1, &key2, NULL);
+                    }
+
+                    break;
+                case OBJ_GOODS:
+                    do_log(LOG_INFO, "goods replication");
+                    command = "get_goods";
+                    param = (char*) do_malloc(200);
+                    do_text_set(alias,key1.code,obj->products.code1);
+                    do_text_set(alias,key2.code,obj->products.code2);
+
+                    do_log(LOG_INFO, "get data goods");
+                    err = !do_rpc_client_send_command(client, command, param, NULL, out);
+                    if (!err) {
+                        do_log(LOG_INFO, "data received goods");
+                        err = !replic_goods(alias, do_data_get(out), do_data_size(out), opt->clone, &key1, &key2, NULL);
+                    }
+                    do_data_clear(out);
+
+                    command = "get_goods_view";
+                    if (!err) {
+                        do_log(LOG_INFO, "get data view");
+                        err = !do_rpc_client_send_command(client, command, param, NULL, out);
+                    }
+                    if (!err) {
+                        err = !replic_goods_view(alias, do_data_get(out), do_data_size(out), opt->clone, &key1, &key2, NULL);
+                        do_log(LOG_INFO, "data received view");
+                    }
+                    do_data_clear(out);
+
+                    command = "get_goods_data";
+                    if (!err) {
+                        do_log(LOG_INFO, "get data product data");
+                        err = !do_rpc_client_send_command(client, command, param, NULL, out);
+                    }
+                    if (!err) {
+                        do_log(LOG_INFO, "data received product data");
+                        err = !replic_goods_data(alias, do_data_get(out), do_data_size(out), opt->clone, &key1, &key2, NULL);
+                    }
+                    do_data_clear(out);
+                    command = "get_goods_barcodes";
+                    if (!err) {
+                        do_log(LOG_INFO, "get data barcode");
+                        err = !do_rpc_client_send_command(client, command, param, NULL, out);
+                    }
+                    if (!err) {
+                        do_log(LOG_INFO, "data received barcode");
+                        err = !replic_goods_barcodes(alias, do_data_get(out), do_data_size(out), opt->clone, &key1, &key2, NULL);
                     }
 
                     break;
@@ -477,9 +538,8 @@ int main(int argc, char *argv[])
                         break;
                     }
                     command = "get_balance_41";
-                    param = (char*) do_malloc(1024);
                     d1 = do_datetoa(obj->check_balance_41.date_end);
-                    sprintf(param, "\"%s\" %s", obj->check_balance_41.sklad, d1);
+                    param = do_strdup_printf("\"%s\" %s", obj->check_balance_41.sklad, d1);
                     do_free(d1);
                     do_log(LOG_INFO,"%s %s", command, param);
                     err = !do_rpc_client_send_command(client, command, param, NULL, out);

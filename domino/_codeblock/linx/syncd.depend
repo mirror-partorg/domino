@@ -727,3 +727,173 @@
 	<stddef.h>
 	<limits.h>
 
+1759200915 source:/home/mirror/work/git/domino/domino/misc/send_error.c
+	"send_error.h"
+	<loudmouth/loudmouth.h>
+	<errno.h>
+	<dolib.h>
+	"send_error.h"
+	"../config/config.h"
+	<windows.h>
+	<unistd.h>
+
+1759200915 /home/mirror/work/git/domino/domino/misc/send_error.h
+
+1759200915 /home/mirror/work/git/domino/domino/config/config.h
+	<do-macros.h>
+
+1759200915 source:/home/mirror/work/git/domino/domino/lib/dolib/rpc.c
+	<string.h>
+	<errno.h>
+	<stdio.h>
+	<locale.h>
+	<stdarg.h>
+	<zlib.h>
+	<gcrypt.h>
+	<sys/stat.h>
+	<dolib.h>
+	"../../misc/define.h"
+	"thread.h"
+	"socket_io.h"
+	<windows.h>
+	"../../misc/iconv_.h"
+	"telnet.h"
+
+1759200915 /home/mirror/work/git/domino/domino/misc/define.h
+
+1759200915 /home/mirror/work/git/domino/domino/lib/dolib/thread.h
+	<windows.h>
+	<process.h>
+	<pthread.h>
+
+1759200915 /home/mirror/work/git/domino/domino/lib/dolib/socket_io.h
+	"../../misc/socket.h"
+	<dolib.h>
+
+1759200915 /home/mirror/work/git/domino/domino/misc/socket.h
+	<winsock2.h>
+	<sys/socket.h>
+	<arpa/inet.h>
+	<netdb.h>
+	<unistd.h>
+
+1759200915 /home/mirror/work/git/domino/domino/misc/iconv_.h
+	<iconv.h>
+
+1759200915 /home/mirror/work/git/domino/domino/lib/dolib/telnet.h
+
+1759200915 source:/home/mirror/work/git/domino/domino/lib/dolib/scanner.c
+	<string.h>
+	<dolib.h>
+	"../misc/iconv_.h"
+	"../misc/define.h"
+	<ctype.h>
+
+1759200915 source:/home/mirror/work/git/domino/domino/misc/iconv_.c
+	<locale.h>
+	<stdlib.h>
+	<string.h>
+	"iconv_.h"
+	<dolib.h>
+
+1759200915 source:/home/mirror/work/git/domino/domino/misc/mproc_state.c
+	"mproc_state.h"
+
+1759200915 /home/mirror/work/git/domino/domino/misc/mproc_state.h
+	<dolib.h>
+
+1761890013 source:/home/mirror/work/git/domino/domino/lib/dolib/log.c
+	<dolib.h>
+	"../../misc/define.h"
+	"win32/syslog.c"
+	<windows.h>
+	<sys/syslog.h>
+	<errno.h>
+	<string.h>
+	<stdarg.h>
+	<time.h>
+
+1759200915 /home/mirror/work/git/domino/domino/lib/dolib/win32/syslog.c
+	<stdio.h>
+	<windows.h>
+	<string.h>
+	<stdlib.h>
+	"win32/syslog.h"
+	"syslogmes.h"
+
+1759200915 /home/mirror/work/git/domino/domino/lib/dolib/win32/syslogmes.h
+
+1761899164 source:/home/mirror/work/git/domino/domino/src/sync/replic.c
+	"replic.h"
+	"util.h"
+	<domino.h>
+	<stddef.h>
+	<limits.h>
+
+1761899101 /home/mirror/work/git/domino/domino/src/sync/replic.h
+	<domino.h>
+	"../misc/mproc_state.h"
+
+1759200915 /home/mirror/work/git/domino/domino/src/sync/util.h
+	<domino.h>
+
+1761895715 source:/home/mirror/work/git/domino/domino/src/sync/sync_info.c
+	"sync_info.h"
+	<string.h>
+	<stddef.h>
+	"option.h"
+	"replic.h"
+	"util.h"
+	"../misc/mproc_state.h"
+	<domino.h>
+	<limits.h>
+
+1759200915 /home/mirror/work/git/domino/domino/src/sync/sync_info.h
+	<domino.h>
+	"option.h"
+
+1759200915 /home/mirror/work/git/domino/domino/src/sync/option.h
+	<dolib.h>
+
+1759731516 source:/home/mirror/work/git/domino/domino/src/sync/syncd.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<domino.h>
+	"version.h"
+	"option.h"
+	"sync_info.h"
+	"sync_server.h"
+	"../misc/mproc_state.h"
+	<windows.h>
+
+1759200915 /home/mirror/work/git/domino/domino/src/sync/version.h
+
+1759200915 /home/mirror/work/git/domino/domino/src/sync/sync_server.h
+	"sync_info.h"
+	"option.h"
+	<domino.h>
+
+1759200915 source:/home/mirror/work/git/domino/domino/src/sync/util.c
+	"util.h"
+
+1759731817 source:/home/mirror/work/git/domino/domino/src/sync/option.c
+	<getopt.h>
+	<errno.h>
+	<domino.h>
+	"option.h"
+	"../config/config.h"
+	"../misc/csv_util.h"
+
+1759731701 source:/home/mirror/work/git/domino/domino/src/sync/sync_server.c
+	"sync_server.h"
+	"sync_info.h"
+	"replic.h"
+	"../config/config.h"
+	<domino.h>
+	"../misc/csv_util.h"
+	"../misc/send_error.h"
+	<errno.h>
+	<limits.h>
+	<locale.h>
+

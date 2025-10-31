@@ -53,6 +53,7 @@
 		<Unit filename="../../src/sync/sync_client.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../src/sync/sync_client.h" />
 		<Unit filename="../../src/sync/util.c">
 			<Option compilerVar="CC" />
 		</Unit>

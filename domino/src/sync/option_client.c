@@ -97,6 +97,7 @@ void print_usage()
          "  Object are as follows:\n"
          " product <code>                  - sync product\n"
          " products <code1> <code2>        - sync products\n"
+         " goods <code1> <code2>           - sync goods\n"
          " parcels <sklad> <code1> <code2> - sync parcels\n"
          " stocks  <sklad>                 - sync stocks\n"
          " updated-stocks                  - sync updated stocks\n"
@@ -325,6 +326,22 @@ int option_client_parse_options(option_client_t *opt, int argc, char *argv[])
                 else
                 if (!strcmp(arg, "products")) {
                     obj->obj = OBJ_PRODUCTS;
+                    if (argind == argc)
+                        errflag++;
+                    else {
+                        strcpy(obj->products.code1, argv[argind]);
+                        argind++;
+                    }
+                    if (argind == argc)
+                        errflag++;
+                    else {
+                        strcpy(obj->products.code2, argv[argind]);
+                        argind++;
+                    }
+                }
+                else
+                if (!strcmp(arg, "goods")) {
+                    obj->obj = OBJ_GOODS;
                     if (argind == argc)
                         errflag++;
                     else {

@@ -1,5 +1,5 @@
-#define VERSION "1.10.1"
-#define ADATE   "12 May 2024"
+#define VERSION "1.11.1"
+#define ADATE   "31 Octomber 2025"
 
 #define SYNCD_RELEASE VERSION
 #define SYNC_CLIENT_RELEASE VERSION

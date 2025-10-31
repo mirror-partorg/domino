@@ -37,6 +37,7 @@ typedef struct{
 #endif
         OBJ_CHECK_BALANCE_41,
         OBJ_CHECK_PARCELS,
+        OBJ_GOODS,
     } obj;
     union {
         struct {

@@ -38,7 +38,7 @@ USERNAME=domino
 DOMINO_ROOT=/usr/local/domino
 PSQL_ROOT=/usr/local/psql
 
-PYTHON_VERSIONS="2 3"
+PYTHON_VERSIONS="3"
 
 DOMINO_ETC=$DOMINO_ROOT/etc
 DOMINO_BIN=$DOMINO_ROOT/bin
@@ -275,7 +275,7 @@ fi
 echo "+++++ Get python's info"
 
 PYTHON_VERSION=""
-for i in 2 3
+for i in 3
 do
 ver=`python$i -c "import sys;print('%d.%d'%sys.version_info[:2])"`
 if [[ "X$ver" != "X" ]] 

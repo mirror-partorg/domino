@@ -74,6 +74,10 @@ typedef  enum {
     DC_CMD_MAKE_REALIZATION,
 #endif
     DC_CMD_GET_BALANCE_41,
+    DC_CMD_GET_GOODS,
+    DC_CMD_GET_GOODS_VIEW,
+    DC_CMD_GET_GOODS_DATA,
+    DC_CMD_GET_GOODS_BARCODES,
 
     DC_CMD_UNDEFINE
 } sync_command_t;
@@ -136,6 +140,10 @@ static const do_rpc_command_t dc_commands[DC_CMD_UNDEFINE] = {
     {"make_realization", "make realization", "make realization\n\r\tparam: \"<sklad>\" <date start> <date end>", 0, 0},
 #endif
     {"get_balance_41", "get balance 41", "get balance\n\r\tparam: \"<sklad>\" <date end>", 0, 0},
+    {"get_goods",      "get goods", "get goods (products + parcels)\n\rparam: <code1> <code2>", 0, 0},
+    {"get_goods_view", "get goods's views", "get goods's views\n\rparam: <code1> <code2>", 0, 0},
+    {"get_goods_data", "get goods's daties", "get goods's daties\n\rparam: <code1> <code2>", 0, 0},
+    {"get_goods_barcodes",  "get goods's barcodes", "get base barcodes\n\rparam:  <code1> <code2>", 0, 0},
 
 };
 typedef enum {
@@ -164,8 +172,12 @@ static void get_product(sync_info_t *sync_info, do_list_t *param, do_data_t *out
 static void get_products(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 static void get_products_view(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 static void get_products_data(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
+static void get_goods(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
+static void get_goods_view(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
+static void get_goods_data(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 
 static void get_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
+static void get_goods_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 
 static void get_regions(sync_info_t *sync_info, do_list_t *param, do_data_t *out);
 
@@ -228,6 +240,19 @@ void sync_exec_command(int client_id, void *owner, int command, do_list_t *param
             break;
         case DC_CMD_GET_PRODUCTS_DATA:
             get_products_data(sync_info, param, out);
+            break;
+        case DC_CMD_GET_GOODS:
+            get_goods(sync_info, param, out);
+            break;
+        case DC_CMD_GET_GOODS_VIEW:
+            get_goods_view(sync_info, param, out);
+            break;
+        case DC_CMD_GET_GOODS_DATA:
+            get_goods_data(sync_info, param, out);
+            break;
+
+        case DC_CMD_GET_GOODS_BARCODES:
+            get_goods_barcodes(sync_info, param, out);
             break;
 
         case DC_CMD_GET_BARCODES:
@@ -523,6 +548,43 @@ static void get_products(sync_info_t *sync_info, do_list_t *param, do_data_t *ou
     ZIP_IT;
 }
 
+static void get_goods(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
+{
+    if ( param_count(param) != 2 )  {
+        do_data_set_err(out, "Syntax error. Use ? for help");
+        return;
+    }
+
+    product_key4_t key1,key2;
+    do_text_set_empty(key1.code);
+    do_text_set_empty(key2.code);
+
+
+    do_alias_t *alias;
+    alias = domino_alias_new(sync_info->opt->alias_name);
+    do_data_set_str(out, "");
+    if (!alias || !do_alias_open(alias, 0, DO_DB_PRODUCT, DO_DB_PRODUCT_DATA, DO_DB_SKLAD, DO_DB_END)) {
+        do_data_set_err(out, "cant open db");
+        if (alias)
+            do_alias_free(alias);
+        return;
+    }
+    do_text_set(alias, key1.code, param_value(param, 0).string);
+    do_text_set(alias, key2.code, param_value(param, 1).string);
+    do_ret_list_t *list;
+
+    list = replic_select_goods(alias, &key1, &key2,  break_func);
+    do_data_clear(out);
+    if (!list)
+        do_data_set_err(out, "Cant read db");
+    else {
+        do_list_to_data(out, list);
+        do_ret_list_free(list);
+    }
+    do_alias_free(alias);
+    ZIP_IT;
+}
+
 static void get_products_view(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
 {
     if ( param_count(param) < 1 ||
@@ -578,6 +640,44 @@ static void get_products_view(sync_info_t *sync_info, do_list_t *param, do_data_
     do_ret_list_t *list;
 
     list = replic_select_product_view_base_parcel(alias, sklad, base_parcel, &key1, &key2, break_func);
+    do_data_clear(out);
+    if (!list)
+        do_data_set_err(out, "Cant read db");
+    else {
+        do_list_to_data(out, list);
+        do_ret_list_free(list);
+    }
+    do_alias_free(alias);
+    ZIP_IT;
+}
+
+static void get_goods_view(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
+{
+    if ( param_count(param) != 2 )  {
+        do_data_set_err(out, "Syntax error. Use ? for help");
+        return;
+    }
+
+    product_key4_t key1,key2;
+    do_text_set_empty(key1.code);
+    do_text_set_empty(key2.code);
+
+    do_alias_t *alias;
+    alias = domino_alias_new(sync_info->opt->alias_name);
+    do_data_set_str(out, "");
+    if (!alias || !do_alias_open(alias, 0, DO_DB_PRODUCT, DO_DB_PRODUCT_VIEW, DO_DB_SKLAD, DO_DB_END)) {
+        do_data_set_err(out, "cant open db");
+        if (alias)
+            do_alias_free(alias);
+        return;
+    }
+    do_text_set(alias, key1.code, param_value(param, 0).string);
+    do_text_set(alias, key2.code, param_value(param, 1).string);
+
+    do_ret_list_t *list;
+
+    list = replic_select_goods_view(alias, &key1, &key2, break_func);
+
     do_data_clear(out);
     if (!list)
         do_data_set_err(out, "Cant read db");
@@ -654,6 +754,42 @@ static void get_products_data(sync_info_t *sync_info, do_list_t *param, do_data_
     ZIP_IT;
 }
 
+static void get_goods_data(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
+{
+    if ( param_count(param) != 2 )  {
+        do_data_set_err(out, "Syntax error. Use ? for help");
+        return;
+    }
+    product_key4_t key1,key2;
+    do_text_set_empty(key1.code);
+    do_text_set_empty(key2.code);
+
+    do_alias_t *alias;
+    alias = domino_alias_new(sync_info->opt->alias_name);
+    do_data_set_str(out, "");
+    if (!alias || !do_alias_open(alias, 0, DO_DB_PRODUCT, DO_DB_PRODUCT_DATA, DO_DB_SKLAD, DO_DB_END)) {
+        do_data_set_err(out, "cant open db");
+        if (alias)
+            do_alias_free(alias);
+        return;
+    }
+    do_text_set(alias, key1.code, param_value(param, 0).string);
+    do_text_set(alias, key2.code, param_value(param, 1).string);
+    do_ret_list_t *list;
+
+    list = replic_select_goods_data(alias, &key1, &key2, break_func);
+    do_data_clear(out);
+    if (!list)
+        do_data_set_err(out, "Cant read db");
+    else {
+        do_list_to_data(out, list);
+        do_ret_list_free(list);
+    }
+    do_alias_free(alias);
+    ZIP_IT;
+}
+
+
 static void get_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
 {
     if ( param_count(param) < 1 ||
@@ -702,6 +838,39 @@ static void get_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *ou
 
     do_ret_list_t *list;
     list = replic_select_barcode_base_parcel(alias, sklad, base_parcel, &key1, &key2, break_func);
+
+    do_data_clear(out);
+    if (!list)
+        do_data_set_err(out, "Cant read db");
+    else {
+        do_list_to_data(out, list);
+        do_ret_list_free(list);
+    }
+    do_alias_free(alias);
+    ZIP_IT;
+}
+static void get_goods_barcodes(sync_info_t *sync_info, do_list_t *param, do_data_t *out)
+{
+    if ( param_count(param) != 2 )  {
+        do_data_set_err(out, "Syntax error. Use ? for help");
+        return;
+    }
+    product_key4_t key1,key2;
+    do_alias_t *alias;
+    alias = domino_alias_new(sync_info->opt->alias_name);
+    do_data_set_str(out, "");
+    if (!alias || !do_alias_open(alias, 0, DO_DB_BARCODE, DO_DB_SKLAD, DO_DB_END)) {
+        do_data_set_err(out, "cant open db");
+        if (alias)
+            do_alias_free(alias);
+        return;
+    }
+    do_text_set(alias, key1.code, param_value(param, 0).string);
+    do_text_set(alias, key2.code, param_value(param, 1).string);
+
+
+    do_ret_list_t *list;
+    list = replic_select_goods_barcode(alias, &key1, &key2, break_func);
 
     do_data_clear(out);
     if (!list)

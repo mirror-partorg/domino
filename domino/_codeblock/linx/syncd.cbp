@@ -46,18 +46,7 @@
 			<Add library="domino" />
 			<Add library="dolib" />
 		</Linker>
-		<Unit filename="../../lib/dolib/log.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../lib/dolib/rpc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../lib/dolib/scanner.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../lib/domino/do_alias.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="../../lib/dolib/log.h" />
 		<Unit filename="../../misc/iconv_.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -86,6 +75,7 @@
 		<Unit filename="../../src/sync/syncd.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../src/sync/syncd.h" />
 		<Unit filename="../../src/sync/util.c">
 			<Option compilerVar="CC" />
 		</Unit>

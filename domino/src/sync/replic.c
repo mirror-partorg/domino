@@ -855,6 +855,33 @@ do_ret_list_t *replic_select_product_base_parcel(do_alias_t *alias,  const char 
     do_extended_free(extended);
     return retval;
 }
+
+do_ret_list_t *replic_select_goods(do_alias_t *alias, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    do_ret_list_t *retval;
+    product_key4_t product_key4;
+    do_extended_t *extended;
+    do_cpy(product_key4.code,key1->code);
+
+    extended = do_extended_new(alias);
+    do_extended_set_break_func(extended, break_func, NULL);
+    do_extended_set_file_db(extended, DO_DB_PRODUCT);
+    do_extended_set_key(extended, 0, &product_key4);
+
+    do_extended_set_filter(extended, TRUE , 1, sizeof(product_key4.code));
+
+    do_extended_set_filter_term(extended, 0,
+                                    DO_EXTENDED_TYPE_STRING,
+                                    offsetof(product_struct_t, code),
+                                    DO_EXTENDED_COMP_LT,
+                                    DO_EXTENDED_CONNECTION_NO,
+                                    key2->code);
+    do_extended_set_fields_full_record(extended, sizeof(product_struct_t));
+    retval = do_extended_get(extended, -1);
+    do_extended_free(extended);
+    return retval;
+}
+
 do_ret_list_t *replic_select_product_view_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
     int  n = 0;
@@ -930,6 +957,33 @@ do_ret_list_t *replic_select_product_view_base_parcel(do_alias_t *alias, const c
     do_extended_free(extended);
     return retval;
 }
+do_ret_list_t *replic_select_goods_view(do_alias_t *alias, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    do_ret_list_t       *retval;
+    product_view_key1_t  product_view_key1;
+    do_extended_t       *extended;
+    do_cpy(product_view_key1.code,key1->code);
+    do_text_set_empty(product_view_key1.sklad);
+
+    extended = do_extended_new(alias);
+    do_extended_set_break_func(extended, break_func, NULL);
+    do_extended_set_file_db(extended, DO_DB_PRODUCT_VIEW);
+    do_extended_set_key(extended, 1, &product_view_key1);
+
+    do_extended_set_filter(extended, TRUE, 1, sizeof(product_view_key1.code) );
+    do_extended_set_filter_term(extended, 0,
+                                DO_EXTENDED_TYPE_STRING,
+                                offsetof(product_view_struct_t, code),
+                                DO_EXTENDED_COMP_LT,
+                                DO_EXTENDED_CONNECTION_NO,
+                                key2->code
+                                );
+    do_extended_set_fields_full_record(extended, sizeof(product_view_struct_t));
+    retval = do_extended_get(extended, -1);
+    do_extended_free(extended);
+    return retval;
+}
+
 do_ret_list_t *replic_select_barcode_base_parcel(do_alias_t *alias, const char *sklad, int base_parcel, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
     int n = 0;
@@ -1001,6 +1055,30 @@ do_ret_list_t *replic_select_barcode_base_parcel(do_alias_t *alias, const char *
     do_extended_free(extended);
     return retval;
 }
+do_ret_list_t *replic_select_goods_barcode(do_alias_t *alias, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    do_ret_list_t  *retval;
+    barcode_key1_t  barcode_key1;
+    do_extended_t  *extended;
+    do_cpy(barcode_key1.code,key1->code);
+    extended = do_extended_new(alias);
+    do_extended_set_break_func(extended, break_func, NULL);
+    do_extended_set_file_db(extended, DO_DB_BARCODE);
+    do_extended_set_key(extended, 1, &barcode_key1);
+    do_extended_set_filter(extended, TRUE, 1, sizeof(barcode_key1.code));
+    do_extended_set_filter_term(extended, 0,
+                                DO_EXTENDED_TYPE_STRING,
+                                offsetof(barcode_struct_t, code),
+                                DO_EXTENDED_COMP_LT,
+                                DO_EXTENDED_CONNECTION_NO,
+                                key2->code
+                               );
+    do_extended_set_fields_full_record(extended, sizeof(barcode_struct_t));
+    retval = do_extended_get(extended, -1);
+    do_extended_free(extended);
+    return retval;
+}
+
 #ifndef DOMINO78
 do_ret_list_t *replic_select_shift_check(do_alias_t *alias, shift_struct_t *shift_st, do_extended_break_func break_func)
 {
@@ -1732,6 +1810,171 @@ int replic_products(do_alias_t *alias, void *data, size_t size, const char *skla
     return status == DO_OK;
 }
 
+int replic_goods(do_alias_t *alias, void *data, size_t size, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    int            count, i, j, del;
+    do_ret_list_t *list;
+    do_list_t        *do_list_ins, *do_list_ch, *do_list_del;
+    int            size_new;
+    char          *code;
+    void          *crnt;
+    do_size_t   *sz;
+    int            status;
+
+    do_list_ins = do_list_new(0);
+    do_list_del = do_list_new(0);
+    do_list_ch  = do_list_new(0);
+
+    product_key0_t    product_key0;
+    product_rec_t     product;
+    product_struct_t *product_st;
+    product_struct_t *product_new_st;
+
+    crnt = data;
+
+    if (size) {
+        sz = crnt;
+        crnt += sizeof(*sz);
+        debug_assert(crnt <= data + size);
+        debug_assert(*sz >= 0);
+
+        count = *sz;
+        for (i = 0; i < count; i++) {
+            sz = crnt;
+            crnt += sizeof(*sz);
+            debug_assert(crnt <= data + size);
+            debug_assert(*sz <= sizeof(product_struct_t) && *sz >= sizeof(product_struct_t) - sizeof(product.data.params));
+            do_list_add(do_list_ins, crnt);
+            crnt += *sz;
+            debug_assert(crnt <= data + size);
+        }
+    }
+
+    list = replic_select_goods(alias, key1, key2, break_func);
+
+    status = (list != NULL) ? DO_OK : DO_ERROR;
+
+    for (i = 0; status == DO_OK && i < do_ret_list_count(list); i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_st = do_ret_list_item_data(list, i);
+        del = TRUE;
+        for (j =0; j < do_list_ins->count; j++) {
+            product_new_st = do_list_ins->list[j];
+            size_new = *((do_size_t*)(do_list_ins->list[j] - sizeof(do_size_t)));
+            if (product_st->base_parcel == product_new_st->base_parcel &&
+                !memcmp(&product_st->code, &product_new_st->code, sizeof(product_st->code))) {
+                del = FALSE;
+                do_list_delete(do_list_ins, j);
+                if ( clone ) {
+                    if ( (size_new != do_ret_list_item_len(list, i)) ||
+                         memcmp(product_new_st, product_st, size_new) ) {
+                        //product_set_l(alias, product_new_st, product_st);
+                        do_list_add(do_list_ch, product_new_st);
+                    }
+                }
+                else {
+                    if ( !product_is_equal((product_struct_t*)product_new_st, size_new, (product_struct_t*)product_st, do_ret_list_item_len(list, i))) {
+                        product_set_l(alias, product_new_st, product_st);
+                        do_list_add(do_list_ch, product_new_st);
+                    }
+                }
+                break;
+            }
+        }
+        if (del)
+            do_list_add(do_list_del, product_st);
+    }
+
+    for (i = 0; i < do_list_ins->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+        product.size = *((do_size_t*)(do_list_ins->list[i] - sizeof(do_size_t)));;
+        memcpy(&product.data, do_list_ins->list[i], product.size);
+
+        product_set_l(alias, &product.data, NULL);
+        code = do_text(alias, product.data.code);
+        do_log(LOG_INFO, "insert product \"%s\"", code);
+        if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_INSERT))
+            status = DO_ERROR;
+        else
+            status = do_product_insert(alias, &product);
+
+        do_free(code);
+    }
+    for (i = 0; i < do_list_ch->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_st = do_list_ch->list[i];
+        product_key0.base_parcel = product_st->base_parcel;
+        memcpy(&product_key0.code,  &product_st->code,  sizeof(product_key0.code));
+
+        code = do_text(alias, product_key0.code);
+        do_log(LOG_INFO, "update product \"%s\"", code);
+
+        status = do_product_get0(alias, &product, &product_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            product.size = *((do_size_t*)(do_list_ch->list[i] - sizeof(do_size_t)));
+            memcpy(&product.data, do_list_ch->list[i], product.size);
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+            else
+                if ( clone )
+                    status = do_product_update(alias, &product);
+                else
+                    status = product_update(alias, &product, break_func);
+        }
+        do_free(code);
+    }
+    if ( do_list_del->count > 200 && status == DO_OK ) {
+         do_log(LOG_ERR, "delete %d products ",do_list_del->count);
+         status = DO_ERROR;
+    }
+    for (i = 0; i < do_list_del->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_st = do_list_del->list[i];
+        product_key0.base_parcel = product_st->base_parcel;
+        memcpy(&product_key0.code,  &product_st->code,  sizeof(product_key0.code));
+
+        code = do_text(alias, product_key0.code);
+        do_log(LOG_INFO, "delete product \"%s\"", code);
+
+        status = do_product_get0(alias, &product, &product_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_DELETE))
+                status = DO_ERROR;
+            else
+                status = do_product_delete(alias);
+        }
+        do_free(code);
+        if (status == DO_KEY_NOT_FOUND)
+            status = DO_OK;
+    }
+    if ( status != DO_OK && status != DO_ERROR ) {
+        do_log(LOG_ERR, "the operation is completed with the status %d", status);
+        status = DO_ERROR;
+    }
+    if (list)
+        do_ret_list_free(list);
+    do_list_free(do_list_ins);
+    do_list_free(do_list_del);
+    do_list_free(do_list_ch);
+
+    return status == DO_OK;
+}
+
 int replic_products_view(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
     int            count, i, j, del;
@@ -1774,6 +2017,163 @@ int replic_products_view(do_alias_t *alias, void *data, size_t size, const char 
 
 
     list = replic_select_product_view_base_parcel(alias, sklad, base_parcel, key1, key2, break_func);
+
+    status = (list != NULL) ? DO_OK : DO_ERROR;
+
+    for (i = 0; status == DO_OK && i < do_ret_list_count(list); i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_view_st = do_ret_list_item_data(list, i);
+        del = TRUE;
+        for (j =0; j < do_list_ins->count; j++) {
+            product_view_new_st = do_list_ins->list[j];
+            size_new = *((do_size_t*)(do_list_ins->list[j] - sizeof(do_size_t)));
+
+            if (product_view_st->type == product_view_new_st->type &&
+                !memcmp(&product_view_st->sklad, &product_view_new_st->sklad, sizeof(product_view_st->sklad)) &&
+                !memcmp(&product_view_st->sort, &product_view_new_st->sort, sizeof(product_view_st->sort)) &&
+                !memcmp(&product_view_st->code, &product_view_new_st->code, sizeof(product_view_st->code))) {
+                del = FALSE;
+                do_list_delete(do_list_ins, j);
+                if (size_new != do_ret_list_item_len(list, i) ||
+                    memcmp(product_view_st, product_view_new_st, size_new)) {
+                    do_list_add(do_list_ch, product_view_new_st);
+                }
+                break;
+            }
+        }
+        if (del)
+            do_list_add(do_list_del, product_view_st);
+    }
+
+    for (i = 0; i < do_list_ins->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+        product_view.size = *((do_size_t*)(do_list_ins->list[i] - sizeof(do_size_t)));;
+        memcpy(&product_view.data, do_list_ins->list[i], product_view.size);
+
+        code = do_text(alias, product_view.data.code);
+        do_log(LOG_INFO, "insert product_view \"%s\"", code);
+
+        if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+            status = DO_ERROR;
+        else
+            status = do_product_view_insert(alias, &product_view);
+        do_free(code);
+    }
+    for (i = 0; i < do_list_ch->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_view_st = do_list_ch->list[i];
+        product_view_key0.type = product_view_st->type;
+        memcpy(&product_view_key0.sklad, &product_view_st->sklad, sizeof(product_view_key0.sklad));
+        memcpy(&product_view_key0.sort,  &product_view_st->sort,  sizeof(product_view_key0.sort));
+        memcpy(&product_view_key0.code,  &product_view_st->code,  sizeof(product_view_key0.code));
+        status = do_product_view_get0(alias, &product_view, &product_view_key0, DO_GET_EQUAL);
+
+        code = do_text(alias, product_view_key0.code);
+        do_log(LOG_INFO, "update product_view \"%s\"", code);
+
+        status = do_product_view_get0(alias, &product_view, &product_view_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            product_view.size = *((do_size_t*)(do_list_ch->list[i] - sizeof(do_size_t)));
+            memcpy(&product_view.data, do_list_ch->list[i], product_view.size);
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+            else
+                status = do_product_view_update(alias, &product_view);
+        }
+        do_free(code);
+    }
+    for (i = 0; i < do_list_del->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_view_st = do_list_del->list[i];
+        product_view_key0.type = product_view_st->type;
+        memcpy(&product_view_key0.sklad, &product_view_st->sklad, sizeof(product_view_key0.sklad));
+        memcpy(&product_view_key0.sort,  &product_view_st->sort,  sizeof(product_view_key0.sort));
+        memcpy(&product_view_key0.code,  &product_view_st->code,  sizeof(product_view_key0.code));
+
+        code = do_text(alias, product_view_key0.code);
+        do_log(LOG_INFO, "delete product_view \"%s\"", code);
+
+        status = do_product_view_get0(alias, &product_view, &product_view_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+            else
+                status = do_product_view_delete(alias);
+        }
+        do_free(code);
+        if (status == DO_KEY_NOT_FOUND)
+            status = DO_OK;
+    }
+    if ( status != DO_OK && status != DO_ERROR ) {
+        do_log(LOG_ERR, "the operation is completed with the status %d", status);
+        status = DO_ERROR;
+    }
+    if (list)
+        do_ret_list_free(list);
+    do_list_free(do_list_ins);
+    do_list_free(do_list_del);
+    do_list_free(do_list_ch);
+
+    return status == DO_OK;
+}
+
+int replic_goods_view(do_alias_t *alias, void *data, size_t size,int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    int            count, i, j, del;
+    do_ret_list_t *list;
+    do_list_t        *do_list_ins, *do_list_ch, *do_list_del;
+    size_t         size_new;
+    char          *code;
+    void          *crnt;
+    do_size_t   *sz;
+    int            status;
+
+    do_list_ins = do_list_new(0);
+    do_list_del = do_list_new(0);
+    do_list_ch  = do_list_new(0);
+
+    product_view_key0_t    product_view_key0;
+    product_view_rec_t     product_view;
+    product_view_struct_t *product_view_st;
+    product_view_struct_t *product_view_new_st;
+
+    crnt = data;
+
+    if (size) {
+        sz = crnt;
+        crnt += sizeof(*sz);
+        debug_assert(crnt <= data + size);
+        debug_assert(*sz >= 0);
+
+        count = *sz;
+        for (i = 0; i < count; i++) {
+            sz = crnt;
+            crnt += sizeof(*sz);
+            debug_assert(crnt <= data + size);
+            debug_assert(*sz == sizeof(product_view_struct_t));
+            do_list_add(do_list_ins, crnt);
+            crnt += *sz;
+            debug_assert(crnt <= data + size);
+        }
+    }
+
+
+    list = replic_select_goods_view(alias, key1, key2, break_func);
 
     status = (list != NULL) ? DO_OK : DO_ERROR;
 
@@ -2170,6 +2570,171 @@ int replic_barcodes(do_alias_t *alias, void *data, size_t size, const char *skla
     }
 
     list = replic_select_barcode_base_parcel(alias, sklad, base_parcel, key1,key2, break_func);
+
+    status = (list != NULL) ? DO_OK : DO_ERROR;
+
+    for (i = 0; status == DO_OK && i < do_ret_list_count(list); i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        barcode_st = do_ret_list_item_data(list, i);
+        del = TRUE;
+        for (j =0; j < do_list_ins->count; j++) {
+            barcode_new_st = do_list_ins->list[j];
+            size_new = *((do_size_t*)(do_list_ins->list[j] - sizeof(do_size_t)));
+            if (!memcmp(&barcode_st->barcode, &barcode_new_st->barcode, sizeof(barcode_st->barcode))) {
+                del = FALSE;
+                do_list_delete(do_list_ins, j);
+                if (size_new != do_ret_list_item_len(list, i) ||
+                    memcmp(barcode_st, barcode_new_st, size_new)) {
+                    do_list_add(do_list_ch, barcode_new_st);
+                }
+                break;
+            }
+        }
+        if (del)
+            do_list_add(do_list_del, barcode_st);
+    }
+
+    for (i = 0; i < do_list_ins->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+        char *product_code;
+        barcode_key0_t sad;
+        barcode.size = *((do_size_t*)(do_list_ins->list[i] - sizeof(do_size_t)));;
+        memcpy(&barcode.data, do_list_ins->list[i], barcode.size);
+
+        do_cpy(sad.barcode,barcode.data.barcode);
+        if ( do_barcode_key0(alias, &sad, DO_GET_EQUAL) == DO_KEY_NOT_FOUND ) {
+            code = do_text(alias, barcode.data.barcode);
+            product_code = do_text(alias, barcode.data.code);
+            do_log(LOG_INFO, "insert barcode \"%s\" product \"%s\"", code, product_code);
+            do_free(code);
+            do_free(product_code);
+            code = do_text(alias, barcode.data.code);
+            if ( !do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+            else {
+                barcode_key0_t barcode_key0;
+                barcode_rec_t bar1;
+                do_cpy(barcode_key0.barcode,barcode.data.barcode);
+                status = do_barcode_get0(alias, &bar1, &barcode_key0, DO_GET_EQUAL);
+                if ( status == DO_KEY_NOT_FOUND )
+                    status = do_barcode_insert(alias, &barcode);
+                else
+                    status = do_barcode_update(alias, &barcode);
+            }
+            do_free(code);
+        }
+    }
+    for (i = 0; i < do_list_ch->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        barcode_st = do_list_ch->list[i];
+        memcpy(&barcode_key0.barcode,  &barcode_st->barcode,  sizeof(barcode_key0.barcode));
+        status = do_barcode_get0(alias, &barcode, &barcode_key0, DO_GET_EQUAL);
+
+        code = do_text(alias, barcode_key0.barcode);
+        do_log(LOG_INFO, "update barcode \"%s\"", code);
+        do_free(code);
+
+        status = do_barcode_get0(alias, &barcode, &barcode_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            barcode.size = *((do_size_t*)(do_list_ch->list[i] - sizeof(do_size_t)));
+            memcpy(&barcode.data, do_list_ch->list[i], barcode.size);
+            code = do_text(alias, barcode.data.code);
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+            else
+                status = do_barcode_update(alias, &barcode);
+            do_free(code);
+        }
+    }
+    for (i = 0; i < do_list_del->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        barcode_st = do_list_del->list[i];
+        memcpy(&barcode_key0.barcode,  &barcode_st->barcode,  sizeof(barcode_key0.barcode));
+
+        code = do_text(alias, barcode_key0.barcode);
+        do_log(LOG_INFO, "delete barcode \"%s\"", code);
+        do_free(code);
+
+        status = do_barcode_get0(alias, &barcode, &barcode_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            code = do_text(alias, barcode.data.code);
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+            else
+                status = do_barcode_delete(alias);
+            do_free(code);
+        }
+        if (status == DO_KEY_NOT_FOUND)
+            status = DO_OK;
+    }
+    if ( status != DO_OK && status != DO_ERROR ) {
+        do_log(LOG_ERR, "the operation is completed with the status %d", status);
+        status = DO_ERROR;
+    }
+    if (list)
+        do_ret_list_free(list);
+    do_list_free(do_list_ins);
+    do_list_free(do_list_del);
+    do_list_free(do_list_ch);
+
+    return status == DO_OK;
+}
+
+int replic_goods_barcodes(do_alias_t *alias, void *data, size_t size, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    int            count, i, j, del;
+    do_ret_list_t *list;
+    do_list_t        *do_list_ins, *do_list_ch, *do_list_del;
+    size_t         size_new;
+    char          *code;
+    void          *crnt;
+    do_size_t   *sz;
+    int            status;
+
+    do_list_ins = do_list_new(0);
+    do_list_del = do_list_new(0);
+    do_list_ch  = do_list_new(0);
+
+    barcode_key0_t    barcode_key0;
+    barcode_rec_t     barcode;
+    barcode_struct_t *barcode_st;
+    barcode_struct_t *barcode_new_st;
+
+    crnt = data;
+    if (size) {
+        sz = crnt;
+        crnt += sizeof(*sz);
+        debug_assert(crnt <= data + size);
+        debug_assert(*sz >= 0);
+
+        count = *sz;
+        for (i = 0; i < count; i++) {
+            sz = crnt;
+            crnt += sizeof(*sz);
+            debug_assert(crnt <= data + size);
+            debug_assert(*sz == sizeof(barcode_struct_t));
+            do_list_add(do_list_ins, crnt);
+            crnt += *sz;
+            debug_assert(crnt <= data + size);
+        }
+    }
+
+    list = replic_select_goods_barcode(alias, key1,key2, break_func);
 
     status = (list != NULL) ? DO_OK : DO_ERROR;
 
@@ -8472,6 +9037,35 @@ do_ret_list_t *replic_select_product_data_base_parcel(do_alias_t *alias, const c
     return retval;
 }
 
+do_ret_list_t *replic_select_goods_data(do_alias_t *alias, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    do_ret_list_t       *retval;
+    product_data_key0_t  product_data_key0;//, key_tmp;
+    do_extended_t       *extended;
+    do_cpy(product_data_key0.code,key1->code);
+    product_data_key0.type = 0;
+    product_data_key0.number = 0;
+    //key_tmp.type = PRODUCT_DATA_RESERVE_TYPE;
+
+    extended = do_extended_new(alias);
+    do_extended_set_break_func(extended, break_func, NULL);
+    do_extended_set_file_db(extended, DO_DB_PRODUCT_DATA);
+    do_extended_set_key(extended, 0, &product_data_key0);
+    do_extended_set_filter(extended, TRUE, 1, sizeof(product_data_key0.code));
+    do_extended_set_filter_term(extended, 0,
+                                DO_EXTENDED_TYPE_STRING,
+                                offsetof(product_data_struct_t, code),
+                                DO_EXTENDED_COMP_LT,
+                                DO_EXTENDED_CONNECTION_NO,
+                                key2->code);
+    do_extended_set_fields_full_record(extended, sizeof(product_data_struct_t));
+    retval = do_extended_get(extended, -1);
+
+    do_extended_free(extended);
+    return retval;
+}
+
+
 int replic_products_data(do_alias_t *alias, void *data, size_t size, const char *sklad, int base_parcel, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
 {
     int            count, i, j, del;
@@ -8512,6 +9106,174 @@ int replic_products_data(do_alias_t *alias, void *data, size_t size, const char 
         }
     }
     list = replic_select_product_data_base_parcel(alias, sklad, base_parcel, key1, key2, break_func);
+
+    status = (list != NULL) ? DO_OK : DO_ERROR;
+
+    for (i = 0; status == DO_OK && i < do_ret_list_count(list); i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_data_st = do_ret_list_item_data(list, i);
+        del = TRUE;
+        for (j =0; j < do_list_ins->count; j++) {
+            product_data_new_st = do_list_ins->list[j];
+            size_new = *((do_size_t*)(do_list_ins->list[j] - sizeof(do_size_t)));
+
+            if (product_data_st->type == product_data_new_st->type &&
+                product_data_st->number == product_data_new_st->number &&
+                !memcmp(&product_data_st->code, &product_data_new_st->code, sizeof(product_data_st->code))) {
+                del = FALSE;
+                do_list_delete(do_list_ins, j);
+                if (size_new != do_ret_list_item_len(list, i) ||
+                    memcmp(product_data_st, product_data_new_st, size_new)) {
+                    do_list_add(do_list_ch, product_data_new_st);
+                }
+                break;
+            }
+        }
+        if (del)
+            do_list_add(do_list_del, product_data_st);
+    }
+
+    for (i = 0; i < do_list_ins->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+        product_data.size = *((do_size_t*)(do_list_ins->list[i] - sizeof(do_size_t)));;
+        memcpy(&product_data.data, do_list_ins->list[i], product_data.size);
+
+        //if ( product_data.data.type == PRODUCT_DATA_RESERVE_TYPE )
+        //    continue;
+
+        code = do_text(alias, product_data.data.code);
+        do_log(LOG_INFO, "insert product_data \"%s\"", code);
+        status = do_product_data_insert(alias, &product_data);
+        if ( status == DO_OK ) {
+            if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                status = DO_ERROR;
+        }
+        do_free(code);
+    }
+    for (i = 0; i < do_list_ch->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+        product_data_st = do_list_ch->list[i];
+        //if ( product_data_st->type == PRODUCT_DATA_RESERVE_TYPE )
+        //    continue;
+
+
+        product_data_key0.type = product_data_st->type;
+        product_data_key0.number = product_data_st->number;
+        memcpy(&product_data_key0.code,  &product_data_st->code,  sizeof(product_data_key0.code));
+        status = do_product_data_get0(alias, &product_data, &product_data_key0, DO_GET_EQUAL);
+
+        code = do_text(alias, product_data_key0.code);
+        do_log(LOG_INFO, "update product_data \"%s\"", code);
+
+        status = do_product_data_get0(alias, &product_data, &product_data_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            product_data.size = *((do_size_t*)(do_list_ch->list[i] - sizeof(do_size_t)));
+            memcpy(&product_data.data, do_list_ch->list[i], product_data.size);
+            status = do_product_data_update(alias, &product_data);
+            if ( status == DO_OK ) {
+                if ( !do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE) )
+                    status = DO_ERROR;
+            }
+
+        }
+        do_free(code);
+    }
+    for (i = 0; i < do_list_del->count && status == DO_OK; i++) {
+        if (!RUNNING_) {
+            status = DO_ERROR;
+            break;
+        }
+
+
+        product_data_st = do_list_del->list[i];
+        //if ( product_data_st->type == PRODUCT_DATA_RESERVE_TYPE )
+        //    continue;
+
+        product_data_key0.type = product_data_st->type;
+        product_data_key0.number = product_data_st->number;
+        memcpy(&product_data_key0.code,  &product_data_st->code,  sizeof(product_data_key0.code));
+
+        code = do_text(alias, product_data_key0.code);
+        do_log(LOG_INFO, "delete product_data \"%s\" %d %d", code, product_data_st->type, product_data_st->number);
+        //exit(1);//!!
+
+
+        status = do_product_data_get0(alias, &product_data, &product_data_key0, DO_GET_EQUAL);
+        if (status == DO_OK) {
+            status = do_product_data_delete(alias);
+            if ( status == DO_OK ) {
+                if (!do_protocol_product_add(alias, code, DO_PROTOCOL_ACTION_CHANGE))
+                    status = DO_ERROR;
+            }
+        }
+        do_free(code);
+        if (status == DO_KEY_NOT_FOUND)
+            status = DO_OK;
+    }
+    if ( status != DO_OK && status != DO_ERROR ) {
+        do_log(LOG_ERR, "the operation is completed with the status %d", status);
+        status = DO_ERROR;
+    }
+    if (list)
+        do_ret_list_free(list);
+    do_list_free(do_list_ins);
+    do_list_free(do_list_del);
+    do_list_free(do_list_ch);
+
+    return status == DO_OK;
+}
+
+int replic_goods_data(do_alias_t *alias, void *data, size_t size, int clone, product_key4_t *key1, product_key4_t *key2, do_extended_break_func break_func)
+{
+    int            count, i, j, del;
+    do_ret_list_t *list;
+    do_list_t        *do_list_ins, *do_list_ch, *do_list_del;
+    size_t         size_new;
+    char          *code;
+    void          *crnt;
+    do_size_t   *sz;
+    int            status;
+
+    do_list_ins = do_list_new(0);
+    do_list_del = do_list_new(0);
+    do_list_ch  = do_list_new(0);
+
+    product_data_key0_t    product_data_key0;
+    product_data_rec_t     product_data;
+    product_data_struct_t *product_data_st;
+    product_data_struct_t *product_data_new_st;
+
+    crnt = data;
+
+    if (size) {
+        sz = crnt;
+        crnt += sizeof(*sz);
+        debug_assert(crnt <= data + size);
+        debug_assert(*sz >= 0);
+
+        count = *sz;
+        for (i = 0; i < count; i++) {
+            sz = crnt;
+            crnt += sizeof(*sz);
+            debug_assert(crnt <= data + size);
+            debug_assert(*sz <= sizeof(product_data_struct_t) && *sz >= sizeof(product_data_struct_t) - sizeof(product_data.data.params));
+            do_list_add(do_list_ins, crnt);
+            crnt += *sz;
+            debug_assert(crnt <= data + size);
+        }
+    }
+    list = replic_select_goods_data(alias, key1, key2, break_func);
 
     status = (list != NULL) ? DO_OK : DO_ERROR;
 

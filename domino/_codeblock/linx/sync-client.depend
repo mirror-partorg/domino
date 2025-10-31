@@ -181,3 +181,63 @@
 
 1715491524 /home/mirror/work/domino/domino/domino/src/sync/version.h
 
+1759200915 source:/home/mirror/work/git/domino/domino/misc/mproc_state.c
+	"mproc_state.h"
+
+1759200915 /home/mirror/work/git/domino/domino/misc/mproc_state.h
+	<dolib.h>
+
+1759200915 source:/home/mirror/work/git/domino/domino/misc/send_error.c
+	"send_error.h"
+	<loudmouth/loudmouth.h>
+	<errno.h>
+	<dolib.h>
+	"send_error.h"
+	"../config/config.h"
+	<windows.h>
+	<unistd.h>
+
+1759200915 /home/mirror/work/git/domino/domino/misc/send_error.h
+
+1759200915 /home/mirror/work/git/domino/domino/config/config.h
+	<do-macros.h>
+
+1761901802 source:/home/mirror/work/git/domino/domino/src/sync/replic.c
+	"replic.h"
+	"util.h"
+	<domino.h>
+	<stddef.h>
+	<limits.h>
+
+1761901750 /home/mirror/work/git/domino/domino/src/sync/replic.h
+	<domino.h>
+	"../misc/mproc_state.h"
+
+1759200915 /home/mirror/work/git/domino/domino/src/sync/util.h
+	<domino.h>
+
+1759200915 source:/home/mirror/work/git/domino/domino/src/sync/util.c
+	"util.h"
+
+1761899610 source:/home/mirror/work/git/domino/domino/src/sync/option_client.c
+	"option_client.h"
+	"../config/config.h"
+	<dolib.h>
+	<getopt.h>
+	<time.h>
+
+1761899518 /home/mirror/work/git/domino/domino/src/sync/option_client.h
+	<domino.h>
+
+1761901826 source:/home/mirror/work/git/domino/domino/src/sync/sync_client.c
+	<getopt.h>
+	<signal.h>
+	<locale.h>
+	<domino.h>
+	"../misc/send_error.h"
+	"version.h"
+	"option_client.h"
+	"replic.h"
+
+1761899369 /home/mirror/work/git/domino/domino/src/sync/version.h
+
