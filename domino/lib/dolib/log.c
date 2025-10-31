@@ -143,8 +143,8 @@ DO_EXPORT void do_log(int level, const char *msgfmt, ...)
         fprintf(_log.file, "%s", bufu);
         fprintf(_log.file, "\n");
         fflush(_log.file);
-        if (bufu != message)
-            free(bufu);
+        //if (bufu != message)
+        //    free(bufu);
     }
 
 #ifdef DEBUG
