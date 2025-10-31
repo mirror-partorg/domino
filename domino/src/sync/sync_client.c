@@ -313,9 +313,10 @@ int main(int argc, char *argv[])
                 case OBJ_GOODS:
                     do_log(LOG_INFO, "goods replication");
                     command = "get_goods";
-                    param = (char*) do_malloc(200);
+                    //param = (char*) do_malloc(200);
                     do_text_set(alias,key1.code,obj->products.code1);
                     do_text_set(alias,key2.code,obj->products.code2);
+                    param = do_strdup_printf("\"%s\" \"%s\"", obj->products.code1,obj->products.code2);
 
                     do_log(LOG_INFO, "get data goods");
                     err = !do_rpc_client_send_command(client, command, param, NULL, out);
