@@ -283,7 +283,7 @@ DO_EXPORT char *do_strdup_printf(const char *msgfmt, ...)
 }
 */
 
-static int vasprintf(char **ret, const char *format, va_list ap)
+static int vasprintf_(char **ret, const char *format, va_list ap)
 {
    va_list ap2;
    int len= 2;
@@ -310,7 +310,7 @@ DO_EXPORT char *do_strdup_printf(const char *format, ...)
    char *ret;
    va_list ap;
    va_start (ap, format);
-   vasprintf(&ret, format, ap);
+   vasprintf_(&ret, format, ap);
    va_end(ap);
    return ret;
 }
