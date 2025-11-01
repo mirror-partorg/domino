@@ -866,7 +866,7 @@ do_ret_list_t *replic_select_goods(do_alias_t *alias, product_key4_t *key1, prod
     extended = do_extended_new(alias);
     do_extended_set_break_func(extended, break_func, NULL);
     do_extended_set_file_db(extended, DO_DB_PRODUCT);
-    do_extended_set_key(extended, 0, &product_key4);
+    do_extended_set_key(extended, 4, &product_key4);
 
     do_extended_set_filter(extended, TRUE , 1, sizeof(product_key4.code));
 
